@@ -1,0 +1,8 @@
+span.mandatory {
+    color: #ff0000;
+    font-size: 16px;
+    vertical-align: sub;
+}
+.text-red{
+    color: #ff0000;
+}
