@@ -15,8 +15,12 @@ class WorkOrderController extends Controller
      */
     public function AddWorkOrder()
     {
-        $codes = Customer::select('id', 'code', 'name')->get();
-        return view('WorkOrder.add', compact('codes'));
+        
+    $codes = Customer::select('id', 'code', 'name')->get();
+ 
+    $workorders = WorkOrder::with('customer')->get();
+
+    return view('WorkOrder.add', compact('codes', 'workorders'));
     }
 
     /**
@@ -32,41 +36,45 @@ class WorkOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    private function validateWorkOrder(Request $request)
+   public function storeWorkEntry(Request $request)
+{
+
+    // Validate first
+    $validatedData = $request->validate([
+        'rows'               => 'required|array|min:1',
+        'rows.*.customer_id' => 'required|exists:customers,id',
+        'rows.*.part'        => 'required|string|max:100',
+        'rows.*.date'        => 'required|date',
+        'rows.*.description' => 'required|string|max:1000',
+        'rows.*.dimeter'     => 'required|numeric',
+        'rows.*.length'      => 'required|numeric',
+        'rows.*.width'       => 'required|numeric',
+        'rows.*.height'      => 'required|numeric',
+        'rows.*.exp_time'    => 'required|date_format:H:i:s',
+        'rows.*.quantity'    => 'required|integer|min:1',
+    ]);
+
+    // Save each row
+    foreach ($validatedData['rows'] as $row) 
     {
-        return $request->validate([
-            'work_order_no'     => 'required|string|max:100',
-            'customer_id'       => '|exists:customers,id',
-            'part'              => 'required|string|max:100',
-            'date'              => 'required|date',
-            'part_description'  => 'required|string|max:1000',
-            'diameter'           => 'required|string|max:50',
-            'length'            => 'required|string|max:50',
-            'width'             => 'required|string|max:50',
-            'height'            => 'required|string|max:50',
-            'exp_time'          => 'required|date_format:H:i',
-            'quantity'          => 'required|integer|min:1',
+        WorkOrder::create([
+            'customer_id'      => $row['customer_id'],
+            'part'             => $row['part'],
+            'date'             => $row['date'],
+            'dimeter'          => $row['dimeter'],
+            'length'           => $row['length'],
+            'width'            => $row['width'],
+            'height'           => $row['height'],
+            'exp_time'         => $row['exp_time'],
+            'quantity'         => $row['quantity'],
+            'part_description' => $row['description'],
         ]);
     }
 
-    public function storeWorkEntry(Request $request)
-    {
+    $workorders = WorkOrder::with('customer')->get();
+        return view('WorkOrder.view', compact('workorders'));
+}
 
-        $validated = $this->validateWorkOrder($request);
-
-        // Create work order
-        $work_order = WorkOrder::create($validated);
-
-        // Load the customer relation
-        $work_order->load('customer');
-
-        // Generate and update the part code
-        $work_order->update([
-            'part_code' => $work_order->id . $work_order->customer->code . $work_order->part,
-        ]);
-
-        return redirect()->route('ViewWorkOrder')->with('success', 'Work Entry created successfully.');
-    }
 
     /**
      * Display the specified resource.
@@ -87,29 +95,30 @@ class WorkOrderController extends Controller
     {
         $id = base64_decode($encryptedId);
 
+        
+        
         $request->validate([
-            'work_order_no'      => 'required|string|max:100',
-            'customer_id'       => 'required|exists:customers,id',
+            // 'work_order_no'      => 'required|string|max:100',
             'part'               => 'required|string|max:100',
             'date'               => 'required|date',
             'part_description'   => 'required|string|max:1000',
-            'diameter'            => 'required|string|max:50',
-            'length'             => 'required|string|max:50',
-            'width'              => 'required|string|max:50',
-            'height'             => 'required|string|max:50',
+            'dimeter'            => 'required|numeric',
+            'length'             => 'required|numeric',
+            'width'              => 'required|numeric',
+            'height'             => 'required|numeric',
             'exp_time'           => 'required|date_format:H:i',
             'quantity'           => 'required|integer|min:1',
         ]);
 
         $workOrder = WorkOrder::findOrFail($id);
 
-        $workOrder->work_order_no     = $request->work_order_no;
+        // $workOrder->work_order_no     = $request->work_order_no;
         // $workOrder->entry_code        = $request->entry_code;
-        $workOrder->customer_id       = $request->customer_id;
+        
         $workOrder->part              = $request->part;
         $workOrder->date              = $request->date;
         $workOrder->part_description  = $request->part_description;
-        $workOrder->diameter           = $request->diameter;
+        $workOrder->dimeter           = $request->dimeter;
         $workOrder->length            = $request->length;
         $workOrder->width             = $request->width;
         $workOrder->height            = $request->height;

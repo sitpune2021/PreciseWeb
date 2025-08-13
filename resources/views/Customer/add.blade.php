@@ -61,7 +61,7 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="contact_person" class="form-label">Contact Person <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" placeholder="Contact Person<" id="contact_person" name="contact_person" value="{{ old('contact_person', $customer->contact_person ?? '') }}">
+                                                <input type="text" class="form-control" placeholder="Contact Person" id="contact_person" name="contact_person" value="{{ old('contact_person', $customer->contact_person ?? '') }}">
                                             @error('contact_person')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror

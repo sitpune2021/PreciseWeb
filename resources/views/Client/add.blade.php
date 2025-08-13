@@ -23,7 +23,7 @@
                                     <input type="hidden" name="password" value="123">
                                     <div class="row">
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Client Name <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="name" name="name" placeholder="Client Name" value="{{ old('name', $client->name ?? '') }}">
@@ -33,7 +33,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="email_id" class="form-label">Email ID</label>
                                                 <input type="email" class="form-control" id="email_id" name="email_id" placeholder="Email Id" value="{{ old('email_id', $client->email_id ?? '') }}">
@@ -43,7 +43,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number" value="{{ old('phone_no', $client->phone_no ?? '') }}">
@@ -53,7 +53,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="gst_no" class="form-label">GST No <span class="mandatory">*</span></label>
 

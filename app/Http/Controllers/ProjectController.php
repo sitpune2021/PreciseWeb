@@ -25,27 +25,28 @@ class ProjectController extends Controller
     public function storeProject(Request $request)
     {
 
-        $validated = $request->validate([
+                $validated = $request->validate([
+                    'customer_id'    => 'required|exists:customers,id',
+                    'name'           => 'required|string|max:255',
+                    'description'    => 'required|string',
+                    'qty'            => 'required|integer',
+                    'StartDate'      => 'required|date',
+                    'EndDate'        => 'required|date|after_or_equal:StartDate',
+                ]);
 
-            'name'           => 'required|string|max:255',
-            'code'        => 'required|string|max:255',
-            'description'    => 'nullable|string',
-            'work_order_no'  => 'required|string|max:255',
-            'qty'            => 'required|integer',
-            'StartDate'      => 'nullable|date',
-            'EndDate'        => 'nullable|date|after_or_equal:StartDate',
-        ]);
         try {
-            $codes = Customer::find($request->code);
-            $project = Project::create($validated);
+                $codes = Customer::find($request->code);
+                $project = Project::create($validated);
 
-            $project->update([
-                'code' => $project->id . $codes->code
-            ]);
+                // $project->update([
+                //     'code' => $project->id . $codes->code
+                // ]);
 
-            return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
+                return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
         } catch (\Exception $e) {
+
             dd($e);
+            
             return back()->with('error', 'An unexpected error occurred. Please try again.');
         }
     }
@@ -65,9 +66,10 @@ class ProjectController extends Controller
     public function edit(string $encryptedId)
     {
         try {
+        $codes = Customer::select('id', 'code', 'name')->get();
             $id = base64_decode($encryptedId);
             $project = Project::findOrFail($id);
-            return view('Project.add', compact('project'));
+            return view('Project.add', compact('project','codes'));
         } catch (\Exception $e) {
             abort(404);
         }
@@ -84,9 +86,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
 
             'name'           => 'required|string|max:255',
-            'code'           => 'required|string|max:255|unique:projects,code,' . $project->id,
             'description'    => 'nullable|string',
-            'work_order_no'  => 'required|string|max:255',
             'qty'            => 'required|integer|',
             'StartDate'      => 'nullable|date',
             'EndDate'        => 'nullable|date|after_or_equal:StartDate',
@@ -100,5 +100,11 @@ class ProjectController extends Controller
     /**
      * Delete a project (you can complete this method as needed).
      */
-    public function destroy(string $id) {}
+    public function destroy(string $encryptedId)
+    {
+        $id = base64_decode($encryptedId);
+        $project = Project::findOrFail($id);
+        $project->delete();
+        return redirect()->route('ViewProject')->with('success', 'Branch deleted successfully.');
+    }
 }

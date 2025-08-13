@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('work_orders', function (Blueprint $table) {
             $table->id();
             $table->string('work_order_no');
-            // $table->string('entry_code');
             $table->string('part');
             $table->date('date');
               $table->string('part_code')->nullable(false)->change();

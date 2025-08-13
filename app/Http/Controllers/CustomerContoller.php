@@ -115,8 +115,11 @@ class CustomerContoller extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+   public function destroy(string $encryptedId)
     {
-        //
+        $id = base64_decode($encryptedId);
+        $customer = Customer::findOrFail($id);
+        $customer->delete();
+        return redirect()->route('ViewCustomer')->with('success', 'Branch deleted successfully.');
     }
 }

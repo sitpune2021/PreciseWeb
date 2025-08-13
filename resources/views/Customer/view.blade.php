@@ -43,7 +43,7 @@
                                                                 <i class="ri-eye-fill align-bottom"></i>
                                                             </button>
                                                        
-                                                            <a href="">
+                                                            <a href="{{ route('deleteCustomer', base64_encode($c->id)) }}">
                                                             <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
                                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                                             </button>
@@ -52,7 +52,7 @@
                                                         </td>
                                                     </tr>
                                                     @endforeach
-                                                </tbody>
+                                            </tbody>
                                         </table>
                                     </div>
                                 </div>

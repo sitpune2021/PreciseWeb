@@ -13,21 +13,14 @@
         {
             Schema::create('projects', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('customer_id');
-
                 $table->string('name');
-                $table->unsignedBigInteger('user_id')->nullable();
-                $table->string('code')->nullable();
-                $table->text('description')->nullable();
-                $table->string('work_order_no');
+                $table->unsignedBigInteger('user_id')->nullable();               
+                $table->text('description')->nullable();             
                 $table->integer('qty');
                 $table->date('startdate')->nullable();
                 $table->date('enddate')->nullable();
-
                 $table->softDeletes();
-                $table->timestamps();
-
-                $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+                $table->timestamps(); 
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             });
         }

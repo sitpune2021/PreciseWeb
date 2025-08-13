@@ -44,8 +44,8 @@
                                                 @endif
                                             </td>
                                             <td>
-                                           
-                                             <a href="{{route('editClient', base64_encode($c->id))}}">
+
+                                                <a href="{{route('editClient', base64_encode($c->id))}}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </button>
@@ -54,10 +54,11 @@
                                                 <button type="button" class="btn btn-primary btn-icon waves-effect waves-light">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-
-                                                <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
-                                                    <i class="ri-delete-bin-fill align-bottom"></i>
-                                                </button>
+                                                <a href="{{route('deleteClient', base64_encode($c->id))}}">
+                                                    <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
+                                                        <i class="ri-delete-bin-fill align-bottom"></i>
+                                                    </button>
+                                                </a>
                                             </td>
                                         </tr>
                                         @endforeach

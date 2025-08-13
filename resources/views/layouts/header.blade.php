@@ -4,7 +4,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Job Dashboard | Velzon - Admin & Dashboard Template</title>
+    <title>PRECISE ENGINEERING</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
@@ -491,10 +491,10 @@
             <!-- Light Logo-->
             <a href="index.html" class="logo logo-light">
                 <span class="logo-sm">
-                    <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
+                    <img src="{{asset('assets/images/precise.png')}}" alt="" height="22">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="17">
+                    <img src="{{asset('assets/images/precise.png')}}" alt="" height="17">
                 </span>
             </a>
             <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
@@ -566,7 +566,7 @@
 
                     @endif
 
-                    @if(auth()->user()->user_type == 1)
+                    @if(auth()->user()->user_type == 2)
 
                     <li class="menu-title"><span data-key="t-menu">Masters</span></li>
 

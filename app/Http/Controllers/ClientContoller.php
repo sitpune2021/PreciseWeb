@@ -9,16 +9,16 @@ use Illuminate\Http\Request;
 
 class ClientContoller extends Controller
 {
-    
+
     public function AddClient()
     {
         return view('Client.add');
     }
 
-   
+
     public function storeClient(Request $request)
     {
-    
+
         $request->validate([
             'name'        => 'required|string|max:255',
             'phone_no'    => 'required|string|max:20',
@@ -64,29 +64,29 @@ class ClientContoller extends Controller
         ]);
 
         return redirect()->route('ViewClient')->with('success', 'Client created successfully.');
-     }
+    }
 
-        public function ViewClient()
-        {
-            $client = Client::orderBy('id', 'desc')->get();
-            return view('Client.view', compact('client'));
-        }
+    public function ViewClient()
+    {
+        $client = Client::orderBy('id', 'desc')->get();
+        return view('Client.view', compact('client'));
+    }
 
-    
-      public function edit(string $encryptedId)
-        {
+
+    public function edit(string $encryptedId)
+    {
         try {
             $id = base64_decode($encryptedId);
             $client = Client::findOrFail($id);
             return view('Client.add', compact('client'));
         } catch (\Exception $e) {
-            abort(404); 
+            abort(404);
         }
     }
 
-   
-        public function update(Request $request, string $encryptedId)
-        {
+
+    public function update(Request $request, string $encryptedId)
+    {
         $id = base64_decode($encryptedId);
 
         $request->validate([
@@ -107,7 +107,7 @@ class ClientContoller extends Controller
 
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
-            }                   
+            }
 
             $file->move($destinationPath, $filename);
             $logoPath = 'client_logo/' . $filename;
@@ -117,23 +117,26 @@ class ClientContoller extends Controller
             }
 
             $client->logo = $logoPath;
-                }
+        }
 
-                $client->name        = $request->input('name');
-                $client->email_id    = $request->input('email_id');
-                $client->phone_no    = $request->input('phone_no');
-                $client->gst_no      = $request->input('gst_no');
-                $client->address     = $request->input('address');
+        $client->name        = $request->input('name');
+        $client->email_id    = $request->input('email_id');
+        $client->phone_no    = $request->input('phone_no');
+        $client->gst_no      = $request->input('gst_no');
+        $client->address     = $request->input('address');
 
-                $client->save();
+        $client->save();
 
-                return redirect()->route('ViewClient')->with('success', 'Client updated successfully.');
-            }
+        return redirect()->route('ViewClient')->with('success', 'Client updated successfully.');
+    }
 
 
-   
-    public function destroy(string $id)
+
+    public function destroy(string $encryptedId)
     {
-        
+        $id = base64_decode($encryptedId);
+        $client = Client::findOrFail($id);
+        $client->delete();
+        return redirect()->route('ViewClient')->with('success', 'Branch deleted successfully.');
     }
 }

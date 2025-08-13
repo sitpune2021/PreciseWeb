@@ -9,18 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+  public function up()
     {
-        Schema::table('vendors', function (Blueprint $table) {
-            $table->softDeletes(); // adds nullable deleted_at TIMESTAMP column
+        Schema::table('settings', function (Blueprint $table) {
+           $table->string('status')->default('active');
+ 
         });
     }
- 
+
     public function down()
     {
-        Schema::table('vendors', function (Blueprint $table) {
-            $table->dropSoftDeletes();
+        Schema::table('settings', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };
-

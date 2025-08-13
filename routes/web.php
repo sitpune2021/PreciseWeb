@@ -31,6 +31,7 @@ Route::get('/ViewClient'                , [ClientContoller::class, 'ViewClient']
 Route::post('/storeClient'              , [ClientContoller::class, 'storeClient'])->name('storeClient');
 Route::get('/editClient/{id}'           , [ClientContoller::class, 'edit'])->name('editClient');
 Route::put('/updateClient/{id}'         , [ClientContoller::class, 'update'])->name('updateClient');
+Route::get('/deleteClient/{id}'         , [ClientContoller::class, 'destroy'])->name('deleteClient');
  
 
 
@@ -39,6 +40,7 @@ Route::get('/ViewCustomer'               , [CustomerContoller::class, 'ViewCusto
 Route::post('/storeCustomer'             , [CustomerContoller::class, 'storeCustomer'])->name('storeCustomer');
 Route::get('/editCustomer/{id}'          , [CustomerContoller::class, 'edit'])->name('editCustomer');
 Route::put('/updateCustomer/{id}'        , [CustomerContoller::class, 'update'])->name('updateCustomer');
+Route::get('/deleteCustomer/{id}'        , [CustomerContoller::class, 'destroy'])->name('deleteCustomer');
 
 
 Route::get('/AddVendor'                  , [VendorContoller::class, 'AddVendor'])->name('AddVendor');
@@ -64,6 +66,7 @@ Route::get('/ViewProject'                , [ProjectController::class, 'ViewProje
 Route::post('/storeProject'              , [ProjectController::class, 'storeProject'])->name('storeProject');
 Route::get('/editProject/{id}'           , [ProjectController::class, 'edit'])->name('editProject');
 Route::put('/updateProject/{id}'         , [ProjectController::class, 'update'])->name('updateProject');
+Route::get('/deleteProject/{id}'         , [ProjectController::class, 'destroy'])->name('deleteProject');
 
 
 Route::get('/AddOperator'                , [OperatorController::class, 'AddOperator'])->name('AddOperator');
