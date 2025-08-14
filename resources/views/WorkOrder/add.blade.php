@@ -116,7 +116,6 @@
 
                                         </div>
 
-
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="quantity" class="form-label">Quantity <span class="mandatory">*</span></label>
