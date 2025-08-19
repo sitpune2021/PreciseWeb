@@ -35,7 +35,7 @@
                                             <!-- <td>{{ $wo->customer?->code }}</td> -->
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
-                                       <td>{{ ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '') }}</td>
+                                            <td>{{ ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '') }}</td>
 
 
                                             <td>{{ $wo->quantity }}</td>
@@ -108,8 +108,8 @@
                             <th>Date</th>
                             <td id="wo_date"></td>
                         </tr>
-                      
-                      
+
+
                         <tr>
                             <th>Diameter</th>
                             <td id="wo_diameter"></td>
@@ -151,8 +151,8 @@
                 document.getElementById('wo_entry_code').textContent = data.customer?.code ?? '';
                 document.getElementById('wo_part').textContent = data.part ?? '';
                 document.getElementById('wo_date').textContent = data.date ?? '';
-                 
-               
+
+
                 document.getElementById('wo_diameter').textContent = data.dimeter ?? '';
                 document.getElementById('wo_length').textContent = data.length ?? '';
                 document.getElementById('wo_width').textContent = data.width ?? '';

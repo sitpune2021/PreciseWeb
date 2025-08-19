@@ -20,6 +20,7 @@
                                              <th>Work Order No</th>
                                             <th>Project Name</th>
                                             <th>Customer Name</th>
+                                            <th>Customer code</th>
                                             <th>Quantity</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
@@ -33,6 +34,7 @@
                                             <td>{{ $project->customer_id }}</td>
                                             <td>{{ $project->name }}</td>
                                             <td>{{ $project->customer->name ?? '' }}</td> {{-- assuming relation --}}
+                                            <td>{{ $project->customer?->code }}</td> 
                                             <td>{{ $project->qty }}</td>
                                             <td>{{ \Carbon\Carbon::parse($project->startdate)->format('d-m-Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($project->enddate)->format('d-m-Y') }}</td>

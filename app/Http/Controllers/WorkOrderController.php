@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WorkOrder;
 use App\Models\Customer;
+use Carbon\Carbon;
 
 
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class WorkOrderController extends Controller
         
     $codes = Customer::select('id', 'code', 'name')->get();
  
-    $workorders = WorkOrder::with('customer')->get();
+    $workorders = WorkOrder::with('customer')->orderBy('created_at', 'desc')->get();
 
     return view('WorkOrder.add', compact('codes', 'workorders'));
     }
@@ -28,7 +29,7 @@ class WorkOrderController extends Controller
      */
     public function ViewWorkOrder()
     {
-        $workorders = WorkOrder::with('customer')->get();
+        $workorders = WorkOrder::with('customer')->orderBy('id', 'desc')->get();
         return view('WorkOrder.view', compact('workorders'));
     }
 
@@ -36,21 +37,20 @@ class WorkOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function storeWorkEntry(Request $request)
+public function storeWorkEntry(Request $request)
 {
-
     // Validate first
     $validatedData = $request->validate([
         'rows'               => 'required|array|min:1',
         'rows.*.customer_id' => 'required|exists:customers,id',
         'rows.*.part'        => 'required|string|max:100',
         'rows.*.date'        => 'required|date',
-        'rows.*.description' => 'required|string|max:1000',
+        'rows.*.part_description' => 'required|string|max:1000',
         'rows.*.dimeter'     => 'required|numeric',
         'rows.*.length'      => 'required|numeric',
         'rows.*.width'       => 'required|numeric',
         'rows.*.height'      => 'required|numeric',
-        'rows.*.exp_time'    => 'required|date_format:H:i:s',
+        'rows.*.exp_time'    => 'date_format:H:i',
         'rows.*.quantity'    => 'required|integer|min:1',
     ]);
 
@@ -65,31 +65,41 @@ class WorkOrderController extends Controller
             'length'           => $row['length'],
             'width'            => $row['width'],
             'height'           => $row['height'],
-            'exp_time'         => $row['exp_time'],
+           'exp_time'         => $row['exp_time'], 
             'quantity'         => $row['quantity'],
-            'part_description' => $row['description'],
+            'part_description' => $row['part_description'],
         ]);
     }
 
     $workorders = WorkOrder::with('customer')->get();
-        return view('WorkOrder.view', compact('workorders'));
+    return view('WorkOrder.view', compact('workorders'));
 }
+
 
 
     /**
      * Display the specified resource.
      */
-    public function edit(string $encryptedId)
-    {
-        try {
-            $id = base64_decode($encryptedId);
-            $workorder = WorkOrder::findOrFail($id);
-            $codes = Customer::select('id', 'code', 'name')->get();
-            return view('WorkOrder.add', compact('workorder', 'codes'));
-        } catch (\Exception $wo) {
-            abort(404);
-        }
+   public function edit(string $encryptedId,Request $request)
+{
+    // dd( $request->all());
+    try {
+        $id = base64_decode($encryptedId);
+        $workorder = WorkOrder::with('customer')->findOrFail($id);
+        $codes = Customer::select('id', 'code', 'name')->get();
+
+        // त्या customer चे सगळे workorders fetch कर
+        $workorders = WorkOrder::with('customer')
+                        ->where('customer_id', $workorder->customer_id)
+                        ->where('date',$workorder->date)
+                        ->get();
+
+            // dd( $workorders );
+        return view('WorkOrder.add', compact('workorder','id', 'codes','workorders'));
+    } catch (\Exception $wo) {
+        abort(404);
     }
+}
 
     public function update(Request $request, string $encryptedId)
     {
@@ -106,7 +116,7 @@ class WorkOrderController extends Controller
             'length'             => 'required|numeric',
             'width'              => 'required|numeric',
             'height'             => 'required|numeric',
-            'exp_time'           => 'required|date_format:H:i',
+            'exp_time' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d$/'],
             'quantity'           => 'required|integer|min:1',
         ]);
 

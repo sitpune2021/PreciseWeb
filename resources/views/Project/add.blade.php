@@ -96,15 +96,24 @@
                                         <!-- Project Description -->
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <label for="part_description" class="form-label">Part Description <span class="mandatory">*</span></label>
-                                                <input class="form-control" id="part_description" name="part_description" rows="5" placeholder="Description">{{ old('part_description', $workorder->part_description ?? '') }}
-                                                @error('part_description')
+                                                <label for="description" class="form-label">
+                                                    Part Description <span class="mandatory">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="description"
+                                                    name="description"
+                                                    placeholder="Description"
+                                                    value="{{ old('description', $project->description ?? '') }}">
+                                                @error('description')
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
 
-                                      
+
+
 
                                         <!-- Submit Button -->
                                         <div class="col-lg-12">

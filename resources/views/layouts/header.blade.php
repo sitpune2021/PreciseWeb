@@ -494,7 +494,7 @@
                     <img src="{{asset('assets/images/precise.png')}}" alt="" height="22">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{asset('assets/images/precise.png')}}" alt="" height="17">
+                    <img src="{{asset('assets/images/pre2.png')}}" alt="" height="100">
                 </span>
             </a>
             <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
