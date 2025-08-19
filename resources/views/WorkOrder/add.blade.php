@@ -241,183 +241,140 @@
                                             </div>
 
                                         </div>
-                                        <script>
-                                            let rowCount = 0;
-                                            let editRow = null; // Track row being edited
+                                      <script>
+                    let rowCount = 0;
 
-                                            function clearErrors() {
-                                                document.querySelectorAll(".error").forEach(el => el.textContent = "");
-                                            }
+                    function clearErrors() {
+                        document.querySelectorAll(".error").forEach(el => el.textContent = "");
+                    }
 
-                                            function fillForm(row) {
-                                                document.getElementById("customer_id").value = row.querySelector('input[name*="[customer_id]"]').value;
-                                                document.getElementById("part").value = row.querySelector('input[name*="[part]"]').value;
-                                                document.getElementById("date").value = row.querySelector('input[name*="[date]"]').value;
-                                                document.getElementById("dimeter").value = row.querySelector('input[name*="[dimeter]"]').value;
-                                                document.getElementById("length").value = row.querySelector('input[name*="[length]"]').value;
-                                                document.getElementById("width").value = row.querySelector('input[name*="[width]"]').value;
-                                                document.getElementById("height").value = row.querySelector('input[name*="[height]"]').value;
-                                                document.getElementById("exp_time").value = row.querySelector('input[name*="[exp_time]"]').value;
-                                                document.getElementById("quantity").value = row.querySelector('input[name*="[quantity]"]').value;
-                                                document.getElementById("part_description").value = row.querySelector('input[name*="[part_description]"]').value;
-                                            }
+                    function addRow() {
+                        let customer = document.querySelector("#customer_id option:checked").text;
+                        let customerVal = document.querySelector("#customer_id").value;
+                        let part = document.getElementById("part").value;
+                        let date = document.getElementById("date").value;
+                        let dimeter = document.getElementById("dimeter").value;
+                        let length = document.getElementById("length").value;
+                        let width = document.getElementById("width").value;
+                        let height = document.getElementById("height").value;
+                        let exp_time = document.getElementById("exp_time").value;
+                        let quantity = document.getElementById("quantity").value;
+                        let description = document.getElementById("part_description").value;
 
-                                            function addRow() {
-                                                let customer = document.querySelector("#customer_id option:checked").text;
-                                                let customerVal = document.querySelector("#customer_id").value;
-                                                let part = document.getElementById("part").value;
-                                                let date = document.getElementById("date").value;
-                                                let dimeter = document.getElementById("dimeter").value;
-                                                let length = document.getElementById("length").value;
-                                                let width = document.getElementById("width").value;
-                                                let height = document.getElementById("height").value;
-                                                let exp_time = document.getElementById("exp_time").value;
-                                                let quantity = document.getElementById("quantity").value;
-                                                let description = document.getElementById("part_description").value;
+                        let hasError = false;
+                        clearErrors();
 
-                                                let hasError = false;
-                                                clearErrors();
-
-                                                if (!customerVal) {
-                                                    $(".customer").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!part) {
-                                                    $(".part").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!date) {
-                                                    $(".date").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!dimeter) {
-                                                    $(".dimeter").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!length) {
-                                                    $(".length").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!width) {
-                                                    $(".width").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!height) {
-                                                    $(".height").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!exp_time) {
-                                                    $(".exp_time").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!quantity) {
-                                                    $(".quantity").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-                                                if (!description) {
-                                                    $(".part_description_error").text("Please fill required field");
-                                                    hasError = true;
-                                                }
-
-                                                if (hasError) return false;
-
-                                                let tableBody = document.querySelector("#workOrderTable tbody");
-
-                                                if (editRow) {
-                                                    // Update existing row
-                                                    editRow.querySelector('input[name*="[customer_id]"]').value = customerVal;
-                                                    editRow.querySelector('input[name*="[part]"]').value = part;
-                                                    editRow.querySelector('input[name*="[date]"]').value = date;
-                                                    editRow.querySelector('input[name*="[dimeter]"]').value = dimeter;
-                                                    editRow.querySelector('input[name*="[length]"]').value = length;
-                                                    editRow.querySelector('input[name*="[width]"]').value = width;
-                                                    editRow.querySelector('input[name*="[height]"]').value = height;
-                                                    editRow.querySelector('input[name*="[exp_time]"]').value = exp_time;
-                                                    editRow.querySelector('input[name*="[quantity]"]').value = quantity;
-                                                    editRow.querySelector('input[name*="[part_description]"]').value = description;
-
-                                                    // Update visible text
-                                                    let cells = editRow.children;
-                                                    cells[1].childNodes[1].textContent = customer;
-                                                    cells[2].childNodes[1].textContent = part;
-                                                    cells[3].childNodes[1].textContent = date;
-                                                    cells[4].childNodes[1].textContent = dimeter;
-                                                    cells[5].childNodes[1].textContent = length;
-                                                    cells[6].childNodes[1].textContent = width;
-                                                    cells[7].childNodes[1].textContent = height;
-                                                    cells[8].childNodes[1].textContent = exp_time;
-                                                    cells[9].childNodes[1].textContent = quantity;
-                                                    cells[10].childNodes[1].textContent = description;
-
-                                                    editRow = null;
-                                                } else {
-                                                    // Add new row
-                                                    rowCount++;
-                                                    let newRow = document.createElement("tr");
-                                                    newRow.innerHTML = `
-                <td>${rowCount}</td>
-                <td><input type="hidden" name="rows[${rowCount}][customer_id]" value="${customerVal}">${customer}</td>
-                <td><input type="hidden" name="rows[${rowCount}][part]" value="${part}">${part}</td>
-                <td><input type="hidden" name="rows[${rowCount}][date]" value="${date}">${date}</td>
-                <td><input type="hidden" name="rows[${rowCount}][dimeter]" value="${dimeter}">${dimeter}</td>
-                <td><input type="hidden" name="rows[${rowCount}][length]" value="${length}">${length}</td>
-                <td><input type="hidden" name="rows[${rowCount}][width]" value="${width}">${width}</td>
-                <td><input type="hidden" name="rows[${rowCount}][height]" value="${height}">${height}</td>
-                <td><input type="hidden" name="rows[${rowCount}][exp_time]" value="${exp_time}">${exp_time}</td>
-                <td><input type="hidden" name="rows[${rowCount}][quantity]" value="${quantity}">${quantity}</td>
-                <td><input type="hidden" name="rows[${rowCount}][part_description]" value="${description}">${description}</td>
-                <td>
-                    <button type="button" class="btn btn-success btn-sm editRowBtn">✏️</button>
-                    <button type="button" class="btn btn-danger btn-sm deleteRow">🗑</button>
-                </td>
-            `;
-                                                    tableBody.appendChild(newRow);
-
-                                                    // Delete row
-                                                    newRow.querySelector(".deleteRow").addEventListener("click", function() {
-                                                        newRow.remove();
-                                                        if (tableBody.children.length === 0) {
-                                                            document.getElementById("workOrderTableWrapper").style.display = "none";
-                                                            document.getElementById("submitBtn").style.display = "none";
-                                                        }
-                                                    });
-
-                                                    // Edit row
-                                                    newRow.querySelector(".editRowBtn").addEventListener("click", function() {
-                                                        editRow = newRow;
-                                                        fillForm(newRow);
-                                                    });
-                                                }
-
-                                                // Clear form fields
-                                                document.querySelectorAll("input, textarea").forEach(el => {
-                                                    if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
-                                                });
-
-                                                document.getElementById("workOrderTableWrapper").style.display = "block";
-                                                document.getElementById("submitBtn").style.display = "inline-block";
-
-                                                return true;
-                                            }
-
-                                            document.getElementById("addFirstRowBtn")?.addEventListener("click", function() {
-                                                addRow();
-                                            });
-                                        </script>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <script>
-                    // First Add Button
-                    document.getElementById("addFirstRowBtn")?.addEventListener("click", function() {
-                        if (addRow()) {
-                            document.getElementById("workOrderTableWrapper").style.display = "block";
-                            document.getElementById("submitBtn").style.display = "inline-block";
-                            document.getElementById("addFirstRowBtn").style.display = "inline-block";
+                        if (!customerVal) {
+                            $(".customer").text("Please fill required field");
+                            hasError = true;
                         }
-                    });
+                        if (!part) {
+                            $(".part").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!date) {
+                            $(".date").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!dimeter) {
+                            $(".dimeter").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!length) {
+                            $(".length").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!width) {
+                            $(".width").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!height) {
+                            $(".height").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!exp_time) {
+                            $(".exp_time").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!quantity) {
+                            $(".quantity").text("Please fill required field");
+                            hasError = true;
+                        }
+                        if (!description) {
+                            $(".part_description_error").text("Please fill required field");
+                            hasError = true;
+                        }
+
+                        if (hasError) return false;
+
+                        rowCount++;
+                        let tableBody = document.querySelector("#workOrderTable tbody");
+
+                        let newRow = document.createElement("tr");
+                        newRow.innerHTML = `
+        
+                      <td>${rowCount}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][customer_id]" value="${customerVal}">${customer}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][part]" value="${part}">${part}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][date]" value="${date}">${date}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][dimeter]" value="${dimeter}">${dimeter}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][length]" value="${length}">${length}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][width]" value="${width}">${width}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][height]" value="${height}">${height}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][exp_time]" value="${exp_time}">${exp_time}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][quantity]" value="${quantity}">${quantity}</td>
+                      <td><input type="hidden" name="rows[${rowCount}][part_description]" value="${description}">${description}</td>
+                 <td>
+                    <button type="button" class="btn btn-primary btn-sm editRow">✏</button>
+                    <button type="button" class="btn btn-danger btn-sm deleteRow">🗑</button>
+        </td>
+    `;
+                        tableBody.appendChild(newRow);
+
+                        // Delete Row
+                        newRow.querySelector(".deleteRow").addEventListener("click", function() {
+                            newRow.remove();
+                            updateSrNo();
+                        });
+
+                        // Edit Row
+                        newRow.querySelector(".editRow").addEventListener("click", function() {
+                            document.getElementById("customer_id").value = customerVal;
+                            document.getElementById("part").value = part;
+                            document.getElementById("date").value = date;
+                            document.getElementById("dimeter").value = dimeter;
+                            document.getElementById("length").value = length;
+                            document.getElementById("width").value = width;
+                            document.getElementById("height").value = height;
+                            document.getElementById("exp_time").value = exp_time;
+                            document.getElementById("quantity").value = quantity;
+                            document.getElementById("part_description").value = description;
+
+                            newRow.remove();
+                            updateSrNo();
+                        });
+
+                        // Clear form
+                        document.querySelectorAll("input, textarea").forEach(el => {
+                            if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
+                        });
+
+                        document.getElementById("workOrderTableWrapper").style.display = "block";
+                        document.getElementById("submitBtn").style.display = "inline-block";
+
+                        return true;
+                    }
+
+                    // Update Sr No
+                    function updateSrNo() {
+                        document.querySelectorAll("#workOrderTable tbody tr").forEach((tr, index) => {
+                            tr.querySelector("td:first-child").textContent = index + 1;
+                        });
+                        rowCount = document.querySelectorAll("#workOrderTable tbody tr").length;
+                    }
+
+                    // Add button
+                document.getElementById("addFirstRowBtn")?.addEventListener("click", addRow);
                 </script>
+
                 @endsection

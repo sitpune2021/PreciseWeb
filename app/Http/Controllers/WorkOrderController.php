@@ -88,7 +88,7 @@ public function storeWorkEntry(Request $request)
         $workorder = WorkOrder::with('customer')->findOrFail($id);
         $codes = Customer::select('id', 'code', 'name')->get();
 
-        // त्या customer चे सगळे workorders fetch कर
+         
         $workorders = WorkOrder::with('customer')
                         ->where('customer_id', $workorder->customer_id)
                         ->where('date',$workorder->date)
@@ -108,7 +108,7 @@ public function storeWorkEntry(Request $request)
         
         
         $request->validate([
-            // 'work_order_no'      => 'required|string|max:100',
+            
             'part'               => 'required|string|max:100',
             'date'               => 'required|date',
             'part_description'   => 'required|string|max:1000',
@@ -122,7 +122,7 @@ public function storeWorkEntry(Request $request)
 
         $workOrder = WorkOrder::findOrFail($id);
 
-        // $workOrder->work_order_no     = $request->work_order_no;
+        
         // $workOrder->entry_code        = $request->entry_code;
         
         $workOrder->part              = $request->part;
