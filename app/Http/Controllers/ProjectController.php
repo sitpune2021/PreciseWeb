@@ -14,10 +14,13 @@ class ProjectController extends Controller
      */
     public function AddProject()
     {
+        $codes = Customer::select('id', 'code', 'name')
+            ->orderBy('id', 'desc')
+            ->get();
 
-        $codes = Customer::select('id', 'code', 'name')->get();
         return view('Project.add', compact('codes'));
     }
+
 
     /**
      * Store a new project in the database.
@@ -25,37 +28,36 @@ class ProjectController extends Controller
     public function storeProject(Request $request)
     {
 
-                $validated = $request->validate([
-                    'customer_id'    => 'required|exists:customers,id',
-                    'name'           => 'required|string|max:255',
-                    'description'    => 'required|string',
-                    'qty'            => 'required|integer',
-                    'StartDate'      => 'required|date',
-                    'EndDate'        => 'required|date|after_or_equal:StartDate',
-                ]);
+        $validated = $request->validate([
+            'customer_id'    => 'required|exists:customers,id',
+            'name'           => 'required|string|max:255',
+            'description'    => 'required|string',
+            'qty'           => ['required', 'integer', 'min:1'],
+            'StartDate'      => 'required|date',
+            'EndDate'        => 'required|date|after_or_equal:StartDate',
+        ]);
 
         try {
-                $codes = Customer::find($request->code);
-                $project = Project::create($validated);
+            $codes = Customer::find($request->code);
+            $project = Project::create($validated);
 
-                // $project->update([
-                //     'code' => $project->id . $codes->code
-                // ]);
 
-                return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
+
+            return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
         } catch (\Exception $e) {
 
             dd($e);
-            
+
             return back()->with('error', 'An unexpected error occurred. Please try again.');
         }
     }
 
-
     public function ViewProject()
     {
-        $projects = Project::with('customer')->get();
-        // dd($projects);
+        $projects = Project::with('customer')
+            ->orderBy('id', 'desc')
+            ->get();
+
         return view('Project.view', compact('projects'));
     }
 
@@ -66,10 +68,10 @@ class ProjectController extends Controller
     public function edit(string $encryptedId)
     {
         try {
-        $codes = Customer::select('id', 'code', 'name')->get();
+            $codes = Customer::select('id', 'code', 'name')->get();
             $id = base64_decode($encryptedId);
             $project = Project::findOrFail($id);
-            return view('Project.add', compact('project','codes'));
+            return view('Project.add', compact('project', 'codes'));
         } catch (\Exception $e) {
             abort(404);
         }
@@ -87,7 +89,7 @@ class ProjectController extends Controller
 
             'name'           => 'required|string|max:255',
             'description'    => 'nullable|string',
-            'qty'            => 'required|integer|',
+            'qty'           => ['required', 'integer', 'min:1'],
             'StartDate'      => 'nullable|date',
             'EndDate'        => 'nullable|date|after_or_equal:StartDate',
         ]);

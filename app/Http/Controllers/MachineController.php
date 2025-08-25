@@ -1,12 +1,12 @@
 <?php
- 
+
 namespace App\Http\Controllers;
- 
+
 use App\Models\Machine;
- 
- 
+
+
 use Illuminate\Http\Request;
- 
+
 class MachineController extends Controller
 {
     /**
@@ -14,10 +14,11 @@ class MachineController extends Controller
      */
     public function AddMachine()
     {
-        $machines = Machine::latest()->get(); // Operator list
+        $machines = Machine::orderBy('id', 'desc')->get();
+        // dd($machines);
         return view('Machine.add', compact('machines'));
     }
- 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -25,15 +26,21 @@ class MachineController extends Controller
     {
         //
     }
- 
+
     /**
      * Store a newly created resource in storage.
      */
     public function storeMachine(Request $request)
     {
         $request->validate([
-            'machine_name' => 'required|string|max:255',
+            'machine_name' => [
+                'required',
+                'unique:machines,machine_name',
+                'regex:/^[A-Za-z\s]+$/',
+                'max:255',
+            ],
         ]);
+ 
  
         Machine::create([
             'machine_name' => $request->machine_name,
@@ -41,7 +48,7 @@ class MachineController extends Controller
  
         return redirect()->route('AddMachine')->with('success', 'Machine added successfully');
     }
- 
+
     /**
      * Display the specified resource.
      */
@@ -49,7 +56,7 @@ class MachineController extends Controller
     {
         //
     }
- 
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -58,54 +65,61 @@ class MachineController extends Controller
         try {
             $id = base64_decode($encryptedId);
             $machine = Machine::findOrFail($id);
-            $machines = Machine::all();
+            $machines = Machine::orderBy('id', 'desc')->get();
             return view('Machine.add', compact('machine', 'machines'));
         } catch (\Exception $e) {
             abort(404);
         }
     }
- 
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $encryptedId)
-    {
-        $request->validate([
-            'machine_name' => 'required|string|max:255',
-        ]);
+     public function update(Request $request, string $encryptedId)
+{
+    $id = base64_decode($encryptedId);
  
-        try {
-            $id = base64_decode($encryptedId);
-            $machine = Machine::findOrFail($id);
+    $request->validate([
+        'machine_name' => [
+            'required',
+            'unique:machines,machine_name,' . $id,
+            'regex:/^[A-Za-z\s]+$/',
+            'max:255',
+        ],
+    ]);
  
-            $machine->machine_name = $request->machine_name;
-            $machine->save();
+    try {
+        $machine = Machine::findOrFail($id);
+        $machine->machine_name = $request->machine_name;
+        $machine->save();
  
-            return redirect()->route('AddMachine')->with('success', 'Machine updated successfully.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Something went wrong.');
-        }
+        return redirect()->route('AddMachine')
+            ->with('success', 'Machine updated successfully.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Something went wrong.');
     }
+}
  
- 
+
+
     /**
      * Remove the specified resource from storage.
      */
-       public function destroy(string $encryptedId)
+    public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
         $machine = Machine::findOrFail($id);
         $machine->delete();
         return redirect()->route('AddMachine')->with('success', 'Branch deleted successfully.');
     }
-   
- 
+
+
     public function updateStatus(Request $request)
     {
         $machine = Machine::findOrFail($request->id);
         $machine->status = $request->has('status') ? 1 : 0;
         $machine->save();
- 
+
         return back()->with('success', 'Status updated!');
     }
 }

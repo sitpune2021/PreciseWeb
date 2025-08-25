@@ -2,9 +2,32 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Machinerecord extends Model
+class MachineRecord extends Model
 {
-    
+    use HasFactory;
+    use SoftDeletes;
+    protected $fillable = [
+        'part_no',
+        'work_order',
+        'first_set',
+        'qty',
+        'machine',
+        'operator',
+        'setting_no',
+        'est_time',
+        'start_time',
+        'end_time',
+        'hrs',
+        'time_taken',
+        'actual_hrs',
+        'invoice_no',
+    ];
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
 }

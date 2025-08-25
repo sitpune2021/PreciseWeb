@@ -1,10 +1,10 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
- 
+
             <!-- Form Start -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -16,16 +16,25 @@
                         @if(isset($machine))
                         @method('PUT')
                         @endif
- 
+
                         <div class="row align-items-end">
-                            <div class="col-md-4 col-sm-6 mb-3">
-                                <label for="machine_name" class="form-label">Machine Name<span class="mandatory"> *</span></label>
- 
-                                <input type="text" class="form-control form-control-sm px-3 py-2" id="machine_name" name="machine_name"
+                           <div class="col-md-4 col-sm-6 mb-3 position-relative">
+                                <label for="machine_name" class="form-label">
+                                    Machine Name <span class="mandatory"> *</span>
+                                </label>
+                                <input type="text"
+                                    class="form-control form-control-sm px-3 py-2"
+                                    id="machine_name"
+                                    name="machine_name"
                                     value="{{ old('machine_name', isset($machine) ? $machine->machine_name : '') }}"
-                                    placeholder="Enter Machine Name">
+                                    placeholder="Enter Machine Name"
+                                    style="background-image: none !important;"
+                                    onkeypress="return /[a-zA-Z\s]/.test(event.key)">
+                                   
                                 @error('machine_name')
-                                <small class="text-danger">{{ $message }}</small>
+                                <small class="text-danger position-absolute" style="bottom:-18px; left:2px; font-size:12px;">
+                                    {{ $message }}
+                                </small>
                                 @enderror
                             </div>
  
@@ -39,7 +48,7 @@
                 </div>
             </div>
             <!-- Form End -->
- 
+
             <!-- List Start -->
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -50,18 +59,19 @@
                         <table id="buttons-datatables" class="display table table-bordered align-middle text-center" style="width:100%">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width: 5%;">SrNo.</th>
+                                    <th style="width: 5%;">Sr.No</th>
                                     <th style="width: 50%;">Machine Name</th>
                                     <th style="width: 15%;">Status</th>
                                     <th style="width: 10%;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+
                                 @forelse($machines as $m)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="text-center">{{ $m->machine_name }}</td>
- 
+
                                     <td>
                                         <form action="{{ route('updateStatus') }}" method="POST">
                                             @csrf
@@ -79,12 +89,13 @@
                                             </div>
                                         </form>
                                     </td>
- 
+
                                     <td>
                                         <a href="{{ route('editMachine', base64_encode($m->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
-                                        <a href="{{route('deleteMachine', base64_encode($m->id))}}">
+                                        <a href="{{route('deleteMachine', base64_encode($m->id))}}"
+                                            onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </button>
@@ -102,9 +113,9 @@
                 </div>
             </div>
             <!-- List End -->
- 
+
         </div>
     </div>
 </div>
- 
+
 @endsection

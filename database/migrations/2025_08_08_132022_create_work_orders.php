@@ -10,34 +10,42 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('work_orders', function (Blueprint $table) {
-            $table->id();
-            
-            $table->string('part');
-            $table->date('date');
-              $table->string('part_code')->nullable(false)->change();
-        $table->unsignedBigInteger('customer_id'); // Add customer_id
+{
+    Schema::create('setup_sheets', function (Blueprint $table) {
+        $table->id();
+        
+         
+        $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');  
+        
 
-            $table->text('part_description');
-            $table->string('dimeter');
-            $table->string('length');
-            $table->string('width');
-            $table->string('height');
-            $table->time('exp_time');
-            $table->integer('quantity');
-            $table->softDeletes();
-            $table->timestamps();
-    $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+        $table->string('part_code')->nullable();
+        $table->string('work_order_no')->nullable();
+        $table->date('date')->nullable();
+        $table->string('description')->nullable();
 
-        });
-    }
+        $table->string('size_in_x')->nullable();
+        $table->string('size_in_y')->nullable();
+        $table->string('size_in_z')->nullable();
+        $table->string('setting')->nullable();
+        $table->string('e_time')->nullable();
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('work_orders');
-    }
+        $table->string('x_refer')->nullable();
+        $table->string('y_refer')->nullable();
+        $table->string('z_refer')->nullable();
+        $table->string('clamping')->nullable();
+        $table->string('thickness')->nullable();
+        $table->string('qty')->nullable();
+
+        // Dowel Holes
+        $table->string('holes')->nullable();
+        $table->string('hole_x')->nullable();
+        $table->string('hole_y')->nullable();
+        $table->string('hole_dia')->nullable();
+        $table->string('hole_depth')->nullable();
+
+        $table->softDeletes();
+        $table->timestamps();
+    });
+}
+
 };

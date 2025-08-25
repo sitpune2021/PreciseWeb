@@ -24,7 +24,8 @@ class OperatorController extends Controller
     public function storeOperator(Request $request)
     {
         $request->validate([
-            'operator_name' => 'required|string|max:255',
+            'operator_name' => ['required','unique:operators,operator_name','regex:/^[A-Za-z\s]+$/','max:255',
+            ],
         ]);
  
         Operator::create([
@@ -50,7 +51,7 @@ class OperatorController extends Controller
         try {
             $id = base64_decode($encryptedId);
             $operator = Operator::findOrFail($id);
-            $operators = Operator::all();
+            $operators = Operator::orderBy('id', 'desc')->get();
             return view('Operator.add', compact('operator', 'operators'));
         } catch (\Exception $e) {
             abort(404);
@@ -62,18 +63,24 @@ class OperatorController extends Controller
      */
     public function update(Request $request, string $encryptedId)
     {
+        $id = base64_decode($encryptedId);
+ 
         $request->validate([
-            'operator_name' => 'required|string|max:255',
+            'operator_name' => [
+                'required',
+                'unique:operators,operator_name,' . $id,
+                'regex:/^[A-Za-z\s]+$/',
+                'max:255',
+            ],
         ]);
  
         try {
-            $id = base64_decode($encryptedId);
             $operator = Operator::findOrFail($id);
- 
             $operator->operator_name = $request->operator_name;
             $operator->save();
  
-            return redirect()->route('AddOperator')->with('success', 'Machine updated successfully.');
+            return redirect()->route('AddOperator')
+                ->with('success', 'Operator updated successfully.');
         } catch (\Exception $e) {
             return back()->with('error', 'Something went wrong.');
         }

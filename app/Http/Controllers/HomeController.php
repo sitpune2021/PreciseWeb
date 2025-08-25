@@ -24,18 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
-    }
-    public function superAdmin()
-    {
         return view('superAdmin');
     }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login');
-    }
 }

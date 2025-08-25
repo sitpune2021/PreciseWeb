@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use  Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CustomerContoller;
 use App\Http\Controllers\VendorContoller;
@@ -11,6 +12,7 @@ use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\MachinerecordController;
+use App\Http\Controllers\SetupSheetController;
 
 
 
@@ -20,10 +22,12 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
  
 Route::get('/'                          , [HomeController::class, 'index'])->name('home');
+// Route::get('/superAdmin'                , [HomeController::class, 'superAdmin'])->name('superAdmin');
+// Route::get('logout'                     , [HomeController::class, 'logout'])->name('logout');
+
 });
 
-Route::get('/superAdmin'                , [HomeController::class, 'superAdmin'])->name('superAdmin');
-Route::get('logout'                     , [HomeController::class, 'logout'])->name('logout');
+
  
 
 Route::get('/AddClient'                 , [ClientContoller::class, 'AddClient'])->name('AddClient');
@@ -32,6 +36,7 @@ Route::post('/storeClient'              , [ClientContoller::class, 'storeClient'
 Route::get('/editClient/{id}'           , [ClientContoller::class, 'edit'])->name('editClient');
 Route::put('/updateClient/{id}'         , [ClientContoller::class, 'update'])->name('updateClient');
 Route::get('/deleteClient/{id}'         , [ClientContoller::class, 'destroy'])->name('deleteClient');
+Route::post('/updateClientStatus'       , [ClientContoller::class,  'updateClientStatus'])->name('updateClientStatus');
  
 
 
@@ -41,7 +46,9 @@ Route::post('/storeCustomer'             , [CustomerContoller::class, 'storeCust
 Route::get('/editCustomer/{id}'          , [CustomerContoller::class, 'edit'])->name('editCustomer');
 Route::put('/updateCustomer/{id}'        , [CustomerContoller::class, 'update'])->name('updateCustomer');
 Route::get('/deleteCustomer/{id}'        , [CustomerContoller::class, 'destroy'])->name('deleteCustomer');
+Route::post('/updateCustomerStatus'      ,[CustomerContoller::class, 'updateCustomerStatus'])->name('updateCustomerStatus');
 
+                                            
 
 Route::get('/AddVendor'                  , [VendorContoller::class, 'AddVendor'])->name('AddVendor');
 Route::post('/storeVendor'               , [VendorContoller::class, 'storeVendor'])->name('storeVendor');
@@ -92,9 +99,21 @@ Route::put('/updateSetting/{id}'          , [SettingController::class, 'updateSe
 Route::get('/deleteSetting/{id}'          , [SettingController::class, 'destroy'])->name('deleteSetting');
 Route::post('/updateSettingStatus'        , [SettingController::class,  'updateSettingStatus'])->name('updateSettingStatus');
 
-
-Route::get('/AddMachinerecord'            ,[MachinerecordController::class, 'AddMachinerecord'])->name('AddMachinerecord');
-Route::get('/ViewMachinerecord'           ,[MachinerecordController::class, 'ViewMachinerecord'])->name('ViewMachinerecord');
+Route::get('/AddSetupSheet'               , [SetupSheetController::class, 'AddSetupSheet'])->name('AddSetupSheet');
+Route::post('/storeSetupSheet'            , [SetupSheetController::class, 'storeSetupSheet'])->name('storeSetupSheet');
+Route::get('/editSetupSheet/{id}'         , [SetupSheetController::class, 'editSetupSheet'])->name('editSetupSheet');
+Route::get('/deleteSetupSheet/{id}'       , [SetupSheetController::class, 'destroy'])->name('deleteSetupSheet');
+Route::get('/ViewSetupSheet'              , [SetupSheetController::class, 'ViewSetupSheet'])->name('ViewSetupSheet');
+Route::post('/updateSetupSheet'           , [SetupSheetController::class, 'update'])->name('updateSetupSheet');
+// Route::get('/download-setup-sheet/{id}'   , [SetupSheetController::class, 'downloadSetupSheet'])->name('downloadSetupSheet');
+Route::get('/get-part-code-by-customer', [SetupSheetController::class, 'getPartCodeByCustomer'])->name('getPartCodeByCustomer');
+ 
+Route::get('/AddMachinerecord'            , [MachinerecordController::class, 'AddMachinerecord'])->name('AddMachinerecord');
+Route::get('/ViewMachinerecord'           , [MachinerecordController::class, 'ViewMachinerecord'])->name('ViewMachinerecord');
+Route::post('/StoreMachinerecord'         , [MachinerecordController::class, 'StoreMachinerecord'])->name('StoreMachinerecord');
+Route::get('/EditMachinerecord/{id}'      , [MachinerecordController::class, 'edit'])->name('EditMachinerecord');
+Route::put('/UpdateMachinerecord/{id}'    , [MachinerecordController::class, 'update'])->name('UpdateMachinerecord');
+Route::get('/DeleteMachinerecord/{id}'    , [MachinerecordController::class, 'destroy'])->name('DeleteMachinerecord');
 
 
 

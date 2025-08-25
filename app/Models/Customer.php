@@ -21,6 +21,7 @@ class Customer extends Model
         'phone_no',
         'gst_no',
         'address',
+        'status',
     ];
     public function projects()
 {

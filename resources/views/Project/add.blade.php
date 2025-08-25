@@ -38,9 +38,10 @@
                                                     <option value="">Select Customer</option>
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}"
-                                                        {{ isset($project) && $c->id == $project->customer_id ? 'selected' : '' }}>
+                                                        {{ old('customer_id', isset($project) ? $project->customer_id : '') == $c->id ? 'selected' : '' }}>
                                                         {{ $c->name }} - ({{ $c->code }})
                                                     </option>
+
                                                     @endforeach
                                                 </select>
 
@@ -67,8 +68,12 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
-                                                <input type="number" step="any" class="form-control" id="qty" name="qty" placeholder="Quantity" value="{{ old('qty', $project->qty ?? '') }}">
-                                                @error('qty') <span class="text-red">{{ $message }}</span> @enderror
+                                                <input type="number" step="1" min="1" class="form-control" id="qty" name="qty" placeholder="Quantity"
+                                                    value="{{ old('qty', $project->qty ?? '') }}"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
+                                                @error('qty')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                         </div>
 
@@ -107,13 +112,10 @@
                                                     placeholder="Description"
                                                     value="{{ old('description', $project->description ?? '') }}">
                                                 @error('description')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-
-
-
 
                                         <!-- Submit Button -->
                                         <div class="col-lg-12">

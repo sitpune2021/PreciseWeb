@@ -15,14 +15,19 @@ class WorkOrderController extends Controller
      * Display a listing of the resource.
      */
     public function AddWorkOrder()
-    {
-        
-    $codes = Customer::select('id', 'code', 'name')->get();
+{
+    
+    $codes = Customer::select('id', 'code', 'name')
+                ->orderBy('id', 'desc')
+                ->get();
+
  
-    $workorders = WorkOrder::with('customer')->orderBy('created_at', 'desc')->get();
+    $workorders = WorkOrder::with('customer')
+                    ->orderBy('created_at', 'desc')
+                    ->get();
 
     return view('WorkOrder.add', compact('codes', 'workorders'));
-    }
+}
 
     /**
      * Show the form for creating a new resource.

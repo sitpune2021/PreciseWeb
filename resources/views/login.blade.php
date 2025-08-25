@@ -8,7 +8,7 @@
     <meta content="" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="assets/images/icon.ico">
 
     <!-- Layout config Js -->
     <script src="assets/js/layout.js"></script>
@@ -45,10 +45,10 @@
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
                                 <a href="index.html" class="d-inline-block auth-logo">
-                                    <img src="assets/images/logo-light.png" alt="" height="20">
+                                    <img src="assets/images/logo-light." alt="" height="20">
                                 </a>
                             </div>
-                            <p class="mt-3 fs-15 fw-medium">Premium Admin & Dashboard Template</p>
+                            <p class="mt-3 fs-15 fw-medium"></p>
                         </div>
                     </div>
                 </div>
@@ -59,12 +59,9 @@
                         <div class="card mt-4 card-bg-fill">
 
                             <div class="card-body p-4">
-                                <div class="text-center mt-2">
-                                    <h5 class="text-primary">Welcome Back !</h5>
-                                    <p class="text-muted">Sign in to continue to Velzon.</p>
-                                </div>
+                             
                                 <div class="p-2 mt-4">
-                                    <form action="https://themesbrand.com/velzon/html/master/index.html">
+                                    <form action="">
 
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Username</label>

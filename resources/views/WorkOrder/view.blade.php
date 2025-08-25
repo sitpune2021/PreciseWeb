@@ -16,7 +16,7 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>SrNo.</th>
+                                            <th>Sr.No</th>
                                             <!-- <th>Work Order No</th> -->
                                             <!-- <th>Entry Code</th> -->
                                             <th>Part</th>
@@ -36,8 +36,6 @@
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
                                             <td>{{ ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '') }}</td>
-
-
                                             <td>{{ $wo->quantity }}</td>
                                             <td>{{ $wo->part_description }}</td>
                                             <td>
@@ -56,7 +54,8 @@
                                                     <i class="ri-eye-fill"></i>
                                                 </button>
 
-                                                <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}">
+                                                <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}"
+                                                onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon">
                                                         <i class="ri-delete-bin-fill"></i>
                                                     </button>

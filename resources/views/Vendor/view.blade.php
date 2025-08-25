@@ -16,13 +16,13 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>Sr No.</th>
+                                            <th>Sr.No</th>
                                             <th>Vendor Name</th>
                                             <th>Vendor Code</th>
                                             <th>Contact Person</th>
-                                            <th>Phone No.</th>
+                                            <th>Phone.No</th>
                                             <th>Email ID</th>
-                                            <th>GST No.</th>
+                                            <th>GST.No</th>
                                             <th>Address</th>
                                             <th>Status</th>
                                             <th width="12%">Action</th>
@@ -56,7 +56,8 @@
                                                 </a>
 
                                               
-                                                  <a href="{{route('deleteVendor', base64_encode($vendor->id))}}">
+                                                  <a href="{{route('deleteVendor', base64_encode($vendor->id))}}"
+                                                  onclick="return confirm('Are you sure you want to delete this record?')">
                                                 <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
                                                     <i class="ri-delete-bin-fill align-bottom"></i>
                                                 </button>

@@ -17,16 +17,27 @@
                         @method('PUT')
                         @endif
  
-                        <div class="row align-items-end">
-                            <div class="col-md-4 col-sm-6 mb-3">
-                                <label for="operator_name" class="form-label">Operator Name <span class="mandatory"> *</span></label>
-                                <input type="text" class="form-control form-control-sm px-3 py-2" id="operator_name" name="operator_name"
-                                    value="{{ old('operator_name', isset($operator) ? $operator->operator_name : '') }}"
-                                    placeholder="Enter Operator Name">
-                                @error('operator_name')
-                                <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
+                  <div class="row align-items-end">
+                         <div class="col-md-4 col-sm-6 mb-3 position-relative">
+                        <label for="operator_name" class="form-label">
+                            Operator Name <span class="mandatory"> *</span>
+                        </label>
+                        <input type="text"
+                            class="form-control form-control-sm px-3 py-2"
+                            id="operator_name"
+                            name="operator_name"
+                            value="{{ old('operator_name', isset($operator) ? $operator->operator_name : '') }}"
+                            placeholder="Enter Operator Name"
+                            style="background-image: none !important;"
+                            onkeypress="return /[a-zA-Z\s]/.test(event.key)">
+                           
+                        @error('operator_name')
+                        <small class="text-danger position-absolute" style="bottom:-18px; left:2px; font-size:12px;">
+                            {{ $message }}
+                        </small>
+                        @enderror
+                    </div>
+ 
  
                             <div class="col-md-2 col-sm-6 mb-3">
                                 <button type="submit" class="btn btn-primary w-100 px-3 py-2">
@@ -49,7 +60,7 @@
                         <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width: 5%;">SrNo.</th>
+                                    <th style="width: 5%;">Sr.No</th>
                                     <th style="width: 60%; text-align: center;">Operator Name</th>
                                     <th style="width: 15%;">Status</th>
                                     <th style="width: 10%;">Action</th>
@@ -84,7 +95,8 @@
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
  
-                                        <a href="{{route('deleteOperator', base64_encode($o->id))}}">
+                                        <a href="{{route('deleteOperator', base64_encode($o->id))}}"
+                                        onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </button>

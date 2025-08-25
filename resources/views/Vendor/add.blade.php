@@ -29,7 +29,7 @@
                                                 <label for="vendor_name" class="form-label">Vendor Name <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="vendor_name" name="vendor_name" placeholder="Vendor Name" value="{{ old('vendor_name', $vendor->vendor_name ?? '') }}">
                                                 @error('vendor_name')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -39,28 +39,33 @@
                                                 <label for="vendor_code" class="form-label">Vendor Code <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="vendor_code" name="vendor_code" placeholder="Vendor Code" value="{{ old('vendor_code', $vendor->vendor_code ?? '') }}">
                                                 @error('vendor_code')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div> -->
                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number" value="{{ old('phone_no', $vendor->phone_no ?? '') }}">
+                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number"
+                                                    value="{{ old('phone_no', $vendor->phone_no ?? '') }}"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
                                                 @error('phone_no')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                    <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="contact_person" class="form-label">Contact Person <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person" value="{{ old('contact_person', $vendor->contact_person ?? '') }}">
-                                                @error('contact_person')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                    <div class="mb-3">
+                                        <label for="contact_person" class="form-label">Contact Person <span class="mandatory">*</span></label>
+                                        <input type="text" class="form-control" id="contact_person" name="contact_person"
+                                            placeholder="Contact Person"
+                                            value="{{ old('contact_person', $vendor->contact_person ?? '') }}"
+                                            oninput="this.value = this.value.replace(/[^A-Za-z.\s]/g, '');">
+                                        @error('contact_person')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
 
                                         
 
@@ -81,7 +86,7 @@
                                                 <label for="email_id" class="form-label">Email ID</label>
                                                 <input type="email" class="form-control" id="email_id" name="email_id" placeholder="Email ID" value="{{ old('email_id', $vendor->email_id ?? '') }}">
                                                 @error('email_id')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -103,7 +108,7 @@
                                                     </label>
                                                 </div>
                                                 @error('status')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -114,7 +119,7 @@
                                                 <label for="address" class="form-label">Address <span class="mandatory">*</span></label>
                                                 <textarea class="form-control" id="address" name="address" placeholder="Address...">{{ old('address', $vendor->address ?? '') }}</textarea>
                                                 @error('address')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>

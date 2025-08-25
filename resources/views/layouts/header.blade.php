@@ -9,7 +9,7 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{asset('assets/images/icon.ico')}}">
 
     <!-- jsvectormap css -->
     <link href="{{asset('assets/libs/jsvectormap/jsvectormap.min.css')}}" rel="stylesheet" type="text/css" />
@@ -434,7 +434,7 @@
                                         {{ auth()->user()->name }}
                                     </span>
                                     <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">
-                                        {{ auth()->user()->user_type == 1 ? 'Super Admin' : (auth()->user()->user_type == 2 ? 'Client' : 'Unknown') }}
+                                        {{ auth()->user()->user_type == 1 ? 'Super Admin' : (auth()->user()->user_type == 2 ? 'Admin' : 'Unknown') }}
                                     </span>
                                 </span>
                             </span>
@@ -443,7 +443,15 @@
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
                             <h6 class="dropdown-header">Welcome {{auth()->user()->name}}</h6>
-                            <a class="dropdown-item" href="{{ route('logout') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                            <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+                                <span class="align-middle" data-key="t-logout">Logout</span>
+                            </a>
+
+
                         </div>
                     </div>
                 </div>
@@ -523,7 +531,16 @@
                 <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span></a>
                 <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-success-subtle text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                 <a class="dropdown-item" href="auth-lockscreen-basic.html"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span></a>
-                <a class="dropdown-item" href="{{ route('logout') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+
+                <a class="dropdown-item"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+                    <span class="align-middle" data-key="t-logout">Logout</span>
+                </a>
+
             </div>
         </div>
         <div id="scrollbar">
@@ -535,7 +552,7 @@
                 <ul class="navbar-nav" id="navbar-nav">
                     <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="{{ route('superAdmin') }}">
+                        <a class="nav-link menu-link" href="{{ route('home') }}">
                             <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>
                         </a>
                     </li>
@@ -677,6 +694,25 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarsetup" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarsetup">
+                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Setup Sheet</span>
+                        </a>
+                        <div class="collapse menu-dropdown" id="sidebarsetup">
+                            <ul class="nav nav-sm flex-column">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('AddSetupSheet') }}" class="nav-link" data-key="t-chat"> Add</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('ViewSetupSheet') }}" class="nav-link" data-key="t-chat"> View</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link menu-link" href="#sidebarMrecord" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarMrecord">
                             <i class="ri-apps-2-line"></i> <span data-key="t-apps">Machine Record</span>
                         </a>
@@ -695,6 +731,7 @@
                         </div>
                     </li>
 
+                    <br><br><br><br><br><br><br><br><br><br>
 
 
                     @endif

@@ -1,10 +1,10 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
- 
+
             <!-- Form Start -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -16,15 +16,24 @@
                         @if(isset($setting))
                         @method('PUT')
                         @endif
- 
                         <div class="row align-items-end">
-                            <div class="col-md-4 col-sm-6 mb-3">
-                                <label for="setting_name" class="form-label">Setting Name<span class="mandatory"> *</span></label>
-                                <input type="text" class="form-control form-control-sm px-3 py-2" id="setting_name" name="setting_name"
+                           <div class="col-md-4 col-sm-6 mb-3 position-relative">
+                                <label for="setting_name" class="form-label">
+                                    Setting Name <span class="mandatory">*</span>
+                                </label>
+                                <input type="text"
+                                    class="form-control form-control-sm px-3 py-2"
+                                    id="setting_name"
+                                    name="setting_name"
                                     value="{{ old('setting_name', isset($setting) ? $setting->setting_name : '') }}"
-                                    placeholder="Enter Setting Name">
+                                    placeholder="Enter Setting Name"
+                                    style="background-image: none !important;">
+ 
                                 @error('setting_name')
-                                <small class="text-danger">{{ $message }}</small>
+                                    <small class="text-danger position-absolute"
+                                        style="bottom:-18px; left:2px; font-size:12px;">
+                                        {{ $message }}
+                                    </small>
                                 @enderror
                             </div>
  
@@ -35,11 +44,13 @@
                             </div>
  
                         </div>
+
+                        </div>
                     </form>
                 </div>
             </div>
             <!-- Form End -->
- 
+
             <!-- List Start -->
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -50,7 +61,7 @@
                         <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width: 5%;">SrNo.</th>
+                                    <th style="width: 5%;">Sr.No</th>
                                     <th style="width: 60%; text-align: center;">Setting Name</th>
                                     <th style="width: 15%;">Status</th>
                                     <th style="width: 10%;">Action</th>
@@ -78,19 +89,20 @@
                                             </div>
                                         </form>
                                     </td>
- 
+
                                     <td>
                                         <a href="{{ route('editSetting', base64_encode($s->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
- 
-                                        <a href="{{route('deleteSetting', base64_encode($s->id))}}">
+
+                                        <a href="{{route('deleteSetting', base64_encode($s->id))}}"
+                                        onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </button>
                                         </a>
 
-                                       
+
                                     </td>
                                 </tr>
                                 @empty
@@ -104,9 +116,9 @@
                 </div>
             </div>
             <!-- List End -->
- 
+
         </div>
     </div>
 </div>
- 
+
 @endsection
