@@ -66,6 +66,9 @@ Route::get('/editWorkOrder/{id}'         , [WorkOrderController::class, 'edit'])
 Route::put('/updateWorkEntry/{id}'       , [WorkOrderController::class, 'update'])->name('updateWorkEntry');
 Route::get('/deleteWorkOrder/{id}'       , [WorkOrderController::class, 'destroy'])->name('deleteWorkOrder');
 
+Route::get('/get-customer-parts/{id}', [WorkOrderController::class, 'getCustomerParts'])->name('getCustomerParts');
+
+
 
 
 Route::get('/AddProject'                 , [ProjectController::class, 'AddProject'])->name('AddProject');
@@ -106,7 +109,7 @@ Route::get('/deleteSetupSheet/{id}'       , [SetupSheetController::class, 'destr
 Route::get('/ViewSetupSheet'              , [SetupSheetController::class, 'ViewSetupSheet'])->name('ViewSetupSheet');
 Route::post('/updateSetupSheet'           , [SetupSheetController::class, 'update'])->name('updateSetupSheet');
 // Route::get('/download-setup-sheet/{id}'   , [SetupSheetController::class, 'downloadSetupSheet'])->name('downloadSetupSheet');
-Route::get('/get-part-code-by-customer', [SetupSheetController::class, 'getPartCodeByCustomer'])->name('getPartCodeByCustomer');
+ 
  
 Route::get('/AddMachinerecord'            , [MachinerecordController::class, 'AddMachinerecord'])->name('AddMachinerecord');
 Route::get('/ViewMachinerecord'           , [MachinerecordController::class, 'ViewMachinerecord'])->name('ViewMachinerecord');
