@@ -36,26 +36,24 @@
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* Make Select2 look like a normal input */
+        .select2-container--default .select2-selection--single {
+            height: 36px;
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
 
-    @vite(['resources/js/app.js'])
-   <style>
-      /* Make Select2 look like a normal input */
-.select2-container--default .select2-selection--single {
-    height: 36px;
-    padding: 6px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-}
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 26px;
+        }
 
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 26px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 38px;
-    right: 10px;
-}
-</style>
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 38px;
+            right: 10px;
+        }
+    </style>
 </head>
 
 
@@ -812,6 +810,13 @@
     <script src="{{asset('assets/js/pages/dashboard-job.init.js')}}"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
+        });
+    </script>
     <!--datatable js-->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>

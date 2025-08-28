@@ -26,7 +26,7 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="code" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
+                                                <select class="form-select js-example-basic-single" @disabled(isset($project)) id="customer_id" name="customer_id">
                                                     <option value="">Select Customer</option>
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}" data-code="{{ $c->code }}">
@@ -40,6 +40,7 @@
                                                 <span class="text-red customer"></span>
                                             </div>
                                         </div>
+                                          
   
                                         <!-- Part Code -->
                                         <div class="col-md-3">

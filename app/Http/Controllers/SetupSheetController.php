@@ -86,6 +86,7 @@ class SetupSheetController extends Controller
             $id = base64_decode($encryptedId);
             $setupSheet = SetupSheet::findOrFail($id);   
             $codes = Customer::select('id', 'code', 'name')->get();
+            
             return view('SetupSheet.add', compact('setupSheet', 'codes'));
         } catch (\Exception $setup) {
             abort(404);

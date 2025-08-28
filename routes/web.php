@@ -47,7 +47,7 @@ Route::post('/storeCustomer'             , [CustomerContoller::class, 'storeCust
 Route::get('/editCustomer/{id}'          , [CustomerContoller::class, 'edit'])->name('editCustomer');
 Route::put('/updateCustomer/{id}'        , [CustomerContoller::class, 'update'])->name('updateCustomer');
 Route::get('/deleteCustomer/{id}'        , [CustomerContoller::class, 'destroy'])->name('deleteCustomer');
-Route::post('/updateCustomerStatus'      ,[CustomerContoller::class, 'updateCustomerStatus'])->name('updateCustomerStatus');
+Route::post('/updateCustomerStatus'      , [CustomerContoller::class, 'updateCustomerStatus'])->name('updateCustomerStatus');
 
                                             
 

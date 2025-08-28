@@ -22,7 +22,7 @@ class ClientContoller extends Controller
         $request->validate([
             'name'        => 'required|string|max:255',
             'phone_no'    => 'required|string|max:20',
-            'email_id'    => 'nullable|email|max:30',
+            'email_id'    => 'required|email|max:30',
             'gst_no'       => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
             'logo'        => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'address'     => 'required|string',
@@ -92,7 +92,7 @@ class ClientContoller extends Controller
         $request->validate([
             'name'        => 'required|string|max:255',
             'phone_no'    => 'required|string|max:20',
-            'email_id'    => 'nullable|email|max:30',
+            'email_id'    => 'required|email|max:30',
             'gst_no'       => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
             'logo'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'address'     => 'required|string',

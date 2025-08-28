@@ -35,7 +35,7 @@
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="email_id" class="form-label">Email ID</label>
+                                                <label for="email_id" class="form-label">Email ID<span class="mandatory">*</span></label>
                                                 <input type="email" class="form-control" id="email_id" name="email_id" placeholder="Email Id" value="{{ old('email_id', $client->email_id ?? '') }}">
                                                 @error('email_id')
                                                 <span class="text-danger">{{ $message }}</span>
