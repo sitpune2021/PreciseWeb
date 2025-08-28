@@ -34,7 +34,7 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select" @disabled(isset($project)) id="customer_id" name="customer_id">
+                                                <select class="form-select js-example-basic-single" @disabled(isset($project)) id="customer_id" name="customer_id">
                                                     <option value="">Select Customer</option>
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}"

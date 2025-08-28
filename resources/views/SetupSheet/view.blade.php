@@ -57,7 +57,7 @@
 
                                                     <!-- Delete Button -->
                                                     <a href="{{ route('deleteSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-danger btn-icon waves-effect waves-light"
-                                                    onclick="return confirm('Are you sure you want to delete this record?')">
+                                                        onclick="return confirm('Are you sure you want to delete this record?')">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </a>
                                                 </div>
@@ -85,15 +85,15 @@
                 <h5 class="modal-title">Setup Sheet</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-             <div class="modal-footer">
-                    <button id="downloadSheetBtn" class="btn btn-success">Download</button>
-                </div>
+            <div class="modal-footer">
+                <button id="downloadSheetBtn" class="btn btn-success">Download</button>
+            </div>
 
             <div class="modal-body">
                 <!-- Sheet Header -->
                 <div class="text-center mb-3">
                     <h4>Setup Sheet</h4>
-                    <p id="sheet_customer_name_header"></p>    
+                    <p id="sheet_customer_name_header"></p>
                 </div>
 
                 <!-- Main Sheet Table -->
@@ -109,7 +109,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td id="sheet_customer_name"></td>    
+                            <td id="sheet_customer_name"></td>
                             <td id="sheet_part_code"></td>
                             <td id="sheet_work_order_no"></td>
                             <td id="sheet_date"></td>
@@ -178,17 +178,17 @@
                     </thead>
                     <tbody>
                         @for($i=0; $i<5; $i++)
-                        <tr>
+                            <tr>
                             <td>{{ $i+1 }}</td>
                             <td id="sheet_hole_x_{{ $i }}"></td>
                             <td id="sheet_hole_y_{{ $i }}"></td>
                             <td id="sheet_hole_dia_{{ $i }}"></td>
                             <td id="sheet_hole_depth_{{ $i }}"></td>
-                        </tr>
-                        @endfor
+                            </tr>
+                            @endfor
                     </tbody>
                 </table>
-               
+
             </div>
 
         </div>
@@ -197,100 +197,108 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.viewSetupSheet').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            let data = JSON.parse(this.getAttribute('data-sheet'));
- 
-            // Holes string to array convert
-            let hole_x = data.hole_x ? data.hole_x.split(",") : [];
-            let hole_y = data.hole_y ? data.hole_y.split(",") : [];
-            let hole_dia = data.hole_dia ? data.hole_dia.split(",") : [];
-            let hole_depth = data.hole_depth ? data.hole_depth.split(",") : [];
- 
-            // Top info
-            document.getElementById('sheet_customer_name_header').textContent = data.customer?.name ?? '';
-            document.getElementById('sheet_customer_name').textContent = data.customer?.name ?? '';
-            document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
-            document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
-            document.getElementById('sheet_date').textContent = data.date ?? '';
-            document.getElementById('sheet_description').textContent = data.description ?? '';
- 
-            // Sizes & Settings
-            document.getElementById('sheet_size_x').textContent = data.size_in_x ?? '';
-            document.getElementById('sheet_size_y').textContent = data.size_in_y ?? '';
-            document.getElementById('sheet_size_z').textContent = data.size_in_z ?? '';
-            document.getElementById('sheet_setting').textContent = data.setting ?? '';
-            document.getElementById('sheet_e_time').textContent = data.e_time ?? '';
- 
-            // References
-            document.getElementById('sheet_x_refer').textContent = data.x_refer ?? '';
-            document.getElementById('sheet_y_refer').textContent = data.y_refer ?? '';
-            document.getElementById('sheet_z_refer').textContent = data.z_refer ?? '';
-            document.getElementById('sheet_clamping').textContent = data.clamping ?? '';
-            document.getElementById('sheet_qty').textContent = data.qty ?? '';
-            document.getElementById('sheet_thickness').textContent = data.thickness ?? '';
- 
-            // Holes loop
-            for(let i=0; i<5; i++){
-                document.getElementById(`sheet_hole_x_${i}`).textContent = hole_x[i] ?? '';
-                document.getElementById(`sheet_hole_y_${i}`).textContent = hole_y[i] ?? '';
-                document.getElementById(`sheet_hole_dia_${i}`).textContent = hole_dia[i] ?? '';
-                document.getElementById(`sheet_hole_depth_${i}`).textContent = hole_depth[i] ?? '';
-            }
- 
-             
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.viewSetupSheet').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                let data = JSON.parse(this.getAttribute('data-sheet'));
+
+              
+                // Holes loop
+                for (let i = 0; i < 5; i++) {
+                    document.getElementById(`sheet_hole_x_${i}`).textContent = (data.hole_x && data.hole_x[i]) ?? '';
+                    document.getElementById(`sheet_hole_y_${i}`).textContent = (data.hole_y && data.hole_y[i]) ?? '';
+                    document.getElementById(`sheet_hole_dia_${i}`).textContent = (data.hole_dia && data.hole_dia[i]) ?? '';
+                    document.getElementById(`sheet_hole_depth_${i}`).textContent = (data.hole_depth && data.hole_depth[i]) ?? '';
+                }
+
+
+                // Top info
+                document.getElementById('sheet_customer_name_header').textContent = data.customer?.name ?? '';
+                document.getElementById('sheet_customer_name').textContent = data.customer?.name ?? '';
+                document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
+                document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
+                document.getElementById('sheet_date').textContent = data.date ?? '';
+                document.getElementById('sheet_description').textContent = data.description ?? '';
+
+                // Sizes & Settings
+                document.getElementById('sheet_size_x').textContent = data.size_in_x ?? '';
+                document.getElementById('sheet_size_y').textContent = data.size_in_y ?? '';
+                document.getElementById('sheet_size_z').textContent = data.size_in_z ?? '';
+                document.getElementById('sheet_setting').textContent = data.setting ?? '';
+                document.getElementById('sheet_e_time').textContent = data.e_time ?? '';
+
+                // References
+                document.getElementById('sheet_x_refer').textContent = data.x_refer ?? '';
+                document.getElementById('sheet_y_refer').textContent = data.y_refer ?? '';
+                document.getElementById('sheet_z_refer').textContent = data.z_refer ?? '';
+                document.getElementById('sheet_clamping').textContent = data.clamping ?? '';
+                document.getElementById('sheet_qty').textContent = data.qty ?? '';
+                document.getElementById('sheet_thickness').textContent = data.thickness ?? '';
+
+                // Holes loop
+                for (let i = 0; i < 5; i++) {
+                    document.getElementById(`sheet_hole_x_${i}`).textContent = hole_x[i] ?? '';
+                    document.getElementById(`sheet_hole_y_${i}`).textContent = hole_y[i] ?? '';
+                    document.getElementById(`sheet_hole_dia_${i}`).textContent = hole_dia[i] ?? '';
+                    document.getElementById(`sheet_hole_depth_${i}`).textContent = hole_depth[i] ?? '';
+                }
+
+
+            });
         });
     });
-});
- 
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("downloadSheetBtn").addEventListener("click", function () {
-        const { jsPDF } = window.jspdf;
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("downloadSheetBtn").addEventListener("click", function() {
+            const {
+                jsPDF
+            } = window.jspdf;
 
-        // बरोबर ID वापर
-        var element = document.querySelector("#viewSetupSheetModal .modal-body");
+            var element = document.querySelector("#viewSetupSheetModal .modal-body");
 
-        html2canvas(element, { scale: 2 }).then((canvas) => {
-            const imgData = canvas.toDataURL("image/png");
-            const pdf = new jsPDF("p", "mm", "a4");
+            html2canvas(element, {
+                scale: 2
+            }).then((canvas) => {
+                const imgData = canvas.toDataURL("image/png");
+                const pdf = new jsPDF("p", "mm", "a4");
 
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-            pdf.save("SetupSheet.pdf");
+                pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+                pdf.save("SetupSheet.pdf");
+            });
         });
     });
-});
-
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("downloadSheetBtn").addEventListener("click", function () {
-        const { jsPDF } = window.jspdf;
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("downloadSheetBtn").addEventListener("click", function() {
+            const {
+                jsPDF
+            } = window.jspdf;
 
-        // modal body घेतो
-        var element = document.querySelector("#viewRecordModal .modal-body");
 
-        html2canvas(element, { scale: 2 }).then((canvas) => {
-            const imgData = canvas.toDataURL("image/png");
-            const pdf = new jsPDF("p", "mm", "a4");
+            var element = document.querySelector("#viewRecordModal .modal-body");
 
-            // calculate pdf size
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            html2canvas(element, {
+                scale: 2
+            }).then((canvas) => {
+                const imgData = canvas.toDataURL("image/png");
+                const pdf = new jsPDF("p", "mm", "a4");
 
-            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-            pdf.save("MachineRecord.pdf");
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+                pdf.save("MachineRecord.pdf");
+            });
         });
     });
-});
 </script>
 
 @endsection

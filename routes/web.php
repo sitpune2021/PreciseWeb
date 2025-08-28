@@ -13,6 +13,7 @@ use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\MachinerecordController;
 use App\Http\Controllers\SetupSheetController;
+use App\Http\Controllers\MaterialorderController;
 
 
 
@@ -66,7 +67,7 @@ Route::get('/editWorkOrder/{id}'         , [WorkOrderController::class, 'edit'])
 Route::put('/updateWorkEntry/{id}'       , [WorkOrderController::class, 'update'])->name('updateWorkEntry');
 Route::get('/deleteWorkOrder/{id}'       , [WorkOrderController::class, 'destroy'])->name('deleteWorkOrder');
 
-Route::get('/get-customer-parts/{id}', [WorkOrderController::class, 'getCustomerParts'])->name('getCustomerParts');
+Route::get('/get-customer-parts/{id}', [SetupSheetController::class, 'getCustomerParts'])->name('getCustomerParts');
 
 
 
@@ -107,7 +108,8 @@ Route::post('/storeSetupSheet'            , [SetupSheetController::class, 'store
 Route::get('/editSetupSheet/{id}'         , [SetupSheetController::class, 'editSetupSheet'])->name('editSetupSheet');
 Route::get('/deleteSetupSheet/{id}'       , [SetupSheetController::class, 'destroy'])->name('deleteSetupSheet');
 Route::get('/ViewSetupSheet'              , [SetupSheetController::class, 'ViewSetupSheet'])->name('ViewSetupSheet');
-Route::post('/updateSetupSheet'           , [SetupSheetController::class, 'update'])->name('updateSetupSheet');
+Route::put('/updateSetupSheet/{encryptedId}', [SetupSheetController::class, 'update'])->name('updateSetupSheet');
+
 // Route::get('/download-setup-sheet/{id}'   , [SetupSheetController::class, 'downloadSetupSheet'])->name('downloadSetupSheet');
  
  
@@ -117,6 +119,10 @@ Route::post('/StoreMachinerecord'         , [MachinerecordController::class, 'St
 Route::get('/EditMachinerecord/{id}'      , [MachinerecordController::class, 'edit'])->name('EditMachinerecord');
 Route::put('/UpdateMachinerecord/{id}'    , [MachinerecordController::class, 'update'])->name('UpdateMachinerecord');
 Route::get('/DeleteMachinerecord/{id}'    , [MachinerecordController::class, 'destroy'])->name('DeleteMachinerecord');
+
+
+Route::get('/AddMaterialorder'            , [MaterialorderController::class, 'AddMaterialorder'])->name('AddMaterialorder');
+Route::get('/ViewMaterialorder'           , [MaterialorderController::class, 'ViewMaterialorder'])->name('ViewMaterialorder');
 
 
 

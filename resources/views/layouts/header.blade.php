@@ -35,7 +35,27 @@
     <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+    @vite(['resources/js/app.js'])
+   <style>
+      /* Make Select2 look like a normal input */
+.select2-container--default .select2-selection--single {
+    height: 36px;
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 26px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    right: 10px;
+}
+</style>
 </head>
 
 
@@ -725,6 +745,25 @@
 
                                 <li class="nav-item">
                                     <a href="{{ route('ViewMachinerecord') }}" class="nav-link" data-key="t-chat"> View</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarMaterial" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarMaterial">
+                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Material Order</span>
+                        </a>
+                        <div class="collapse menu-dropdown" id="sidebarMaterial">
+                            <ul class="nav nav-sm flex-column">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('AddMaterialorder') }}" class="nav-link" data-key="t-chat"> Add</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('ViewMaterialorder') }}" class="nav-link" data-key="t-chat"> View</a>
                                 </li>
 
                             </ul>

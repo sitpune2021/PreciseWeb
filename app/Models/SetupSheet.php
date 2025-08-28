@@ -32,6 +32,15 @@ class SetupSheet extends Model
         'hole_dia',
         'hole_depth',
     ];
+
+
+    protected $casts = [
+        'holes'      => 'array',
+        'hole_x'     => 'array',
+        'hole_y'     => 'array',
+        'hole_dia'   => 'array',
+        'hole_depth' => 'array',
+    ];
      public function customer()
 {
     return $this->belongsTo(Customer::class,'customer_id');

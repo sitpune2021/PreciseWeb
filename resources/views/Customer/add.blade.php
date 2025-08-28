@@ -67,10 +67,10 @@
                                             value="{{ old('contact_person', $customer->contact_person ?? '') }}"
                                             oninput="this.value = this.value.replace(/[^A-Za-z.\s]/g, '');">
                                         @error('contact_person')
-                                            <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-red">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                </div>
+                                  </div>
 
                                         <!--end col-->
                                         <div class="col-md-4">

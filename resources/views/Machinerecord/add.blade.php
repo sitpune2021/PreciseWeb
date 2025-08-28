@@ -72,7 +72,7 @@
 
                                     <!-- Machine -->
                                     <div class="col-md-4">
-                                        <label class="form-label">Machine <span class="text-danger">*</span></label>
+                                        <label class="form-label">Machine <span class="text-red">*</span></label>
                                         <select name="machine" class="form-control">
                                             <option value=""> Select Machine </option>
                                             @foreach($machines as $machine)
@@ -82,12 +82,12 @@
                                             </option>
                                             @endforeach
                                         </select>
-                                        @error('machine') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        @error('machine') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- Operator -->
                                     <div class="col-md-4">
-                                        <label class="form-label">Operator <span class="text-danger">*</span></label>
+                                        <label class="form-label">Operator <span class="text-red">*</span></label>
                                         <select name="operator" class="form-control">
                                             <option value="">Select Operator</option>
                                             @foreach($operators as $operator)
@@ -97,12 +97,12 @@
                                             </option>
                                             @endforeach
                                         </select>
-                                        @error('operator') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        @error('operator') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- Setting -->
                                     <div class="col-md-4">
-                                        <label class="form-label">Setting <span class="text-danger">*</span></label>
+                                        <label class="form-label">Setting <span class="text-red">*</span></label>
                                         <select name="setting_no" class="form-control">
                                             <option value="">Select Setting</option>
                                             @foreach($settings as $setting)
@@ -112,7 +112,7 @@
                                             </option>
                                             @endforeach
                                         </select>
-                                        @error('setting_no') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
 

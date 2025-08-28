@@ -25,43 +25,45 @@ class SetupSheetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function storeSetupSheet(Request $request)
     {
-        $request->validate([
-            // Basic Info
+        $validated = $request->validate([
+            'customer_id'   => 'required|exists:customers,id',
             'part_code'     => 'required|string|max:255',
             'work_order_no' => 'required|string|max:255',
             'date'          => 'required|date',
             'description'   => 'nullable|string|max:500',
 
-            // Size Fields
             'size_in_x' => 'required|numeric|min:0',
             'size_in_y' => 'required|numeric|min:0',
             'size_in_z' => 'required|numeric|min:0',
 
-            // Setup Info
             'setting'   => 'required|string|max:255',
             'e_time'    => 'required|string|max:255',
 
-            // Reference
-            'x_refer'   => 'required|string|max:255',
-            'y_refer'   => 'required|string|max:255',
-            'z_refer'   => 'required|string|max:255',
-            'clamping'  => 'required|string|max:255',
+            'x_refer'  => 'required|string|max:255',
+            'y_refer'  => 'required|string|max:255',
+            'z_refer'  => 'required|string|max:255',
+            'clamping' => 'required|string|max:255',
 
-            // Thickness & Quantity
             'thickness' => 'required|numeric|min:1',
             'qty'       => 'required|integer|min:1',
 
-            // Hole Details
-            'holes'      => 'required|string|max:255',
-            'hole_x'     => 'required|numeric|min:0',
-            'hole_y'     => 'required|numeric|min:0',
-            'hole_dia'   => 'required|numeric|min:0',
-            'hole_depth' => 'required|numeric|min:0',
+            // Hole Details (arrays)
+            'holes'      => 'required|array',
+            'holes.*'    => 'required|numeric|min:0',
+            'hole_x'     => 'required|array',
+            'hole_x.*'   => 'required|numeric|min:0',
+            'hole_y'     => 'required|array',
+            'hole_y.*'   => 'required|numeric|min:0',
+            'hole_dia'   => 'required|array',
+            'hole_dia.*' => 'required|numeric|min:0',
+            'hole_depth' => 'required|array',
+            'hole_depth.*' => 'required|numeric|min:0',
         ]);
 
-        SetupSheet::create($request->all());
+        SetupSheet::create($validated);
 
         return redirect()->route('ViewSetupSheet')->with('success', 'SetupSheet created successfully.');
     }
@@ -82,10 +84,9 @@ class SetupSheetController extends Controller
     {
         try {
             $id = base64_decode($encryptedId);
-            $setup = SetupSheet::findOrFail($id);
-            $method = "PUT";
+            $setupSheet = SetupSheet::findOrFail($id);   
             $codes = Customer::select('id', 'code', 'name')->get();
-            return view('SetupSheet.add', compact('setup', 'method', 'codes'));
+            return view('SetupSheet.add', compact('setupSheet', 'codes'));
         } catch (\Exception $setup) {
             abort(404);
         }
@@ -94,11 +95,51 @@ class SetupSheetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request, string $encryptedId)
     {
-        //
-    }
+        $id = base64_decode($encryptedId);
+        $setupSheet = SetupSheet::findOrFail($id);
 
+        // Validation
+        $validated = $request->validate([
+            'customer_id'   => 'required|exists:customers,id',
+            'part_code'     => 'required|string|max:255',
+            'work_order_no' => 'required|string|max:255',
+            'date'          => 'required|date',
+            'description'   => 'nullable|string|max:500',
+
+            'size_in_x' => 'required|numeric|min:0',
+            'size_in_y' => 'required|numeric|min:0',
+            'size_in_z' => 'required|numeric|min:0',
+
+            'setting'   => 'required|string|max:255',
+            'e_time'    => 'required|string|max:255',
+
+            'x_refer'  => 'required|string|max:255',
+            'y_refer'  => 'required|string|max:255',
+            'z_refer'  => 'required|string|max:255',
+            'clamping' => 'required|string|max:255',
+
+            'thickness' => 'required|numeric|min:1',
+            'qty'       => 'required|integer|min:1',
+
+            'holes'        => 'required|array',
+            'holes.*'      => 'required|numeric|min:0',
+            'hole_x'       => 'required|array',
+            'hole_x.*'     => 'required|numeric|min:0',
+            'hole_y'       => 'required|array',
+            'hole_y.*'     => 'required|numeric|min:0',
+            'hole_dia'     => 'required|array',
+            'hole_dia.*'   => 'required|numeric|min:0',
+            'hole_depth'   => 'required|array',
+            'hole_depth.*' => 'required|numeric|min:0',
+        ]);
+
+
+        $setupSheet->update($validated);
+
+        return redirect()->route('ViewSetupSheet')->with('success', 'Setup Sheet updated successfully.');
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -113,10 +154,12 @@ class SetupSheetController extends Controller
 
     public function getCustomerParts($customerId)
     {
+       
         $parts = WorkOrder::where('customer_id', $customerId)
             ->select('id', 'part', 'customer_id')
             ->with('customer:id,code')
             ->get();
+
 
         $formatted = $parts->map(function ($wo) {
             return [

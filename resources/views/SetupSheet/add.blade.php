@@ -22,12 +22,11 @@
                                     @endif
 
                                     <div class="row">
-                                        <!-- Part Code -->
-                                        <!-- Customer -->
+                                      
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="code" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select" id="customer_id" name="customer_id">
+                                                <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
                                                     <option value="">Select Customer</option>
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}" data-code="{{ $c->code }}">
@@ -38,17 +37,18 @@
                                                 @error('customer_id')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
-                                                <span class="text-danger customer"></span>
+                                                <span class="text-red customer"></span>
                                             </div>
                                         </div>
-
+  
                                         <!-- Part Code -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="part_code" name="part_code" readonly>
-                                                @error('part_code')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <select id="part_code" name="part_code" class="form-control">
+                                                    <option value="">Select Part Code</option>
+                                                </select> @error('part_code')
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -59,7 +59,7 @@
                                                 <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="work_order_no" name="work_order_no" readonly>
                                                 @error('work_order_no')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -70,7 +70,7 @@
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
                                                 <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $setupSheet->date ?? '') }}">
                                                 @error('date')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -81,7 +81,7 @@
                                                 <label for="size_in_x" class="form-label">Size In X <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? '') }}">
                                                 @error('size_in_x')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -91,7 +91,7 @@
                                                 <label for="size_in_y" class="form-label">Size In Y <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? '') }}">
                                                 @error('size_in_y')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -101,7 +101,7 @@
                                                 <label for="size_in_z" class="form-label">Size In Z <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? '') }}">
                                                 @error('size_in_z')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -112,7 +112,7 @@
                                                 <label for="setting" class="form-label">Setting <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="setting" name="setting" value="{{ old('setting', $setupSheet->setting ?? '') }}">
                                                 @error('setting')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -123,7 +123,7 @@
                                                 <label for="e_time" class="form-label">E Time <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="e_time" name="e_time" value="{{ old('e_time', $setupSheet->e_time ?? '') }}">
                                                 @error('e_time')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -139,7 +139,7 @@
                                                     <option value="Hole Centre" {{ old('x_refer', $setupSheet->x_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
                                                 </select>
                                                 @error('x_refer')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -154,7 +154,7 @@
                                                     <option value="Hole Centre" {{ old('y_refer', $setupSheet->y_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
                                                 </select>
                                                 @error('y_refer')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -170,7 +170,7 @@
                                                     <option value="Hole Centre" {{ old('z_refer', $setupSheet->z_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
                                                 </select>
                                                 @error('z_refer')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -185,7 +185,7 @@
                                                     <option value="Magnet" {{ old('clamping', $setupSheet->clamping ?? '') == 'Magnet' ? 'selected' : '' }}>Magnet</option>
                                                 </select>
                                                 @error('clamping')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -196,7 +196,7 @@
                                                 <label for="thickness" class="form-label">Thickness <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="thickness" name="thickness" value="{{ old('thickness', $setupSheet->thickness ?? '') }}">
                                                 @error('thickness')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -206,7 +206,7 @@
                                                 <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="qty" name="qty" value="{{ old('qty', $setupSheet->qty ?? '') }}">
                                                 @error('qty')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -217,89 +217,87 @@
                                                 <label for="description" class="form-label">Description <span class="mandatory">*</span></label>
                                                 <textarea class="form-control" id="description" name="description" placeholder="Enter Description">{{ old('description', $setupSheet->description ?? '') }}</textarea>
                                                 @error('description')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-
-                                        <!-- Holes -->
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="holes" class="form-label">No. of Holes <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="holes" name="holes" value="{{ old('holes', $setupSheet->holes ?? '') }}">
-                                                @error('holes')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
+                                        <!-- Dowel Holes Heading -->
+                                        <div class="col-md-12">
+                                            <h4 class="text-center mt-4 mb-3"><b>Dowel Holes</b></h4>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="hole_x" class="form-label">Hole X <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="hole_x" name="hole_x" value="{{ old('hole_x', $setupSheet->hole_x ?? '') }}">
-                                                @error('hole_x')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        @php
+                                        $holesData = old('holes', $setupSheet->holes ?? []);
+                                        $holeXData = old('hole_x', $setupSheet->hole_x ?? []);
+                                        $holeYData = old('hole_y', $setupSheet->hole_y ?? []);
+                                        $holeDiaData = old('hole_dia', $setupSheet->hole_dia ?? []);
+                                        $holeDepthData = old('hole_depth', $setupSheet->hole_depth ?? []);
+                                        $count = max(count($holesData), count($holeXData), count($holeYData), count($holeDiaData), count($holeDepthData));
+                                        $count = $count > 0 ? $count : 1;
+                                        @endphp
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="hole_y" class="form-label">Hole Y <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="hole_y" name="hole_y" value="{{ old('hole_y', $setupSheet->hole_y ?? '') }}">
-                                                @error('hole_y')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
+                                        <div id="dowel-holes-wrapper">
+                                            @for($i = 0; $i < $count; $i++)
+                                                <div class="row dowel-group mb-2">
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
+                                                        value="{{ $holesData[$i] ?? '' }}">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
+                                                        value="{{ $holeXData[$i] ?? '' }}">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"
+                                                        value="{{ $holeYData[$i] ?? '' }}">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"
+                                                        value="{{ $holeDiaData[$i] ?? '' }}">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_depth[]" placeholder="Hole Depth"
+                                                        value="{{ $holeDepthData[$i] ?? '' }}">
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-center">
+                                                    @if($i == 0)
+                                                    <button type="button" class="btn btn-success add-row">+</button>
+                                                    @else
+                                                    <button type="button" class="btn btn-danger remove-row">-</button>
+                                                    @endif
+                                                </div>
                                         </div>
+                                        @endfor
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="hole_dia" class="form-label">Hole Dia <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="hole_dia" name="hole_dia" value="{{ old('hole_dia', $setupSheet->hole_dia ?? '') }}">
-                                                @error('hole_dia')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
+                                    <!-- Submit -->
+                                    <div class="col-lg-12">
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary">{{ isset($setupSheet) ? 'Update' : 'Submit' }}</button>
+                                            &nbsp;
+                                            @if(isset($setupSheet))
+                                            <a href="{{ route('ViewSetupSheet') }}" class="btn btn-info">Cancel</a>
+                                            @else
+                                            <button type="reset" class="btn btn-info">Reset</button>
+                                            @endif
                                         </div>
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="hole_depth" class="form-label">Hole Depth <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="hole_depth" name="hole_depth" value="{{ old('hole_depth', $setupSheet->hole_depth ?? '') }}">
-                                                @error('hole_depth')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Submit -->
-                                        <div class="col-lg-12">
-                                            <div class="text-end">
-                                                <button type="submit" class="btn btn-primary">{{ isset($setupSheet) ? 'Update' : 'Submit' }}</button>
-                                                &nbsp;
-                                                @if(isset($setupSheet))
-                                                <a href="{{ route('ViewSetupSheet') }}" class="btn btn-info">Cancel</a>
-                                                @else
-                                                <button type="reset" class="btn btn-info">Reset</button>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                    </div><!-- end row -->
-                                </form>
-                            </div>
+                            </div><!-- end row -->
+                            </form>
                         </div>
-
                     </div>
+
                 </div>
-            </div><!-- end row -->
-        </div>
+            </div>
+        </div><!-- end row -->
     </div>
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
     $(document).ready(function() {
 
         function generateCode() {
@@ -319,11 +317,67 @@
             }
         }
 
-        // On select customer
-        $("#customer_id").on("change", function() {
-            generateCode();
+       $("#customer_id").on("change", function() {
+    let customer_id = $(this).val();
+
+    if (customer_id) {
+        $.ajax({
+            url: "/get-customer-parts/" + customer_id,
+            type: "GET",
+            success: function(response) {
+                let $partCode = $("#part_code");
+
+                // clear old options
+                $partCode.empty();
+                $partCode.append('<option value="">Select Part Code</option>');
+
+                // loop response and append options
+                response.forEach(function(item) {
+                    $partCode.append(
+                        `<option value="${item.part_code}">${item.part_code}</option>`
+                    );
+                });
+
+                // ✅ Auto-fill Work Order No with customer_id
+                $("#work_order_no").val(customer_id);
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                alert("Something went wrong while fetching parts");
+            },
+        });
+    } else {
+        $("#part_code").empty().append('<option value="">-- Select Part Code --</option>');
+        $("#work_order_no").val(""); // clear work order no if no customer selected
+    }
+});
+
+
+
+
+
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $(document).on("click", ".add-row", function() {
+            let newRow = `
+        <div class="row dowel-group mb-2">
+            <div class="col-md-2"><input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"></div>
+            <div class="col-md-2"><input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"></div>
+            <div class="col-md-2"><input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"></div>
+            <div class="col-md-2"><input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"></div>
+            <div class="col-md-2"><input type="text" class="form-control" name="hole_depth[]" placeholder="Hole Depth"></div>
+            <div class="col-md-2 d-flex align-items-center">
+                <button type="button" class="btn btn-danger remove-row">-</button>
+            </div>
+        </div>`;
+            $("#dowel-holes-wrapper").append(newRow);
         });
 
+        $(document).on("click", ".remove-row", function() {
+            $(this).closest(".dowel-group").remove();
+        });
     });
 </script>
 
