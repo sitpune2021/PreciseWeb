@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WorkOrderController extends Controller
 {
@@ -38,6 +39,8 @@ class WorkOrderController extends Controller
      */
     public function storeWorkEntry(Request $request)
     {
+        Log::info('Incoming Work Entry Request:', $request->all());
+
         // Validate first
         $validatedData = $request->validate([
             'rows'               => 'required|array|min:1',
@@ -53,9 +56,10 @@ class WorkOrderController extends Controller
             'rows.*.quantity'    => 'required|integer|min:1',
         ]);
 
+        Log::info('Validated Data:', $validatedData);
         // Save each row
         foreach ($validatedData['rows'] as $row) {
-            WorkOrder::create([
+           $workorders= WorkOrder::create([
                 'customer_id'      => $row['customer_id'],
                 'part'             => $row['part'],
                 'date'             => $row['date'],
@@ -68,6 +72,8 @@ class WorkOrderController extends Controller
                 'part_description' => $row['part_description'],
             ]);
         }
+
+        Log::info('Total Work Orders in DB: ' . $workorders->count());
 
         $workorders = WorkOrder::with('customer')->get();
         return view('WorkOrder.view', compact('workorders'));

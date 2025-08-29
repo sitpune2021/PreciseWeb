@@ -166,7 +166,7 @@
 
                 <!-- Holes -->
                 <h6 class="mt-3">Dowel Holes</h6>
-                <table class="table table-bordered table-sm text-center align-middle">
+        <table class="table table-bordered table-sm text-center align-middle">
                     <thead class="table-light">
                         <tr>
                             <th>Hole #</th>
@@ -176,16 +176,7 @@
                             <th>Depth</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @for($i=0; $i<5; $i++)
-                            <tr>
-                            <td>{{ $i+1 }}</td>
-                            <td id="sheet_hole_x_{{ $i }}"></td>
-                            <td id="sheet_hole_y_{{ $i }}"></td>
-                            <td id="sheet_hole_dia_{{ $i }}"></td>
-                            <td id="sheet_hole_depth_{{ $i }}"></td>
-                            </tr>
-                            @endfor
+                    <tbody id="holes_table_body">
                     </tbody>
                 </table>
 
@@ -203,12 +194,22 @@
                 let data = JSON.parse(this.getAttribute('data-sheet'));
 
               
-                // Holes loop
-                for (let i = 0; i < 5; i++) {
-                    document.getElementById(`sheet_hole_x_${i}`).textContent = (data.hole_x && data.hole_x[i]) ?? '';
-                    document.getElementById(`sheet_hole_y_${i}`).textContent = (data.hole_y && data.hole_y[i]) ?? '';
-                    document.getElementById(`sheet_hole_dia_${i}`).textContent = (data.hole_dia && data.hole_dia[i]) ?? '';
-                    document.getElementById(`sheet_hole_depth_${i}`).textContent = (data.hole_depth && data.hole_depth[i]) ?? '';
+               let holesBody = document.getElementById("holes_table_body");
+                holesBody.innerHTML = "";
+ 
+                if (data.hole_x && data.hole_x.length > 0) {
+                    for (let i = 0; i < data.hole_x.length; i++) {
+                        let row = `
+                                <tr>
+                                    <td>${i + 1}</td>
+                                    <td>${data.hole_x[i] ?? ''}</td>
+                                    <td>${data.hole_y[i] ?? ''}</td>
+                                    <td>${data.hole_dia[i] ?? ''}</td>
+                                    <td>${data.hole_depth[i] ?? ''}</td>
+                                </tr>
+                            `;
+                        holesBody.insertAdjacentHTML("beforeend", row);
+                    }
                 }
 
 
