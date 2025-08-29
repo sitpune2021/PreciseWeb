@@ -28,10 +28,11 @@ class CustomerContoller extends Controller
         $request->validate([
             'name'              => 'required|string|max:255|unique:customers,name',
             'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
-            'phone_no'          => ['required', 'digits:10', 'regex:/^[0-9]{10}$/'],
-            'email_id'          => 'nullable|email|max:30',
-            'gst_no'            => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
-            'address'           => 'required|string',
+            'phone_no' => ['required','digits:10','regex:/^[0-9]{10}$/','unique:customers,phone_no',],
+            'email_id'          => 'nullable|email|max:40',
+            'gst_no' => ['required','regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/','unique:customers,gst_no',],
+            'address'           => 'required|string',    
+            
         ]);
 
         $customer_name_words = explode(' ', trim($request->input('name')));
@@ -109,9 +110,9 @@ class CustomerContoller extends Controller
         ],
         'code'           => 'nullable',
         'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
-        'phone_no'       => 'required|string|max:20',
-        'email_id'       => 'nullable|email|max:30',
-        'gst_no'         => 'required|string|max:20',
+        'phone_no' => ['required','digits:10','regex:/^[0-9]{10}$/','unique:customers,phone_no',],
+        'email_id'       => 'nullable|email|max:40',
+        'gst_no' => ['required','regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/','unique:customers,gst_no',],
         'address'        => 'required|string',
     ]);
 

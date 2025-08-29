@@ -18,10 +18,8 @@
                                         <tr>
                                             <th>Sr.No</th>
                                             <th>Part No</th>
-                                            <th>Work Order</th>
-                                            <th>Machine</th>
-                                            <th>Operator</th>
-                                            <th>Setting No</th>
+                                            <th>code</th>
+                                            <th>Work Order</th>                                            
                                             <th>Qty</th>
                                             <th>Start Time</th>
                                             <th>End Time</th>
@@ -34,13 +32,11 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $rec->part_no }}</td>
+                                            <td>{{ $rec->code }}</td>
                                             <td>{{ $rec->work_order }}</td>
-                                            <td>{{ $rec->machine  }}</td>
-                                            <td>{{ $rec->operator }}</td>
-                                            <td>{{ $rec->setting_no }}</td>
                                             <td>{{ $rec->qty }}</td>
-                                            <td>{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y H:i') : '' }}</td>
-                                            <td>{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y H:i') : '' }}</td>
+                                            <td>{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}</td>
+                                            <td>{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}</td>
                                             <td>{{ $rec->invoice_no }}</td>
                                             <td>
                                                 <a href="{{ route('EditMachinerecord', base64_encode($rec->id)) }}">
@@ -58,12 +54,9 @@
                                                     data-operator="{{ $rec->operator }}"
                                                     data-setting="{{ $rec->setting_no }}"
                                                     data-qty="{{ $rec->qty }}"
-                                                    data-start="{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y H:i') : '' }}"
-                                                    data-end="{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y H:i') : '' }}"
-                                                    data-invoice="{{ $rec->invoice_no }}"
+                                                    data-start="{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}"
+                                                    data-end="{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}"
                                                     data-est_time="{{ $rec->est_time }}"
-                                                    data-hrs="{{ $rec->hrs }}"
-                                                    data-time_taken="{{ $rec->time_taken }}"
                                                     data-actual_hrs="{{ $rec->actual_hrs }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
@@ -132,15 +125,7 @@
                                     <th>Estimated Time</th>
                                     <td id="view_est_time"></td>
                                 </tr>
-                                <tr>
-                                    <th>Hrs</th>
-                                    <td id="view_hrs"></td>
-                                </tr>
-                                <tr>
-                                    <th>Time Taken</th>
-                                    <td id="view_time_taken"></td>
-                                </tr>
-                                <tr>
+                               
                                     <th>Actual Hrs</th>
                                     <td id="view_actual_hrs"></td>
                                 </tr>
@@ -167,8 +152,6 @@
                             document.getElementById("view_start").textContent = this.dataset.start;
                             document.getElementById("view_end").textContent = this.dataset.end;
                             document.getElementById("view_est_time").textContent = this.dataset.est_time;
-                            document.getElementById("view_hrs").textContent = this.dataset.hrs;
-                            document.getElementById("view_time_taken").textContent = this.dataset.time_taken;
                             document.getElementById("view_actual_hrs").textContent = this.dataset.actual_hrs;
                             document.getElementById("view_invoice").textContent = this.dataset.invoice;
 

@@ -24,8 +24,6 @@ class MachinerecordController extends Controller
         return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings'));
     }
 
-
-
     /**
      * Store New Machine Record
      */
@@ -33,18 +31,16 @@ class MachinerecordController extends Controller
     {
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
+            'code'        => 'required|string|max:100',
             'work_order'  => 'required|string|max:100',
             'first_set'   => 'required|string|max:100',
             'qty'         => 'required|integer|min:1',
             'machine'     => 'required|string|max:100',
             'operator'    => 'required|string|max:100',
             'setting_no'  => 'required|string|max:100',
-
             'est_time'    => 'required|numeric|min:0',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
-            'hrs'         => 'required|numeric|min:0',
-            'time_taken'  => 'required|numeric|min:0',
             'actual_hrs'  => 'required|numeric|min:0',
             'invoice_no'  => 'required|string|max:100',
         ]);
@@ -95,18 +91,16 @@ class MachinerecordController extends Controller
 
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
+            'code'        => 'required|string|max:100',
             'work_order'  => 'required|string|max:100',
             'first_set'   => 'required|string|max:100',
             'qty'         => 'required|integer|min:1',
             'machine'     => 'required|string|max:100',
             'operator'    => 'required|string|max:100',
             'setting_no'  => 'required|string|max:100',
-
             'est_time'    => 'required|numeric|min:0',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
-            'hrs'         => 'required|numeric|min:0',
-            'time_taken'  => 'required|numeric|min:0',
             'actual_hrs'  => 'required|numeric|min:0',
             'invoice_no'  => 'required|string|max:100',
         ]);

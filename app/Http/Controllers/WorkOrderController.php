@@ -15,19 +15,13 @@ class WorkOrderController extends Controller
      * Display a listing of the resource.
      */
     public function AddWorkOrder()
-{
-    
-    $codes = Customer::select('id', 'code', 'name')
-                ->orderBy('id', 'desc')
-                ->get();
+    {
 
- 
-    $workorders = WorkOrder::with('customer')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+        $workorders = WorkOrder::with('customer')->orderBy('created_at', 'desc')->get();
 
-    return view('WorkOrder.add', compact('codes', 'workorders'));
-}
+        return view('WorkOrder.add', compact('codes', 'workorders'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -42,78 +36,77 @@ class WorkOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-public function storeWorkEntry(Request $request)
-{
-    // Validate first
-    $validatedData = $request->validate([
-        'rows'               => 'required|array|min:1',
-        'rows.*.customer_id' => 'required|exists:customers,id',
-        'rows.*.part'        => 'required|string|max:100',
-        'rows.*.date'        => 'required|date',
-        'rows.*.part_description' => 'required|string|max:1000',
-        'rows.*.dimeter'     => 'required|numeric',
-        'rows.*.length'      => 'required|numeric',
-        'rows.*.width'       => 'required|numeric',
-        'rows.*.height'      => 'required|numeric',
-        'rows.*.exp_time'    => 'date_format:H:i',
-        'rows.*.quantity'    => 'required|integer|min:1',
-    ]);
-
-    // Save each row
-    foreach ($validatedData['rows'] as $row) 
+    public function storeWorkEntry(Request $request)
     {
-        WorkOrder::create([
-            'customer_id'      => $row['customer_id'],
-            'part'             => $row['part'],
-            'date'             => $row['date'],
-            'dimeter'          => $row['dimeter'],
-            'length'           => $row['length'],
-            'width'            => $row['width'],
-            'height'           => $row['height'],
-           'exp_time'         => $row['exp_time'], 
-            'quantity'         => $row['quantity'],
-            'part_description' => $row['part_description'],
+        // Validate first
+        $validatedData = $request->validate([
+            'rows'               => 'required|array|min:1',
+            'rows.*.customer_id' => 'required|exists:customers,id',
+            'rows.*.part'        => 'required|string|max:100',
+            'rows.*.date'        => 'required|date',
+            'rows.*.part_description' => 'required|string|max:1000',
+            'rows.*.dimeter'     => 'required|numeric',
+            'rows.*.length'      => 'required|numeric',
+            'rows.*.width'       => 'required|numeric',
+            'rows.*.height'      => 'required|numeric',
+            'rows.*.exp_time'    => 'date_format:H:i',
+            'rows.*.quantity'    => 'required|integer|min:1',
         ]);
-    }
 
-    $workorders = WorkOrder::with('customer')->get();
-    return view('WorkOrder.view', compact('workorders'));
-}
+        // Save each row
+        foreach ($validatedData['rows'] as $row) {
+            WorkOrder::create([
+                'customer_id'      => $row['customer_id'],
+                'part'             => $row['part'],
+                'date'             => $row['date'],
+                'dimeter'          => $row['dimeter'],
+                'length'           => $row['length'],
+                'width'            => $row['width'],
+                'height'           => $row['height'],
+                'exp_time'         => $row['exp_time'],
+                'quantity'         => $row['quantity'],
+                'part_description' => $row['part_description'],
+            ]);
+        }
+
+        $workorders = WorkOrder::with('customer')->get();
+        return view('WorkOrder.view', compact('workorders'));
+    }
 
 
 
     /**
      * Display the specified resource.
      */
-   public function edit(string $encryptedId,Request $request)
-{
-    // dd( $request->all());
-    try {
-        $id = base64_decode($encryptedId);
-        $workorder = WorkOrder::with('customer')->findOrFail($id);
-        $codes = Customer::select('id', 'code', 'name')->get();
+    public function edit(string $encryptedId, Request $request)
+    {
+        // dd( $request->all());
+        try {
+            $id = base64_decode($encryptedId);
+            $workorder = WorkOrder::with('customer')->findOrFail($id);
+            $codes = Customer::select('id', 'code', 'name')->get();
 
-         
-        $workorders = WorkOrder::with('customer')
-                        ->where('customer_id', $workorder->customer_id)
-                        ->where('date',$workorder->date)
-                        ->get();
+
+            $workorders = WorkOrder::with('customer')
+                ->where('customer_id', $workorder->customer_id)
+                ->where('date', $workorder->date)
+                ->get();
 
             // dd( $workorders );
-        return view('WorkOrder.add', compact('workorder','id', 'codes','workorders'));
-    } catch (\Exception $wo) {
-        abort(404);
+            return view('WorkOrder.add', compact('workorder', 'id', 'codes', 'workorders'));
+        } catch (\Exception $wo) {
+            abort(404);
+        }
     }
-}
 
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
 
-        
-        
+
+
         $request->validate([
-            
+
             'part'               => 'required|string|max:100',
             'date'               => 'required|date',
             'part_description'   => 'required|string|max:1000',
@@ -127,9 +120,9 @@ public function storeWorkEntry(Request $request)
 
         $workOrder = WorkOrder::findOrFail($id);
 
-        
+
         // $workOrder->entry_code        = $request->entry_code;
-        
+
         $workOrder->part              = $request->part;
         $workOrder->date              = $request->date;
         $workOrder->part_description  = $request->part_description;

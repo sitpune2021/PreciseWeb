@@ -19,6 +19,7 @@
                                         <tr>
                                             <th>Sr.No</th>
                                             <th>Customer Name</th>
+                                            <th>Email Id</th>
                                             <th>Code</th>
                                             <!-- <th>Contact Person</th> -->
                                             <th>Phone No.</th>
@@ -33,6 +34,7 @@
                                         <tr>
                                              <td>{{ $loop->iteration }}</td>
                                             <td>{{ $c->name }}</td>
+                                            <td>{{ $c->email_id }}</td>
                                             <td>{{ $c->code }}</td>
                                             <!-- <td>{{ $c->contact_person }}</td> -->
                                             <td>{{ $c->phone_no }}</td>
@@ -65,6 +67,7 @@
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewCustomerBtn"
                                                     data-name="{{ $c->name }}"
                                                     data-code="{{ $c->code }}"
+                                                    data-email_id="{{ $c->email_id }}"
                                                     data-contact="{{ $c->contact_person }}"
                                                     data-phone="{{ $c->phone_no }}"
                                                     data-gst="{{ $c->gst_no }}"
@@ -108,6 +111,10 @@
                                     <td id="cust_code"></td>
                                 </tr>
                                 <tr>
+                                    <th>Email</th>
+                                    <td id="email_id"></td>
+                                </tr>
+                                <tr>
                                     <th>Contact Person</th>
                                     <td id="cust_contact"></td>
                                 </tr>
@@ -134,6 +141,7 @@
                         btn.addEventListener("click", function() {
                             document.getElementById("cust_name").textContent = this.dataset.name;
                             document.getElementById("cust_code").textContent = this.dataset.code;
+                            document.getElementById("email_id").textContent = this.dataset.email_id;
                             document.getElementById("cust_contact").textContent = this.dataset.contact;
                             document.getElementById("cust_phone").textContent = this.dataset.phone;
                             document.getElementById("cust_gst").textContent = this.dataset.gst;

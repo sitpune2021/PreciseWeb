@@ -6,6 +6,7 @@ use PDF;
 use App\Models\SetupSheet;
 use App\Models\Customer;
 use App\Models\WorkOrder;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class SetupSheetController extends Controller
@@ -16,9 +17,9 @@ class SetupSheetController extends Controller
     public function AddSetupSheet()
     {
 
-        $codes = Customer::select('id', 'code', 'name')->get();
-
-        return view('SetupSheet.add', compact('codes'));
+        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+        $settings   = Setting::all();
+        return view('SetupSheet.add', compact('codes', 'settings'));
     }
 
 
@@ -47,7 +48,7 @@ class SetupSheetController extends Controller
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
 
-            'thickness' => 'required|numeric|min:1',
+            'thickness' => 'required|string|min:1',
             'qty'       => 'required|integer|min:1',
 
             // Hole Details (arrays)
@@ -73,7 +74,7 @@ class SetupSheetController extends Controller
      */
     public function ViewSetupSheet()
     {
-        $sheets = SetupSheet::all();
+        $sheets = SetupSheet::orderBy('id', 'desc')->get();
         return view('SetupSheet.view', compact('sheets'));
     }
 
@@ -84,10 +85,11 @@ class SetupSheetController extends Controller
     {
         try {
             $id = base64_decode($encryptedId);
-            $setupSheet = SetupSheet::findOrFail($id);   
+            $record = SetupSheet::findOrFail($id);
+            $setupSheet = SetupSheet::findOrFail($id);
+            $settings   = Setting::all();
             $codes = Customer::select('id', 'code', 'name')->get();
-            
-            return view('SetupSheet.add', compact('setupSheet', 'codes'));
+            return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record'));
         } catch (\Exception $setup) {
             abort(404);
         }
@@ -121,7 +123,7 @@ class SetupSheetController extends Controller
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
 
-            'thickness' => 'required|numeric|min:1',
+            'thickness' => 'required|string|min:1',
             'qty'       => 'required|integer|min:1',
 
             'holes'        => 'required|array',
@@ -155,18 +157,17 @@ class SetupSheetController extends Controller
 
     public function getCustomerParts($customerId)
     {
-       
         $parts = WorkOrder::where('customer_id', $customerId)
-            ->select('id', 'part', 'customer_id')
+            ->select('id', 'part', 'part_description', 'customer_id') // ✅ add part_description
             ->with('customer:id,code')
             ->get();
-
 
         $formatted = $parts->map(function ($wo) {
             return [
                 'id' => $wo->id,
                 'part' => $wo->part,
-                'part_code' => ($wo->customer->code ?? '') . '_' . $wo->customer_id . '_' . $wo->part
+                'part_code' => ($wo->customer->code ?? '') . '_' . $wo->customer_id . '_' . $wo->part,
+                'part_description' => $wo->part_description, // ✅ send description
             ];
         });
 

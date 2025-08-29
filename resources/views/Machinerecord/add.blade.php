@@ -28,7 +28,7 @@
                                     <!-- Part No -->
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
-                                        <select name="part_no" id="part_no" class="form-control">
+                                        <select name="part_no" id="part_no" class="form-control form-select">
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php
@@ -44,7 +44,16 @@
                                         </select>
                                         @error('part_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
-
+                                 
+                                    <div class="col-md-2">
+                                        <div class="">
+                                            <label for="code" class="form-label">Customer Code</label>
+                                            <input type="text" class="form-control" id="code" name="code" value="{{ old('code', $customer->code ?? '') }}"readonly>
+                                            @error('code')
+                                            <span class="text-red">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <!-- Work Order No -->
                                     <div class="col-md-2">
                                         <label class="form-label">Work Order No</label>
@@ -63,17 +72,19 @@
 
 
                                     <!-- Qty -->
-                                    <div class="col-md-2">
+                                   <div class="col-md-2">
                                         <label class="form-label">Qty <span class="text-red">*</span></label>
                                         <input type="number" name="qty" class="form-control"
-                                            value="{{ old('qty', $record->qty ?? '') }}">
+                                            value="{{ old('qty', $record->qty ?? '') }}"
+                                            step="1" min="1"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
                                         @error('qty') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- Machine -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
-                                        <select name="machine" class="form-control">
+                                        <select name="machine" class="form-control form-select">
                                             <option value=""> Select Machine </option>
                                             @foreach($machines as $machine)
                                             <option value="{{ $machine->machine_name }}"
@@ -86,9 +97,9 @@
                                     </div>
 
                                     <!-- Operator -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
-                                        <select name="operator" class="form-control">
+                                        <select name="operator" class="form-control form-select">
                                             <option value="">Select Operator</option>
                                             @foreach($operators as $operator)
                                             <option value="{{ $operator->operator_name }}"
@@ -101,9 +112,9 @@
                                     </div>
 
                                     <!-- Setting -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
-                                        <select name="setting_no" class="form-control">
+                                        <select name="setting_no" class="form-control form-select">
                                             <option value="">Select Setting</option>
                                             @foreach($settings as $setting)
                                             <option value="{{ $setting->setting_name }}"
@@ -114,9 +125,6 @@
                                         </select>
                                         @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
-
-
-
                                     <!-- Estimated Time -->
                                     <div class="col-md-4">
                                         <label class="form-label">Estimated Time (hrs) <span class="text-red">*</span></label>
@@ -141,21 +149,7 @@
                                         @error('end_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <!-- HRS -->
-                                    <div class="col-md-3">
-                                        <label class="form-label">HRS <span class="text-red">*</span></label>
-                                        <input type="number" step="0.01" name="hrs" class="form-control"
-                                            value="{{ old('hrs', $record->hrs ?? '') }}">
-                                        @error('hrs') <span class="text-red small">{{ $message }}</span> @enderror
-                                    </div>
-
-                                    <!-- Time Taken -->
-                                    <div class="col-md-3">
-                                        <label class="form-label">Time Taken <span class="text-red">*</span></label>
-                                        <input type="number" step="0.01" name="time_taken" class="form-control"
-                                            value="{{ old('time_taken', $record->time_taken ?? '') }}">
-                                        @error('time_taken') <span class="text-red small">{{ $message }}</span> @enderror
-                                    </div>
+                                
 
                                     <!-- Actual HRS -->
                                     <div class="col-md-3">
@@ -201,10 +195,22 @@
     document.getElementById('part_no').addEventListener('change', function() {
         let selected = this.options[this.selectedIndex];
 
+        // workorder id
         document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
+
+        // part description
         document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
+ 
+        if (selected.value) {
+            let partNo = selected.value.split("_"); 
+            let customerCode = partNo[0]; 
+            document.getElementById('code').value = customerCode;
+        } else {
+            document.getElementById('code').value = "";
+        }
     });
 </script>
+
 
 
 @endsection

@@ -12,6 +12,7 @@ class MachineRecord extends Model
     use SoftDeletes;
     protected $fillable = [
         'part_no',
+        'code',
         'work_order',
         'first_set',
         'qty',
@@ -21,8 +22,6 @@ class MachineRecord extends Model
         'est_time',
         'start_time',
         'end_time',
-        'hrs',
-        'time_taken',
         'actual_hrs',
         'invoice_no',
     ];

@@ -22,14 +22,18 @@
                                     @endif
 
                                     <div class="row">
-                                      
+
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="code" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select js-example-basic-single" @disabled(isset($project)) id="customer_id" name="customer_id">
+                                                <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
+                                                <select class="form-select js-example-basic-single"
+                                                    (isset($setupSheet))
+                                                    id="customer_id"
+                                                    name="customer_id">
                                                     <option value="">Select Customer</option>
                                                     @foreach($codes as $c)
-                                                    <option value="{{ $c->id }}" data-code="{{ $c->code }}">
+                                                    <option value="{{ $c->id }}" data-code="{{ $c->code }}"
+                                                        {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
                                                         {{ $c->name }} - ({{ $c->code }})
                                                     </option>
                                                     @endforeach
@@ -40,15 +44,15 @@
                                                 <span class="text-red customer"></span>
                                             </div>
                                         </div>
-                                          
-  
+
                                         <!-- Part Code -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span></label>
                                                 <select id="part_code" name="part_code" class="form-control">
                                                     <option value="">Select Part Code</option>
-                                                </select> @error('part_code')
+                                                </select>
+                                                @error('part_code')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
@@ -58,7 +62,9 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="work_order_no" name="work_order_no" readonly>
+                                                <input type="text" class="form-control" id="work_order_no"
+                                                    name="work_order_no" readonly
+                                                    value="{{ old('work_order_no', $setupSheet->work_order_no ?? '') }}">
                                                 @error('work_order_no')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
@@ -107,17 +113,23 @@
                                             </div>
                                         </div>
 
-                                        <!-- Setting -->
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="setting" class="form-label">Setting <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="setting" name="setting" value="{{ old('setting', $setupSheet->setting ?? '') }}">
-                                                @error('setting')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
 
+
+                                       <div class="col-md-3">
+                                        <label class="form-label">Setting <span class="text-red">*</span></label>
+                                        <select name="setting" class="form-control form-select">
+                                            <option value="">Select Setting</option>
+                                            @foreach($settings as $setting)
+                                                <option value="{{ $setting->setting_name }}"
+                                                    {{ old('setting', $record->setting ?? '') == $setting->setting_name ? 'selected' : '' }}>
+                                                    {{ $setting->setting_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('setting') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
+ 
                                         <!-- E Time -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
@@ -215,8 +227,8 @@
                                         <!-- Description -->
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <label for="description" class="form-label">Description <span class="mandatory">*</span></label>
-                                                <textarea class="form-control" id="description" name="description" placeholder="Enter Description">{{ old('description', $setupSheet->description ?? '') }}</textarea>
+                                                 <label for="part_description" class="form-label">Part Description</label>
+                                                 <input type="text" class="form-control" id="part_description" name="part_description">
                                                 @error('description')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
@@ -237,7 +249,8 @@
                                         $count = $count > 0 ? $count : 1;
                                         @endphp
 
-                                        <div id="dowel-holes-wrapper">
+                                        <!-- <div id="dowel-holes-wrapper">
+
                                             @for($i = 0; $i < $count; $i++)
                                                 <div class="row dowel-group mb-2">
                                                 <div class="col-md-2">
@@ -269,8 +282,57 @@
                                                 </div>
                                         </div>
                                         @endfor
-                                    </div>
+                                    </div> -->
 
+
+                                    <div id="dowel-holes-wrapper">
+                                        @for($i = 0; $i < $count; $i++)
+                                            <div class="row dowel-group mb-2">
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
+                                                        value="{{ old('holes.' . $i, $holesData[$i] ?? '') }}">
+                                                    @error('holes.' . $i)
+                                                        <span class="text-red">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
+                                                        value="{{ old('hole_x.' . $i, $holeXData[$i] ?? '') }}">
+                                                    @error('hole_x.' . $i)
+                                                        <span class="text-red">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"
+                                                        value="{{ old('hole_y.' . $i, $holeYData[$i] ?? '') }}">
+                                                    @error('hole_y.' . $i)
+                                                        <span class="text-red">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"
+                                                        value="{{ old('hole_dia.' . $i, $holeDiaData[$i] ?? '') }}">
+                                                    @error('hole_dia.' . $i)
+                                                        <span class="text-red">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" class="form-control" name="hole_depth[]" placeholder="Hole Depth"
+                                                        value="{{ old('hole_depth.' . $i, $holeDepthData[$i] ?? '') }}">
+                                                    @error('hole_depth.' . $i)
+                                                        <span class="text-red">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-center">
+                                                    @if($i == 0)
+                                                        <button type="button" class="btn btn-success add-row">+</button>
+                                                    @else
+                                                        <button type="button" class="btn btn-danger remove-row">-</button>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endfor
+                                    </div>
                                     <!-- Submit -->
                                     <div class="col-lg-12">
                                         <div class="text-end">
@@ -298,7 +360,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
     $(document).ready(function() {
 
         function generateCode() {
@@ -318,40 +379,45 @@
             }
         }
 
-       $("#customer_id").on("change", function() {
-    let customer_id = $(this).val();
+        $("#customer_id").on("change", function() {
+            let customer_id = $(this).val();
 
-    if (customer_id) {
-        $.ajax({
-            url: "/get-customer-parts/" + customer_id,
-            type: "GET",
-            success: function(response) {
-                let $partCode = $("#part_code");
+            if (customer_id) {
+                $.ajax({
+                    url: "/get-customer-parts/" + customer_id,
+                    type: "GET",
+                    success: function(response) {
+                        let $partCode = $("#part_code");
 
-                // clear old options
-                $partCode.empty();
-                $partCode.append('<option value="">Select Part Code</option>');
+                        // clear old options
+                        $partCode.empty();
+                        $partCode.append('<option value="">Select Part Code</option>');
 
-                // loop response and append options
-                response.forEach(function(item) {
-                    $partCode.append(
-                        `<option value="${item.part_code}">${item.part_code}</option>`
-                    );
+                        // loop response and append options
+                        response.forEach(function(item) {
+                            $partCode.append(
+                                `<option value="${item.part_code}">${item.part_code}</option>`
+                            );
+                        });
+
+                        // ✅ Auto-fill Work Order No with customer_id
+                        $("#work_order_no").val(customer_id);
+                        if (response.length > 0) {
+                            $("#part_description").val(response[0].part_description);
+                        } else {
+                            $("#part_description").val("");
+                        }
+                                        },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        alert("Something went wrong while fetching parts");
+                    },
                 });
-
-                // ✅ Auto-fill Work Order No with customer_id
-                $("#work_order_no").val(customer_id);
-            },
-            error: function(xhr) {
-                console.error(xhr.responseText);
-                alert("Something went wrong while fetching parts");
-            },
+            } else {
+                $("#part_code").empty().append('<option value="">-- Select Part Code --</option>');
+                $("#work_order_no").val(""); // clear work order no if no customer selected
+            }
         });
-    } else {
-        $("#part_code").empty().append('<option value="">-- Select Part Code --</option>');
-        $("#work_order_no").val(""); // clear work order no if no customer selected
-    }
-});
 
 
 

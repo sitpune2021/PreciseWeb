@@ -76,13 +76,10 @@
                                                 @enderror
                                             </div>
                                         </div>
-
-
-
                                         <!-- Start Date -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="StartDate" class="form-label">Start Date</label>
+                                                <label for="StartDate" class="form-label">Start Date <span class="mandatory"> *</span></label>
                                                 <input type="date" class="form-control datepicker" id="StartDate" name="StartDate"
                                                     value="{{ old('StartDate', isset($project->startdate) ? \Carbon\Carbon::parse($project->startdate)->format('Y-m-d') : '') }}">
                                                 @error('StartDate') <span class="text-red">{{ $message }}</span> @enderror
@@ -92,8 +89,8 @@
                                         <!-- End Date -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="EndDate" class="form-label">End Date</label>
-                                                <input type="date" class="form-control datepicker" id="EndDate" name="EndDate" value="{{ old('enddate', isset($project->enddate) ? \Carbon\Carbon::parse($project->enddate)->format('Y-m-d') : '') }}">
+                                                <label for="EndDate" class="form-label">End Date <span class="mandatory"> *</span></label>
+                                                <input type="date" class="form-control datepicker" id="EndDate" name="EndDate" value="{{ old('EndDate', isset($project->enddate) ? \Carbon\Carbon::parse($project->enddate)->format('Y-m-d') : '') }}">
                                                 @error('EndDate') <span class="text-red">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -142,5 +139,22 @@
 
     </div>
 </div>
+<script>
+    const startDate = document.getElementById('StartDate');
+    const endDate = document.getElementById('EndDate');
 
+    startDate.addEventListener('change', function() {
+        if (startDate.value) {
+            endDate.min = startDate.value;
+        } else {
+            endDate.min = '';
+        }
+    });
+
+    window.addEventListener('load', function() {
+        if (startDate.value) {
+            endDate.min = startDate.value;
+        }
+    });
+</script>
 @endsection

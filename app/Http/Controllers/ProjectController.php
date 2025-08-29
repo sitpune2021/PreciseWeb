@@ -14,9 +14,7 @@ class ProjectController extends Controller
      */
     public function AddProject()
     {
-        $codes = Customer::select('id', 'code', 'name')
-            ->orderBy('id', 'desc')
-            ->get();
+        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
 
         return view('Project.add', compact('codes'));
     }
@@ -34,7 +32,7 @@ class ProjectController extends Controller
             'description'    => 'required|string',
             'qty'           => ['required', 'integer', 'min:1'],
             'StartDate'      => 'required|date',
-            'EndDate'        => 'required|date|after_or_equal:StartDate',
+            'EndDate'        => 'required|date',
         ]);
 
         try {
@@ -91,7 +89,7 @@ class ProjectController extends Controller
             'description'    => 'nullable|string',
             'qty'           => ['required', 'integer', 'min:1'],
             'StartDate'      => 'nullable|date',
-            'EndDate'        => 'nullable|date|after_or_equal:StartDate',
+            'EndDate'        => 'nullable|date',
         ]);
 
         $project->update($validated);
