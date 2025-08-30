@@ -29,19 +29,33 @@ class VendorContoller extends Controller
             'gst_no' => strtoupper($request->input('gst_no')),
         ]);
         $request->validate([
-              'vendor_name' => ['required','string', 'max:255', 'regex:/^[a-zA-Z\s]+$/',  Rule::unique('vendors', 'vendor_name')->ignore($vendor->id ?? null),],          
+            'vendor_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/', Rule::unique('vendors', 'vendor_name')->ignore($vendor->id ?? null),],
             'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
-            'gst_no'          => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
+            'gst_no' => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', 'unique:vendors,gst_no',],
             'status'          => 'required|in:Active,Inactive',
-             'phone_no'        => ['required', 'digits:10'],
+             'phone_no' => ['required', 'digits:10', 'unique:vendors,phone_no'],
             'email_id'        => 'nullable|email|max:255',
             'address'         => 'required|string|max:500',
         ]);
 
-        $vendor_name_words = explode(' ', $request->input('vendor_name'));
-        $firstLetter = Str::substr($vendor_name_words[0], 0, 1);
-        $secondLetter = isset($vendor_name_words[1]) ? Str::substr($vendor_name_words[1], 0, 1) : '';
-        $vendor_code = strtoupper($firstLetter . $secondLetter);
+        $vendor_name_words = explode(' ', trim($request->input('vendor_name')));
+        $vendor_code = '';
+
+        if (count($vendor_name_words) == 1) {
+            $vendor_code = strtoupper(Str::substr($vendor_name_words[0], 0, 3));
+        } elseif (count($vendor_name_words) == 2) {
+            $vendor_code = strtoupper(
+                Str::substr($vendor_name_words[0], 0, 2) .
+                    Str::substr($vendor_name_words[1], 0, 1)
+            );
+        } else {
+            $firstLetter = Str::substr($vendor_name_words[0], 0, 1);
+            $secondLetter = Str::substr($vendor_name_words[1], 0, 1);
+            $thirdLetter = Str::substr($vendor_name_words[2], 0, 1);
+            $vendor_code = strtoupper($firstLetter . $secondLetter . $thirdLetter);
+        }
+
+        // merge into request so it goes to DB
         $request->merge([
             'vendor_code' => $vendor_code,
         ]);
@@ -64,11 +78,11 @@ class VendorContoller extends Controller
     /**
      * Display the specified resource.
      */
- 
+
     public function ViewVendor()
     {
         $vendors = Vendor::orderBy('id', 'desc')->get();
- 
+
         return view('Vendor.view', compact('vendors'));
     }
 
@@ -106,7 +120,7 @@ class VendorContoller extends Controller
             'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
             'gst_no'          => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
             'status'          => 'required|in:Active,Inactive',
-             
+
             'email_id'        => 'nullable|email|max:255',
             'address'         => 'required|string|max:500',
         ]);

@@ -158,7 +158,7 @@ class SetupSheetController extends Controller
     public function getCustomerParts($customerId)
     {
         $parts = WorkOrder::where('customer_id', $customerId)
-            ->select('id', 'part', 'part_description', 'customer_id') // ✅ add part_description
+            ->select('id', 'part', 'part_description', 'customer_id')  
             ->with('customer:id,code')
             ->get();
 
@@ -167,7 +167,7 @@ class SetupSheetController extends Controller
                 'id' => $wo->id,
                 'part' => $wo->part,
                 'part_code' => ($wo->customer->code ?? '') . '_' . $wo->customer_id . '_' . $wo->part,
-                'part_description' => $wo->part_description, // ✅ send description
+                'part_description' => $wo->part_description,  
             ];
         });
 
