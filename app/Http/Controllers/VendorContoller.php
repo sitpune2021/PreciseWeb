@@ -6,6 +6,7 @@ use App\Models\Vendor;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class VendorContoller extends Controller
 {
@@ -28,11 +29,11 @@ class VendorContoller extends Controller
             'gst_no' => strtoupper($request->input('gst_no')),
         ]);
         $request->validate([
-            'vendor_name'     => 'required|string|max:255',
+              'vendor_name' => ['required','string', 'max:255', 'regex:/^[a-zA-Z\s]+$/',  Rule::unique('vendors', 'vendor_name')->ignore($vendor->id ?? null),],          
             'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
             'gst_no'          => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
             'status'          => 'required|in:Active,Inactive',
-            'phone_no'        => ['required', 'digits:10'],
+             'phone_no'        => ['required', 'digits:10'],
             'email_id'        => 'nullable|email|max:255',
             'address'         => 'required|string|max:500',
         ]);
@@ -105,7 +106,7 @@ class VendorContoller extends Controller
             'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
             'gst_no'          => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
             'status'          => 'required|in:Active,Inactive',
-            'phone_no'        => ['required', 'digits:10'],
+             
             'email_id'        => 'nullable|email|max:255',
             'address'         => 'required|string|max:500',
         ]);

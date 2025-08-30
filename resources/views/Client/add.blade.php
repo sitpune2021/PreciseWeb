@@ -23,10 +23,16 @@
                                     <input type="hidden" name="password" value="123">
                                     <div class="row">
 
-                                        <div class="col-md-4">
+                                     <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Client Name <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="name" name="name" placeholder="Client Name" value="{{ old('name', $client->name ?? '') }}">
+                                                <input type="text"
+                                                    class="form-control"
+                                                    id="name"
+                                                    name="name"
+                                                    placeholder="Client Name"
+                                                    value="{{ old('name', $client->name ?? '') }}"
+                                                    onkeypress="return /[a-zA-Z\s]/.test(event.key)">
                                                 @error('name')
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -45,25 +51,22 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number"
-                                                    value="{{ old('phone_no', $client->phone_no ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number" value="{{ old('phone_no', isset($client) ? $client->phone_no : '') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
                                                 @error('phone_no')
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label for="gst_no" class="form-label">GST No <span class="mandatory">*</span></label>
- 
-                                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder="GST Number" value="{{ old('gst_no', $client->gst_no ?? '') }}" oninput="this.value = this.value.toUpperCase();">
-                                                    @error('gst_no')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
+                                       <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="gst_no" class="form-label">GST Number <span class="mandatory">*</span></label>
+                                                <input type="text" class="form-control" placeholder="GST Number" id="gst_no" name="gst_no" value="{{ old('gst_no', $client->gst_no ?? '') }}" oninput="this.value = this.value.toUpperCase();">
+                                                @error('gst_no')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
+                                        </div>
 
                                         <div class="col-md-6 mb-3">
 

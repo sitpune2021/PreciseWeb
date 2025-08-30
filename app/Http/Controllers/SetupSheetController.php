@@ -85,13 +85,11 @@ class SetupSheetController extends Controller
     {
         try {
             $id = base64_decode($encryptedId);
-            
+            $record = SetupSheet::findOrFail($id);
             $setupSheet = SetupSheet::findOrFail($id);
-
-            // dd($setupSheet);
             $settings   = Setting::all();
             $codes = Customer::select('id', 'code', 'name')->get();
-            return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings'));
+            return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record'));
         } catch (\Exception $setup) {
             abort(404);
         }
@@ -107,7 +105,7 @@ class SetupSheetController extends Controller
 
         // Validation
         $validated = $request->validate([
-            'customer_id'   => 'required|exists:customers,id',
+            'customer_id'   => 'nullable|exists:customers,id',
             'part_code'     => 'required|string|max:255',
             'work_order_no' => 'required|string|max:255',
             'date'          => 'required|date',

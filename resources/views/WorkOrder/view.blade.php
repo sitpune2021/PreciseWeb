@@ -133,6 +133,11 @@
                             <th>Quantity</th>
                             <td id="wo_quantity"></td>
                         </tr>
+
+                         <tr>
+                            <th>part_description</th>
+                            <td id="wo_part_description"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -158,6 +163,7 @@
                 document.getElementById('wo_height').textContent = data.height ?? '';
                 document.getElementById('wo_exp_time').textContent = data.exp_time ?? '';
                 document.getElementById('wo_quantity').textContent = data.quantity ?? '';
+                document.getElementById('wo_part_description').textContent = data.part_description ?? '';
             });
         });
     });

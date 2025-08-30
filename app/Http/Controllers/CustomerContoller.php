@@ -110,9 +110,9 @@ class CustomerContoller extends Controller
         ],
         'code'           => 'nullable',
         'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
-        'phone_no' => ['required','digits:10','regex:/^[0-9]{10}$/','unique:customers,phone_no',],
+        'phone_no'       => 'required|string|max:20',
         'email_id'       => 'nullable|email|max:40',
-        'gst_no' => ['required','regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/','unique:customers,gst_no',],
+        'gst_no'         => 'required|string|max:20',
         'address'        => 'required|string',
     ]);
 

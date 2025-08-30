@@ -24,10 +24,15 @@
                                     <div class="row">
 
                                         <!-- Customer -->
+                                        <!-- Customer -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select js-example-basic-single" id="customer_id" name="customer_id" {{ isset($setupSheet) ? 'disabled' : '' }}>
+                                                <select class="form-select js-example-basic-single"
+                                                    id="customer_id"
+                                                    name="customer_id"
+                                                    data-selected="{{ old('customer_id', $setupSheet->customer_id ?? '') }}"
+                                                    {{ isset($setupSheet) ? 'disabled' : '' }}>
                                                     <option value="">Select Customer</option>
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}" data-code="{{ $c->code }}"
@@ -39,6 +44,11 @@
                                                 @error('customer_id')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
+
+                                                {{-- जर edit असेल आणि customer select disabled असेल तर hidden ठेव --}}
+                                                @if(isset($setupSheet))
+                                                <input type="hidden" name="customer_id" value="{{ $setupSheet->customer_id }}">
+                                                @endif
                                             </div>
                                         </div>
 
@@ -46,7 +56,10 @@
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span></label>
-                                                <select id="part_code" name="part_code" class="form-control">
+                                                <select id="part_code"
+                                                    name="part_code"
+                                                    class="form-control form-select"
+                                                    data-selected="{{ old('part_code', $setupSheet->part_code ?? '') }}">
                                                     <option value="">Select Part Code</option>
                                                     @if(isset($setupSheet) && $setupSheet->customer_id)
                                                     @php
@@ -70,6 +83,7 @@
                                                 @enderror
                                             </div>
                                         </div>
+
 
 
                                         <!-- Work Order No -->
@@ -127,8 +141,6 @@
                                             </div>
                                         </div>
 
-
-
                                         <div class="col-md-3">
                                             <label class="form-label">Setting <span class="text-red">*</span></label>
                                             <select name="setting" class="form-control form-select">
@@ -142,7 +154,6 @@
                                             </select>
                                             @error('setting') <span class="text-red small">{{ $message }}</span> @enderror
                                         </div>
-
 
                                         <!-- E Time -->
                                         <div class="col-md-3">
@@ -377,6 +388,18 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    let editCustomer = $("#customer_id").data("selected");
+    let editPart = $("#part_code").data("selected");
+
+    if (editCustomer) {
+        $("#customer_id").val(editCustomer).trigger("change");
+
+        setTimeout(function() {
+            if (editPart) {
+                $("#part_code").val(editPart).trigger("change");
+            }
+        }, 600); // delay कारण AJAX नंतरच part load होतो
+    }
     $(document).ready(function() {
 
         // Customer change event (तुझं original code)
@@ -414,7 +437,7 @@
                             } else {
                                 $("#part_description").val("");
                             }
-                            
+
                         }
                     },
                     error: function(xhr) {
@@ -440,12 +463,12 @@
                     success: function(data) {
                         $("#part_description").val(data.part_description);
                         $("#work_order_no").val(data.work_order_no);
-                        
+
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
                     }
-                    
+
                 });
             } else {
                 $("#part_description").val("");

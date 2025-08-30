@@ -85,7 +85,7 @@ class ProjectController extends Controller
 
         $validated = $request->validate([
 
-            'name'           => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
             'description'    => 'nullable|string',
             'qty'           => ['required', 'integer', 'min:1'],
             'StartDate'      => 'nullable|date',

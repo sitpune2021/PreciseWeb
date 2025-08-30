@@ -20,24 +20,22 @@
                                     @if(isset($workorder)) @method('PUT') @endif
 
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="code" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select js-example-basic-single" @disabled(isset($workorder)) id="customer_id" name="customer_id">
-                                                    <option value="">Select Customer</option>
-                                                    @foreach($codes as $c)
-                                                    <option value="{{ $c->id }}"
-                                                        {{ old('customer_id', isset($workorder) ? $workorder->customer_id : '') == $c->id ? 'selected' : '' }}>
-                                                        {{ $c->name }} - ({{ $c->code }})
-                                                    </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('customer_id')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger customer"></span>
-                                            </div>
-                                        </div>
+                                       <div class="col-md-4">
+    <div class="mb-3">
+        <label for="code" class="form-label">Customer Name <span class="mandatory">*</span></label>
+        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
+            <option value="" selected>Select Customer</option>
+            @foreach($codes as $c)
+                <option value="{{ $c->id }}">{{ $c->name }} - ({{ $c->code }})</option>
+            @endforeach
+        </select>
+        @error('customer_id')
+        <span class="text-red">{{ $message }}</span>
+        @enderror
+        <span class="text-danger customer"></span>
+    </div>
+</div>
+
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="part" class="form-label">Part <span class="mandatory">*</span></label>
@@ -54,90 +52,83 @@
                                                 <span class="text-danger date"></span>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="mb-3">
-                                                <label for="dimeter" class="form-label">Diameter <span class="mandatory">*</span></label>
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    class="form-control"
-                                                    id="dimeter"
-                                                    name="dimeter"
-                                                    placeholder="Diameter"
-                                                    value="{{ old('dimeter', $workorder->dimeter ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
-                                                @error('dimeter')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger dimeter"></span>
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="col-md-3">
-                                            <div class="mb-3">
-                                                <label for="length" class="form-label">Length <span class="mandatory">*</span></label>
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    class="form-control"
-                                                    id="length"
-                                                    name="length"
-                                                    placeholder="Length"
-                                                    value="{{ old('length', $workorder->length ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
-                                                @error('length')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger length"></span>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-3">
+                                       <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="dimeter" class="form-label">Diameter <span class="mandatory">*</span></label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="dimeter"
+                                    name="dimeter"
+                                    placeholder="Diameter"
+                                    value="{{ old('dimeter', $workorder->dimeter ?? '') }}"
+                                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                @error('dimeter')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                                <span class="text-danger dimeter"></span>
+                            </div>
+                        </div>
+ 
+ 
+ 
+ 
+                                     <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="length" class="form-label">Length <span class="mandatory">*</span></label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="length"
+                                            name="length"
+                                            placeholder="Length"
+                                            value="{{ old('length', $workorder->length ?? '') }}"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                        @error('length')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                        <span class="text-danger length"></span>
+                                    </div>
+                                </div>
+ 
+ 
+ 
+                                      <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="width" class="form-label">Width <span class="mandatory">*</span></label>
                                                 <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
+                                                    type="text"
                                                     class="form-control"
                                                     id="width"
                                                     name="width"
                                                     placeholder="Width"
                                                     value="{{ old('width', $workorder->width ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
                                                 @error('width')
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                                 <span class="text-danger width"></span>
                                             </div>
                                         </div>
-
-
-                                        <div class="col-md-3">
-                                            <div class="mb-3">
-                                                <label for="height" class="form-label">Height <span class="mandatory">*</span></label>
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    class="form-control"
-                                                    id="height"
-                                                    name="height"
-                                                    placeholder="Height"
-                                                    value="{{ old('height', $workorder->height ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
-                                                @error('height')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger height"></span>
-                                            </div>
+ 
+ 
+                                     <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="height" class="form-label">Height <span class="mandatory">*</span></label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="height"
+                                                name="height"
+                                                placeholder="Height"
+                                                value="{{ old('height', $workorder->height ?? '') }}"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                            @error('height')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                            <span class="text-danger height"></span>
                                         </div>
-
+                                    </div>
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
@@ -235,7 +226,9 @@
                                                     if (!el.classList.contains("error")) el.textContent = "";
                                                 });
                                             }
-
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            document.getElementById("customer_id").selectedIndex = 0; // always selects "Select Customer"
+                                        });
                                             function validateFields() {
                                                 clearErrors();
                                                 let hasError = false;
@@ -252,7 +245,7 @@
                                                 let description = document.getElementById("part_description").value;
 
                                                 if (!customerVal) {
-                                                    $(".customer").text("");
+                                                    $(".customer").text("The customer field is required");
                                                     hasError = true;
                                                 }
                                                 if (!part) {
@@ -371,7 +364,7 @@
                                                 document.querySelectorAll("input, textarea").forEach(el => {
                                                     if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
                                                 });
-
+                                                $('#customer_id').val('').trigger('change');
                                                 document.getElementById("workOrderTableWrapper").style.display = "block";
                                                 document.getElementById("submitBtn").style.display = "inline-block";
                                                 return true;

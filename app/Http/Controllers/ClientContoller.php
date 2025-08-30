@@ -20,10 +20,10 @@ class ClientContoller extends Controller
     {
 
         $request->validate([
-            'name'        => 'required|string|max:255',
-            'phone_no'    => 'required|string|max:20',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/', 'unique:clients,name',],
+            'phone_no' => ['required', 'numeric', 'digits:10'],
             'email_id'    => 'required|email|max:30',
-            'gst_no'       => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
+            'gst_no' => ['required','regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/','unique:customers,gst_no',],
             'logo'        => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'address'     => 'required|string',
         ]);
@@ -142,12 +142,12 @@ class ClientContoller extends Controller
 
     public function updateClientStatus(Request $request)
     {
-         $client = Client::findOrFail($request->id);
- 
+        $client = Client::findOrFail($request->id);
+
         $client->status = $request->has('status') ? 1 : 0;
         $client->save();
- 
- 
+
+
         return back()->with('success', 'Status updated!');
     }
 }

@@ -27,14 +27,20 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="vendor_name" class="form-label">Vendor Name <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="vendor_name" name="vendor_name" placeholder="Vendor Name" value="{{ old('vendor_name', $vendor->vendor_name ?? '') }}">
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="vendor_name"
+                                                    name="vendor_name"
+                                                    placeholder="Vendor Name"
+                                                    value="{{ old('vendor_name', $vendor->vendor_name ?? '') }}"
+                                                    oninput="this.value = this.value.replace(/[0-9]/g, '');"> <!-- digits काढण्यासाठी -->
                                                 @error('vendor_name')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-<!-- 
-                                        <div class="col-md-4">
+                                        <!-- <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="vendor_code" class="form-label">Vendor Code <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="vendor_code" name="vendor_code" placeholder="Vendor Code" value="{{ old('vendor_code', $vendor->vendor_code ?? '') }}">
@@ -43,31 +49,28 @@
                                                 @enderror
                                             </div>
                                         </div> -->
-                                       <div class="col-md-4">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number"
                                                     value="{{ old('phone_no', $vendor->phone_no ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
                                                 @error('phone_no')
-                                                    <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="contact_person" class="form-label">Contact Person <span class="mandatory">*</span></label>
-                                        <input type="text" class="form-control" id="contact_person" name="contact_person"
-                                            placeholder="Contact Person"
-                                            value="{{ old('contact_person', $vendor->contact_person ?? '') }}"
-                                            oninput="this.value = this.value.replace(/[^A-Za-z.\s]/g, '');">
-                                        @error('contact_person')
-                                            <span class="text-red">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                        
+                                            <div class="mb-3">
+                                                <label for="contact_person" class="form-label">Contact Person <span class="mandatory">*</span></label>
+                                                <input type="text" class="form-control" id="contact_person" name="contact_person"
+                                                    placeholder="Contact Person"
+                                                    value="{{ old('contact_person', $vendor->contact_person ?? '') }}">
+                                                @error('contact_person')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
@@ -79,7 +82,7 @@
                                             </div>
                                         </div>
 
-                                    
+
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
@@ -90,28 +93,28 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="statusToggle" class="form-label">Status <span class="mandatory">*</span></label><br>
+                                                <label for="statusToggle" class="form-label">
+                                                    Status <span class="mandatory">*</span>
+                                                </label><br>
                                                 <div class="form-check form-switch">
+                                                    <!-- Fixed Active button -->
                                                     <input
                                                         class="form-check-input"
                                                         type="checkbox"
                                                         id="statusToggle"
-                                                        name="status"
-                                                        value="Active"
-                                                        {{ old('status', $vendor->status ?? 'Active') == 'Active' ? 'checked' : '' }}
-                                                        onchange="this.value = this.checked ? 'Active' : 'Inactive'">
+                                                        checked
+                                                        onclick="return false;"> <!-- user cannot change -->
                                                     <label class="form-check-label" for="statusToggle">
-                                                        {{ old('status', $vendor->status ?? 'Active') == 'Active' ? 'Active' : 'Inactive' }}
+                                                        Active
                                                     </label>
                                                 </div>
-                                                @error('status')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
+
+                                                <input type="hidden" name="status" value="Active"> <!-- Form value -->
                                             </div>
                                         </div>
+
 
 
                                         <div class="col-md-12">

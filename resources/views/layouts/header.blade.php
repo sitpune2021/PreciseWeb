@@ -561,222 +561,216 @@
 
             </div>
         </div>
-        <div id="scrollbar">
-            <div class="container-fluid">
+   <div id="scrollbar">
+    <div class="container-fluid">
+        <div id="two-column-menu"></div>
+        <ul class="navbar-nav" id="navbar-nav">
+            <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                    <i class="ri-dashboard-2-line"></i> 
+                    <span data-key="t-dashboards">Dashboards</span>
+                </a>
+            </li>
 
-
-                <div id="two-column-menu">
+            @if(auth()->user()->user_type == 1)
+            <li class="menu-title"><span data-key="t-menu">Clients</span></li>
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddClient','ViewClient') ? '' : 'collapsed' }}" 
+                   href="#sidebarClient" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddClient','ViewClient') ? 'true' : 'false' }}"
+                   aria-controls="sidebarClient">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Client Master</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddClient','ViewClient') ? 'show' : '' }}" id="sidebarClient">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddClient') }}" class="nav-link {{ request()->routeIs('AddClient') ? 'active' : '' }}"> Add </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewClient') }}" class="nav-link {{ request()->routeIs('ViewClient') ? 'active' : '' }}"> View </a>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="navbar-nav" id="navbar-nav">
-                    <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="{{ route('home') }}">
-                            <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>
-                        </a>
-                    </li>
+            </li>
+            @endif
 
+            @if(auth()->user()->user_type == 2)
 
+            <!-- Masters -->
+            <li class="menu-title"><span data-key="t-menu">Masters</span></li>
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddOperator','AddMachine','AddSetting') ? '' : 'collapsed' }}" 
+                   href="#sidebarMaster" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddOperator','AddMachine','AddSetting') ? 'true' : 'false' }}"
+                   aria-controls="sidebarMaster">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Master</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddOperator','AddMachine','AddSetting') ? 'show' : '' }}" id="sidebarMaster">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddOperator') }}" class="nav-link {{ request()->routeIs('AddOperator') ? 'active' : '' }}"> Add Operator </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('AddMachine') }}" class="nav-link {{ request()->routeIs('AddMachine') ? 'active' : '' }}"> Add Machine </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('AddSetting') }}" class="nav-link {{ request()->routeIs('AddSetting') ? 'active' : '' }}"> Add Setting </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                    @if(auth()->user()->user_type == 1)
+            <!-- Customers -->
+            <li class="menu-title"><span data-key="t-menu">Customers</span></li>
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddCustomer','ViewCustomer') ? '' : 'collapsed' }}" 
+                   href="#sidebarCustomers" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddCustomer','ViewCustomer') ? 'true' : 'false' }}"
+                   aria-controls="sidebarCustomers">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Customer Master</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddCustomer','ViewCustomer') ? 'show' : '' }}" id="sidebarCustomers">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddCustomer') }}" class="nav-link {{ request()->routeIs('AddCustomer') ? 'active' : '' }}"> Add </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewCustomer') }}" class="nav-link {{ request()->routeIs('ViewCustomer') ? 'active' : '' }}"> View </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                    <li class="menu-title"><span data-key="t-menu">Clients</span></li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarClient" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarClient">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Client Master</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarClient">
-                            <ul class="nav nav-sm flex-column">
+            <!-- Vendors -->
+            <li class="menu-title"><span data-key="t-menu">Vendors</span></li>
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddVendor','ViewVendor') ? '' : 'collapsed' }}" 
+                   href="#sidebarVendor" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddVendor','ViewVendor') ? 'true' : 'false' }}"
+                   aria-controls="sidebarVendor">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Vendor Master</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddVendor','ViewVendor') ? 'show' : '' }}" id="sidebarVendor">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddVendor') }}" class="nav-link {{ request()->routeIs('AddVendor') ? 'active' : '' }}"> Add </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewVendor') }}" class="nav-link {{ request()->routeIs('ViewVendor') ? 'active' : '' }}"> View </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                                <li class="nav-item">
-                                    <a href="{{ route('AddClient') }}" class="nav-link" data-key="t-chat"> Add </a>
-                                </li>
+            <!-- Projects -->
+            <li class="menu-title"><span data-key="t-menu">Projects</span></li>
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddProject','ViewProject') ? '' : 'collapsed' }}" 
+                   href="#sidebarProject" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddProject','ViewProject') ? 'true' : 'false' }}"
+                   aria-controls="sidebarProject">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Project Entry</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddProject','ViewProject') ? 'show' : '' }}" id="sidebarProject">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddProject') }}" class="nav-link {{ request()->routeIs('AddProject') ? 'active' : '' }}"> Add Project </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewProject') }}" class="nav-link {{ request()->routeIs('ViewProject') ? 'active' : '' }}"> View Project </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewClient') }}" class="nav-link" data-key="t-chat"> View </a>
-                                </li>
+            <!-- Work Order -->
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddWorkOrder','ViewWorkOrder') ? '' : 'collapsed' }}" 
+                   href="#sidebarWorkOrder" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddWorkOrder','ViewWorkOrder') ? 'true' : 'false' }}"
+                   aria-controls="sidebarWorkOrder">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Work Order Entry</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddWorkOrder','ViewWorkOrder') ? 'show' : '' }}" id="sidebarWorkOrder">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddWorkOrder') }}" class="nav-link {{ request()->routeIs('AddWorkOrder') ? 'active' : '' }}"> Add</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewWorkOrder') }}" class="nav-link {{ request()->routeIs('ViewWorkOrder') ? 'active' : '' }}"> View</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                            </ul>
-                        </div>
-                    </li>
+            <!-- Setup Sheet -->
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddSetupSheet','ViewSetupSheet') ? '' : 'collapsed' }}" 
+                   href="#sidebarsetup" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddSetupSheet','ViewSetupSheet') ? 'true' : 'false' }}"
+                   aria-controls="sidebarsetup">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Setup Sheet</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddSetupSheet','ViewSetupSheet') ? 'show' : '' }}" id="sidebarsetup">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddSetupSheet') }}" class="nav-link {{ request()->routeIs('AddSetupSheet') ? 'active' : '' }}"> Add</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewSetupSheet') }}" class="nav-link {{ request()->routeIs('ViewSetupSheet') ? 'active' : '' }}"> View</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                    @endif
+            <!-- Machine Record -->
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddMachinerecord','ViewMachinerecord') ? '' : 'collapsed' }}" 
+                   href="#sidebarMrecord" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddMachinerecord','ViewMachinerecord') ? 'true' : 'false' }}"
+                   aria-controls="sidebarMrecord">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Machine Record</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddMachinerecord','ViewMachinerecord') ? 'show' : '' }}" id="sidebarMrecord">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddMachinerecord') }}" class="nav-link {{ request()->routeIs('AddMachinerecord') ? 'active' : '' }}"> Add</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewMachinerecord') }}" class="nav-link {{ request()->routeIs('ViewMachinerecord') ? 'active' : '' }}"> View</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                    @if(auth()->user()->user_type == 2)
+            <!-- Material Order -->
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->routeIs('AddMaterialorder','ViewMaterialorder') ? '' : 'collapsed' }}" 
+                   href="#sidebarMaterial" data-bs-toggle="collapse" role="button"
+                   aria-expanded="{{ request()->routeIs('AddMaterialorder','ViewMaterialorder') ? 'true' : 'false' }}"
+                   aria-controls="sidebarMaterial">
+                    <i class="ri-apps-2-line"></i> <span data-key="t-apps">Material Order</span>
+                </a>
+                <div class="collapse menu-dropdown {{ request()->routeIs('AddMaterialorder','ViewMaterialorder') ? 'show' : '' }}" id="sidebarMaterial">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('AddMaterialorder') }}" class="nav-link {{ request()->routeIs('AddMaterialorder') ? 'active' : '' }}"> Add</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ViewMaterialorder') }}" class="nav-link {{ request()->routeIs('ViewMaterialorder') ? 'active' : '' }}"> View</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                    <li class="menu-title"><span data-key="t-menu">Masters</span></li>
+            <br><br><br><br><br><br><br><br>
+            @endif
+        </ul>
+    </div>
+    <!-- Sidebar -->
+</div>
 
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarMaster" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarMaster">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Master</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarMaster">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddOperator') }}" class="nav-link" data-key="t-chat"> Add Operator </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('AddMachine') }}" class="nav-link" data-key="t-chat"> Add Machine </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddSetting') }}" class="nav-link" data-key="t-chat"> Add Setting </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="menu-title"><span data-key="t-menu">Customers</span></li>
-
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarCustomers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarCustomers">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Customer Master</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarCustomers">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddCustomer') }}" class="nav-link" data-key="t-chat"> Add </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewCustomer') }}" class="nav-link" data-key="t-chat"> View </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="menu-title"><span data-key="t-menu">Vendors</span></li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarVendor" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarVendor">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Vendor Master</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarVendor">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddVendor') }}" class="nav-link" data-key="t-chat"> Add </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewVendor') }}" class="nav-link" data-key="t-chat"> View </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="menu-title"><span data-key="t-menu">Projects</span></li>
-
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarProject" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarProject">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Project Entry</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarProject">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddProject') }}" class="nav-link" data-key="t-chat"> Add Project
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewProject') }}" class="nav-link" data-key="t-chat"> View Project </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-
-
-
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarWorkOrder" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarWorkOrder">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Work Order Entry</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarWorkOrder">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddWorkOrder') }}" class="nav-link" data-key="t-chat"> Add</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewWorkOrder') }}" class="nav-link" data-key="t-chat"> View</a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarsetup" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarsetup">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Setup Sheet</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarsetup">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddSetupSheet') }}" class="nav-link" data-key="t-chat"> Add</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewSetupSheet') }}" class="nav-link" data-key="t-chat"> View</a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarMrecord" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarMrecord">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Machine Record</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarMrecord">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddMachinerecord') }}" class="nav-link" data-key="t-chat"> Add</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewMachinerecord') }}" class="nav-link" data-key="t-chat"> View</a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#sidebarMaterial" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarMaterial">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Material Order</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="sidebarMaterial">
-                            <ul class="nav nav-sm flex-column">
-
-                                <li class="nav-item">
-                                    <a href="{{ route('AddMaterialorder') }}" class="nav-link" data-key="t-chat"> Add</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewMaterialorder') }}" class="nav-link" data-key="t-chat"> View</a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
-
-                    <br><br><br><br><br><br><br><br><br><br>
-
-
-                    @endif
-
-                </ul>
-            </div>
-            <!-- Sidebar -->
-        </div>
 
         <div class="sidebar-background"></div>
     </div>

@@ -39,25 +39,21 @@ class WorkOrderController extends Controller
      */
     public function storeWorkEntry(Request $request)
     {
-        Log::info('Incoming Work Entry Request:', $request->all());
-
-        // Validate first
+ 
         $validatedData = $request->validate([
             'rows'               => 'required|array|min:1',
             'rows.*.customer_id' => 'required|exists:customers,id',
             'rows.*.part'        => 'required|string|max:100',
             'rows.*.date'        => 'required|date',
             'rows.*.part_description' => 'required|string|max:1000',
-            'rows.*.dimeter'     => 'required|numeric',
-            'rows.*.length'      => 'required|numeric',
-            'rows.*.width'       => 'required|numeric',
-            'rows.*.height'      => 'required|numeric',
+            'rows.*.dimeter' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+             'rows.*.length'  => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'rows.*.width' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+          'rows.*.height' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'rows.*.exp_time'    => 'date_format:H:i',
             'rows.*.quantity'    => 'required|integer|min:1',
         ]);
 
-        Log::info('Validated Data:', $validatedData);
-        // Save each row
         foreach ($validatedData['rows'] as $row) {
            $workorders= WorkOrder::create([
                 'customer_id'      => $row['customer_id'],
@@ -73,7 +69,6 @@ class WorkOrderController extends Controller
             ]);
         }
 
-        Log::info('Total Work Orders in DB: ' . $workorders->count());
 
         $workorders = WorkOrder::with('customer')->get();
         return view('WorkOrder.view', compact('workorders'));

@@ -26,7 +26,13 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Project Name <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="name" name="name" placeholder="Project Name" value="{{ old('name', $project->name ?? '') }}">
+                                                <input type="text"
+                                                    class="form-control"
+                                                    id="name"
+                                                    name="name"
+                                                    placeholder="Project Name"
+                                                    value="{{ old('name', $project->name ?? '') }}"
+                                                    onkeypress="return /[a-zA-Z\s]/.test(event.key)">
                                                 @error('name') <span class="text-red">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
