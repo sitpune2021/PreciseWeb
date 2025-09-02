@@ -20,13 +20,16 @@ return new class extends Migration
             $table->string('machine');             // M/C
             $table->string('operator');            // OP
             $table->string('setting_no')->nullable();  // SET (1st, 2nd etc.)
-            $table->decimal('est_time', 5, 2)->nullable(); // EST
+            $table->string('est_time')->nullable();
             $table->dateTime('start_time')->nullable();   // START
             $table->dateTime('end_time')->nullable();     // END
             $table->decimal('hrs', 5, 2)->nullable();     // HRS
             $table->decimal('time_taken', 5, 2)->nullable(); // TIME
             $table->decimal('actual_hrs', 5, 2)->nullable(); // HRS (Actual)
             $table->string('invoice_no')->nullable(); // INVOICE NO
+
+            
+            
             $table->softDeletes(); 
             $table->timestamps();
         });

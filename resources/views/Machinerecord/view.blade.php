@@ -165,7 +165,7 @@
                             document.getElementById("view_hrs").textContent = this.dataset.hrs;
                             document.getElementById("view_time_taken").textContent = this.dataset.time_taken;
                             document.getElementById("view_actual_hrs").textContent = this.dataset.actual_hrs;
-                            document.getElementById("view_invoice").textContent = this.dataset.invoice;
+                            document.getElementById("view_invoice").textContent = this.dataset.invoice_no;
 
                             let modal = new bootstrap.Modal(document.getElementById("viewRecordModal"));
                             modal.show();

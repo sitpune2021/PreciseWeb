@@ -23,12 +23,11 @@ return new class extends Migration
             $table->string('length');
             $table->string('width');
             $table->string('height');
-           $table->string('exp_time')->nullable();
+            $table->string('exp_time')->nullable();
             $table->integer('quantity');
             $table->softDeletes();
             $table->timestamps();
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-
+           
         });
     }
 
@@ -37,8 +36,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Schema::table('work_orders', function (Blueprint $table) {
+        //     $table->dropForeign(['customer_id']);
+        //     $table->dropColumn('customer_id');
+        // });
+
         Schema::dropIfExists('work_orders');
     }
-
-
 };
