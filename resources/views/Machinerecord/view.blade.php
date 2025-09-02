@@ -59,7 +59,8 @@
                                                     data-est_time="{{ $rec->est_time }}"
                                                     data-hrs="{{ $rec->hrs }}"
                                                     data-time_taken="{{ $rec->time_taken }}"
-                                                    data-actual_hrs="{{ $rec->actual_hrs }}">
+                                                    data-actual_hrs="{{ $rec->actual_hrs }}"
+                                                    data-invoice_no="{{ $rec->invoice_no }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
 

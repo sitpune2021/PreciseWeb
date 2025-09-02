@@ -22,6 +22,7 @@ return new class extends Migration
     $table->string('gst_no', 20)->nullable();
     $table->string('logo');
     $table->text('address');
+     $table->boolean('status')->default(1);
     $table->softDeletes();
     $table->timestamps();
 

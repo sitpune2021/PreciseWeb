@@ -13,6 +13,10 @@
         {
             Schema::create('projects', function (Blueprint $table) {
                 $table->id();
+
+    // Customer relation
+                $table->unsignedBigInteger('customer_id')->nullable();
+
                 $table->string('name');
                 $table->unsignedBigInteger('user_id')->nullable();               
                 $table->text('description')->nullable();             
@@ -21,7 +25,7 @@
                 $table->date('enddate')->nullable();
                 $table->softDeletes();
                 $table->timestamps(); 
-                // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                
             });
         }
 

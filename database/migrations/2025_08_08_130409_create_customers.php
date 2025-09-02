@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email_id', '30')->nullable();
             $table->string('gst_no', '20')->nullable();
             $table->text('address');
+            $table->boolean('status')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

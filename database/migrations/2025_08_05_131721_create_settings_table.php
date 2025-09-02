@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('setting_name');
+             $table->boolean('status')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -44,7 +44,7 @@ class ProjectController extends Controller
             return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
         } catch (\Exception $e) {
 
-            dd($e);
+          
 
             return back()->with('error', 'An unexpected error occurred. Please try again.');
         }
