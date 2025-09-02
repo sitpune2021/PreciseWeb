@@ -28,24 +28,28 @@
                                     <!-- Part No -->
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
-                                        <select name="part_no" id="part_no" class="form-control form-select">
+ 
+                                        <select name="part_no" id="part_no" class="form-control">
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php
                                             $partNo = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
                                             @endphp
-                                            <option value="{{ $partNo }}"
-                                                data-workorder="{{ $wo->customer_id }}"
-                                                data-partdesc="{{ $wo->part_description }}"
+                                           <option value="{{ $partNo }}"
+                                                data-code="{{ $wo->customer?->code ?? '' }}"
+                                                data-workorder="{{ $wo->customer_id ?? '' }}"
+                                                data-partdesc="{{ $wo->part_description ?? '' }}"
+                                                data-qty="{{ $wo->quantity ?? '' }}"
+                                                data-e_time="{{ $wo->exp_time ?? '' }}"
                                                 {{ old('part_no', $record->part_no ?? '') == $partNo ? 'selected' : '' }}>
                                                 {{ $partNo }}
                                             </option>
+
                                             @endforeach
                                         </select>
                                         @error('part_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
-                                 
-                                    <div class="col-md-2">
+                                      <div class="col-md-2">
                                         <div class="">
                                             <label for="code" class="form-label">Customer Code</label>
                                             <input type="text" class="form-control" id="code" name="code" value="{{ old('code', $customer->code ?? '') }}"readonly>
@@ -72,19 +76,17 @@
 
 
                                     <!-- Qty -->
-                                   <div class="col-md-2">
+                                    <div class="col-md-2">
                                         <label class="form-label">Qty <span class="text-red">*</span></label>
-                                        <input type="number" name="qty" class="form-control"
-                                            value="{{ old('qty', $record->qty ?? '') }}"
-                                            step="1" min="1"
-                                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
+                                        <input type="number" name="qty" id="qty" class="form-control"
+                                            value="{{ old('qty', $record->qty ?? '') }}">
                                         @error('qty') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- Machine -->
                                     <div class="col-md-3">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
-                                        <select name="machine" class="form-control form-select">
+                                        <select name="machine" class="form-control">
                                             <option value=""> Select Machine </option>
                                             @foreach($machines as $machine)
                                             <option value="{{ $machine->machine_name }}"
@@ -99,7 +101,7 @@
                                     <!-- Operator -->
                                     <div class="col-md-3">
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
-                                        <select name="operator" class="form-control form-select">
+                                        <select name="operator" class="form-control">
                                             <option value="">Select Operator</option>
                                             @foreach($operators as $operator)
                                             <option value="{{ $operator->operator_name }}"
@@ -114,7 +116,7 @@
                                     <!-- Setting -->
                                     <div class="col-md-3">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
-                                        <select name="setting_no" class="form-control form-select">
+                                        <select name="setting_no" class="form-control">
                                             <option value="">Select Setting</option>
                                             @foreach($settings as $setting)
                                             <option value="{{ $setting->setting_name }}"
@@ -125,11 +127,15 @@
                                         </select>
                                         @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
+
+
+
                                     <!-- Estimated Time -->
                                     <div class="col-md-4">
                                         <label class="form-label">Estimated Time (hrs) <span class="text-red">*</span></label>
-                                        <input type="number" step="0.01" name="est_time" class="form-control"
+                                        <input type="text" step="0.01" name="est_time" id="e_time" class="form-control"
                                             value="{{ old('est_time', $record->est_time ?? '') }}">
+
                                         @error('est_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
@@ -149,7 +155,21 @@
                                         @error('end_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                
+                                    <!-- HRS -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">HRS <span class="text-red">*</span></label>
+                                        <input type="number" step="0.01" name="hrs" class="form-control"
+                                            value="{{ old('hrs', $record->hrs ?? '') }}">
+                                        @error('hrs') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <!-- Time Taken -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Time Taken <span class="text-red">*</span></label>
+                                        <input type="number" step="0.01" name="time_taken" class="form-control"
+                                            value="{{ old('time_taken', $record->time_taken ?? '') }}">
+                                        @error('time_taken') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
 
                                     <!-- Actual HRS -->
                                     <div class="col-md-3">
@@ -192,24 +212,46 @@
     </div> <!-- page-content -->
 </div> <!-- main-content -->
 <script>
-    document.getElementById('part_no').addEventListener('change', function() {
-        let selected = this.options[this.selectedIndex];
-
-        // workorder id
-        document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
-
-        // part description
-        document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
  
-        if (selected.value) {
-            let partNo = selected.value.split("_"); 
-            let customerCode = partNo[0]; 
-            document.getElementById('code').value = customerCode;
-        } else {
-            document.getElementById('code').value = "";
-        }
+    document.getElementById('part_no').addEventListener('change', function() 
+    {
+            let selected = this.options[this.selectedIndex];
+
+            document.getElementById('code').value = selected.getAttribute('data-code') || '';
+            document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
+            document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
+            document.getElementById('qty').value = selected.getAttribute('data-qty') || '';
+            document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
     });
+
+    function calculateHours() {
+        let start = document.querySelector('[name="start_time"]').value;
+        let end = document.querySelector('[name="end_time"]').value;
+
+        if (start && end) {
+            let startTime = new Date(start);
+            let endTime = new Date(end);
+
+            if (endTime > startTime) {
+                let diff = (endTime - startTime) / (1000 * 60 * 60); // hours (actual)
+
+                let factor = 0.83; 
+                let actual = diff;            // Actual HRS (24.00)
+                let hrs = diff / factor;      // HRS (28.80)
+                let time = diff / factor;     // TIME (28.80)
+
+                document.querySelector('[name="hrs"]').value = hrs.toFixed(2);
+                document.querySelector('[name="time_taken"]').value = time.toFixed(2);
+                document.querySelector('[name="actual_hrs"]').value = actual.toFixed(2);
+            }
+        }
+    }
+
+    // Event binding
+    document.querySelector('[name="start_time"]').addEventListener('change', calculateHours);
+    document.querySelector('[name="end_time"]').addEventListener('change', calculateHours);
 </script>
+
 
 
 

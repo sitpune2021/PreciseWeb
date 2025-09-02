@@ -8,6 +8,7 @@ use App\Models\WorkOrder;
 use App\Models\Machine;
 use App\Models\Operator;
 use App\Models\Setting;
+use App\Models\SetupSheet;
 
 class MachinerecordController extends Controller
 {
@@ -38,9 +39,11 @@ class MachinerecordController extends Controller
             'machine'     => 'required|string|max:100',
             'operator'    => 'required|string|max:100',
             'setting_no'  => 'required|string|max:100',
-            'est_time'    => 'required|numeric|min:0',
+            'est_time'    => 'required|string|max:100',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
+            'hrs'         => 'required|numeric|min:0',
+            'time_taken'  => 'required|numeric|min:0',
             'actual_hrs'  => 'required|numeric|min:0',
             'invoice_no'  => 'required|string|max:100',
         ]);
@@ -98,9 +101,11 @@ class MachinerecordController extends Controller
             'machine'     => 'required|string|max:100',
             'operator'    => 'required|string|max:100',
             'setting_no'  => 'required|string|max:100',
-            'est_time'    => 'required|numeric|min:0',
+            'est_time'    => 'required|string|max:100',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
+            'hrs'         => 'required|numeric|min:0',
+            'time_taken'  => 'required|numeric|min:0',
             'actual_hrs'  => 'required|numeric|min:0',
             'invoice_no'  => 'required|string|max:100',
         ]);
@@ -122,4 +127,20 @@ class MachinerecordController extends Controller
         $record->delete();
         return redirect()->route('ViewMachinerecord')->with('success', 'Branch deleted successfully.');
     }
+
+    public function fetchData($part_code)
+{
+    $data = SetupSheet::where('part_code', $part_code)->first();
+
+    if ($data) {
+        return response()->json([
+            'work_order_no' => $data->customer_id,
+            'description' => $data->description,
+            'qty' => $data->qty,
+            'est_time' => $data->est_time,
+        ]);
+    }
+
+    return response()->json([]);
+}
 }

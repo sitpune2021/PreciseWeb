@@ -45,7 +45,6 @@
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
 
-                                                {{-- जर edit असेल आणि customer select disabled असेल तर hidden ठेव --}}
                                                 @if(isset($setupSheet))
                                                 <input type="hidden" name="customer_id" value="{{ $setupSheet->customer_id }}">
                                                 @endif
@@ -58,7 +57,7 @@
                                                 <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span></label>
                                                 <select id="part_code"
                                                     name="part_code"
-                                                    class="form-control form-select"
+                                                    class="form-control form-select js-example-basic-single"
                                                     data-selected="{{ old('part_code', $setupSheet->part_code ?? '') }}">
                                                     <option value="">Select Part Code</option>
                                                     @if(isset($setupSheet) && $setupSheet->customer_id)
@@ -242,7 +241,9 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="qty" name="qty" value="{{ old('qty', $setupSheet->qty ?? '') }}">
+                                                <input type="number" step="1" min="1" class="form-control" id="qty" name="qty"
+                                                    value="{{ old('qty', $setupSheet->qty ?? '') }}"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
                                                 @error('qty')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
@@ -254,8 +255,8 @@
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">Part Description</label>
                                                 <input type="text" class="form-control" id="part_description"
-                                                    name="part_description"
-                                                    value="{{ old('part_description', $setupSheet->part_description ?? '') }}">
+                                                    name="description"
+                                                    value="{{ old('description', $setupSheet->description ?? '') }}">
                                                 @error('part_description')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
@@ -387,7 +388,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+<!-- <script>
     let editCustomer = $("#customer_id").data("selected");
     let editPart = $("#part_code").data("selected");
 
@@ -398,11 +399,11 @@
             if (editPart) {
                 $("#part_code").val(editPart).trigger("change");
             }
-        }, 600); // delay कारण AJAX नंतरच part load होतो
+        }, 600); 
     }
     $(document).ready(function() {
 
-        // Customer change event (तुझं original code)
+        
         $("#customer_id").on("change", function() {
             let customer_id = $(this).val();
 
@@ -420,25 +421,26 @@
                         // loop response and append options
                         response.forEach(function(item) {
                             $partCode.append(
-                                `<option value="${item.part_code}">${item.part_code}</option>`
+                                `<option value="${item.part_code}"
+                                         data-description="${item.part_description}"
+                                         data-workorder="${item.work_order_no}"
+                                         data-size_x="${item.size_in_x}"
+                                         data-size_y="${item.size_in_y}"
+                                         data-size_z="${item.size_in_z}"
+                                         data-qty="${item.qty}"
+                                         data-etime="${item.e_time}">
+                                     ${item.part_code}
+                                 </option>`
                             );
                         });
-
-                        // ✅ Work Order no fill
+                     
                         $("#work_order_no").val(customer_id);
 
-                        // ✅ जर edit असेल तर saved part auto-select होईल
-                        let oldPart = $("#part_code").data("selected"); // Blade मधून येणार
+                       
+                        let oldPart = $("#part_code").data("selected"); 
                         if (oldPart) {
                             $partCode.val(oldPart).trigger("change");
-                        } else {
-                            if (response.length > 0) {
-                                $("#part_description").val(response[0].part_description);
-                            } else {
-                                $("#part_description").val("");
-                            }
-
-                        }
+                        }  
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
@@ -451,39 +453,100 @@
             }
         });
 
-        // Part Code select change → auto fill description + work order
+        // Part Code select change → auto fill
         $(document).on("change", "#part_code", function() {
             let selected = $(this).find(":selected");
             if (selected.val()) {
-                let partCode = selected.val();
-
-                $.ajax({
-                    url: "/get-part-details/" + partCode,
-                    type: "GET",
-                    success: function(data) {
-                        $("#part_description").val(data.part_description);
-                        $("#work_order_no").val(data.work_order_no);
-
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                    }
-
-                });
+                $("#part_description").val(selected.data("description"));
+                $("#work_order_no").val(selected.data("workorder"));
+                $("#size_in_x").val(selected.data("size_x"));
+                $("#size_in_y").val(selected.data("size_y"));
+                $("#size_in_z").val(selected.data("size_z"));
+                $("#qty").val(selected.data("qty"));
+                $("#e_time").val(selected.data("etime"));
             } else {
-                $("#part_description").val("");
-                $("#work_order_no").val("");
+                $("#part_description, #work_order_no, #size_in_x, #size_in_y, #size_in_z, #qty, #e_time").val("");
             }
         });
 
-        // ✅ Page load ला Edit असेल तर auto fire कर
+        let editCustomer = $("#customer_id").data("selected");
+        if (editCustomer) {
+            $("#customer_id").val(editCustomer).trigger("change");
+        }
+    });
+</script> -->
+
+
+
+<script>
+    $(document).ready(function() {
+        let isEditMode = $("#setup_id").val() ? true : false; // 👉 Hidden input ठेव (id ओळखायला)
+
+        $("#customer_id").on("change", function() {
+            let customer_id = $(this).val();
+
+            if (customer_id) {
+                $.ajax({
+                    url: "/get-customer-parts/" + customer_id,
+                    type: "GET",
+                    success: function(response) {
+                        let $partCode = $("#part_code");
+
+                        $partCode.empty().append('<option value="">Select Part Code</option>');
+
+                        response.forEach(function(item) {
+                            $partCode.append(
+                                `<option value="${item.part_code}"
+                                     data-description="${item.part_description}"
+                                     data-workorder="${item.work_order_no}"
+                                     data-size_x="${item.size_in_x}"
+                                     data-size_y="${item.size_in_y}"
+                                     data-size_z="${item.size_in_z}"
+                                     data-qty="${item.qty}"
+                                     data-etime="${item.e_time}">
+                                 ${item.part_code}
+                             </option>`
+                            );
+                        });
+
+                        let oldPart = $("#part_code").data("selected");
+                        if (oldPart) {
+                            $partCode.val(oldPart).trigger("change");
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        alert("Something went wrong while fetching parts");
+                    },
+                });
+            } else {
+                $("#part_code").empty().append('<option value="">-- Select Part Code --</option>');
+            }
+        });
+
+        // 👉 फक्त Add mode मध्ये auto-fill कर
+        $(document).on("change", "#part_code", function() {
+            let selected = $(this).find(":selected");
+            if (selected.val()) {
+                if (!isEditMode) { // Edit असताना description overwrite होणार नाही
+                    $("#part_description").val(selected.data("description"));
+                }
+                $("#work_order_no").val(selected.data("workorder"));
+                $("#size_in_x").val(selected.data("size_x"));
+                $("#size_in_y").val(selected.data("size_y"));
+                $("#size_in_z").val(selected.data("size_z"));
+                $("#qty").val(selected.data("qty"));
+                $("#e_time").val(selected.data("etime"));
+            }
+        });
+
+        // Edit mode load करताना customer select कर
         let editCustomer = $("#customer_id").data("selected");
         if (editCustomer) {
             $("#customer_id").val(editCustomer).trigger("change");
         }
     });
 </script>
-
 <script>
     $(document).ready(function() {
         $(document).on("click", ".add-row", function() {

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('length');
             $table->string('width');
             $table->string('height');
-            $table->time('exp_time');
+           $table->string('exp_time')->nullable();
             $table->integer('quantity');
             $table->softDeletes();
             $table->timestamps();

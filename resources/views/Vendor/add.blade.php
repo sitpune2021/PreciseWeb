@@ -26,19 +26,19 @@
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                        <label for="vendor_name" class="form-label">Vendor Name <span class="mandatory">*</span></label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="vendor_name"
-                                            name="vendor_name"
-                                            placeholder="Vendor Name"
-                                            value="{{ old('vendor_name', $vendor->vendor_name ?? '') }}"
-                                            oninput="this.value = this.value.replace(/[0-9]/g, '');"> <!-- digits काढण्यासाठी -->
-                                        @error('vendor_name')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+                                                <label for="vendor_name" class="form-label">Vendor Name <span class="mandatory">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="vendor_name"
+                                                    name="vendor_name"
+                                                    placeholder="Vendor Name"
+                                                    value="{{ old('vendor_name', $vendor->vendor_name ?? '') }}"
+                                                    oninput="this.value = this.value.replace(/[0-9]/g, '');">
+                                                @error('vendor_name')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
                                         <!-- <div class="col-md-4">
                                             <div class="mb-3">

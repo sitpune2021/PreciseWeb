@@ -47,7 +47,7 @@ class WorkOrderController extends Controller
             'rows.*.length'      => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'rows.*.width'       => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'rows.*.height'      => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'rows.*.exp_time'    => 'date_format:H:i',
+             'rows.*.exp_time' => 'nullable|string|max:50',
             'rows.*.quantity'    => 'required|integer|min:1',
         ]);
 
@@ -105,7 +105,7 @@ class WorkOrderController extends Controller
             'length'             => 'required|numeric',
             'width'              => 'required|numeric',
             'height'             => 'required|numeric',
-            'exp_time'           => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d$/'],
+            'exp_time'           => 'nullable|string|max:50',
             'quantity'           => 'required|integer|min:1',
         ]);
 

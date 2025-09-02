@@ -675,10 +675,10 @@
                 <div class="collapse menu-dropdown {{ request()->routeIs('AddProject','ViewProject') ? 'show' : '' }}" id="sidebarProject">
                     <ul class="nav nav-sm flex-column">
                         <li class="nav-item">
-                            <a href="{{ route('AddProject') }}" class="nav-link {{ request()->routeIs('AddProject') ? 'active' : '' }}"> Add Project </a>
+                            <a href="{{ route('AddProject') }}" class="nav-link {{ request()->routeIs('AddProject') ? 'active' : '' }}"> Add</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('ViewProject') }}" class="nav-link {{ request()->routeIs('ViewProject') ? 'active' : '' }}"> View Project </a>
+                            <a href="{{ route('ViewProject') }}" class="nav-link {{ request()->routeIs('ViewProject') ? 'active' : '' }}"> View</a>
                         </li>
                     </ul>
                 </div>

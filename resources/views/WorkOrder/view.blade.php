@@ -55,7 +55,7 @@
                                                 </button>
 
                                                 <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}"
-                                                onclick="return confirm('Are you sure you want to delete this record?')">
+                                                    onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon">
                                                         <i class="ri-delete-bin-fill"></i>
                                                     </button>
@@ -107,11 +107,15 @@
                             <th>Date</th>
                             <td id="wo_date"></td>
                         </tr>
-
-
                         <tr>
+                            <th>Part Code</th>
+                            <td id="wo_part_code"></td>
+                        </tr>
+
+
+                       <tr>
                             <th>Diameter</th>
-                            <td id="wo_diameter"></td>
+                            <td id="wo_diameter"></td> <!-- इथे बदल केला -->
                         </tr>
                         <tr>
                             <th>Length</th>
@@ -134,7 +138,7 @@
                             <td id="wo_quantity"></td>
                         </tr>
 
-                         <tr>
+                        <tr>
                             <th>part_description</th>
                             <td id="wo_part_description"></td>
                         </tr>
@@ -146,27 +150,34 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.viewWorkOrder').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                let data = JSON.parse(this.getAttribute('data-wo'));
+   document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.viewWorkOrder').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            let data = JSON.parse(this.getAttribute('data-wo'));
 
-                document.getElementById('wo_work_order_no').textContent = data.customer_id ?? '';
-                document.getElementById('wo_entry_code').textContent = data.customer?.code ?? '';
-                document.getElementById('wo_part').textContent = data.part ?? '';
-                document.getElementById('wo_date').textContent = data.date ?? '';
+            document.getElementById('wo_work_order_no').textContent = data.customer_id ?? '';
+            document.getElementById('wo_entry_code').textContent = data.customer?.code ?? '';
+            document.getElementById('wo_part').textContent = data.part ?? '';
+            document.getElementById('wo_date').textContent = data.date ?? '';
+            
+            // ✅ Correct Part Code
+            document.getElementById('wo_part_code').textContent = 
+                (data.customer?.code ?? '') + '_' + 
+                (data.customer_id ?? '') + '_' + 
+                (data.part ?? '');
 
-
-                document.getElementById('wo_diameter').textContent = data.dimeter ?? '';
-                document.getElementById('wo_length').textContent = data.length ?? '';
-                document.getElementById('wo_width').textContent = data.width ?? '';
-                document.getElementById('wo_height').textContent = data.height ?? '';
-                document.getElementById('wo_exp_time').textContent = data.exp_time ?? '';
-                document.getElementById('wo_quantity').textContent = data.quantity ?? '';
-                document.getElementById('wo_part_description').textContent = data.part_description ?? '';
-            });
+           document.getElementById('wo_diameter').textContent = data.dimeter ?? '';
+;
+            document.getElementById('wo_length').textContent = data.length ?? '';
+            document.getElementById('wo_width').textContent = data.width ?? '';
+            document.getElementById('wo_height').textContent = data.height ?? '';
+            document.getElementById('wo_exp_time').textContent = data.exp_time ?? '';
+            document.getElementById('wo_quantity').textContent = data.quantity ?? '';
+            document.getElementById('wo_part_description').textContent = data.part_description ?? '';
         });
     });
+});
+
 </script>
 
 @endsection

@@ -148,8 +148,8 @@
                                             <div class="mb-3">
                                                 <label for="exp_time" class="form-label">Exp Time (HH:MM) <span class="mandatory">*</span></label>
                                                 <input type="text" name="exp_time" id="exp_time"
-                                                    value="{{ isset($workorder) ? \Carbon\Carbon::createFromFormat('H:i:s', $workorder->exp_time)->format('H:i') : old('exp_time') }}"
-                                                    class="form-control" placeholder="HH:MM">
+                                                value="{{ old('exp_time', $workorder->exp_time ?? '') }}"
+                                                class="form-control" placeholder="उदा. 3 min, 3.30 hr">
                                                 @error('exp_time')
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror

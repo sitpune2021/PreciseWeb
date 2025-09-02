@@ -111,6 +111,9 @@ Route::get('/ViewSetupSheet'              , [SetupSheetController::class, 'ViewS
 Route::put('/updateSetupSheet/{encryptedId}', [SetupSheetController::class, 'update'])->name('updateSetupSheet');
 
 // Route::get('/download-setup-sheet/{id}'   , [SetupSheetController::class, 'downloadSetupSheet'])->name('downloadSetupSheet');
+
+Route::get('/setup-sheet-data/{partNo}', [SetupSheetController::class, 'getSetupSheetData']);
+
  
  
 Route::get('/AddMachinerecord'            , [MachinerecordController::class, 'AddMachinerecord'])->name('AddMachinerecord');

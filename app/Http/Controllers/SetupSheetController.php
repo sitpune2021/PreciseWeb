@@ -49,7 +49,7 @@ class SetupSheetController extends Controller
             'clamping' => 'required|string|max:255',
 
             'thickness' => 'required|string|min:1',
-            'qty'       => 'required|integer|min:1',
+            'qty' => ['required', 'integer', 'min:1'],
 
             // Hole Details (arrays)
             'holes'      => 'required|array',
@@ -124,7 +124,7 @@ class SetupSheetController extends Controller
             'clamping' => 'required|string|max:255',
 
             'thickness' => 'required|string|min:1',
-            'qty'       => 'required|integer|min:1',
+            'qty' => ['required', 'integer', 'min:1'],
 
             'holes'        => 'required|array',
             'holes.*'      => 'required|numeric|min:0',
@@ -155,22 +155,40 @@ class SetupSheetController extends Controller
     }
 
 
-    public function getCustomerParts($customerId)
-    {
-        $parts = WorkOrder::where('customer_id', $customerId)
-            ->select('id', 'part', 'part_description', 'customer_id')  
-            ->with('customer:id,code')
-            ->get();
+   public function getCustomerParts($customerId)
+{
+    $parts = WorkOrder::where('customer_id', $customerId)
+        ->select(
+            'id',
+            'part',
+            'part_description',
+            'customer_id',
+            'length',
+            'width',
+            'height',
+            'exp_time',
+            'quantity'
+        )
+        ->with('customer:id,code')
+        ->get();
 
-        $formatted = $parts->map(function ($wo) {
-            return [
-                'id' => $wo->id,
-                'part' => $wo->part,
-                'part_code' => ($wo->customer->code ?? '') . '_' . $wo->customer_id . '_' . $wo->part,
-                'part_description' => $wo->part_description,  
-            ];
-        });
+    $formatted = $parts->map(function ($wo) {
+    return [
+        'id' => $wo->id,
+        'part' => $wo->part,
+        'part_code' => ($wo->customer->code ?? '') . '_' . $wo->customer_id . '_' . $wo->part,
+        'part_description' => $wo->part_description,
+        'size_in_x' => $wo->length,
+        'size_in_y' => $wo->width,
+        'size_in_z' => $wo->height,
+        'e_time' => $wo->exp_time,
+        'qty' => $wo->quantity,
+        'work_order_no' => $wo->customer_id,
+    ];
+});
 
-        return response()->json($formatted);
-    }
+
+    return response()->json($formatted);
+}
+
 }

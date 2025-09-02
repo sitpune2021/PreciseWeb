@@ -57,6 +57,8 @@
                                                     data-start="{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}"
                                                     data-end="{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}"
                                                     data-est_time="{{ $rec->est_time }}"
+                                                    data-hrs="{{ $rec->hrs }}"
+                                                    data-time_taken="{{ $rec->time_taken }}"
                                                     data-actual_hrs="{{ $rec->actual_hrs }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
@@ -125,6 +127,14 @@
                                     <th>Estimated Time</th>
                                     <td id="view_est_time"></td>
                                 </tr>
+                                 <tr>
+                                    <th>Hrs</th>
+                                    <td id="view_hrs"></td>
+                                </tr>
+                                <tr>
+                                    <th>Time Taken</th>
+                                    <td id="view_time_taken"></td>
+                                </tr>
                                
                                     <th>Actual Hrs</th>
                                     <td id="view_actual_hrs"></td>
@@ -152,6 +162,8 @@
                             document.getElementById("view_start").textContent = this.dataset.start;
                             document.getElementById("view_end").textContent = this.dataset.end;
                             document.getElementById("view_est_time").textContent = this.dataset.est_time;
+                            document.getElementById("view_hrs").textContent = this.dataset.hrs;
+                            document.getElementById("view_time_taken").textContent = this.dataset.time_taken;
                             document.getElementById("view_actual_hrs").textContent = this.dataset.actual_hrs;
                             document.getElementById("view_invoice").textContent = this.dataset.invoice;
 
