@@ -18,7 +18,7 @@ return new class extends Migration
     $table->string('work_order_no')->nullable();
     $table->date('date')->nullable();
     $table->string('description')->nullable();
- 
+    $table->string('setup_image')->nullable();
     $table->string('size_in_x')->nullable();
     $table->string('size_in_y')->nullable();
     $table->string('size_in_z')->nullable();

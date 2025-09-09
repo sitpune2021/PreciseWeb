@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Customer;
+use Illuminate\Support\Str;
 use Illuminate\Container\Attributes\Log;
 
 class ProjectController extends Controller
@@ -25,29 +26,40 @@ class ProjectController extends Controller
      */
     public function storeProject(Request $request)
     {
-
+        // Validate input
         $validated = $request->validate([
-            'customer_id'    => 'required|exists:customers,id',
-            'name'           => 'required|string|max:255',
-            'description'    => 'required|string',
-            'qty'           => ['required', 'integer', 'min:1'],
-            'StartDate'      => 'required|date',
-            'EndDate'        => 'required|date',
+            'customer_id'   => 'required|exists:customers,id',
+            'project_name'  => 'required|string|max:255',
+            'project_code'  => 'nullable|string|max:100|unique:projects,project_code',
+            'quantity'      => 'required|integer|min:1',
+            'date'          => 'nullable|date',
         ]);
 
-        try {
-            $codes = Customer::find($request->code);
-            $project = Project::create($validated);
+        // Auto-generate Project Code (acronym)
+        $projectWords = explode(' ', trim($request->input('project_name')));
+        $code = '';
 
-
-
-            return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
-        } catch (\Exception $e) {
-
-          
-
-            return back()->with('error', 'An unexpected error occurred. Please try again.');
+        if (count($projectWords) == 1) {
+            $code = strtoupper(substr($projectWords[0], 0, 3));
+        } elseif (count($projectWords) == 2) {
+            $code = strtoupper(substr($projectWords[0], 0, 2) . substr($projectWords[1], 0, 1));
+        } else {
+            $code = strtoupper(substr($projectWords[0], 0, 1) . substr($projectWords[1], 0, 1) . substr($projectWords[2], 0, 1));
         }
+
+        // Get Customer Code from selected customer
+        $customer = Customer::find($request->customer_id);
+        $customerCode = $customer ? $customer->code : null;
+
+        // Prepare data for insertion
+        $projectData = $validated;
+        $projectData['project_code'] = $code;         // set auto project code
+        $projectData['customer_code'] = $customerCode; // set customer code
+
+        // Create project
+        Project::create($projectData);
+
+        return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
     }
 
     public function ViewProject()
@@ -64,14 +76,11 @@ class ProjectController extends Controller
      */
 
     public function edit(string $encryptedId)
-    {
-        try {
+    { {
             $codes = Customer::select('id', 'code', 'name')->get();
             $id = base64_decode($encryptedId);
             $project = Project::findOrFail($id);
             return view('Project.add', compact('project', 'codes'));
-        } catch (\Exception $e) {
-            abort(404);
         }
     }
 
@@ -84,12 +93,12 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         $validated = $request->validate([
-
-            'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
-            'description'    => 'nullable|string',
-            'qty'           => ['required', 'integer', 'min:1'],
-            'StartDate'      => 'nullable|date',
-            'EndDate'        => 'nullable|date',
+            'project_name'   => 'required|string|max:255',
+            'project_code'   => 'nullable|string|max:100',
+            // 'name'            => 'required|string|max:255',
+            'customer_code'  => 'nullable|string|max:100',
+            'quantity'       => 'required|integer|min:1',
+            'date'           => 'nullable|date',
         ]);
 
         $project->update($validated);

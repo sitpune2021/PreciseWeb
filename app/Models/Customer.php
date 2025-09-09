@@ -16,6 +16,7 @@ class Customer extends Model
         'login_id',
         'name',
         'code',
+        'per_hour_rate',
         'email_id',
         'contact_person',
         'phone_no',

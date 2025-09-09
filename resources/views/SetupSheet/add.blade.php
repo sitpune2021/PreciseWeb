@@ -15,16 +15,13 @@
 
                         <div class="card-body">
                             <div class="live-preview">
-                                <form action="{{ isset($setupSheet) ? route('updateSetupSheet', base64_encode($setupSheet->id)) : route('storeSetupSheet') }}" method="POST">
+                                <form action="{{ isset($setupSheet) ? route('updateSetupSheet', base64_encode($setupSheet->id)) : route('storeSetupSheet') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @if(isset($setupSheet))
                                     @method('PUT')
                                     @endif
 
                                     <div class="row">
-
-                                        <!-- Customer -->
-                                        <!-- Customer -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
@@ -51,6 +48,7 @@
                                             </div>
                                         </div>
 
+
                                         <!-- Part Code -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
@@ -68,7 +66,7 @@
                                                     @endphp
                                                     @foreach($parts as $wo)
                                                     @php
-                                                    $partCode = ($wo->customer->code ?? '') . '_' . $wo->customer_id . '_' . $wo->part;
+                                                    $partCode = ($wo->customer->code ?? '') . '' . $wo->customer_id . '' . $wo->part;
                                                     @endphp
                                                     <option value="{{ $partCode }}"
                                                         {{ old('part_code', $setupSheet->part_code ?? '') == $partCode ? 'selected' : '' }}>
@@ -82,8 +80,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
-
 
                                         <!-- Work Order No -->
                                         <div class="col-md-2">
@@ -250,8 +246,8 @@
                                             </div>
                                         </div>
 
-                                        <!-- Description -->
-                                        <div class="col-md-12">
+
+                                        <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">Part Description</label>
                                                 <input type="text" class="form-control" id="part_description"
@@ -263,7 +259,29 @@
                                             </div>
                                         </div>
 
-                                        <!-- Dowel Holes Heading -->
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="setup_image" class="form-label">Upload Image</label>
+                                                <input type="file" class="form-control" id="setup_image" name="setup_image" accept="image/*">
+                                                @error('setup_image')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        @if(isset($setupSheet) && $setupSheet->setup_image)
+                                        <div class="col-md-2">
+                                            <div class="mt-2">
+                                                <img src="{{ asset('setup_images/'.$setupSheet->setup_image) }}"
+                                                    alt="Setup Image"
+                                                    class="img-thumbnail"
+                                                    style="width:70px; height:70px; object-fit:cover;">
+                                            </div>
+
+                                            @endif
+                                        </div>
+
+
                                         <div class="col-md-12">
                                             <h4 class="text-center mt-4 mb-3"><b>Dowel Holes</b></h4>
                                         </div>
@@ -279,7 +297,6 @@
                                         @endphp
 
                                         <!-- <div id="dowel-holes-wrapper">
-
                                             @for($i = 0; $i < $count; $i++)
                                                 <div class="row dowel-group mb-2">
                                                 <div class="col-md-2">
@@ -362,6 +379,7 @@
                                         </div>
                                         @endfor
                                     </div>
+
                                     <!-- Submit -->
                                     <div class="col-lg-12">
                                         <div class="text-end">
@@ -374,8 +392,7 @@
                                             @endif
                                         </div>
                                     </div>
-
-                            </div><!-- end row -->
+                            </div>
                             </form>
                         </div>
                     </div>
@@ -524,11 +541,10 @@
             }
         });
 
-        // 👉 फक्त Add mode मध्ये auto-fill कर
         $(document).on("change", "#part_code", function() {
             let selected = $(this).find(":selected");
             if (selected.val()) {
-                if (!isEditMode) { // Edit असताना description overwrite होणार नाही
+                if (!isEditMode) {
                     $("#part_description").val(selected.data("description"));
                 }
                 $("#work_order_no").val(selected.data("workorder"));
@@ -540,7 +556,7 @@
             }
         });
 
-        // Edit mode load करताना customer select कर
+
         let editCustomer = $("#customer_id").data("selected");
         if (editCustomer) {
             $("#customer_id").val(editCustomer).trigger("change");

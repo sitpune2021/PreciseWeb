@@ -6,161 +6,147 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xxl-12">
-                    <div class="card">
-                        <div class="card-header align-items-center d-flex">
+                    <div class="card shadow-sm">
+                        <div class="card-header  d-flex align-items-center">
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($project) ? 'Edit Project' : 'Add Project' }}
                             </h4>
-                        </div><!-- end card header -->
+                        </div>
 
                         <div class="card-body">
-                            <div class="live-preview">
-                                <form action="{{ isset($project) ? route('updateProject', base64_encode($project->id)) : route('storeProject') }}" method="POST">
-                                    @csrf
-                                    @if(isset($project))
+                            <form action="{{ isset($project) ? route('updateProject', base64_encode($project->id)) : route('storeProject') }}" method="POST">
+                                @csrf
+                                @if(isset($project))
                                     @method('PUT')
-                                    @endif
+                                @endif
 
-                                    <div class="row">
-                                        <!-- Project Name -->
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="name" class="form-label">Project Name <span class="mandatory">*</span></label>
-                                                <input type="text"
-                                                    class="form-control"
-                                                    id="name"
-                                                    name="name"
-                                                    placeholder="Project Name"
-                                                    value="{{ old('name', $project->name ?? '') }}"
-                                                    onkeypress="return /[a-zA-Z\s]/.test(event.key)">
-                                                @error('name') <span class="text-red">{{ $message }}</span> @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select js-example-basic-single" @disabled(isset($project)) id="customer_id" name="customer_id">
-                                                    <option value="">Select Customer</option>
-                                                    @foreach($codes as $c)
-                                                    <option value="{{ $c->id }}"
-                                                        {{ old('customer_id', isset($project) ? $project->customer_id : '') == $c->id ? 'selected' : '' }}>
-                                                        {{ $c->name }} - ({{ $c->code }})
-                                                    </option>
-
-                                                    @endforeach
-                                                </select>
-
+                                <div class="row g-3">
+                                    <!-- Customer Dropdown -->
+                                    <div class="col-md-4">
+                                        <label for="customer_id" class="form-label">Customer Name <span class="text-danger">*</span></label>
+                                        <select class="form-select  " id="customer_id" name="customer_id">
+                                            <option value="">Select Customer</option>
+                                            @foreach($codes as $c)
+                                                <option value="{{ $c->id }}" data-code="{{ $c->code }}"
+                                                    {{ old('customer_id', $project->customer_id ?? '') == $c->id ? 'selected' : '' }}>
+                                                    {{ $c->name }} - ({{ $c->code }})
+                                                </option>
                                                 @error('customer_id')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-
-
-                                            </div>
-                                        </div>
-
-                                        <!-- Work Order No -->
-                                        <!-- <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="work_order_no" class="form-label">Work Order No. <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="work_order_no" name="work_order_no" placeholder="Work Order Number" value="{{ old('work_order_no', $project->work_order_no ?? '') }}">
-                                                @error('work_order_no') <span class="text-red">{{ $message }}</span> @enderror
-                                            </div>
-                                        </div> -->
-
-
-
-                                        <!-- Quantity -->
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
-                                                <input type="number" step="1" min="1" class="form-control" id="qty" name="qty" placeholder="Quantity"
-                                                    value="{{ old('qty', $project->qty ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
-                                                @error('qty')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <!-- Start Date -->
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="StartDate" class="form-label">Start Date <span class="mandatory"> *</span></label>
-                                                <input type="date" class="form-control datepicker" id="StartDate" name="StartDate"
-                                                    value="{{ old('StartDate', isset($project->startdate) ? \Carbon\Carbon::parse($project->startdate)->format('Y-m-d') : '') }}">
-                                                @error('StartDate') <span class="text-red">{{ $message }}</span> @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- End Date -->
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="EndDate" class="form-label">End Date <span class="mandatory"> *</span></label>
-                                                <input type="date" class="form-control datepicker" id="EndDate" name="EndDate" value="{{ old('EndDate', isset($project->enddate) ? \Carbon\Carbon::parse($project->enddate)->format('Y-m-d') : '') }}">
-                                                @error('EndDate') <span class="text-red">{{ $message }}</span> @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Project Description -->
-                                        <div class="col-md-12">
-                                            <div class="mb-3">
-                                                <label for="description" class="form-label">
-                                                    Part Description <span class="mandatory">*</span>
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="description"
-                                                    name="description"
-                                                    placeholder="Description"
-                                                    value="{{ old('description', $project->description ?? '') }}">
-                                                @error('description')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Submit Button -->
-                                        <div class="col-lg-12">
-                                            <div class="text-end">
-                                                <button type="submit" class="btn btn-primary">
-                                                    {{ isset($project) ? 'Update' : 'Submit' }}
-                                                </button>
-                                                &nbsp;
-                                                @if(isset($project))
-                                                <a href="{{ route('ViewProject') }}" class="btn btn-info">Cancel</a>
-                                                @else
-                                                <button type="reset" class="btn btn-info">Reset</button>
-                                                @endif
-                                            </div>
-                                        </div>
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                            @endforeach
+                                        </select>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+
+                                    <!-- Customer Code -->
+                                    <div class="col-md-4">
+                                        <label for="code" class="form-label">Customer Code</label>
+                                        <input type="text" class="form-control" id="code" name="code"
+                                            value="{{ old('code', $customer->code ?? '') }}" readonly>
+                                    </div>
+
+                                    <!-- Project Name -->
+                                    <div class="col-md-4">
+                                        <label for="project_name" class="form-label">Project Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="project_name" name="project_name"
+                                            placeholder="Enter Project Name"
+                                            value="{{ old('project_name', $project->project_name ?? '') }}">
+                                            @error('project_name')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Project Code -->
+                                    <div class="col-md-4">
+                                        <label for="project_code" class="form-label">Project Code</label>
+                                        <input type="text" class="form-control" id="project_code" name="project_code"
+                                            placeholder="Enter Project Code"
+                                            value="{{ old('project_code', $project->project_code ?? '') }}">
+                                    </div>
+
+                                    <!-- Quantity -->
+                                    <div class="col-md-4">
+                                        <label for="quantity" class="form-label">Quantity <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="quantity" name="quantity" min="1"
+                                            placeholder="Enter Quantity"
+                                            value="{{ old('quantity', $project->quantity ?? '') }}">
+                                        @error('quantity')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Date -->
+                                    <div class="col-md-4">
+                                        <label for="date" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="date" name="date"
+                                            value="{{ old('date', isset($project->date) ? \Carbon\Carbon::parse($project->date)->format('Y-m-d') : '') }}">
+                                        @error('date')
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Submit Buttons -->
+                                    <div class="col-12 text-end mt-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            {{ isset($project) ? 'Update' : 'Submit' }}
+                                        </button>
+                                        @if(isset($project))
+                                            <a href="{{ route('ViewProject') }}" class="btn btn-secondary px-4">Cancel</a>
+                                        @else
+                                            <button type="reset" class="btn btn-info px-4">Reset</button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!-- end card-body -->
+                    </div><!-- end card -->
                 </div>
             </div>
         </div>
-
     </div>
 </div>
+
+
+
+
 <script>
-    const startDate = document.getElementById('StartDate');
-    const endDate = document.getElementById('EndDate');
+    document.addEventListener('DOMContentLoaded', function() {
+        const customerSelect = document.getElementById('customer_id');
+        const codeInput = document.getElementById('code');
+        const projectName = document.getElementById('project_name');
+        const projectCode = document.getElementById('project_code');
 
-    startDate.addEventListener('change', function() {
-        if (startDate.value) {
-            endDate.min = startDate.value;
-        } else {
-            endDate.min = '';
+        // Auto-fill Customer Code
+        customerSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const code = selectedOption.getAttribute('data-code') || '';
+            codeInput.value = code;
+        });
+
+        // Trigger on page load if customer already selected (edit mode)
+        if (customerSelect.value) {
+            customerSelect.dispatchEvent(new Event('change'));
         }
-    });
 
-    window.addEventListener('load', function() {
-        if (startDate.value) {
-            endDate.min = startDate.value;
+        // Auto-generate Project Code from Project Name (acronym)
+        projectName.addEventListener('input', function() {
+            const name = this.value.trim();
+            if (name) {
+                // Take the first letter of each word
+                const words = name.split(/\s+/);
+                const code = words.map(w => w[0].toUpperCase()).join('');
+                projectCode.value = code;
+            } else {
+                projectCode.value = '';
+            }
+        });
+
+        // Trigger on page load if project name exists (edit mode)
+        if (projectName.value) {
+            projectName.dispatchEvent(new Event('input'));
         }
     });
 </script>
+
+
 @endsection

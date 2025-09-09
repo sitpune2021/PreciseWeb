@@ -38,15 +38,20 @@
                                             </div>
                                         </div>
                                         <!--end col-->
-                                        <!-- <div class="col-md-4">
+                                        @if(isset($customer))
+                                        <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="code" class="form-label">Customer Code <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" placeholder="Customer Code" id="code" name="code" value="{{ old('code', $customer->code ?? '') }}">
+                                                <label for="code" class="form-label">Customer Code</label>
+                                                <input type="text" class="form-control" placeholder="Customer Code"
+                                                    id="code" name="code"
+                                                    value="{{ old('code', $customer->code ?? '') }}">
                                                 @error('code')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div> -->
+                                        </div>
+                                        @endif
+
                                         <!--end col-->
 
                                         <div class="col-md-4">
@@ -56,26 +61,35 @@
 
                                             </div>
                                         </div>
-                                        <!--end col-->
-                                     
-
                                         <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="contact_person" class="form-label">Contact Person <span class="mandatory">*</span></label>
-                                        <input type="text" class="form-control" id="contact_person" name="contact_person"
-                                            placeholder="Contact Person"
-                                            value="{{ old('contact_person', $customer->contact_person ?? '') }}"
-                                            oninput="this.value = this.value.replace(/[^A-Za-z.\s]/g, '');">
-                                        @error('contact_person')
-                                            <span class="text-red">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                  </div>
+                                            <div class="mb-3">
+                                                <label for="per_hour_rate" class="form-label">Per Hour Rate (₹)</label>
+                                                <input type="number" step="0.01" min="0" class="form-control" id="per_hour_rate" name="per_hour_rate"
+                                                    placeholder="Per Hour Rate"
+                                                    value="{{ old('per_hour_rate', $customer->per_hour_rate ?? '') }}">
+                                                @error('per_hour_rate')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="contact_person" class="form-label">Contact Person </label>
+                                                <input type="text" class="form-control" id="contact_person" name="contact_person"
+                                                    placeholder="Contact Person"
+                                                    value="{{ old('contact_person', $customer->contact_person ?? '') }}"
+                                                    oninput="this.value = this.value.replace(/[^A-Za-z.\s]/g, '');">
+                                                @error('contact_person')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
 
                                         <!--end col-->
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="phone_no" class="form-label">Phone Number <span class="mandatory">*</span></label>
+                                                <label for="phone_no" class="form-label">Phone Number </label>
                                                 <input type="tel" class="form-control" placeholder="Phone Number" maxlength="10" id="phone_no" name="phone_no" value="{{ old('phone_no', $customer->phone_no ?? '') }}">
                                                 @error('phone_no')
                                                 <span class="text-red">{{ $message }}</span>
@@ -85,7 +99,7 @@
                                         <!--end col-->
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="gst_no" class="form-label">GST Number <span class="mandatory">*</span></label>
+                                                <label for="gst_no" class="form-label">GST Number </label>
                                                 <input type="text" class="form-control" placeholder="GST Number" id="gst_no" name="gst_no" value="{{ old('gst_no', $customer->gst_no ?? '') }}" oninput="this.value = this.value.toUpperCase();">
                                                 @error('gst_no')
                                                 <span class="text-red">{{ $message }}</span>
@@ -96,7 +110,7 @@
 
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <label for="address" class="form-label">Address <span class="mandatory">*</span></label>
+                                                <label for="address" class="form-label">Address</label>
                                                 <textarea class="form-control" placeholder="Address..." id="address" name="address">{{ old('address', $customer->address ?? '') }}</textarea>
                                                 @error('address')
                                                 <span class="text-red">{{ $message }}</span>
@@ -104,7 +118,7 @@
                                             </div>
                                         </div>
 
-                                        
+
                                         <!--end col-->
 
                                         <div class="col-lg-12">

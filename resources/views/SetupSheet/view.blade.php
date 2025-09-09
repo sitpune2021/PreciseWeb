@@ -17,7 +17,7 @@
                                     <thead>
                                         <tr>
                                             <th>Sr No.</th>
-                                            <th>Customer Name</th>
+                                            <th>Image</th>
                                             <th>Part Code</th>
                                             <th>Work Order No</th>
                                             <th>Date</th>
@@ -32,7 +32,16 @@
                                         @foreach($sheets as $sheet)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $sheet->customer->name ?? '' }}</td>
+
+                                            <td>
+                                                @if($sheet->setup_image)
+                                                <img src="{{ asset('setup_images/'.$sheet->setup_image) }}"
+                                                    alt="Setup Image" style="max-width:60px; height:auto;" class="img-thumbnail">
+                                                @else
+                                                <span class="text-muted">No Image</span>
+                                                @endif
+                                            </td>
+
                                             <td>{{ $sheet->part_code }}</td>
                                             <td>{{ $sheet->work_order_no }}</td>
                                             <td>{{ $sheet->date }}</td>
@@ -42,20 +51,15 @@
                                             <td>{{ $sheet->setting }}</td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <!-- Edit Button -->
                                                     <a href="{{ route('editSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </a>
-
-                                                    <!-- View Button -->
                                                     <button type="button" class="btn btn-primary btn-icon viewSetupSheet"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#viewSetupSheetModal"
                                                         data-sheet='@json($sheet)'>
                                                         <i class="ri-eye-fill align-bottom"></i>
                                                     </button>
-
-                                                    <!-- Delete Button -->
                                                     <a href="{{ route('deleteSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-danger btn-icon waves-effect waves-light"
                                                         onclick="return confirm('Are you sure you want to delete this record?')">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
@@ -70,11 +74,13 @@
                         </div>
                     </div>
                 </div>
-            </div><!--end row-->
+            </div>
 
         </div>
     </div>
 </div>
+
+
 
 <!-- View Setup Sheet Modal -->
 <div class="modal fade" id="viewSetupSheetModal" tabindex="-1" aria-hidden="true">
@@ -92,15 +98,14 @@
             <div class="modal-body">
                 <!-- Sheet Header -->
                 <div class="text-center mb-3">
+                    <div id="sheet_image_container" class="mb-2"></div>
                     <h4>Setup Sheet</h4>
-                    <p id="sheet_customer_name_header"></p>
                 </div>
 
                 <!-- Main Sheet Table -->
                 <table class="table table-bordered table-sm text-center align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>Customer Name</th>
                             <th>Part Code</th>
                             <th>Work Order No</th>
                             <th>Date</th>
@@ -109,7 +114,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td id="sheet_customer_name"></td>
                             <td id="sheet_part_code"></td>
                             <td id="sheet_work_order_no"></td>
                             <td id="sheet_date"></td>
@@ -166,7 +170,7 @@
 
                 <!-- Holes -->
                 <h6 class="mt-3">Dowel Holes</h6>
-        <table class="table table-bordered table-sm text-center align-middle">
+                <table class="table table-bordered table-sm text-center align-middle">
                     <thead class="table-light">
                         <tr>
                             <th>Hole #</th>
@@ -176,8 +180,7 @@
                             <th>Depth</th>
                         </tr>
                     </thead>
-                    <tbody id="holes_table_body">
-                    </tbody>
+                    <tbody id="holes_table_body"></tbody>
                 </table>
 
             </div>
@@ -186,69 +189,59 @@
     </div>
 </div>
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.viewSetupSheet').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 let data = JSON.parse(this.getAttribute('data-sheet'));
 
-              
-               let holesBody = document.getElementById("holes_table_body");
+                let holesBody = document.getElementById("holes_table_body");
                 holesBody.innerHTML = "";
- 
                 if (data.hole_x && data.hole_x.length > 0) {
                     for (let i = 0; i < data.hole_x.length; i++) {
                         let row = `
-                                <tr>
-                                    <td>${i + 1}</td>
-                                    <td>${data.hole_x[i] ?? ''}</td>
-                                    <td>${data.hole_y[i] ?? ''}</td>
-                                    <td>${data.hole_dia[i] ?? ''}</td>
-                                    <td>${data.hole_depth[i] ?? ''}</td>
-                                </tr>
-                            `;
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${data.hole_x[i] ?? ''}</td>
+                            <td>${data.hole_y[i] ?? ''}</td>
+                            <td>${data.hole_dia[i] ?? ''}</td>
+                            <td>${data.hole_depth[i] ?? ''}</td>
+                        </tr>`;
                         holesBody.insertAdjacentHTML("beforeend", row);
                     }
                 }
 
+                if (data.setup_image) {
+                    document.getElementById('sheet_image_container').innerHTML =
+                        `<img src="/setup_images/${data.setup_image}" 
+                          alt="Setup Image" 
+                          style="max-width:150px; height:auto;">`;
+                } else {
+                    document.getElementById('sheet_image_container').innerHTML = "";
+                }
 
-                // Top info
-                document.getElementById('sheet_customer_name_header').textContent = data.customer?.name ?? '';
-                document.getElementById('sheet_customer_name').textContent = data.customer?.name ?? '';
                 document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
                 document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
                 document.getElementById('sheet_date').textContent = data.date ?? '';
                 document.getElementById('sheet_description').textContent = data.description ?? '';
 
-                // Sizes & Settings
                 document.getElementById('sheet_size_x').textContent = data.size_in_x ?? '';
                 document.getElementById('sheet_size_y').textContent = data.size_in_y ?? '';
                 document.getElementById('sheet_size_z').textContent = data.size_in_z ?? '';
                 document.getElementById('sheet_setting').textContent = data.setting ?? '';
                 document.getElementById('sheet_e_time').textContent = data.e_time ?? '';
 
-                // References
                 document.getElementById('sheet_x_refer').textContent = data.x_refer ?? '';
                 document.getElementById('sheet_y_refer').textContent = data.y_refer ?? '';
                 document.getElementById('sheet_z_refer').textContent = data.z_refer ?? '';
                 document.getElementById('sheet_clamping').textContent = data.clamping ?? '';
                 document.getElementById('sheet_qty').textContent = data.qty ?? '';
                 document.getElementById('sheet_thickness').textContent = data.thickness ?? '';
-
-                // Holes loop
-                for (let i = 0; i < 5; i++) {
-                    document.getElementById(`sheet_hole_x_${i}`).textContent = hole_x[i] ?? '';
-                    document.getElementById(`sheet_hole_y_${i}`).textContent = hole_y[i] ?? '';
-                    document.getElementById(`sheet_hole_dia_${i}`).textContent = hole_dia[i] ?? '';
-                    document.getElementById(`sheet_hole_depth_${i}`).textContent = hole_depth[i] ?? '';
-                }
-
-
             });
         });
     });
 </script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -258,11 +251,15 @@
             const {
                 jsPDF
             } = window.jspdf;
-
             var element = document.querySelector("#viewSetupSheetModal .modal-body");
 
+            // Temporarily remove scroll to capture full content
+            const originalOverflow = element.style.overflow;
+            element.style.overflow = 'visible';
+
             html2canvas(element, {
-                scale: 2
+                scale: 2,
+                useCORS: true
             }).then((canvas) => {
                 const imgData = canvas.toDataURL("image/png");
                 const pdf = new jsPDF("p", "mm", "a4");
@@ -272,31 +269,8 @@
 
                 pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
                 pdf.save("SetupSheet.pdf");
-            });
-        });
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("downloadSheetBtn").addEventListener("click", function() {
-            const {
-                jsPDF
-            } = window.jspdf;
 
-
-            var element = document.querySelector("#viewRecordModal .modal-body");
-
-            html2canvas(element, {
-                scale: 2
-            }).then((canvas) => {
-                const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF("p", "mm", "a4");
-
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-                pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-                pdf.save("MachineRecord.pdf");
+                element.style.overflow = originalOverflow;
             });
         });
     });

@@ -14,18 +14,17 @@
             Schema::create('projects', function (Blueprint $table) {
                 $table->id();
 
-    // Customer relation
+                // Customer relation
                 $table->unsignedBigInteger('customer_id')->nullable();
-
-                $table->string('name');
-                $table->unsignedBigInteger('user_id')->nullable();               
-                $table->text('description')->nullable();             
-                $table->integer('qty');
-                $table->date('startdate')->nullable();
-                $table->date('enddate')->nullable();
+                $table->string('project_name');
+                $table->string('project_code');
+                // $table->string('customer_name');
+                $table->string('customer_code');
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->integer('quantity');
+                $table->date('date')->nullable();
                 $table->softDeletes();
-                $table->timestamps(); 
-                
+                $table->timestamps();
             });
         }
 

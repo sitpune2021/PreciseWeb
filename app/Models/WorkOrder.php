@@ -13,6 +13,7 @@ class WorkOrder extends Model
         'customer_id',
         'part',
         //  'part_code',
+        'project_id',
         'date',         
         'part_description',
         'dimeter',
@@ -27,6 +28,12 @@ class WorkOrder extends Model
 {
     return $this->belongsTo(Customer::class, 'customer_id', 'id');
 }
+
+public function project()
+{
+    return $this->belongsTo(Project::class, 'project_id');
+}
+
 
     
 }

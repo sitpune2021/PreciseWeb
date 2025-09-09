@@ -36,19 +36,35 @@
                                                     </option>
                                                     @endforeach
                                                 </select>
-
                                                 @error('customer_id')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                                 <span class="text-danger customer"></span>
-
-
                                                 @if(isset($workorder))
                                                 <input type="hidden" name="customer_id" value="{{ $workorder->customer_id }}">
                                                 @endif
                                             </div>
                                         </div>
 
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="project_id" class="form-label">Project Name <span class="mandatory">*</span></label>
+                                                <select class="form-select js-example-basic-single" id="project_id" name="project_id">
+                                                    <option value="">Select Project</option>
+                                                    @foreach($projects as $project)
+                                                    <option value="{{ $project->id }}"
+                                                        {{ (isset($workorder) && $workorder->project_id == $project->id) ? 'selected' : '' }}>
+                                                        {{ $project->project_name }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('project_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                                <span class="text-danger project_id"></span>
+
+                                                @error('project_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                                <span class="text-danger project_id"></span>
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
@@ -58,7 +74,8 @@
                                                 <span class="text-danger part"></span>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+
+                                        <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
                                                 <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $workorder->date ?? '') }}">
@@ -66,9 +83,10 @@
                                                 <span class="text-danger date"></span>
                                             </div>
                                         </div>
+
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="dimeter" class="form-label">Diameter <span class="mandatory">*</span></label>
+                                                <label for="dimeter" class="form-label">Diameter</label>
                                                 <input
                                                     type="text"
                                                     class="form-control"
@@ -77,19 +95,12 @@
                                                     placeholder="Diameter"
                                                     value="{{ old('dimeter', $workorder->dimeter ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
-                                                @error('dimeter')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger dimeter"></span>
                                             </div>
                                         </div>
 
-
-
-
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="length" class="form-label">Length <span class="mandatory">*</span></label>
+                                                <label for="length" class="form-label">Length</label>
                                                 <input
                                                     type="text"
                                                     class="form-control"
@@ -98,18 +109,12 @@
                                                     placeholder="Length"
                                                     value="{{ old('length', $workorder->length ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
-                                                @error('length')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger length"></span>
                                             </div>
                                         </div>
 
-
-
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="width" class="form-label">Width <span class="mandatory">*</span></label>
+                                                <label for="width" class="form-label">Width</label>
                                                 <input
                                                     type="text"
                                                     class="form-control"
@@ -118,17 +123,12 @@
                                                     placeholder="Width"
                                                     value="{{ old('width', $workorder->width ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
-                                                @error('width')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger width"></span>
                                             </div>
                                         </div>
 
-
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="height" class="form-label">Height <span class="mandatory">*</span></label>
+                                                <label for="height" class="form-label">Height</label>
                                                 <input
                                                     type="text"
                                                     class="form-control"
@@ -137,10 +137,6 @@
                                                     placeholder="Height"
                                                     value="{{ old('height', $workorder->height ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
-                                                @error('height')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger height"></span>
                                             </div>
                                         </div>
 
@@ -148,8 +144,8 @@
                                             <div class="mb-3">
                                                 <label for="exp_time" class="form-label">Exp Time (HH:MM) <span class="mandatory">*</span></label>
                                                 <input type="text" name="exp_time" id="exp_time"
-                                                value="{{ old('exp_time', $workorder->exp_time ?? '') }}"
-                                                class="form-control" placeholder="उदा. 3 min, 3.30 hr">
+                                                    value="{{ old('exp_time', $workorder->exp_time ?? '') }}"
+                                                    class="form-control" placeholder="3 min, 3.30 hr">
                                                 @error('exp_time')
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -211,6 +207,7 @@
                                                         <th>Sr. No.</th>
                                                         <th>Customer</th>
                                                         <th>Part</th>
+                                                        <th>Pro.name</th>
                                                         <th>Date</th>
                                                         <th>Diameter</th>
                                                         <th>Length</th>
@@ -258,11 +255,8 @@
 
                                                 let customerVal = document.querySelector("#customer_id").value;
                                                 let part = document.getElementById("part").value;
+                                                let project_id = document.getElementById("project_id").value;
                                                 let date = document.getElementById("date").value;
-                                                let dimeter = document.getElementById("dimeter").value;
-                                                let length = document.getElementById("length").value;
-                                                let width = document.getElementById("width").value;
-                                                let height = document.getElementById("height").value;
                                                 let exp_time = document.getElementById("exp_time").value;
                                                 let quantity = document.getElementById("quantity").value;
                                                 let description = document.getElementById("part_description").value;
@@ -275,28 +269,16 @@
                                                     $(".part").text("The Part field is required");
                                                     hasError = true;
                                                 }
+                                                if (!project_id) {
+                                                    $(".project_id").text("The Project name field is required");
+                                                    hasError = true;
+                                                }
                                                 if (!date) {
                                                     $(".date").text("The Date field is required");
                                                     hasError = true;
                                                 }
-                                                if (!dimeter) {
-                                                    $(".dimeter").text("The Dimeter field is required");
-                                                    hasError = true;
-                                                }
-                                                if (!length) {
-                                                    $(".length").text("The Length field is required");
-                                                    hasError = true;
-                                                }
-                                                if (!width) {
-                                                    $(".width").text("The Width field is required");
-                                                    hasError = true;
-                                                }
-                                                if (!height) {
-                                                    $(".height").text("The Height field is required");
-                                                    hasError = true;
-                                                }
                                                 if (!exp_time) {
-                                                    $(".exp_time").text("The Ext time field is required");
+                                                    $(".exp_time").text("The Exp time field is required");
                                                     hasError = true;
                                                 }
                                                 if (!quantity) {
@@ -331,6 +313,8 @@
                                                 let customer = document.querySelector("#customer_id option:checked").text;
                                                 let customerVal = document.querySelector("#customer_id").value;
                                                 let part = document.getElementById("part").value;
+                                                let project_id = document.getElementById("project_id").value;
+                                                let project_name = document.querySelector("#project_id option:checked").text;
                                                 let date = document.getElementById("date").value;
                                                 let dimeter = document.getElementById("dimeter").value;
                                                 let length = document.getElementById("length").value;
@@ -348,6 +332,7 @@
                                             <td>${rowCount}</td>
                                             <td><input type="hidden" name="rows[${rowCount}][customer_id]" value="${customerVal}">${customer}</td>
                                             <td><input type="hidden" name="rows[${rowCount}][part]" value="${part}">${part}</td>
+                                            <td><input type="hidden" name="rows[${rowCount}][project_id]" value="${project_id}">${project_name}</td>
                                             <td><input type="hidden" name="rows[${rowCount}][date]" value="${date}">${date}</td>
                                             <td><input type="hidden" name="rows[${rowCount}][dimeter]" value="${dimeter}">${dimeter}</td>
                                             <td><input type="hidden" name="rows[${rowCount}][length]" value="${length}">${length}</td>
@@ -370,7 +355,13 @@
 
                                                 newRow.querySelector(".editRow").addEventListener("click", function() {
                                                     document.getElementById("customer_id").value = customerVal;
+                                                    $('#customer_id').val(customerVal).trigger('change'); // 🔹 force select2 update
+
                                                     document.getElementById("part").value = part;
+
+                                                    document.getElementById("project_id").value = project_id;
+                                                    $('#project_id').val(project_id).trigger('change'); // 🔹 force select2 update
+
                                                     document.getElementById("date").value = date;
                                                     document.getElementById("dimeter").value = dimeter;
                                                     document.getElementById("length").value = length;
@@ -383,6 +374,7 @@
                                                     newRow.remove();
                                                     updateSrNo();
                                                 });
+
 
                                                 document.querySelectorAll("input, textarea").forEach(el => {
                                                     if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
@@ -416,5 +408,86 @@
                                             attachValidationEvents();
                                         </script>
 
+
+                                        <script>
+                                            document.addEventListener("DOMContentLoaded", function() {
+                                                let dimeter = document.getElementById("dimeter");
+                                                let height = document.getElementById("height");
+                                                let length = document.getElementById("length");
+                                                let width = document.getElementById("width");
+
+                                                function toggleFields() {
+                                                    if (dimeter.value || height.value) {
+                                                        length.disabled = true;
+                                                        width.disabled = true;
+                                                        length.value = "";
+                                                        width.value = "";
+                                                        dimeter.disabled = false;
+                                                        height.disabled = false;
+                                                    } else if (length.value || width.value) {
+                                                        dimeter.disabled = true;
+                                                        height.disabled = true;
+                                                        dimeter.value = "";
+                                                        height.value = "";
+                                                        length.disabled = false;
+                                                        width.disabled = false;
+                                                    } else {
+                                                        dimeter.disabled = false;
+                                                        height.disabled = false;
+                                                        length.disabled = false;
+                                                        width.disabled = false;
+                                                    }
+                                                }
+
+                                                dimeter.addEventListener("input", toggleFields);
+                                                height.addEventListener("input", toggleFields);
+                                                length.addEventListener("input", toggleFields);
+                                                width.addEventListener("input", toggleFields);
+
+                                                toggleFields(); // initial check
+                                            });
+                                        </script>
+                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                        <script>
+                                            $(document).ready(function() {
+                                                function loadProjects(customerId, selectedProjectId = null) {
+                                                    if (customerId) {
+                                                        $.ajax({
+                                                            url: '/get-projects/' + customerId,
+                                                            type: 'GET',
+                                                            dataType: 'json',
+                                                            success: function(data) {
+                                                                let projectDropdown = $('#project_id');
+                                                                projectDropdown.html('<option value="">Select Project</option>');
+
+                                                                if (data.length > 0) {
+                                                                    $.each(data, function(index, project) {
+                                                                        let selected = '';
+                                                                        if (selectedProjectId && selectedProjectId == project.id) {
+                                                                            selected = 'selected';
+                                                                        }
+                                                                        projectDropdown.append(
+                                                                            '<option value="' + project.id + '" ' + selected + '>' + project.project_name + '</option>'
+                                                                        );
+                                                                    });
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        $('#project_id').html('<option value="">Select Project</option>');
+                                                    }
+                                                }
+
+                                                $('#customer_id').on('change', function() {
+                                                    let customerId = $(this).val();
+                                                    loadProjects(customerId);
+                                                });
+
+                                                // Pre-load for edit
+                                                @if(isset($workorder))
+                                                loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
+                                                @endif
+                                            });
+                                        </script>
 
                                         @endsection

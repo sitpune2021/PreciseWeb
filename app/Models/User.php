@@ -49,4 +49,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function client()
+{
+    return $this->hasOne(Client::class, 'login_id', 'id'); // assume login_id matches user id
+}
 }

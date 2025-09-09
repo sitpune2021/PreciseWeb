@@ -13,13 +13,15 @@ class Project extends Model
     use SoftDeletes;
  
     // Define which fields are mass assignable
-    protected $fillable = [
-        'name',
+    protected $fillable = [      
         'customer_id',
-        'qty',
-        'StartDate',
-        'EndDate',
-        'description',
+        'project_name',
+        'project_code',
+        // 'customer_name',
+        'customer_code',
+        'quantity',
+        'date',
+     
     ];
  public function customer()
 {

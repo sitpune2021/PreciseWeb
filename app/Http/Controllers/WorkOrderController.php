@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WorkOrder;
 use App\Models\Customer;
+use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,47 +14,52 @@ class WorkOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function AddWorkOrder()
-    {
-        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+   public function addWorkOrder()
+{
+    $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+    $projects = Project::select('id','project_name')->orderBy('project_name')->get(); // 🔹 project list
 
-        $workorders = WorkOrder::with('customer')->orderBy('id', 'desc')->get();
+    $workorders = WorkOrder::with(['customer','project'])->orderBy('id', 'desc')->get();
 
-        return view('WorkOrder.add', compact('codes', 'workorders'));
-    }
+    return view('WorkOrder.add', compact('codes', 'workorders', 'projects'));
+}
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function ViewWorkOrder()
-    {
+public function ViewWorkOrder()
+{
+    $workorders = WorkOrder::with(['customer', 'project'])
+        ->orderBy('id', 'desc')
+        ->get();
 
-        $workorders = WorkOrder::with('customer')->orderBy('id', 'desc')->get();
-        return view('WorkOrder.view', compact('workorders'));
-    }
+    return view('WorkOrder.view', compact('workorders'));
+}
+
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function storeWorkEntry(Request $request)
     {
+        // dd($request);
         $validatedData = $request->validate([
-            'rows'               => 'required|array|min:1',
-            'rows.*.customer_id' => 'required|exists:customers,id',
-            'rows.*.part'        => 'required|string|max:100',
-            'rows.*.date'        => 'required|date',
+            'rows'                     => 'required|array|min:1',
+            'rows.*.customer_id'       => 'required|exists:customers,id',
+            'rows.*.part'              => 'required|string|max:100',
+            'rows.*.project_id' => 'required|string|max:250',
+            'rows.*.date'              => 'required|date',
             'rows.*.part_description' => 'required|string|max:1000',
-            'rows.*.dimeter'     => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'rows.*.length'      => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'rows.*.width'       => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'rows.*.height'      => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-             'rows.*.exp_time' => 'nullable|string|max:50',
+            'rows.*.dimeter'           => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'rows.*.length'            => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'rows.*.width'             => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'rows.*.height'            => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'rows.*.exp_time' => 'nullable|string|max:50',
             'rows.*.quantity'    => 'required|integer|min:1',
         ]);
 
         foreach ($validatedData['rows'] as $row) {
             WorkOrder::create([
                 'customer_id'      => $row['customer_id'],
+                'project_id'     => $row['project_id'],
                 'part'             => $row['part'],
                 'date'             => $row['date'],
                 'dimeter'          => $row['dimeter'],
@@ -66,7 +72,7 @@ class WorkOrderController extends Controller
             ]);
         }
 
-     
+
         $workorders = WorkOrder::with('customer')->orderBy('id', 'desc')->get();
         return view('WorkOrder.view', compact('workorders'));
     }
@@ -75,23 +81,25 @@ class WorkOrderController extends Controller
      * Display the specified resource.
      */
     public function edit(string $encryptedId, Request $request)
-    {
-        try {
-            $id = base64_decode($encryptedId);
-            $workorder = WorkOrder::with('customer')->findOrFail($id);
-            $codes = Customer::select('id', 'code', 'name')->get();
+{
+    
+        $id = base64_decode($encryptedId);
+        $workorder = WorkOrder::with(['customer','project'])->findOrFail($id);
 
-            $workorders = WorkOrder::with('customer')
-                ->where('customer_id', $workorder->customer_id)
-                ->where('date', $workorder->date)
-                ->orderBy('id', 'desc')  
-                ->get();
+        $codes = Customer::select('id', 'code', 'name')->get();
+        $projects = Project::select('id','project_name')->get();  
 
-            return view('WorkOrder.add', compact('workorder', 'id', 'codes', 'workorders'));
-        } catch (\Exception $wo) {
-            abort(404);
-        }
-    }
+        $workorders = WorkOrder::with('customer')
+            ->where('customer_id', $workorder->customer_id)
+            ->where('date', $workorder->date)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('WorkOrder.add', compact('workorder', 'id', 'codes', 'workorders','projects'));
+     
+    
+}
+
 
     public function update(Request $request, string $encryptedId)
     {
@@ -99,12 +107,13 @@ class WorkOrderController extends Controller
 
         $request->validate([
             'part'               => 'required|string|max:100',
+            'project_id'       => 'required|string|max:250',
             'date'               => 'required|date',
             'part_description'   => 'required|string|max:1000',
-            'dimeter'            => 'required|numeric',
-            'length'             => 'required|numeric',
-            'width'              => 'required|numeric',
-            'height'             => 'required|numeric',
+            'dimeter'            => 'nullable|numeric',
+            'length'             => 'nullable|numeric',
+            'width'              => 'nullable|numeric',
+            'height'             => 'nullable|numeric',
             'exp_time'           => 'nullable|string|max:50',
             'quantity'           => 'required|integer|min:1',
         ]);
@@ -112,6 +121,7 @@ class WorkOrderController extends Controller
         $workOrder = WorkOrder::findOrFail($id);
 
         $workOrder->part              = $request->part;
+        $workOrder->project_id      = $request->project_id;
         $workOrder->date              = $request->date;
         $workOrder->part_description  = $request->part_description;
         $workOrder->dimeter           = $request->dimeter;
@@ -135,5 +145,14 @@ class WorkOrderController extends Controller
         $workOrder = WorkOrder::findOrFail($id);
         $workOrder->delete();
         return redirect()->route('ViewWorkOrder')->with('success', 'Branch deleted successfully.');
+    }
+
+
+
+    public function getProjects($customerId)
+    {
+        $projects = Project::where('customer_id', $customerId)
+            ->get(['id', 'project_name']);  
+        return response()->json($projects);
     }
 }

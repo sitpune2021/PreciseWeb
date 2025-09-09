@@ -17,7 +17,7 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.No</th>
-                                            <!-- <th>Work Order No</th> -->
+                                            <th>Project name</th>
                                             <!-- <th>Entry Code</th> -->
                                             <th>Part</th>
                                             <th>Date</th>
@@ -31,7 +31,7 @@
                                         @foreach($workorders as $wo)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <!-- <td>{{ $wo->customer_id  }}</td> -->
+                                           <td>{{ $wo->project->project_name ?? '' }}</td>
                                             <!-- <td>{{ $wo->customer?->code }}</td> -->
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
