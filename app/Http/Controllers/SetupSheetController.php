@@ -22,7 +22,6 @@ class SetupSheetController extends Controller
         return view('SetupSheet.add', compact('codes', 'settings'));
     }
 
-
     public function storeSetupSheet(Request $request)
     {
         $validated = $request->validate([
@@ -78,13 +77,11 @@ class SetupSheetController extends Controller
         return redirect()->route('ViewSetupSheet')->with('success', 'SetupSheet created successfully.');
     }
 
-
     public function ViewSetupSheet()
     {
         $sheets = SetupSheet::orderBy('id', 'desc')->get();
         return view('SetupSheet.view', compact('sheets'));
     }
-
 
     public function editSetupSheet(string $encryptedId)
     {
@@ -174,7 +171,6 @@ class SetupSheetController extends Controller
         return redirect()->route('ViewSetupSheet')->with('success', 'Setup Sheet updated successfully.');
     }
 
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -182,7 +178,6 @@ class SetupSheetController extends Controller
         $setup->delete();
         return redirect()->route('ViewSetupSheet')->with('success', 'Branch deleted successfully.');
     }
-
 
     public function getCustomerParts($customerId)
     {

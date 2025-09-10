@@ -28,14 +28,14 @@
                                     <!-- Part No -->
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
- 
+
                                         <select name="part_no" id="part_no" class="form-control">
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php
                                             $partNo = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
                                             @endphp
-                                           <option value="{{ $partNo }}"
+                                            <option value="{{ $partNo }}"
                                                 data-code="{{ $wo->customer?->code ?? '' }}"
                                                 data-workorder="{{ $wo->customer_id ?? '' }}"
                                                 data-partdesc="{{ $wo->part_description ?? '' }}"
@@ -49,12 +49,12 @@
                                         </select>
                                         @error('part_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
-                                      <div class="col-md-2">
+                                    <div class="col-md-2">
                                         <div class="">
                                             <label for="code" class="form-label">Customer Code</label>
-                                            <input type="text" class="form-control" id="code" name="code" value="{{ old('code', $record->code ?? '') }}"readonly>
+                                            <input type="text" class="form-control" id="code" name="code" value="{{ old('code', $record->code ?? '') }}" readonly>
                                             @error('code')
-                                            <span class="text-red">{{ $message }}</span>
+                                            <span class="text-red small">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -72,9 +72,6 @@
                                             value="{{ old('first_set', $record->first_set ?? '') }}">
                                         @error('first_set') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
-
-
-
                                     <!-- Qty -->
                                     <div class="col-md-2">
                                         <label class="form-label">Qty <span class="text-red">*</span></label>
@@ -127,9 +124,6 @@
                                         </select>
                                         @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
-
-
-
                                     <!-- Estimated Time -->
                                     <div class="col-md-4">
                                         <label class="form-label">Estimated Time (hrs) <span class="text-red">*</span></label>
@@ -212,16 +206,14 @@
     </div> <!-- page-content -->
 </div> <!-- main-content -->
 <script>
- 
-    document.getElementById('part_no').addEventListener('change', function() 
-    {
-            let selected = this.options[this.selectedIndex];
+    document.getElementById('part_no').addEventListener('change', function() {
+        let selected = this.options[this.selectedIndex];
 
-            document.getElementById('code').value = selected.getAttribute('data-code') || '';
-            document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
-            document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
-            document.getElementById('qty').value = selected.getAttribute('data-qty') || '';
-            document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
+        document.getElementById('code').value = selected.getAttribute('data-code') || '';
+        document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
+        document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
+        document.getElementById('qty').value = selected.getAttribute('data-qty') || '';
+        document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
     });
 
     function calculateHours() {
@@ -235,10 +227,10 @@
             if (endTime > startTime) {
                 let diff = (endTime - startTime) / (1000 * 60 * 60); // hours (actual)
 
-                let factor = 0.83; 
-                let actual = diff;            // Actual HRS (24.00)
-                let hrs = diff / factor;      // HRS (28.80)
-                let time = diff / factor;     // TIME (28.80)
+                let factor = 0.83;
+                let actual = diff; // Actual HRS (24.00)
+                let hrs = diff / factor; // HRS (28.80)
+                let time = diff / factor; // TIME (28.80)
 
                 document.querySelector('[name="hrs"]').value = hrs.toFixed(2);
                 document.querySelector('[name="time_taken"]').value = time.toFixed(2);

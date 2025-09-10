@@ -115,7 +115,7 @@
 
                        <tr>
                             <th>Diameter</th>
-                            <td id="wo_diameter"></td> <!-- इथे बदल केला -->
+                            <td id="wo_diameter"></td>  
                         </tr>
                         <tr>
                             <th>Length</th>

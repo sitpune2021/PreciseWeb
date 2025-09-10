@@ -33,7 +33,6 @@ class SetupSheet extends Model
         'hole_depth',
     ];
 
-
     protected $casts = [
         'holes'      => 'array',
         'hole_x'     => 'array',

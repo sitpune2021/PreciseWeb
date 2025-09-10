@@ -10,19 +10,12 @@ use Illuminate\Validation\Rule;
 
 class VendorContoller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function AddVendor()
     {
         return view('Vendor.add');
     }
 
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function storeVendor(Request $request)
     {
         $request->merge([
@@ -75,10 +68,6 @@ class VendorContoller extends Controller
         return redirect()->route('ViewVendor')->with('success', 'Vendor created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-
     public function ViewVendor()
     {
         $vendors = Vendor::orderBy('id', 'desc')->get();
@@ -86,9 +75,6 @@ class VendorContoller extends Controller
         return view('Vendor.view', compact('vendors'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $encryptedId)
     {
 
@@ -101,11 +87,6 @@ class VendorContoller extends Controller
             abort(404);
         }
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-
 
     public function update(Request $request, string $encryptedId)
     {
@@ -120,7 +101,7 @@ class VendorContoller extends Controller
             'contact_person' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
             'gst_no'          => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
             'status'          => 'required|in:Active,Inactive',
-
+            'phone_no'        => 'nullable', 'digits:10',
             'email_id'        => 'nullable|email|max:255',
             'address'         => 'required|string|max:500',
         ]);
@@ -132,10 +113,6 @@ class VendorContoller extends Controller
         return redirect()->route('ViewVendor')->with('success', 'Vendor updated successfully.');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);

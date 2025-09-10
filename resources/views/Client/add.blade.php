@@ -22,8 +22,7 @@
                                     @endif
                                     <input type="hidden" name="password" value="123">
                                     <div class="row">
-
-                                     <div class="col-md-4">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Client Name <span class="mandatory">*</span></label>
                                                 <input type="text"
@@ -34,59 +33,54 @@
                                                     value="{{ old('name', $client->name ?? '') }}"
                                                     onkeypress="return /[a-zA-Z\s]/.test(event.key)">
                                                 @error('name')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="email_id" class="form-label">Email ID<span class="mandatory">*</span></label>
                                                 <input type="email" class="form-control" id="email_id" name="email_id" placeholder="Email Id" value="{{ old('email_id', $client->email_id ?? '') }}">
                                                 @error('email_id')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number" value="{{ old('phone_no', isset($client) ? $client->phone_no : '') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number" 
+                                                value="{{ old('phone_no', isset($client) ? $client->phone_no : '') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
                                                 @error('phone_no')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
 
-                                       <div class="col-md-4">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="gst_no" class="form-label">GST Number <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" placeholder="GST Number" id="gst_no" name="gst_no" value="{{ old('gst_no', $client->gst_no ?? '') }}" oninput="this.value = this.value.toUpperCase();">
                                                 @error('gst_no')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <div class="col-md-6 mb-3">
-
                                             <label for="logo" class="form-label">Client Logo <span class="mandatory">*</span></label>
                                             <div class="d-flex align-items-center gap-2">
                                                 <input type="file" name="logo" id="logo" class="form-control" accept="image/*">
                                                 @if(isset($client) && $client->logo)
                                                 <a href="{{ asset($client->logo) }}" target="_blank"
                                                     style="width: 50px; height: 40px; overflow: hidden;">
-                                                    <img src="{{ asset($client->logo) }}"
-                                                        alt="Logo"
-                                                        style="width: 100%; height: auto;">
+                                                    <img src="{{ asset($client->logo) }}"alt="Logo"style="width: 100%; height: auto;">
                                                 </a>
                                                 @endif
                                             </div>
                                             @error('logo')
-                                            <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-red small">{{ $message }}</span>
                                             @enderror
                                         </div>
-
                                         <!-- Modal for centered logo preview -->
                                         @if(isset($client) && $client->logo)
                                         <div class="modal fade" id="logoModal" tabindex="-1" aria-labelledby="logoModalLabel" aria-hidden="true">
@@ -103,18 +97,15 @@
                                             </div>
                                         </div>
                                         @endif
-
-
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <label for="address" class="form-label">Address <span class="mandatory">*</span></label>
                                                 <textarea class="form-control" id="address" name="address" placeholder="Address...">{{ old('address', $client->address ?? '') }}</textarea>
                                                 @error('address')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <div class="col-lg-12">
                                             <div class="text-end">
                                                 <button type="submit" class="btn btn-primary">{{ isset($client) ? 'Update' : 'Submit' }}</button>
@@ -126,12 +117,10 @@
                                                 @endif
                                             </div>
                                         </div>
-
                                     </div><!-- end row -->
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div><!-- end row -->

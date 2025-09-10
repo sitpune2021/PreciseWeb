@@ -39,7 +39,7 @@
                                                     @endforeach
                                                 </select>
                                                 @error('customer_id')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
 
                                                 @if(isset($setupSheet))
@@ -76,7 +76,7 @@
                                                     @endif
                                                 </select>
                                                 @error('part_code')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -89,7 +89,7 @@
                                                     name="work_order_no" readonly
                                                     value="{{ old('work_order_no', $setupSheet->work_order_no ?? '') }}">
                                                 @error('work_order_no')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -100,7 +100,7 @@
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
                                                 <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $setupSheet->date ?? '') }}">
                                                 @error('date')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -108,30 +108,30 @@
                                         <!-- Sizes -->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_x" class="form-label">Size In X <span class="mandatory">*</span></label>
+                                                <label for="size_in_x" class="form-label">Size In X  </label>
                                                 <input type="text" class="form-control" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? '') }}">
                                                 @error('size_in_x')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
 
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_y" class="form-label">Size In Y <span class="mandatory">*</span></label>
+                                                <label for="size_in_y" class="form-label">Size In Y  </label>
                                                 <input type="text" class="form-control" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? '') }}">
                                                 @error('size_in_y')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
 
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_z" class="form-label">Size In Z <span class="mandatory">*</span></label>
+                                                <label for="size_in_z" class="form-label">Size In Z  </span></label>
                                                 <input type="text" class="form-control" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? '') }}">
                                                 @error('size_in_z')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -147,7 +147,7 @@
                                                 </option>
                                                 @endforeach
                                             </select>
-                                            @error('setting') <span class="text-red small">{{ $message }}</span> @enderror
+                                            @error('setting') <span class="text-red small small">{{ $message }}</span> @enderror
                                         </div>
 
                                         <!-- E Time -->
@@ -156,7 +156,7 @@
                                                 <label for="e_time" class="form-label">E Time <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="e_time" name="e_time" value="{{ old('e_time', $setupSheet->e_time ?? '') }}">
                                                 @error('e_time')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -172,7 +172,7 @@
                                                     <option value="Hole Centre" {{ old('x_refer', $setupSheet->x_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
                                                 </select>
                                                 @error('x_refer')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -187,7 +187,7 @@
                                                     <option value="Hole Centre" {{ old('y_refer', $setupSheet->y_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
                                                 </select>
                                                 @error('y_refer')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -203,7 +203,7 @@
                                                     <option value="Hole Centre" {{ old('z_refer', $setupSheet->z_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
                                                 </select>
                                                 @error('z_refer')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -218,7 +218,7 @@
                                                     <option value="Magnet" {{ old('clamping', $setupSheet->clamping ?? '') == 'Magnet' ? 'selected' : '' }}>Magnet</option>
                                                 </select>
                                                 @error('clamping')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -229,7 +229,7 @@
                                                 <label for="thickness" class="form-label">Thickness <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="thickness" name="thickness" value="{{ old('thickness', $setupSheet->thickness ?? '') }}">
                                                 @error('thickness')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -241,7 +241,7 @@
                                                     value="{{ old('qty', $setupSheet->qty ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
                                                 @error('qty')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -254,7 +254,7 @@
                                                     name="description"
                                                     value="{{ old('description', $setupSheet->description ?? '') }}">
                                                 @error('part_description')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -264,7 +264,7 @@
                                                 <label for="setup_image" class="form-label">Upload Image</label>
                                                 <input type="file" class="form-control" id="setup_image" name="setup_image" accept="image/*">
                                                 @error('setup_image')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -338,35 +338,35 @@
                                                     <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
                                                         value="{{ old('holes.' . $i, $holesData[$i] ?? '') }}">
                                                     @error('holes.' . $i)
-                                                    <span class="text-red">{{ $message }}</span>
+                                                    <span class="text-red small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
                                                         value="{{ old('hole_x.' . $i, $holeXData[$i] ?? '') }}">
                                                     @error('hole_x.' . $i)
-                                                    <span class="text-red">{{ $message }}</span>
+                                                    <span class="text-red small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"
                                                         value="{{ old('hole_y.' . $i, $holeYData[$i] ?? '') }}">
                                                     @error('hole_y.' . $i)
-                                                    <span class="text-red">{{ $message }}</span>
+                                                    <span class="text-red small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"
                                                         value="{{ old('hole_dia.' . $i, $holeDiaData[$i] ?? '') }}">
                                                     @error('hole_dia.' . $i)
-                                                    <span class="text-red">{{ $message }}</span>
+                                                    <span class="text-red small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control" name="hole_depth[]" placeholder="Hole Depth"
                                                         value="{{ old('hole_depth.' . $i, $holeDepthData[$i] ?? '') }}">
                                                     @error('hole_depth.' . $i)
-                                                    <span class="text-red">{{ $message }}</span>
+                                                    <span class="text-red small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-2 d-flex align-items-center">

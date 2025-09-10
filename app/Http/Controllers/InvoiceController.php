@@ -9,142 +9,153 @@ use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of the invoices.
-     */
-    
-
-    /**
-     * Show the form for creating a new invoice.
-     */
-     
 
     public function AddInvoice()
-{
-    $user = Auth::user();
-    $client = Client::where('login_id', $user->id)->first();
+    {
+        $user = Auth::user();
+        $client = Client::where('login_id', $user->id)->first();
 
-    return view('invoices.add', compact('client'));
-}
-
-
-
-    /**
-     * Store a newly created invoice in storage.
-     */
-    public function StoreInvoice(Request $request)
-{
-    $request->validate([
-        'invoice_no'     => 'required|unique:invoices,invoice_no',
-        'invoice_date'   => 'required|date',
-        'buyer_name'     => 'required|string|max:255',
-        'particulars'    => 'required|string|max:255',
-        'qty'            => 'required|integer|min:1',
-        'rate'           => 'required|numeric|min:0',
-    ]);
-
-    
-    $user   = Auth::user();
-    $client = Client::where('login_id', $user->id)->first();
-
-    if (!$client) {
-        return redirect()->back()->with('error', 'Client not found for this user.');
+        return view('invoices.add', compact('client'));
     }
 
-    // amount calculate
-    $amount = $request->qty * $request->rate;
+    public function StoreInvoice(Request $request)
+    {
+        // dd($request);
+        $request->validate([
+    'invoice_no'        => 'required|unique:invoices,invoice_no,' . ($invoice->id ?? 'NULL') . ',id',
+    'invoice_date'      => 'required|date',
+    'our_ch_no'         => 'nullable|string|max:255',
+    'our_ch_no_date'    => 'nullable|date',
+    'y_ch_no'           => 'nullable|string|max:255',
+    'y_ch_no_date'      => 'nullable|date',
+    'p_o_no'            => 'nullable|string|max:255',
+    'p_o_no_date'       => 'nullable|date',
+    'description_fast'  => 'nullable|string|max:255',
+    'gst_no'            => 'nullable|string|max:50',
+    'msme_no'           => 'nullable|string|max:50',
 
-    $requestData              = $request->all();
-    $requestData['client_id'] = $client->id; // auto client_id assign
-    $requestData['amount']    = $amount;
-    $requestData['sub_total'] = $amount;
+    // Buyer & Consignee
+    'buyer_name'        => 'required|string|max:255',
+    'buyer_address'     => 'nullable|string',
+    'consignee_name'    => 'nullable|string|max:255',
+    'consignee_address' => 'nullable|string',
 
-    Invoice::create($requestData);
+    // Contacts
+    'ki_attn_name'      => 'nullable|string|max:255',
+    '_ki_contact_no'    => 'nullable|string|max:20',
+    'ki_gst'            => 'nullable|string|max:50',
+    'kind_attn_name'    => 'nullable|string|max:255',
+    'contact_no'        => 'nullable|string|max:20',
+    'kind_gst'          => 'nullable|string|max:50',
 
-    return redirect()->route('ViewInvoice')->with('success', 'Invoice created successfully.');
-}
+    // Items
+    'description'       => 'required|string|max:255',
+    'hsn_code'          => 'nullable|string|max:50',
+    'qty'               => 'required|integer|min:1',
+    'rate'              => 'required|numeric|min:0',
+    'amount'            => 'nullable|numeric|min:0',
+    'hrs_per_job'       => 'nullable|numeric|min:0',
+    'cost'              => 'nullable|numeric|min:0',
 
-    /**
-     * Display the specified invoice.
-     */
+    // Totals
+    'sub_total'         => 'nullable|numeric|min:0',
+    'sgst'              => 'nullable|numeric|min:0',
+    'cgst'              => 'nullable|numeric|min:0',
+    'igst'              => 'nullable|numeric|min:0',
+    'total_tax_payable' => 'nullable|numeric|min:0',
+    'grand_total'       => 'nullable|numeric|min:0',
+
+    // Others
+    'declaration'       => 'nullable|string|max:255',
+    'note'              => 'nullable|string',
+    'bank_details'      => 'nullable|string',
+    'amount_in_words'   => 'nullable|string|max:255',
+]);
+
+
+
+        $user   = Auth::user();
+        $client = Client::where('login_id', $user->id)->first();
+
+        if (!$client) {
+            return redirect()->back()->with('error', 'Client not found for this user.');
+        }
+
+            $amount = $request->qty * $request->rate;
+                $subTotal = $amount;
+                $total = $subTotal + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
+
+                $data = $request->except(['amount', 'sub_total', 'grand_total']);
+                $data['client_id'] = $client->id;
+                $data['amount'] = $amount;
+                $data['sub_total'] = $subTotal;
+                $data['grand_total'] = $total;
+
+
+        Invoice::create($data);
+
+        return redirect()->route('ViewInvoice')->with('success', 'Invoice created successfully.');
+    }
+
     public function ViewInvoice()
-{
-    $invoices = Invoice::with('client')->latest()->get();
-    return view('invoices.view', compact('invoices'));
-}
+    {
+        $invoices = Invoice::with('client')->latest()->get();
+        return view('invoices.view', compact('invoices'));
+    }
 
+    public function editInvoice(string $encryptedId)
+    {
+        $id = base64_decode($encryptedId);
 
-    /**
-     * Show the form for editing the specified invoice.
-     */
-   
+        $invoice = Invoice::findOrFail($id);
 
-   public function editInvoice(string $encryptedId)
-{
-    $id = base64_decode($encryptedId);
+        $user   = Auth::user();
+        $client = Client::where('login_id', $user->id)->first();
 
-    $invoice = Invoice::findOrFail($id);
+        return view('invoices.add', compact('invoice', 'client'));
+    }
 
-    $user   = Auth::user();
-    $client = Client::where('login_id', $user->id)->first();
-
-    return view('invoices.add', compact('invoice', 'client'));
-}
-
-
-
-
-    /**
-     * Update the specified invoice in storage.
-     */
     public function updateInvoice(Request $request, string $encryptedId)
-{
-    $id = base64_decode($encryptedId);
-    $invoice = Invoice::findOrFail($id);
+    {
+        $id = base64_decode($encryptedId);
+        $invoice = Invoice::findOrFail($id);
 
-     
-    $request->validate([
-        'invoice_no'   => 'required|unique:invoices,invoice_no,' . $invoice->id,
-        'invoice_date' => 'required|date',
-        'buyer_name'   => 'required|string|max:255',
-        'particulars'  => 'required|string|max:255',
-        'qty'          => 'required|integer|min:1',
-        'rate'         => 'required|numeric|min:0',
-    ]);
+        $request->validate([
+            'invoice_no'   => 'required|unique:invoices,invoice_no,' . $invoice->id,
+            'invoice_date' => 'required|date',
+            'buyer_name'   => 'required|string|max:255',
+            'particulars'  => 'required|string|max:255',
+            'qty'          => 'required|integer|min:1',
+            'rate'         => 'required|numeric|min:0',
+        ]);
 
-    $user   = Auth::user();
-    $client = Client::where('login_id', $user->id)->firstOrFail();
+        $user   = Auth::user();
+        $client = Client::where('login_id', $user->id)->firstOrFail();
 
-    $amount = $request->qty * $request->rate;
+        $amount = $request->qty * $request->rate;
 
-$data               = $request->all();
-$data['client_id']  = $client->id;
-$data['amount']     = $amount;
-$data['sub_total']  = $amount;
-$data['total_amount'] = $amount + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
+        $data               = $request->all();
+        $data['client_id']  = $client->id;
+        $data['amount']     = $amount;
+        $data['sub_total']  = $amount;
+        $data['total_amount'] = $amount + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
 
-$invoice->update($data);
+        $invoice->update($data);
 
-    return redirect()->route('ViewInvoice')->with('success', 'Invoice updated successfully.');
-}
+        return redirect()->route('ViewInvoice')->with('success', 'Invoice updated successfully.');
+    }
 
-    /**
-     * Remove the specified invoice from storage.
-     */
     public function destroy(Invoice $invoice)
     {
         $invoice->delete();
         return redirect()->route('ViewInvoice')->with('success', 'Invoice deleted successfully.');
     }
 
-  public function printInvoice($encryptedId)
-{
-    $id = base64_decode($encryptedId);
-    $invoice = Invoice::with('client')->findOrFail($id);
+    public function printInvoice($encryptedId)
+    {
+        $id = base64_decode($encryptedId);
+        $invoice = Invoice::with('client')->findOrFail($id);
 
-    return view('invoices.print', compact('invoice'));
-}
-
-
-
+        return view('invoices.print', compact('invoice'));
+    }
 }

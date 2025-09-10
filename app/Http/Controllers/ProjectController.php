@@ -10,9 +10,6 @@ use Illuminate\Container\Attributes\Log;
 
 class ProjectController extends Controller
 {
-    /**
-     * Show the form to add a project.
-     */
     public function AddProject()
     {
         $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
@@ -20,10 +17,6 @@ class ProjectController extends Controller
         return view('Project.add', compact('codes'));
     }
 
-
-    /**
-     * Store a new project in the database.
-     */
     public function storeProject(Request $request)
     {
         // Validate input
@@ -71,10 +64,6 @@ class ProjectController extends Controller
         return view('Project.view', compact('projects'));
     }
 
-    /**
-     * Show the edit form for a project.
-     */
-
     public function edit(string $encryptedId)
     { {
             $codes = Customer::select('id', 'code', 'name')->get();
@@ -84,9 +73,6 @@ class ProjectController extends Controller
         }
     }
 
-    /**
-     * Update an existing project.
-     */
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -106,9 +92,6 @@ class ProjectController extends Controller
         return redirect()->route('ViewProject')->with('success', 'Project updated successfully.');
     }
 
-    /**
-     * Delete a project (you can complete this method as needed).
-     */
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);

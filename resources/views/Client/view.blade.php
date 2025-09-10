@@ -46,24 +46,23 @@
                                                 @endif
                                             </td>
                                             <td>
-                                            <form action="{{ route('updateClientStatus') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="id" value="{{ $c->id }}">
-                                                <div class="form-check form-switch">
-                                                    <input
-                                                        class="form-check-input"
-                                                        type="checkbox"
-                                                        role="switch"
-                                                        id="statusNameSwitch{{ $c->id }}"
-                                                        name="status"
-                                                        value="1"
-                                                        onchange="this.form.submit()"
-                                                        {{ $c->status == '1' ? 'checked' : '' }}>
-                                                </div>
-                                            </form>
-                                        </td>
+                                                <form action="{{ route('updateClientStatus') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $c->id }}">
+                                                    <div class="form-check form-switch">
+                                                        <input
+                                                            class="form-check-input"
+                                                            type="checkbox"
+                                                            role="switch"
+                                                            id="statusNameSwitch{{ $c->id }}"
+                                                            name="status"
+                                                            value="1"
+                                                            onchange="this.form.submit()"
+                                                            {{ $c->status == '1' ? 'checked' : '' }}>
+                                                    </div>
+                                                </form>
+                                            </td>
                                             <td>
-
                                                 <a href="{{route('editClient', base64_encode($c->id))}}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
@@ -74,7 +73,7 @@
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
                                                 <a href="{{route('deleteClient', base64_encode($c->id))}}"
-                                                onclick="return confirm('Are you sure you want to delete this record?')">
+                                                    onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </button>

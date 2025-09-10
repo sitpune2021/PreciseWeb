@@ -57,7 +57,7 @@
         <tr>
             <td width="20%">
                 @if($invoice->client && $invoice->client->logo)
-                <img src="{{ asset($invoice->client->logo) }}" width="80">
+                    <img src="{{ asset($invoice->client->logo) }}" width="80">
                 @endif
             </td>
             <td width="60%" class="center">
@@ -87,18 +87,18 @@
                 <strong>Buyer:</strong><br>
                 {{ $invoice->buyer_name ?? '' }}<br>
                 {{ $invoice->buyer_address ?? '' }}<br>
-                GST: {{ $invoice->buyer_gst ?? '' }}
+                GST: {{ $invoice->ki_gst ?? '' }}
             </td>
             <td width="50%" class="left">
                 <strong>Consignee:</strong><br>
                 {{ $invoice->consignee_name ?? '' }}<br>
                 {{ $invoice->consignee_address ?? '' }}<br>
-                GST: {{ $invoice->consignee_gst ?? '' }}
+                GST: {{ $invoice->kind_gst ?? '' }}
             </td>
         </tr>
     </table>
 
-    {{-- Items --}}
+    {{-- Items (Single Item) --}}
     <table width="100%">
         <tr>
             <th>Sr</th>
@@ -108,21 +108,14 @@
             <th>Rate</th>
             <th>Amount</th>
         </tr>
-
-        @forelse($invoice->items as $key => $item)
         <tr>
-            <td>{{ $key+1 }}</td>
-            <td class="left">{{ $item->particulars ?? '' }}</td>
-            <td>{{ $item->hsn_code ?? '' }}</td>
-            <td>{{ $item->qty ?? '' }}</td>
-            <td class="right">{{ number_format((float)($item->rate ?? 0), 2) }}</td>
-            <td class="right">{{ number_format((float)($item->amount ?? 0), 2) }}</td>
+            <td>1</td>
+            <td class="left">{{ $invoice->description ?? '' }}</td>
+            <td>{{ $invoice->hsn_code ?? '' }}</td>
+            <td>{{ $invoice->qty ?? '' }}</td>
+            <td class="right">{{ number_format((float)($invoice->rate ?? 0), 2) }}</td>
+            <td class="right">{{ number_format((float)($invoice->amount ?? 0), 2) }}</td>
         </tr>
-        @empty
-        <tr>
-            <td colspan="6">No Items</td>
-        </tr>
-        @endforelse
     </table>
 
     {{-- Totals --}}
@@ -146,8 +139,12 @@
                         <td class="right">{{ number_format((float)($invoice->sgst ?? 0), 2) }}</td>
                     </tr>
                     <tr>
+                        <td>IGST</td>
+                        <td class="right">{{ number_format((float)($invoice->igst ?? 0), 2) }}</td>
+                    </tr>
+                    <tr>
                         <td><strong>Total</strong></td>
-                        <td class="right"><strong>{{ number_format((float)($invoice->total_amount ?? 0), 2) }}</strong></td>
+                        <td class="right"><strong>{{ number_format((float)($invoice->grand_total ?? 0), 2) }}</strong></td>
                     </tr>
                 </table>
             </td>
@@ -170,5 +167,4 @@
         window.print();
     </script>
 </body>
-
 </html>

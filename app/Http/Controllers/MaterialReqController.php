@@ -1,29 +1,24 @@
 <?php
- 
+
 namespace App\Http\Controllers;
- 
+
 use App\Models\MaterialReq;
 use App\Models\Customer;
- 
- 
- 
+
+
+
 use Illuminate\Http\Request;
- 
+
 class MaterialReqController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function AddMaterialReq()
     {
         $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
- 
+
         return view('MaterialReq.add', compact('codes'));
     }
- 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function storeMaterialReq(Request $request)
     {
         // Validation
@@ -54,27 +49,20 @@ class MaterialReqController extends Controller
             'cl'            => 'required|string|max:50',
             'total_cost'    => 'required|numeric|min:0',
         ]);
- 
+
         // Store data
         MaterialReq::create($request->all());
- 
+
         return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement Added Successfully!');
     }
- 
- 
-    /**
-     * Display the specified resource.
-     */
+
     public function ViewMaterialReq()
     {
         $materialReq = MaterialReq::orderBy('id', 'desc')->get();
- 
+
         return view('MaterialReq.view', compact('materialReq'));
     }
- 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function editMaterialReq(string $encryptedId)
     {
         try {
@@ -86,23 +74,23 @@ class MaterialReqController extends Controller
             abort(404);
         }
     }
- 
+
     // Update logic
     public function updateMaterialReq(Request $request, $id)
     {
         $id = base64_decode($id);
- 
+
         $request->validate([
             'customer_id' => 'required',
             'code' => 'required',
             'date' => 'required|date',
             'work_order_no' => 'required',
             'description' => 'required',
-             
+
         ]);
- 
+
         $materialReq = MaterialReq::findOrFail($id);
- 
+
         $materialReq->customer_id = $request->customer_id;
         $materialReq->code        = $request->code;
         $materialReq->date        = $request->date;
@@ -128,15 +116,12 @@ class MaterialReqController extends Controller
         $materialReq->edm_rate    = $request->edm_rate;
         $materialReq->cl          = $request->cl;
         $materialReq->total_cost  = $request->total_cost;
- 
+
         $materialReq->save();
- 
+
         return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement updated successfully!');
     }
- 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);

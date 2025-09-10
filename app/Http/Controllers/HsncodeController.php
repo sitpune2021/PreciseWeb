@@ -10,7 +10,7 @@ class HsncodeController extends Controller
     // Show add form + list
     public function addHsn()
     {
-        $hsncodes = Hsncode::orderBy('id','desc')->get();
+        $hsncodes = Hsncode::orderBy('id', 'desc')->get();
         return view('Hsncode.add', compact('hsncodes'));
     }
 
@@ -33,8 +33,8 @@ class HsncodeController extends Controller
     public function edit($id)
     {
         $hsn = Hsncode::findOrFail(base64_decode($id));
-        $hsncodes = Hsncode::orderBy('id','desc')->get();
-        return view('Hsncode.add', compact('hsn','hsncodes'));
+        $hsncodes = Hsncode::orderBy('id', 'desc')->get();
+        return view('Hsncode.add', compact('hsn', 'hsncodes'));
     }
 
     // Update record
@@ -43,7 +43,7 @@ class HsncodeController extends Controller
         $hsn = Hsncode::findOrFail(base64_decode($id));
 
         $request->validate([
-            'hsn_code' => 'required|unique:hsncodes,hsn_code,'.$hsn->id,
+            'hsn_code' => 'required|unique:hsncodes,hsn_code,' . $hsn->id,
             'sgst' => 'required|numeric',
             'cgst' => 'required|numeric',
             'igst' => 'required|numeric',

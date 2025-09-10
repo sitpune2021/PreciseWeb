@@ -32,13 +32,11 @@
                                     onkeypress="return /[a-zA-Z\s]/.test(event.key)">
 
                                 @error('operator_name')
-                                <small class="text-danger position-absolute" style="bottom:-18px; left:2px; font-size:12px;">
+                                <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px;">
                                     {{ $message }}
                                 </small>
                                 @enderror
                             </div>
-
-
                             <div class="col-md-2 col-sm-6 mb-3">
                                 <button type="submit" class="btn btn-primary w-100 px-3 py-2">
                                     {{ isset($operator) ? 'Update' : 'Add' }}
@@ -88,14 +86,11 @@
                                             </div>
                                         </form>
                                     </td>
-
-
                                     <td>
-                                        <a href="{{ route('editOperator', base64_encode($o->id)) }}" class="btn btn-success btn-sm">
+                                    <a href="{{ route('editOperator', base64_encode($o->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
-                                        </a>
-
-                                        <a href="{{route('deleteOperator', base64_encode($o->id))}}"
+                                     </a>
+                                    <a href="{{route('deleteOperator', base64_encode($o->id))}}"
                                             onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
@@ -113,9 +108,7 @@
                     </div>
                 </div>
             </div>
-
             <!-- List End -->
-
         </div>
     </div>
 </div>

@@ -12,9 +12,7 @@ use App\Models\SetupSheet;
 
 class MachinerecordController extends Controller
 {
-    /**
-     * Show Add Form
-     */
+
     public function AddMachinerecord()
     {
         $workorders = WorkOrder::with('customer')->latest()->get();
@@ -25,9 +23,6 @@ class MachinerecordController extends Controller
         return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings'));
     }
 
-    /**
-     * Store New Machine Record
-     */
     public function StoreMachinerecord(Request $request)
     {
         $validated = $request->validate([
@@ -53,10 +48,6 @@ class MachinerecordController extends Controller
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Added Successfully');
     }
 
- 
-    /**
-     * View All Records
-     */
     public function ViewMachinerecord()
     {
         $record = Machinerecord::latest()->get();
@@ -66,27 +57,17 @@ class MachinerecordController extends Controller
         return view('Machinerecord.view', compact('record', 'workorders'));
     }
 
-
-    /**
-     * Edit Record Form
-     */
-
     public function edit(string $encryptedId)
     {
-
         $id = base64_decode($encryptedId);
-
         $record = Machinerecord::findOrFail($id);
         $workorders = WorkOrder::with('customer')->latest()->get();
-         $machines   = Machine::all();
+        $machines   = Machine::all();
         $operators  = Operator::all();
         $settings   = Setting::all();
-         return view('Machinerecord.add', compact('record','workorders', 'machines', 'operators', 'settings'));
+        return view('Machinerecord.add', compact('record', 'workorders', 'machines', 'operators', 'settings'));
     }
 
-    /**
-     * Update Record
-     */
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -115,11 +96,6 @@ class MachinerecordController extends Controller
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Updated Successfully');
     }
 
-    /**
-     * Delete Record
-     */
-
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -129,18 +105,17 @@ class MachinerecordController extends Controller
     }
 
     public function fetchData($part_code)
-{
-    $data = SetupSheet::where('part_code', $part_code)->first();
+    {
+        $data = SetupSheet::where('part_code', $part_code)->first();
 
-    if ($data) {
-        return response()->json([
-            'work_order_no' => $data->customer_id,
-            'description' => $data->description,
-            'qty' => $data->qty,
-            'est_time' => $data->est_time,
-        ]);
+        if ($data) {
+            return response()->json([
+                'work_order_no' => $data->customer_id,
+                'description' => $data->description,
+                'qty' => $data->qty,
+                'est_time' => $data->est_time,
+            ]);
+        }
+        return response()->json([]);
     }
-
-    return response()->json([]);
-}
 }

@@ -14,24 +14,24 @@ class WorkOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function addWorkOrder()
-{
-    $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
-    $projects = Project::select('id','project_name')->orderBy('project_name')->get(); // 🔹 project list
+    public function addWorkOrder()
+    {
+        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+        $projects = Project::select('id', 'project_name')->orderBy('project_name')->get(); // 🔹 project list
 
-    $workorders = WorkOrder::with(['customer','project'])->orderBy('id', 'desc')->get();
+        $workorders = WorkOrder::with(['customer', 'project'])->orderBy('id', 'desc')->get();
 
-    return view('WorkOrder.add', compact('codes', 'workorders', 'projects'));
-}
+        return view('WorkOrder.add', compact('codes', 'workorders', 'projects'));
+    }
 
-public function ViewWorkOrder()
-{
-    $workorders = WorkOrder::with(['customer', 'project'])
-        ->orderBy('id', 'desc')
-        ->get();
+    public function ViewWorkOrder()
+    {
+        $workorders = WorkOrder::with(['customer', 'project'])
+            ->orderBy('id', 'desc')
+            ->get();
 
-    return view('WorkOrder.view', compact('workorders'));
-}
+        return view('WorkOrder.view', compact('workorders'));
+    }
 
 
 
@@ -81,13 +81,13 @@ public function ViewWorkOrder()
      * Display the specified resource.
      */
     public function edit(string $encryptedId, Request $request)
-{
-    
+    {
+
         $id = base64_decode($encryptedId);
-        $workorder = WorkOrder::with(['customer','project'])->findOrFail($id);
+        $workorder = WorkOrder::with(['customer', 'project'])->findOrFail($id);
 
         $codes = Customer::select('id', 'code', 'name')->get();
-        $projects = Project::select('id','project_name')->get();  
+        $projects = Project::select('id', 'project_name')->get();
 
         $workorders = WorkOrder::with('customer')
             ->where('customer_id', $workorder->customer_id)
@@ -95,10 +95,8 @@ public function ViewWorkOrder()
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('WorkOrder.add', compact('workorder', 'id', 'codes', 'workorders','projects'));
-     
-    
-}
+        return view('WorkOrder.add', compact('workorder', 'id', 'codes', 'workorders', 'projects'));
+    }
 
 
     public function update(Request $request, string $encryptedId)
@@ -152,7 +150,15 @@ public function ViewWorkOrder()
     public function getProjects($customerId)
     {
         $projects = Project::where('customer_id', $customerId)
-            ->get(['id', 'project_name']);  
+            ->get(['id', 'project_name']);
         return response()->json($projects);
+    }
+    public function getParts($projectId)
+    {
+        $parts = WorkOrder::where('project_id', $projectId)
+            ->orderBy('id', 'asc')
+            ->pluck('part');
+
+        return response()->json($parts);
     }
 }

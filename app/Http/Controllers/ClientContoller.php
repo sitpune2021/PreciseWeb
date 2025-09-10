@@ -14,20 +14,16 @@ class ClientContoller extends Controller
     {
         return view('Client.add');
     }
-
-
     public function storeClient(Request $request)
     {
-
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/', 'unique:clients,name',],
             'phone_no' => ['required', 'numeric', 'digits:10'],
-            'email_id' => ['required','email','max:30','unique:users,email'],
-            'gst_no' => ['required','regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/','unique:customers,gst_no',],
+            'email_id' => ['required', 'email', 'max:30', 'unique:users,email'],
+            'gst_no' => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', 'unique:customers,gst_no',],
             'logo'        => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'address'     => 'required|string',
         ]);
-
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
@@ -41,8 +37,6 @@ class ClientContoller extends Controller
             $logoPath = 'client_logo/' . $filename;
         }
 
-        //print_r($request->all());die;
-
         $users = User::create([
             'name'      => $request->input('name'),
             'mobile'    => $request->input('phone_no'),
@@ -52,7 +46,7 @@ class ClientContoller extends Controller
             'org_pass'  => $request->input('password'),
             'user_type' => 2,
         ]);
-        //echo '<pre>';print_r( $users->id);die;
+
         Client::create([
             'name'      => $request->input('name'),
             'email_id'  => $request->input('email_id'),
@@ -72,7 +66,6 @@ class ClientContoller extends Controller
         return view('Client.view', compact('client'));
     }
 
-
     public function edit(string $encryptedId)
     {
         try {
@@ -83,7 +76,6 @@ class ClientContoller extends Controller
             abort(404);
         }
     }
-
 
     public function update(Request $request, string $encryptedId)
     {
@@ -118,7 +110,6 @@ class ClientContoller extends Controller
 
             $client->logo = $logoPath;
         }
-
         $client->name        = $request->input('name');
         $client->email_id    = $request->input('email_id');
         $client->phone_no    = $request->input('phone_no');
@@ -129,8 +120,6 @@ class ClientContoller extends Controller
 
         return redirect()->route('ViewClient')->with('success', 'Client updated successfully.');
     }
-
-
 
     public function destroy(string $encryptedId)
     {
@@ -146,8 +135,6 @@ class ClientContoller extends Controller
 
         $client->status = $request->has('status') ? 1 : 0;
         $client->save();
-
-
         return back()->with('success', 'Status updated!');
     }
 }

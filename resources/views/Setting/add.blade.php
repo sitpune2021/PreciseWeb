@@ -30,7 +30,7 @@
                                     style="background-image: none !important;">
  
                                 @error('setting_name')
-                                    <small class="text-danger position-absolute"
+                                    <small class="text-red position-absolute"
                                         style="bottom:-18px; left:2px; font-size:12px;">
                                         {{ $message }}
                                     </small>

@@ -156,8 +156,9 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Amount</label>
-                                <input type="text" name="amount" class="form-control"
-                                    value="{{ old('amount', $invoice->amount ?? 0) }}">
+                                <input type="text" name="amount" class="form-control" 
+                               value="{{ old('amount', $invoice->amount ?? 0) }}" readonly>
+
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Hrs per Job</label>

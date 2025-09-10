@@ -9,27 +9,14 @@ use Illuminate\Http\Request;
  
 class SettingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+ 
     public function AddSetting()
     {
         $settings = Setting::latest()->get();
         
         return view('Setting.add', compact('settings'));
     }
- 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
- 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function storeSetting(Request $request)
 {
     $request->validate([
@@ -47,15 +34,7 @@ class SettingController extends Controller
  
     return redirect()->route('AddSetting')->with('success', 'Setting added successfully');
 }
- 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id) {}
- 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function editSetting(string $encryptedId)
     {
         try {
@@ -67,10 +46,7 @@ class SettingController extends Controller
             abort(404);
         }
     }
- 
-    /**
-     * Update the specified resource in storage.
-     */
+
      public function updateSetting (Request $request, string $encryptedId)
 {
     $id = base64_decode($encryptedId);
@@ -84,22 +60,15 @@ class SettingController extends Controller
         ],
     ]);
  
-    try {
+  
         $setting = Setting::findOrFail($id);
         $setting->setting_name = $request->setting_name;
         $setting->save();
  
-        return redirect()->route('AddSetting')
-            ->with('success', 'Setting updated successfully.');
-    } catch (\Exception $e) {
-        return back()->with('error', 'Something went wrong.');
-    }
+        return redirect()->route('AddSetting')->with('success', 'Setting updated successfully.');
+    
 }
- 
-    /**
-     * Remove the specified resource from storage.
-     */
-     
+
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -108,8 +77,6 @@ class SettingController extends Controller
         return redirect()->route('AddSetting')->with('success', 'Branch deleted successfully.');
     }
 
-   
- 
     public function updateSettingStatus(Request $request)
     {
 

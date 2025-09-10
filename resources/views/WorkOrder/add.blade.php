@@ -36,17 +36,17 @@
                                                     </option>
                                                     @endforeach
                                                 </select>
-                                                @error('customer_id')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-danger customer"></span>
                                                 @if(isset($workorder))
                                                 <input type="hidden" name="customer_id" value="{{ $workorder->customer_id }}">
                                                 @endif
+                                                 @error('customer_id')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
+                                                <span class="text-red customer"></span>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="project_id" class="form-label">Project Name <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single" id="project_id" name="project_id">
@@ -58,29 +58,41 @@
                                                     </option>
                                                     @endforeach
                                                 </select>
-                                                @error('project_id') <span class="text-danger">{{ $message }}</span> @enderror
-                                                <span class="text-danger project_id"></span>
-
-                                                @error('project_id') <span class="text-danger">{{ $message }}</span> @enderror
-                                                <span class="text-danger project_id"></span>
+                                                @error('project_id') <span class="text-red">{{ $message }}</span> @enderror
+                                                <span class="text-red project_id"></span>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <!-- <div class="col-md-2">
+                                            <div class="mb-3">
+                                                <label for="previous_part" class="form-label">Previous Part <span class="mandatory">*</span></label>
+                                                <input type="text" class="form-control" id="previous_part" readonly>
+                                                <span class="text-red previous_part"></span>
+                                            </div>
+                                        </div> -->
+
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="part" class="form-label">Part <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="part" name="part" placeholder="Enter Part" value="{{ old('part', $workorder->part ?? '') }}">
-                                                @error('part') <span class="text-danger">{{ $message }}</span> @enderror
-                                                <span class="text-danger part"></span>
+                                                <input type="text" class="form-control " id="part" name="part"
+                                                    list="parts_list" placeholder="Enter or Select Part">
+                                                <datalist id="parts_list">Previous part</datalist>
+                                                 @error('part')
+                                                <span class="text-red">{{ $message }}</span>
+                                                @enderror
+                                                <span class="text-red part"></span>
                                             </div>
                                         </div>
+
+
+
 
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
                                                 <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $workorder->date ?? '') }}">
-                                                @error('date') <span class="text-danger">{{ $message }}</span> @enderror
-                                                <span class="text-danger date"></span>
+                                                @error('date') <span class="text-red">{{ $message }}</span> @enderror
+                                                <span class="text-red date"></span>
                                             </div>
                                         </div>
 
@@ -147,9 +159,9 @@
                                                     value="{{ old('exp_time', $workorder->exp_time ?? '') }}"
                                                     class="form-control" placeholder="3 min, 3.30 hr">
                                                 @error('exp_time')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
-                                                <span class="text-danger exp_time"></span>
+                                                <span class="text-red exp_time"></span>
                                             </div>
                                         </div>
 
@@ -167,9 +179,9 @@
                                                     value="{{ old('quantity', $workorder->quantity ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
                                                 @error('quantity')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
-                                                <span class="text-danger quantity"></span>
+                                                <span class="text-red quantity"></span>
                                             </div>
                                         </div>
 
@@ -182,9 +194,9 @@
                                                     placeholder="Description"
                                                     value="{{ old('part_description', $workorder->part_description ?? '') }}">
                                                 @error('part_description')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="text-red">{{ $message }}</span>
                                                 @enderror
-                                                <span class="text-danger part_description_error"></span>
+                                                <span class="text-red part_description_error"></span>
                                             </div>
                                         </div>
 
@@ -233,7 +245,7 @@
                                             let rowCount = 0;
 
                                             function clearErrors() {
-                                                document.querySelectorAll(".text-danger").forEach(el => {
+                                                document.querySelectorAll(".text-red").forEach(el => {
                                                     if (!el.classList.contains("error")) el.textContent = "";
                                                 });
                                             }
@@ -489,5 +501,29 @@
                                                 @endif
                                             });
                                         </script>
-
+                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                        <script>
+                                            $(document).ready(function() {
+                                                $('#project_id').on('change', function() {
+                                                    let projectId = $(this).val();
+                                                    if (projectId) {
+                                                        $.ajax({
+                                                            url: '/get-parts/' + projectId,
+                                                            type: 'GET',
+                                                            dataType: 'json',
+                                                            success: function(data) {
+                                                                $('#parts_list').empty(); // clear old options
+                                                                if (data.length > 0) {
+                                                                    $.each(data, function(index, part) {
+                                                                        $('#parts_list').append('<option value="' + part + '">');
+                                                                    });
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        $('#parts_list').empty();
+                                                    }
+                                                });
+                                            });
+                                        </script>
                                         @endsection
