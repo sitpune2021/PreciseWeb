@@ -23,7 +23,6 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'customer_id'   => 'required|exists:customers,id',
             'project_name'  => 'required|string|max:255',
-            'project_code'  => 'nullable|string|max:100|unique:projects,project_code',
             'quantity'      => 'required|integer|min:1',
             'date'          => 'nullable|date',
         ]);
@@ -32,13 +31,6 @@ class ProjectController extends Controller
         $projectWords = explode(' ', trim($request->input('project_name')));
         $code = '';
 
-        if (count($projectWords) == 1) {
-            $code = strtoupper(substr($projectWords[0], 0, 3));
-        } elseif (count($projectWords) == 2) {
-            $code = strtoupper(substr($projectWords[0], 0, 2) . substr($projectWords[1], 0, 1));
-        } else {
-            $code = strtoupper(substr($projectWords[0], 0, 1) . substr($projectWords[1], 0, 1) . substr($projectWords[2], 0, 1));
-        }
 
         // Get Customer Code from selected customer
         $customer = Customer::find($request->customer_id);
@@ -46,7 +38,6 @@ class ProjectController extends Controller
 
         // Prepare data for insertion
         $projectData = $validated;
-        $projectData['project_code'] = $code;         // set auto project code
         $projectData['customer_code'] = $customerCode; // set customer code
 
         // Create project
@@ -79,8 +70,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         $validated = $request->validate([
-            'project_name'   => 'required|string|max:255',
-            'project_code'   => 'nullable|string|max:100',
+            'project_name'   => 'required|string|max:255',            
             // 'name'            => 'required|string|max:255',
             'customer_code'  => 'nullable|string|max:100',
             'quantity'       => 'required|integer|min:1',

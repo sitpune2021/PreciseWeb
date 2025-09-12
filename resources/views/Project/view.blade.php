@@ -20,10 +20,8 @@
                                             <th>Project No</th>                                      
                                             <th>Customer Name</th>
                                             <th>Customer Code</th>
-                                            <th>Project Name</th>
-                                            <th>Project Code</th>
-                                            <!-- <th>Quantity</th> -->
-                                            <!-- <th>Date</th> -->
+                                            <th>Project Name</th>                                          
+                                            <th>Created Date</th>
                                             <th width="12%">Action</th>
                                         </tr>
                                     </thead>
@@ -35,9 +33,7 @@
                                             <td>{{ $project->customer->name ?? '' }}</td>
                                             <td>{{ $project->customer?->code }}</td>
                                               <td>{{ $project->project_name }}</td>
-                                            <td>{{ $project->project_code }}</td>
-                                            <!-- <td>{{ $project->quantity }}</td> -->
-                                            <!-- <td>{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}</td> -->
+                                            <td>{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}</td>
                                             <td>
                                                 <!-- Edit -->
                                                 <a href="{{ route('editProject', base64_encode($project->id)) }}">
@@ -51,8 +47,7 @@
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewBtn"
                                                     data-id="{{ $project->id }}"
                                                     data-workorder="{{ $project->customer_id }}"
-                                                    data-name="{{ $project->project_name }}"
-                                                    data-pcode="{{ $project->project_code }}"
+                                                    data-name="{{ $project->project_name }}"                                                     
                                                     data-customer="{{ $project->customer->name ?? '' }}"
                                                     data-code="{{ $project->customer?->code }}"
                                                     data-qty="{{ $project->quantity }}"
@@ -100,11 +95,6 @@
                                     <th>Project Name</th>
                                     <td id="view_name"></td>
                                 </tr>
-
-                                <tr>
-                                    <th>Project Code</th>
-                                    <td id="view_pcode"></td>
-                                </tr>
                                 <tr>
                                     <th>Customer Name</th>
                                     <td id="view_customer"></td>
@@ -139,14 +129,11 @@
         document.querySelectorAll(".viewBtn").forEach(btn => {
             btn.addEventListener("click", function() {
                 document.getElementById("view_workorder").textContent = this.dataset.workorder;
-                document.getElementById("view_name").textContent = this.dataset.name;
-                document.getElementById("view_pcode").textContent = this.dataset.pcode;
+                document.getElementById("view_name").textContent = this.dataset.name;                
                 document.getElementById("view_customer").textContent = this.dataset.customer;
                 document.getElementById("view_code").textContent = this.dataset.code;
                 document.getElementById("view_qty").textContent = this.dataset.qty;
                 document.getElementById("view_date").textContent = this.dataset.date;
-
-
 
                 let modal = new bootstrap.Modal(document.getElementById("viewProjectModal"));
                 modal.show();

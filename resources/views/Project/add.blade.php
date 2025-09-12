@@ -55,13 +55,7 @@
                                         @enderror
                                     </div>
 
-                                    <!-- Project Code -->
-                                    <div class="col-md-4">
-                                        <label for="project_code" class="form-label">Project Code</label>
-                                        <input type="text" class="form-control" id="project_code" name="project_code"
-                                            placeholder="Enter Project Code"
-                                            value="{{ old('project_code', $project->project_code ?? '') }}">
-                                    </div>
+
                                     <!-- Quantity -->
                                     <div class="col-md-4">
                                         <label for="quantity" class="form-label">Quantity <span class="text-red">*</span></label>
@@ -107,8 +101,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const customerSelect = document.getElementById('customer_id');
         const codeInput = document.getElementById('code');
-        const projectName = document.getElementById('project_name');
-        const projectCode = document.getElementById('project_code');
+       
 
         // Auto-fill Customer Code
         customerSelect.addEventListener('change', function() {
@@ -122,23 +115,6 @@
             customerSelect.dispatchEvent(new Event('change'));
         }
 
-        // Auto-generate Project Code from Project Name (acronym)
-        projectName.addEventListener('input', function() {
-            const name = this.value.trim();
-            if (name) {
-                // Take the first letter of each word
-                const words = name.split(/\s+/);
-                const code = words.map(w => w[0].toUpperCase()).join('');
-                projectCode.value = code;
-            } else {
-                projectCode.value = '';
-            }
-        });
-
-        // Trigger on page load if project name exists (edit mode)
-        if (projectName.value) {
-            projectName.dispatchEvent(new Event('input'));
-        }
     });
 </script>
 

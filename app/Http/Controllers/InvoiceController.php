@@ -21,10 +21,15 @@ class InvoiceController extends Controller
     public function StoreInvoice(Request $request)
     {
         // dd($request);
+
         $request->validate([
-    'invoice_no'        => 'required|unique:invoices,invoice_no,' . ($invoice->id ?? 'NULL') . ',id',
+    'invoice_no'        => 'required|unique:invoices,invoice_no',
     'invoice_date'      => 'required|date',
-    'our_ch_no'         => 'nullable|string|max:255',
+    'buyer_name'        => 'required|string|max:255',
+    'description'       => 'required|string|max:255',
+    'qty'               => 'required|integer|min:1',
+    'rate'              => 'required|numeric|min:0',
+        'our_ch_no'         => 'nullable|string|max:255',
     'our_ch_no_date'    => 'nullable|date',
     'y_ch_no'           => 'nullable|string|max:255',
     'y_ch_no_date'      => 'nullable|date',
@@ -35,7 +40,7 @@ class InvoiceController extends Controller
     'msme_no'           => 'nullable|string|max:50',
 
     // Buyer & Consignee
-    'buyer_name'        => 'required|string|max:255',
+    
     'buyer_address'     => 'nullable|string',
     'consignee_name'    => 'nullable|string|max:255',
     'consignee_address' => 'nullable|string',
@@ -49,10 +54,9 @@ class InvoiceController extends Controller
     'kind_gst'          => 'nullable|string|max:50',
 
     // Items
-    'description'       => 'required|string|max:255',
+   
     'hsn_code'          => 'nullable|string|max:50',
-    'qty'               => 'required|integer|min:1',
-    'rate'              => 'required|numeric|min:0',
+ 
     'amount'            => 'nullable|numeric|min:0',
     'hrs_per_job'       => 'nullable|numeric|min:0',
     'cost'              => 'nullable|numeric|min:0',
@@ -71,6 +75,29 @@ class InvoiceController extends Controller
     'bank_details'      => 'nullable|string',
     'amount_in_words'   => 'nullable|string|max:255',
 ]);
+
+$user   = Auth::user();
+$client = Client::where('login_id', $user->id)->firstOrFail();
+
+$amount    = $request->qty * $request->rate;
+$subTotal  = $amount;
+$total     = $subTotal + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
+
+$data               = $request->all();
+$data['client_id']  = $client->id;
+$data['amount']     = $amount;
+$data['sub_total']  = $subTotal;
+$data['grand_total'] = $total;
+
+Invoice::create($data);
+
+
+
+
+     
+     
+
+ 
 
 
 
@@ -115,35 +142,37 @@ class InvoiceController extends Controller
         return view('invoices.add', compact('invoice', 'client'));
     }
 
-    public function updateInvoice(Request $request, string $encryptedId)
-    {
-        $id = base64_decode($encryptedId);
-        $invoice = Invoice::findOrFail($id);
+   public function updateInvoice(Request $request, string $encryptedId)
+{
+    $id = base64_decode($encryptedId);
+    $invoice = Invoice::findOrFail($id);
 
-        $request->validate([
-            'invoice_no'   => 'required|unique:invoices,invoice_no,' . $invoice->id,
-            'invoice_date' => 'required|date',
-            'buyer_name'   => 'required|string|max:255',
-            'particulars'  => 'required|string|max:255',
-            'qty'          => 'required|integer|min:1',
-            'rate'         => 'required|numeric|min:0',
-        ]);
+    $request->validate([
+        'invoice_no'   => 'required|unique:invoices,invoice_no,' . $invoice->id,
+        'invoice_date' => 'required|date',
+        'buyer_name'   => 'required|string|max:255',
+        'description'  => 'required|string|max:255', // ✔ description वापरा
+        'qty'          => 'required|integer|min:1',
+        'rate'         => 'required|numeric|min:0',
+    ]);
 
-        $user   = Auth::user();
-        $client = Client::where('login_id', $user->id)->firstOrFail();
+    $user   = Auth::user();
+    $client = Client::where('login_id', $user->id)->firstOrFail();
 
-        $amount = $request->qty * $request->rate;
+    $amount    = $request->qty * $request->rate;
+    $subTotal  = $amount;
+    $total     = $subTotal + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
 
-        $data               = $request->all();
-        $data['client_id']  = $client->id;
-        $data['amount']     = $amount;
-        $data['sub_total']  = $amount;
-        $data['total_amount'] = $amount + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
+    $data               = $request->all();
+    $data['client_id']  = $client->id;
+    $data['amount']     = $amount;
+    $data['sub_total']  = $subTotal;
+    $data['grand_total'] = $total;  
 
-        $invoice->update($data);
+    $invoice->update($data);
 
-        return redirect()->route('ViewInvoice')->with('success', 'Invoice updated successfully.');
-    }
+    return redirect()->route('ViewInvoice')->with('success', 'Invoice updated successfully.');
+}
 
     public function destroy(Invoice $invoice)
     {

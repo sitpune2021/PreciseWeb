@@ -16,7 +16,6 @@ class Project extends Model
     protected $fillable = [      
         'customer_id',
         'project_name',
-        'project_code',
         // 'customer_name',
         'customer_code',
         'quantity',

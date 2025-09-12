@@ -39,7 +39,7 @@
                                                 @if(isset($workorder))
                                                 <input type="hidden" name="customer_id" value="{{ $workorder->customer_id }}">
                                                 @endif
-                                                 @error('customer_id')
+                                                @error('customer_id')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                                 <span class="text-red customer"></span>
@@ -77,7 +77,7 @@
                                                 <input type="text" class="form-control " id="part" name="part"
                                                     list="parts_list" placeholder="Enter or Select Part">
                                                 <datalist id="parts_list">Previous part</datalist>
-                                                 @error('part')
+                                                @error('part')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                                 <span class="text-red part"></span>
@@ -420,48 +420,51 @@
                                             attachValidationEvents();
                                         </script>
 
-
                                         <script>
                                             document.addEventListener("DOMContentLoaded", function() {
-                                                let dimeter = document.getElementById("dimeter");
+                                                let diameter = document.getElementById("dimeter");
                                                 let height = document.getElementById("height");
                                                 let length = document.getElementById("length");
                                                 let width = document.getElementById("width");
 
                                                 function toggleFields() {
-                                                    if (dimeter.value || height.value) {
+                                                    if (diameter.value) {
+
                                                         length.disabled = true;
                                                         width.disabled = true;
                                                         length.value = "";
                                                         width.value = "";
-                                                        dimeter.disabled = false;
+
+                                                        diameter.disabled = false;
                                                         height.disabled = false;
                                                     } else if (length.value || width.value) {
-                                                        dimeter.disabled = true;
-                                                        height.disabled = true;
-                                                        dimeter.value = "";
-                                                        height.value = "";
+
+                                                        diameter.disabled = true;
+                                                        diameter.value = "";
+
                                                         length.disabled = false;
                                                         width.disabled = false;
-                                                    } else {
-                                                        dimeter.disabled = false;
                                                         height.disabled = false;
+                                                    } else {
+
+                                                        diameter.disabled = false;
                                                         length.disabled = false;
                                                         width.disabled = false;
+                                                        height.disabled = false;
                                                     }
                                                 }
 
-                                                dimeter.addEventListener("input", toggleFields);
-                                                height.addEventListener("input", toggleFields);
+                                                diameter.addEventListener("input", toggleFields);
                                                 length.addEventListener("input", toggleFields);
                                                 width.addEventListener("input", toggleFields);
 
                                                 toggleFields(); // initial check
                                             });
                                         </script>
+
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                        <script>
-                                            $(document).ready(function() {
+                                        <!-- <script>
+                                               $(document).ready(function() {
                                                 function loadProjects(customerId, selectedProjectId = null) {
                                                     if (customerId) {
                                                         $.ajax({
@@ -499,6 +502,27 @@
                                                 @if(isset($workorder))
                                                 loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
                                                 @endif
+                                            });
+                                        </script> -->
+
+
+                                        <script>
+                                            $(document).ready(function() {
+
+                                                $('#project_id').on('change', function() {
+                                                    let selectedText = $("#project_id option:selected").text();
+                                                    if (selectedText && selectedText !== "Select Project") {
+                                                        $('#part_description')
+                                                            .val(selectedText)
+                                                            .prop('readonly', true);
+                                                    } else {
+                                                        $('#part_description').val("").prop('readonly', false);
+                                                    }
+                                                });
+
+                                                $('#part_description').on('dblclick', function() {
+                                                    $(this).prop('readonly', false);
+                                                });
                                             });
                                         </script>
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

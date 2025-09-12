@@ -17,7 +17,6 @@
                 // Customer relation
                 $table->unsignedBigInteger('customer_id')->nullable();
                 $table->string('project_name');
-                $table->string('project_code');
                 // $table->string('customer_name');
                 $table->string('customer_code');
                 $table->unsignedBigInteger('user_id')->nullable();

@@ -101,7 +101,7 @@ class CustomerContoller extends Controller
                 'max:255',
                 Rule::unique('customers', 'name')->ignore($id),
             ],
-            'code'              => 'nullable',
+            'code' => ['nullable', Rule::unique('customers', 'code')->ignore($id ?? null),],
             'per_hour_rate'     => 'nullable|numeric|min:0',
             'contact_person'    => ['nullable', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
             'phone_no'          => 'nullable|string|max:20',

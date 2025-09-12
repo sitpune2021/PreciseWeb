@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MaterialReq;
 use App\Models\Customer;
+use App\Models\MaterialType;
 
 
 
@@ -15,8 +16,8 @@ class MaterialReqController extends Controller
     public function AddMaterialReq()
     {
         $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
-
-        return view('MaterialReq.add', compact('codes'));
+         $materialtype   = MaterialType::all();
+        return view('MaterialReq.add', compact('codes','materialtype'));
     }
 
     public function storeMaterialReq(Request $request)
@@ -59,7 +60,7 @@ class MaterialReqController extends Controller
     public function ViewMaterialReq()
     {
         $materialReq = MaterialReq::orderBy('id', 'desc')->get();
-
+        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
         return view('MaterialReq.view', compact('materialReq'));
     }
 

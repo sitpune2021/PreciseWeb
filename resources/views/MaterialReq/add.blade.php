@@ -145,7 +145,7 @@
                                     </div>
 
                                     <!-- Material -->
-                                    <div class="col-md-3">
+                                    <!-- <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="material" class="form-label">Material <span class="mandatory">*</span></label>
                                             <select name="material" id="material" class="form-control">
@@ -156,7 +156,23 @@
                                             </select>
                                             @error('material') <span class="text-red">{{ $message }}</span> @enderror
                                         </div>
-                                    </div>
+                                    </div> -->
+
+
+                                    
+                                        <div class="col-md-3">
+                                           <label for="material" class="form-label">Material <span class="mandatory">*</span></label>
+                                            <select name="material" id="material" class="form-control">
+                                                 <option value="">Select Material</option>
+                                                @foreach($materialtype as $materialReq)
+                                                <option value="{{ $materialReq->material_type }}"
+                                                    {{ old('materialReq', $record->materialReq ?? '') == $materialReq->material_type ? 'selected' : '' }}>
+                                                    {{ $materialReq->material_type }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('materialReq') <span class="text-red small small">{{ $message }}</span> @enderror
+                                        </div>
 
                                     <!-- Qty -->
                                     <div class="col-md-3">

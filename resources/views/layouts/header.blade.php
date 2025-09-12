@@ -621,6 +621,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('addHsn') }}" class="nav-link {{ request()->routeIs('addHsn') ? 'active' : '' }}"> Add Hsncode </a>
                                 </li>
+
+                                <li class="nav-item">
+                                <a href="{{ route('AddMaterialType') }}"class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active' : '' }}">Add Material Type
+                                </a>
+                            </li> 
                                 
                             </ul>
                         </div>

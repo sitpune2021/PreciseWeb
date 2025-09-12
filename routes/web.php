@@ -17,6 +17,7 @@ use App\Http\Controllers\MaterialorderController;
 use App\Http\Controllers\MaterialReqController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\HsncodeController;
+use App\Http\Controllers\MaterialTypeController;
 
 
 Auth::routes();
@@ -79,6 +80,10 @@ Route::get('/editOperator/{id}'               , [OperatorController::class, 'edi
 Route::put('/updateOperator/{id}'             , [OperatorController::class, 'update'])->name('updateOperator');
 Route::post('/updateOperatorStatus'           , [OperatorController::class,  'updateOperatorStatus'])->name('updateOperatorStatus');
 Route::get('/deleteOperator/{id}'             , [OperatorController::class, 'destroy'])->name('deleteOperator');
+Route::get('/trashoperator'                 ,  [OperatorController::class, 'trash'])->name('trashOperator');
+Route::get('/restoreoperator/{id}'           , [OperatorController::class, 'restore'])->name('restoreOperator');
+ 
+ 
 
 // Machine Routes
 Route::get('/AddMachine'                      , [MachineController::class, 'AddMachine'])->name('AddMachine');
@@ -104,6 +109,15 @@ Route::put('hsn/update/{id}'                  , [HsncodeController::class, 'upda
 Route::post('hsn/status'                      , [HsncodeController::class, 'updateStatus'])->name('updateHsnStatus');
 Route::get('hsn/delete/{id}'                  , [HsncodeController::class, 'destroy'])->name('deleteHsn');
 
+// MaterialType Routes
+Route::get('/AddMaterialType'                 , [MaterialTypeController::class, 'AddMaterialType'])->name('AddMaterialType');
+Route::post('/storeMaterialType'              , [MaterialTypeController::class, 'storeMaterialType'])->name('storeMaterialType');
+Route::get('/editMaterialType/{id}'           , [MaterialTypeController::class, 'editMaterialType'])->name('editMaterialType');
+Route::put('/updateMaterialType/{id}'         , [MaterialTypeController::class, 'updateMaterialType'])->name('updateMaterialType');
+Route::get('/deleteMaterialType/{id}'         , [MaterialTypeController::class, 'destroy'])->name('deleteMaterialType');
+Route::get('/trashMaterialType'               , [MaterialTypeController::class, 'trashMaterialType'])->name('trashMaterialType');
+Route::get('/restoreMaterialType/{id}'        , [MaterialTypeController::class, 'restoreMaterialType'])->name('restoreMaterialType');
+
 // Setupsheet Routes
 Route::get('/AddSetupSheet'                   , [SetupSheetController::class, 'AddSetupSheet'])->name('AddSetupSheet');
 Route::post('/storeSetupSheet'                , [SetupSheetController::class, 'storeSetupSheet'])->name('storeSetupSheet');
@@ -127,12 +141,16 @@ Route::get('/AddMaterialReq'                  , [MaterialReqController::class, '
 Route::get('/ViewMaterialReq'                 , [MaterialReqController::class, 'ViewMaterialReq'])->name('ViewMaterialReq');
 Route::post('/storeMaterialReq'               , [MaterialReqController::class, 'storeMaterialReq'])->name('storeMaterialReq');
 Route::get('/editMaterialReq/{id}'            , [MaterialReqController::class, 'editMaterialReq'])->name('editMaterialReq');
-Route::get('/deleteInvoice/{id}'              , [MaterialReqController::class, 'destroy'])->name('deleteMaterialReq');
+Route::get('/deleteMaterialReq/{id}'          , [MaterialReqController::class, 'destroy'])->name('deleteMaterialReq');
 Route::put('/updateMaterialReq/{id}'          , [MaterialReqController::class, 'updateMaterialReq'])->name('updateMaterialReq');
 
 // Materialorder Routes
 Route::get('/AddMaterialorder'                , [MaterialorderController::class, 'AddMaterialorder'])->name('AddMaterialorder');
 Route::get('/ViewMaterialorder'               , [MaterialorderController::class, 'ViewMaterialorder'])->name('ViewMaterialorder');
+Route::post('/storeMaterialorder'             , [MaterialorderController::class, 'storeMaterialorder'])->name('storeMaterialorder');
+Route::get('/editMaterialorder/{id}'          , [MaterialorderController::class, 'edit'])->name('editMaterialorder');
+Route::get('/deleteMaterialorder/{id}'        , [MaterialorderController::class, 'destroy'])->name('deleteMaterialorder');
+Route::put('/updateMaterialorder/{id}'        , [MaterialorderController::class, 'update'])->name('updateMaterialorder');
 
 // Invoice Routes
 Route::get('/AddInvoice'                      , [InvoiceController::class, 'AddInvoice'])->name('AddInvoice');

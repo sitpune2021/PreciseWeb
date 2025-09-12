@@ -108,7 +108,7 @@
                                     <td id="cust_name"></td>
                                 </tr>
                                 <tr>
-                                    <th>Per_hour_rate</th>
+                                    <th>Per hour rate</th>
                                     <td id="cust_hour_rate"></td>
                                 </tr>
                               
