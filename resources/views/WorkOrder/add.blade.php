@@ -75,7 +75,7 @@
                                             <div class="mb-3">
                                                 <label for="part" class="form-label">Part <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control " id="part" name="part"
-                                                    list="parts_list" placeholder="Enter or Select Part">
+                                                    list="parts_list" placeholder="Enter or Select Part"  value="{{ old('part', $workorder->part ?? '') }}">
                                                 <datalist id="parts_list">Previous part</datalist>
                                                 @error('part')
                                                 <span class="text-red">{{ $message }}</span>
@@ -463,7 +463,7 @@
                                         </script>
 
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                        <!-- <script>
+                                        <script>
                                                $(document).ready(function() {
                                                 function loadProjects(customerId, selectedProjectId = null) {
                                                     if (customerId) {
@@ -503,7 +503,7 @@
                                                 loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
                                                 @endif
                                             });
-                                        </script> -->
+                                        </script>
 
 
                                         <script>
