@@ -28,27 +28,26 @@
                                     <!-- Part No -->
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
-
-                                        <select name="part_no" id="part_no" class="form-control">
+                                        <select name="part_no" id="part_no" class="form-control form-select">
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php
-                                            $partNo = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
+                                            $partNo = ($wo->customer?->code ?? '') . '_' . ($wo->project_id ?? '') . '_' . ($wo->part ?? '');
                                             @endphp
                                             <option value="{{ $partNo }}"
                                                 data-code="{{ $wo->customer?->code ?? '' }}"
-                                                data-workorder="{{ $wo->customer_id ?? '' }}"
+                                                data-workorder="{{ $wo->project_id ?? '' }}"
                                                 data-partdesc="{{ $wo->part_description ?? '' }}"
                                                 data-qty="{{ $wo->quantity ?? '' }}"
                                                 data-e_time="{{ $wo->exp_time ?? '' }}"
                                                 {{ old('part_no', $record->part_no ?? '') == $partNo ? 'selected' : '' }}>
                                                 {{ $partNo }}
                                             </option>
-
                                             @endforeach
                                         </select>
                                         @error('part_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
+
                                     <div class="col-md-2">
                                         <div class="">
                                             <label for="code" class="form-label">Customer Code</label>
@@ -58,6 +57,7 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    
                                     <!-- Work Order No -->
                                     <div class="col-md-2">
                                         <label class="form-label">Work Order No</label>
@@ -83,7 +83,7 @@
                                     <!-- Machine -->
                                     <div class="col-md-3">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
-                                        <select name="machine" class="form-control">
+                                        <select name="machine" class="form-control form-select">
                                             <option value=""> Select Machine </option>
                                             @foreach($machines as $machine)
                                             <option value="{{ $machine->machine_name }}"
@@ -98,7 +98,7 @@
                                     <!-- Operator -->
                                     <div class="col-md-3">
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
-                                        <select name="operator" class="form-control">
+                                        <select name="operator" class="form-control form-select">
                                             <option value="">Select Operator</option>
                                             @foreach($operators as $operator)
                                             <option value="{{ $operator->operator_name }}"
@@ -113,7 +113,7 @@
                                     <!-- Setting -->
                                     <div class="col-md-3">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
-                                        <select name="setting_no" class="form-control">
+                                        <select name="setting_no" class="form-control form-select">
                                             <option value="">Select Setting</option>
                                             @foreach($settings as $setting)
                                             <option value="{{ $setting->setting_name }}"

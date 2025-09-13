@@ -153,6 +153,7 @@ class WorkOrderController extends Controller
             ->get(['id', 'project_name']);
         return response()->json($projects);
     }
+    
     public function getParts($projectId)
     {
         $parts = WorkOrder::where('project_id', $projectId)

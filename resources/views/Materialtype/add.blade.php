@@ -30,7 +30,7 @@
                                     value="{{ old('material_type', isset($materialtype) ? $materialtype->material_type : '') }}"
                                     placeholder="Enter Material Type">
                                 @error('material_type')
-                                <small class="text-danger position-absolute" style="bottom:-18px; left:2px; font-size:12px;">
+                                <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;"">
                                     {{ $message }}
                                 </small>
                                 @enderror
@@ -48,7 +48,7 @@
                                     value="{{ old('material_rate', isset($materialtype) ? $materialtype->material_rate : '') }}"
                                     placeholder="Enter Material Rate">
                                 @error('material_rate')
-                                <small class="text-danger position-absolute" style="bottom:-18px; left:2px; font-size:12px;">
+                                <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;"">
                                     {{ $message }}
                                 </small>
                                 @enderror

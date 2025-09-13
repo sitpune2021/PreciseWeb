@@ -32,7 +32,7 @@
                                     onkeypress="return /[a-zA-Z\s]/.test(event.key)">
                                    
                                 @error('machine_name')
-                                <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px;">
+                                <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;">
                                     {{ $message }}
                                 </small>
                                 @enderror

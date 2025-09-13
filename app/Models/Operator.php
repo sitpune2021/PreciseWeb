@@ -11,5 +11,10 @@ class Operator extends Model
     protected $fillable=[
         'operator_name',
         'status',
+        'is_active',
+    ];
+
+     protected $casts = [
+        'is_active' => 'boolean',
     ];
 }

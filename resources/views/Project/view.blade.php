@@ -17,7 +17,7 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.No</th>
-                                            <th>Project No</th>                                      
+                                            <th>Project No.</th>                                      
                                             <th>Customer Name</th>
                                             <th>Customer Code</th>
                                             <th>Project Name</th>                                          
@@ -29,7 +29,7 @@
                                         @foreach($projects as $project)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $project->customer_id }}</td>                                       
+                                            <td>{{ $project->id }}</td>                                       
                                             <td>{{ $project->customer->name ?? '' }}</td>
                                             <td>{{ $project->customer?->code }}</td>
                                               <td>{{ $project->project_name }}</td>
@@ -88,7 +88,7 @@
                         <div class="modal-body">
                             <table class="table table-bordered">
                                 <tr>
-                                    <th>Project.No</th>
+                                    <th>Project No.</th>
                                     <td id="view_workorder"></td>
                                 </tr>
                                 <tr>

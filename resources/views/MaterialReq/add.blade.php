@@ -162,7 +162,7 @@
                                     
                                         <div class="col-md-3">
                                            <label for="material" class="form-label">Material <span class="mandatory">*</span></label>
-                                            <select name="material" id="material" class="form-control">
+                                            <select name="material" id="material" class="form-control form-select">
                                                  <option value="">Select Material</option>
                                                 @foreach($materialtype as $materialReq)
                                                 <option value="{{ $materialReq->material_type }}"
@@ -311,9 +311,13 @@
                                         </div>
                                     </div>
 
-                                    <!-- Submit -->
-                                    <div class="col-12 text-end">
-                                        <button type="submit" class="btn btn-primary">{{ isset($materialReq) ? 'Update' : 'Submit' }}</button>
+
+
+                                       <div class="col-lg-12 text-end">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{ isset($materialReq) ? 'Update' : 'Submit' }}
+                                        </button>
+                                        &nbsp;
                                         @if(isset($materialReq))
                                         <a href="{{ route('ViewMaterialReq') }}" class="btn btn-info">Cancel</a>
                                         @else

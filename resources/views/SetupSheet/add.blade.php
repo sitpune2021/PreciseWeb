@@ -66,7 +66,7 @@
                                                     @endphp
                                                     @foreach($parts as $wo)
                                                     @php
-                                                    $partCode = ($wo->customer->code ?? '') . '' . $wo->customer_id . '' . $wo->part;
+                                                        $partCode = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
                                                     @endphp
                                                     <option value="{{ $partCode }}"
                                                         {{ old('part_code', $setupSheet->part_code ?? '') == $partCode ? 'selected' : '' }}>
@@ -497,9 +497,9 @@
 
 <script>
     $(document).ready(function() {
-        let isEditMode = $("#setup_id").val() ? true : false; // 👉 Hidden input ठेव (id ओळखायला)
-
-        $("#customer_id").on("change", function() {
+        let isEditMode = $("#setup_id").val() ? true : false;  
+        $("#customer_id").on("change", function() 
+        {
             let customer_id = $(this).val();
 
             if (customer_id) {

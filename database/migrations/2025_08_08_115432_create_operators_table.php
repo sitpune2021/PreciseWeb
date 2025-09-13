@@ -9,22 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-         Schema::create('operators', function (Blueprint $table) {
-            $table->id();
-            $table->string('operator_name');
-            $table->boolean('status')->default(1)->index(); 
-            $table->softDeletes();  
-            $table->timestamps();  
-        });
-    }
+   public function up(): void
+{
+    Schema::create('operators', function (Blueprint $table) {
+        $table->id();
+        $table->string('operator_name');
+        $table->boolean('status')->default(1)->index();
+        $table->softDeletes();
+        $table->boolean('is_active')->default(1);  
+        $table->timestamps();
+    });
+}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('operators');
-    }
+
+public function down(): void
+{
+    Schema::dropIfExists('operators');
+}
+
 };

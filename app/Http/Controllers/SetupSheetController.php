@@ -184,6 +184,7 @@ class SetupSheetController extends Controller
         $parts = WorkOrder::where('customer_id', $customerId)
             ->select(
                 'id',
+                'project_id',   // project_id इथे घेतलाय
                 'part',
                 'part_description',
                 'customer_id',
@@ -200,17 +201,18 @@ class SetupSheetController extends Controller
             return [
                 'id' => $wo->id,
                 'part' => $wo->part,
-                'part_code' => ($wo->customer->code ?? '') . '' . $wo->customer_id . '' . $wo->part,
+                // PartCode = CustomerCode_ProjectID_PartNo
+                'part_code' => ($wo->customer->code ?? '') . '_' . $wo->project_id . '_' . $wo->part,
                 'part_description' => $wo->part_description,
                 'size_in_x' => $wo->length,
                 'size_in_y' => $wo->width,
                 'size_in_z' => $wo->height,
                 'e_time' => $wo->exp_time,
                 'qty' => $wo->quantity,
-                'work_order_no' => $wo->customer_id,
+                // Work order no = project_id
+                'work_order_no' => $wo->project_id,
             ];
         });
-
 
         return response()->json($formatted);
     }

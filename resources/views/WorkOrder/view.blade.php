@@ -32,11 +32,11 @@
                                         @foreach($workorders as $wo)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $wo->customer_id }}</td>
-                                           <td>{{ $wo->project->project_name ?? '' }}</td>
+                                            <td>{{ $wo->project_id }}</td>
+                                            <td>{{ $wo->project->project_name ?? '' }}</td>
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
-                                            <td>{{ ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '') }}</td>
+                                            <td>{{ ($wo->customer?->code ?? '') . '_' . ($wo->project_id ?? '') . '_' . ($wo->part ?? '') }}</td>
                                             <td>{{ $wo->quantity }}</td>
                                             <td>{{ $wo->part_description }}</td>
                                             <td>
@@ -156,7 +156,7 @@
         btn.addEventListener('click', function() {
             let data = JSON.parse(this.getAttribute('data-wo'));
 
-            document.getElementById('wo_work_order_no').textContent = data.customer_id ?? '';
+            document.getElementById('wo_work_order_no').textContent = data.project_id ?? '';
             document.getElementById('wo_entry_code').textContent = data.customer?.code ?? '';
             document.getElementById('wo_part').textContent = data.part ?? '';
             document.getElementById('wo_date').textContent = data.date ?? '';

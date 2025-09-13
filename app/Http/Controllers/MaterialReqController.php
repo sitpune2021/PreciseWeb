@@ -68,9 +68,10 @@ class MaterialReqController extends Controller
     {
         try {
             $id = base64_decode($encryptedId);
-            $materialReq = MaterialReq::findOrFail($id);
+            
+            $materialtype   = MaterialType::all();
             $codes = Customer::select('id', 'name', 'code')->get(); // Customer list for dropdown
-            return view('MaterialReq.add', compact('materialReq', 'codes'));
+            return view('MaterialReq.view', compact( 'codes','materialtype'));
         } catch (\Exception $e) {
             abort(404);
         }

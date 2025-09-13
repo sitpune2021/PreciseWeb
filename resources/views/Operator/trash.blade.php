@@ -82,5 +82,19 @@ function confirmRestore(name, url) {
     return false;
 }
 </script>
+
+<script>
+function confirmRestore(name, url) {
+    var message = "'" + name + "'Do you want to restore?\nIf it is already active, it will be redirected to the Edit Page.";
+     
+
+    if(confirm(message)) {
+        window.location.href = url;
+        return false;
+    }
+    return false;
+}
+</script>
+
  
 @endsection

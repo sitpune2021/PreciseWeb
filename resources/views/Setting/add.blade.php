@@ -31,7 +31,7 @@
  
                                 @error('setting_name')
                                     <small class="text-red position-absolute"
-                                        style="bottom:-18px; left:2px; font-size:12px;">
+                                        style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;">
                                         {{ $message }}
                                     </small>
                                 @enderror

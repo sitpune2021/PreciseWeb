@@ -80,8 +80,13 @@ Route::get('/editOperator/{id}'               , [OperatorController::class, 'edi
 Route::put('/updateOperator/{id}'             , [OperatorController::class, 'update'])->name('updateOperator');
 Route::post('/updateOperatorStatus'           , [OperatorController::class,  'updateOperatorStatus'])->name('updateOperatorStatus');
 Route::get('/deleteOperator/{id}'             , [OperatorController::class, 'destroy'])->name('deleteOperator');
-Route::get('/trashoperator'                 ,  [OperatorController::class, 'trash'])->name('trashOperator');
-Route::get('/restoreoperator/{id}'           , [OperatorController::class, 'restore'])->name('restoreOperator');
+Route::get('/trashoperator'                   , [OperatorController::class, 'trash'])->name('trashOperator');
+Route::get('/restoreoperator/{id}'            , [OperatorController::class, 'restore'])->name('restoreOperator');
+// Edit & Update Routes
+Route::get('/operators/edit/{id}',              [OperatorController::class, 'edit'])->name('editOperator');
+Route::put('/operators/update/{id}', [OperatorController::class, 'update'])->name('updateOperator');
+
+
  
  
 
