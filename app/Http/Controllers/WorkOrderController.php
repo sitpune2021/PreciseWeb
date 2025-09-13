@@ -14,15 +14,15 @@ class WorkOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function addWorkOrder()
-    {
-        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
-        $projects = Project::select('id', 'project_name')->orderBy('project_name')->get(); // 🔹 project list
-
-        $workorders = WorkOrder::with(['customer', 'project'])->orderBy('id', 'desc')->get();
-
-        return view('WorkOrder.add', compact('codes', 'workorders', 'projects'));
-    }
+   public function addWorkOrder()
+{
+    // Active customers only
+    $codes = Customer::where('status', 1)->select('id', 'code', 'name')->orderBy('name')->get();
+    $projects = Project::select('id', 'project_name')->orderBy('project_name')->get();
+    $workorders = WorkOrder::with(['customer', 'project'])->orderBy('id', 'desc')->get();
+ 
+    return view('WorkOrder.add', compact('codes', 'projects', 'workorders'));
+}
 
     public function ViewWorkOrder()
     {
@@ -80,23 +80,22 @@ class WorkOrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function edit(string $encryptedId, Request $request)
-    {
-
-        $id = base64_decode($encryptedId);
-        $workorder = WorkOrder::with(['customer', 'project'])->findOrFail($id);
-
-        $codes = Customer::select('id', 'code', 'name')->get();
-        $projects = Project::select('id', 'project_name')->get();
-
-        $workorders = WorkOrder::with('customer')
-            ->where('customer_id', $workorder->customer_id)
-            ->where('date', $workorder->date)
-            ->orderBy('id', 'desc')
-            ->get();
-
-        return view('WorkOrder.add', compact('workorder', 'id', 'codes', 'workorders', 'projects'));
-    }
+     public function edit(string $encryptedId, Request $request)
+{
+    $id = base64_decode($encryptedId);
+    $workorder = WorkOrder::with(['customer', 'project'])->findOrFail($id);
+ 
+    $codes = Customer::where('status', 1)->select('id', 'code', 'name')->get(); // Active only
+    $projects = Project::select('id', 'project_name')->get();
+ 
+    $workorders = WorkOrder::with('customer')
+        ->where('customer_id', $workorder->customer_id)
+        ->where('date', $workorder->date)
+        ->orderBy('id', 'desc')
+        ->get();
+ 
+    return view('WorkOrder.add', compact('workorder', 'id', 'codes', 'workorders', 'projects'));
+}
 
 
     public function update(Request $request, string $encryptedId)
@@ -162,4 +161,15 @@ class WorkOrderController extends Controller
 
         return response()->json($parts);
     }
+
+    public function getProjectQuantity($projectId)
+{
+    $project = Project::find($projectId);
+
+    if ($project) {
+        return response()->json(['quantity' => $project->quantity]);
+    }
+
+    return response()->json(['quantity' => 0]); // default if project not found
+}
 }

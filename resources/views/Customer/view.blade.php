@@ -78,9 +78,9 @@
                                                 <a href="{{ route('deleteCustomer', base64_encode($c->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
 
-                                                    <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
+                                                    <!-- <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
-                                                    </button>
+                                                    </button> -->
                                                 </a>
 
                                             </td>

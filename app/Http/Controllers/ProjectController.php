@@ -12,11 +12,13 @@ class ProjectController extends Controller
 {
     public function AddProject()
     {
-        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
-
-        return view('Project.add', compact('codes'));
+        $codes = Customer::where('status', 1)   // फक्त active
+                ->select('id', 'code', 'name')
+                ->orderBy('id', 'desc')
+                ->get();
+        $customers = Customer::where('status', 1)->orderBy('name')->get();
+        return view('Project.add', compact('customers','codes'));
     }
-
     public function storeProject(Request $request)
     {
         // Validate input
@@ -56,12 +58,16 @@ class ProjectController extends Controller
     }
 
     public function edit(string $encryptedId)
-    { {
-            $codes = Customer::select('id', 'code', 'name')->get();
-            $id = base64_decode($encryptedId);
-            $project = Project::findOrFail($id);
-            return view('Project.add', compact('project', 'codes'));
-        }
+    {
+        $id = base64_decode($encryptedId);
+        $project = Project::findOrFail($id);
+ 
+        $customers = Customer::where('status',1)
+                             ->orWhere('id', $project->customer_id)
+                             ->orderBy('name')
+                             ->get();
+ 
+        return view('Project.add', compact('project','customers'));
     }
 
     public function update(Request $request, string $encryptedId)

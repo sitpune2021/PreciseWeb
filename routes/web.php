@@ -73,6 +73,9 @@ Route::get('/editProject/{id}'                , [ProjectController::class, 'edit
 Route::put('/updateProject/{id}'              , [ProjectController::class, 'update'])->name('updateProject');
 Route::get('/deleteProject/{id}'              , [ProjectController::class, 'destroy'])->name('deleteProject');
 
+Route::get('/get-project-quantity/{id}'       , [ProjectController::class, 'getProjectQuantity']);
+
+
 // Operator Routes
 Route::get('/AddOperator'                     , [OperatorController::class, 'AddOperator'])->name('AddOperator');
 Route::post('/storeOperator'                  , [OperatorController::class, 'storeOperator'])->name('storeOperator');
@@ -84,7 +87,7 @@ Route::get('/trashoperator'                   , [OperatorController::class, 'tra
 Route::get('/restoreoperator/{id}'            , [OperatorController::class, 'restore'])->name('restoreOperator');
 // Edit & Update Routes
 Route::get('/operators/edit/{id}',              [OperatorController::class, 'edit'])->name('editOperator');
-Route::put('/operators/update/{id}', [OperatorController::class, 'update'])->name('updateOperator');
+Route::put('/operators/update/{id}'           , [OperatorController::class, 'update'])->name('updateOperator');
 
 
  

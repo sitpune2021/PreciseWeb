@@ -16,7 +16,7 @@
                             </h4>
                         </div>
 
-                        
+
                         <!-- Body -->
                         <div class="card-body">
                             <form action="{{ isset($materialReq) ? route('updateMaterialReq', base64_encode($materialReq->id)) : route('storeMaterialReq') }}" method="POST">
@@ -90,7 +90,6 @@
                                                 class="form-control"
                                                 id="dia"
                                                 name="dia"
-
                                                 value="{{ old('dia', $materialReq->dia ?? '') }}"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
                                             @error('dia') <span class="text-red">{{ $message }}</span> @enderror
@@ -159,20 +158,21 @@
                                     </div> -->
 
 
-                                    
-                                        <div class="col-md-3">
-                                           <label for="material" class="form-label">Material <span class="mandatory">*</span></label>
-                                            <select name="material" id="material" class="form-control form-select">
-                                                 <option value="">Select Material</option>
-                                                @foreach($materialtype as $materialReq)
-                                                <option value="{{ $materialReq->material_type }}"
-                                                    {{ old('materialReq', $record->materialReq ?? '') == $materialReq->material_type ? 'selected' : '' }}>
-                                                    {{ $materialReq->material_type }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('materialReq') <span class="text-red small small">{{ $message }}</span> @enderror
-                                        </div>
+
+                                    <div class="col-md-3">
+                                        <label for="material" class="form-label">Material <span class="mandatory">*</span></label>
+                                        <select name="material" id="material" class="form-control">
+                                            <option value="">Select Material</option>
+                                            @foreach($materialtype as $mt)
+                                            <option value="{{ $mt->material_type }}"
+                                                {{ old('material', $materialReq->material ?? '') == $mt->material_type ? 'selected' : '' }}>
+                                                {{ $mt->material_type }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                        @error('material') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
 
                                     <!-- Qty -->
                                     <div class="col-md-3">
@@ -311,29 +311,21 @@
                                         </div>
                                     </div>
 
-
-
-                                       <div class="col-lg-12 text-end">
-                                        <button type="submit" class="btn btn-primary">
-                                            {{ isset($materialReq) ? 'Update' : 'Submit' }}
-                                        </button>
-                                        &nbsp;
+                                    <!-- Submit -->
+                                    <div class="col-12 text-end">
+                                        <button type="submit" class="btn btn-primary">{{ isset($materialReq) ? 'Update' : 'Submit' }}</button>
                                         @if(isset($materialReq))
                                         <a href="{{ route('ViewMaterialReq') }}" class="btn btn-info">Cancel</a>
                                         @else
                                         <button type="reset" class="btn btn-info">Reset</button>
                                         @endif
                                     </div>
-
-                                </div> <!-- row end -->
-
+                                </div>
                             </form>
                         </div>
                     </div>
-
                 </div>
-            </div><!-- row end -->
-
+            </div>
         </div>
     </div>
 </div>

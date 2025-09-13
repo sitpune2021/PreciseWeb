@@ -17,7 +17,11 @@ class SetupSheetController extends Controller
     public function AddSetupSheet()
     {
 
-        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+        $codes = Customer::where('status', 1)   // फक्त active
+            ->select('id', 'code', 'name')
+            ->orderBy('id', 'desc')
+            ->get();
+
         $settings   = Setting::all();
         return view('SetupSheet.add', compact('codes', 'settings'));
     }
@@ -85,16 +89,24 @@ class SetupSheetController extends Controller
 
     public function editSetupSheet(string $encryptedId)
     {
-        try {
-            $id = base64_decode($encryptedId);
-            $record = SetupSheet::findOrFail($id);
-            $setupSheet = SetupSheet::findOrFail($id);
-            $settings   = Setting::all();
-            $codes = Customer::select('id', 'code', 'name')->get();
-            return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record'));
-        } catch (\Exception $setup) {
-            abort(404);
-        }
+
+        $id = base64_decode($encryptedId);
+        $record = SetupSheet::findOrFail($id);
+        $setupSheet = SetupSheet::findOrFail($id);
+        $settings   = Setting::all();
+        $id = base64_decode($encryptedId);
+        $record = SetupSheet::findOrFail($id);
+        $setupSheet = SetupSheet::findOrFail($id);
+        $settings   = Setting::all();
+
+        // Active customers + inactive customer 
+        $codes = Customer::where('status', 1)
+            ->orWhere('id', $setupSheet->customer_id)
+            ->select('id', 'code', 'name')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record'));
     }
 
     public function update(Request $request, string $encryptedId)

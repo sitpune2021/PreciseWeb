@@ -34,6 +34,7 @@ class CustomerContoller extends Controller
             'gst_no' => 'nullable|regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/|unique:customers,gst_no',
             'address' => 'nullable|string',
 
+
         ]);
 
         $customer_name_words = explode(' ', trim($request->input('name')));
@@ -68,6 +69,7 @@ class CustomerContoller extends Controller
             'phone_no'       => $request->input('phone_no'),
             'gst_no'         => $request->input('gst_no'),
             'address'        => $request->input('address'),
+            'status'         => 1, // default active
         ]);
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer created successfully.');
@@ -81,13 +83,9 @@ class CustomerContoller extends Controller
 
     public function edit(string $encryptedId)
     {
-        try {
-            $id = base64_decode($encryptedId);
-            $customer = Customer::findOrFail($id);
-            return view('Customer.add', compact('customer'));
-        } catch (\Exception $e) {
-            abort(404); // If decryption fails or ID is invalid
-        }
+        $id = base64_decode($encryptedId);
+        $customer = Customer::findOrFail($id);
+        return view('Customer.add', compact('customer'));
     }
 
     public function update(Request $request, string $encryptedId)
@@ -108,6 +106,7 @@ class CustomerContoller extends Controller
             'email_id'          => 'nullable|email|max:40',
             'gst_no'            => 'nullable|string|max:20',
             'address'           => 'nullable|string',
+
         ]);
 
         $customer = Customer::findOrFail($id);
@@ -121,8 +120,10 @@ class CustomerContoller extends Controller
     {
         $id = base64_decode($encryptedId);
         $customer = Customer::findOrFail($id);
-        $customer->delete();
-        return redirect()->route('ViewCustomer')->with('success', 'Branch deleted successfully.');
+        $customer->status = 0; // inactive
+        $customer->save();
+        $customer->delete(); // soft delete
+        return redirect()->route('ViewCustomer')->with('success', 'Customer deleted successfully.');
     }
 
     public function updateCustomerStatus(Request $request)

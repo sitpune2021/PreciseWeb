@@ -14,14 +14,21 @@ class MachinerecordController extends Controller
 {
 
     public function AddMachinerecord()
-    {
-        $workorders = WorkOrder::with('customer')->latest()->get();
-        $machines   = Machine::all();
-        $operators  = Operator::all();
-        $settings   = Setting::all();
+{
+    $workorders = WorkOrder::with('customer')
+        ->whereHas('customer', function($q){
+            $q->where('status', 1);  // Active customers फक्त
+        })
+        ->latest()
+        ->get();
 
-        return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings'));
-    }
+    $machines   = Machine::all();
+    $operators  = Operator::all();
+    $settings   = Setting::all();
+
+    return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings'));
+}
+
 
     public function StoreMachinerecord(Request $request)
     {
@@ -58,15 +65,25 @@ class MachinerecordController extends Controller
     }
 
     public function edit(string $encryptedId)
-    {
-        $id = base64_decode($encryptedId);
-        $record = Machinerecord::findOrFail($id);
-        $workorders = WorkOrder::with('customer')->latest()->get();
-        $machines   = Machine::all();
-        $operators  = Operator::all();
-        $settings   = Setting::all();
-        return view('Machinerecord.add', compact('record', 'workorders', 'machines', 'operators', 'settings'));
-    }
+{
+    $id = base64_decode($encryptedId);
+    $record = Machinerecord::findOrFail($id);
+
+    $workorders = WorkOrder::with('customer')
+        ->whereHas('customer', function($q) use ($record){
+            $q->where('status', 1)
+              ->orWhere('id', $record->customer_id); // sadhya record chi customer included
+        })
+        ->latest()
+        ->get();
+
+    $machines   = Machine::all();
+    $operators  = Operator::all();
+    $settings   = Setting::all();
+
+    return view('Machinerecord.add', compact('record', 'workorders', 'machines', 'operators', 'settings'));
+}
+
 
     public function update(Request $request, string $encryptedId)
     {

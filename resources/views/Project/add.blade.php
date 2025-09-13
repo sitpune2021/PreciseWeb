@@ -26,7 +26,7 @@
                                         <label for="customer_id" class="form-label">Customer Name <span class="text-red">*</span></label>
                                         <select class="form-select" id="customer_id" name="customer_id">
                                             <option value="">Select Customer</option>
-                                            @foreach($codes as $c)
+                                            @foreach($customers as $c)
                                             <option value="{{ $c->id }}" data-code="{{ $c->code }}"
                                                 {{ old('customer_id', $project->customer_id ?? '') == $c->id ? 'selected' : '' }}>
                                                 {{ $c->name }} - ({{ $c->code }})
@@ -101,7 +101,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const customerSelect = document.getElementById('customer_id');
         const codeInput = document.getElementById('code');
-       
+
 
         // Auto-fill Customer Code
         customerSelect.addEventListener('change', function() {
