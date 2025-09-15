@@ -12,9 +12,6 @@
                 </div>
                 <div class="card-body">
 
-                    <!-- Inactive badge if restored -->
-                    
-
                     <form action="{{ isset($operator) ? route('updateOperator', base64_encode($operator->id)) : route('storeOperator') }}" method="POST">
                         @csrf
                         @if(isset($operator))
@@ -22,6 +19,8 @@
                         @endif
 
                         <div class="row align-items-end">
+
+                            <!-- Operator Name -->
                             <div class="col-md-4 col-sm-6 mb-3 position-relative">
                                 <label for="operator_name" class="form-label">
                                     Operator Name <span class="mandatory"> *</span>
@@ -29,13 +28,11 @@
                                 <input type="text"
                                     class="form-control form-control-sm px-3 py-2"
                                     id="operator_name"
-                                    id="searchName"
                                     name="operator_name"
                                     value="{{ old('operator_name', isset($operator) ? $operator->operator_name : '') }}"
                                     placeholder="Enter Operator Name"
                                     style="background-image: none !important;"
-                                    onkeypress="return /[a-zA-Z\s]/.test(event.key)">
-
+                                    onkeypress="return /[A-Za-z\u0900-\u097F\s]/.test(event.key)">
                                 @error('operator_name')
                                 <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;">
                                     {{ $message }}
@@ -43,13 +40,47 @@
                                 @enderror
                             </div>
 
+                            <!-- Phone Number -->
+                            <div class="col-md-4 col-sm-6 mb-3 position-relative">
+                                <label for="phone_no" class="form-label">
+                                    Phone Number <span class="mandatory"> *</span>
+                                </label>
+                                <input type="text" class="form-control form-control-sm px-3 py-2" id="phone_no" name="phone_no"
+                                    value="{{ old('phone_no', isset($operator) ? $operator->phone_no : '') }}"
+                                    placeholder="Phone Number"
+                                    style="background-image: none !important;"
+                                    onkeypress="return isNumberKey(event)">
+                                @error('phone_no')
+                                <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;">
+                                    {{ $message }}
+                                </small>
+                                @enderror
+                            </div>
+                            <script>
+                                function isNumberKey(evt) {
+                                    
+                                    if (!/[0-9]/.test(evt.key)) {
+                                        return false;
+                                    }                                    
+                                    let input = evt.target.value;
+
+                                    if (input.length >= 10) {
+                                        return false;  
+                                    }
+                                    return true;
+                                }
+                            </script>
+
+                            <!-- Submit Button -->
                             <div class="col-md-2 col-sm-6 mb-3">
                                 <button type="submit" class="btn btn-primary w-100 px-3 py-2">
                                     {{ isset($operator) ? 'Update' : 'Add' }}
                                 </button>
                             </div>
+
                         </div>
                     </form>
+
                 </div>
             </div>
             <!-- Form End -->
@@ -68,7 +99,8 @@
                             <thead class="table-light">
                                 <tr>
                                     <th style="width: 5%;">Sr.No</th>
-                                    <th style="width: 60%; text-align: center;">Operator Name</th>
+                                    <th style="width: 45%; text-align: center;">Operator Name</th>
+                                    <th style="width: 25%; text-align: center;">Phone Number</th>
                                     <th style="width: 15%;">Status</th>
                                     <th style="width: 10%;">Action</th>
                                 </tr>
@@ -80,16 +112,16 @@
                                     <td class="text-center">
                                         {{ $o->operator_name }}
                                         @if($o->is_active == 0)
-                                            <span class="badge bg-warning">Inactive</span>
+                                        <span class="badge bg-warning">Inactive</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="text-center">{{ $o->phone_no }}</td>
+                                    <td class="text-center">
                                         <form action="{{ route('updateOperatorStatus') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $o->id }}">
-                                            <div class="form-check form-switch">
-                                                <input
-                                                    class="form-check-input"
+                                            <div class="form-check form-switch d-flex justify-content-center">
+                                                <input class="form-check-input"
                                                     type="checkbox"
                                                     role="switch"
                                                     id="statusSwitch{{ $o->id }}"
@@ -100,22 +132,21 @@
                                             </div>
                                         </form>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <a href="{{ route('editOperator', base64_encode($o->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
 
-                                        <a href="{{route('deleteOperator', base64_encode($o->id))}}"
-                                            onclick="return confirm('Are you sure you want to delete this record?')">
-                                            <button type="button" class="btn btn-danger btn-sm">
-                                                <i class="ri-delete-bin-fill align-bottom"></i>
-                                            </button>
+                                        <a href="{{ route('deleteOperator', base64_encode($o->id)) }}"
+                                            onclick="return confirm('Are you sure you want to delete this record?')"
+                                            class="btn btn-danger btn-sm">
+                                            <i class="ri-delete-bin-fill align-bottom"></i>
                                         </a>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No operators found.</td>
+                                    <td colspan="5" class="text-center text-muted">No operators found.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -124,6 +155,7 @@
                 </div>
             </div>
             <!-- List End -->
+
         </div>
     </div>
 </div>

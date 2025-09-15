@@ -29,11 +29,17 @@ class OperatorController extends Controller
                             ->where('is_active', 1);
                     }),
             ],
+            'phone_no' => [
+                'required',
+                'numeric',
+                'digits:10',
+            ],
         ]);
 
         Operator::create([
             'operator_name' => $request->operator_name,
-            'is_active' => 1, // default active
+            'phone_no'      => $request->phone_no,
+            'is_active'     => 1, // default active
         ]);
 
         return redirect()->route('AddOperator')->with('success', 'Operator added successfully');
@@ -41,14 +47,11 @@ class OperatorController extends Controller
 
     public function edit(string $encryptedId)
     {
-        try {
-            $id = base64_decode($encryptedId);
-            $operator = Operator::findOrFail($id);
-            $operators = Operator::where('is_active', 1)->orderBy('id', 'desc')->get();
-            return view('Operator.add', compact('operator', 'operators'));
-        } catch (\Exception $e) {
-            abort(404);
-        }
+
+        $id = base64_decode($encryptedId);
+        $operator = Operator::findOrFail($id);
+        $operators = Operator::where('is_active', 1)->orderBy('id', 'desc')->get();
+        return view('Operator.add', compact('operator', 'operators'));
     }
 
     public function update(Request $request, string $encryptedId)
@@ -66,10 +69,17 @@ class OperatorController extends Controller
                     ->whereNull('deleted_at')
                     ->where('is_active', 1),
             ],
+            'phone_no' => [
+                'required',
+                'numeric',
+                'digits:10',
+            ],
+
         ]);
 
         // Update existing operator
         $operator->operator_name = $request->operator_name;
+        $operator->phone_no = $request->phone_no;
         $operator->is_active = 1; // make active
         $operator->save();
 

@@ -16,14 +16,16 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>Sr.No</th>
-                                            <th>Work Order No</th>
-                                            <th>Project name</th>
-                                            <!-- <th>Entry Code</th> -->
-                                            <th>Part</th>
+                                            <th>Sr.<br>No</th>
+                                            <th>Work <br>Order No.</th>
+                                            <th>Customer <br>Code</th>
+                                            <th>Part<br>No.</th>
                                             <th>Date</th>
                                             <th>Part Code</th>
-                                            <th>Quantity</th>
+
+                                            <!-- <th>Project name</th> -->
+                                            <!-- <th>Entry Code</th> -->
+                                            <!-- <th>Quantity</th> -->
                                             <th>Part Description</th>
                                             <th width="12%">Action</th>
                                         </tr>
@@ -33,11 +35,16 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $wo->project_id }}</td>
-                                            <td>{{ $wo->project->project_name ?? '' }}</td>
+                                            <td>{{ $wo->customer?->code ?? '' }}</td>
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
-                                            <td>{{ ($wo->customer?->code ?? '') . '_' . ($wo->project_id ?? '') . '_' . ($wo->part ?? '') }}</td>
-                                            <td>{{ $wo->quantity }}</td>
+                                            <td>
+                                                {{ ($wo->customer?->code ?? '') . '_' . ($wo->project_id ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
+                                            </td>
+                                            <!-- <td>{{ $wo->project->project_name ?? '' }}</td>                                           -->
+
+
+                                            <!-- <td>{{ $wo->quantity }}</td> -->
                                             <td>{{ $wo->part_description }}</td>
                                             <td>
                                                 <a href="{{ route('editWorkOrder', base64_encode($wo->id)) }}">
@@ -93,15 +100,15 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <th>Work Order No</th>
+                            <th>Work Order No.</th>
                             <td id="wo_work_order_no"></td>
                         </tr>
                         <tr>
-                            <th>Entry Code</th>
+                            <th>Customer Code</th>
                             <td id="wo_entry_code"></td>
                         </tr>
                         <tr>
-                            <th>Part</th>
+                            <th>Part No.</th>
                             <td id="wo_part"></td>
                         </tr>
                         <tr>
@@ -113,10 +120,14 @@
                             <td id="wo_part_code"></td>
                         </tr>
 
+                        <tr>
+                            <th>part_description</th>
+                            <td id="wo_part_description"></td>
+                        </tr>
 
-                       <tr>
+                        <tr>
                             <th>Diameter</th>
-                            <td id="wo_diameter"></td>  
+                            <td id="wo_diameter"></td>
                         </tr>
                         <tr>
                             <th>Length</th>
@@ -139,10 +150,7 @@
                             <td id="wo_quantity"></td>
                         </tr>
 
-                        <tr>
-                            <th>part_description</th>
-                            <td id="wo_part_description"></td>
-                        </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -151,34 +159,30 @@
     </div>
 </div>
 <script>
-   document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.viewWorkOrder').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            let data = JSON.parse(this.getAttribute('data-wo'));
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.viewWorkOrder').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                let data = JSON.parse(this.getAttribute('data-wo'));
 
-            document.getElementById('wo_work_order_no').textContent = data.project_id ?? '';
-            document.getElementById('wo_entry_code').textContent = data.customer?.code ?? '';
-            document.getElementById('wo_part').textContent = data.part ?? '';
-            document.getElementById('wo_date').textContent = data.date ?? '';
-            
-            // ✅ Correct Part Code
-            document.getElementById('wo_part_code').textContent = 
-                (data.customer?.code ?? '') + '_' + 
-                (data.customer_id ?? '') + '_' + 
-                (data.part ?? '');
+                document.getElementById('wo_work_order_no').textContent = data.project_id ?? '';
+                document.getElementById('wo_entry_code').textContent = data.customer?.code ?? '';
+                document.getElementById('wo_part').textContent = data.part ?? '';
+                document.getElementById('wo_date').textContent = data.date ?? '';
 
-           document.getElementById('wo_diameter').textContent = data.dimeter ?? '';
-;
-            document.getElementById('wo_length').textContent = data.length ?? '';
-            document.getElementById('wo_width').textContent = data.width ?? '';
-            document.getElementById('wo_height').textContent = data.height ?? '';
-            document.getElementById('wo_exp_time').textContent = data.exp_time ?? '';
-            document.getElementById('wo_quantity').textContent = data.quantity ?? '';
-            document.getElementById('wo_part_description').textContent = data.part_description ?? '';
+
+                document.getElementById('wo_part_code').textContent =
+                    (data.customer?.code ?? '') + '_' + (data.customer_id ?? '') + '_' + (data.part ?? '') + '_' + (data.quantity ?? '');
+
+                document.getElementById('wo_diameter').textContent = data.dimeter ?? '';;
+                document.getElementById('wo_length').textContent = data.length ?? '';
+                document.getElementById('wo_width').textContent = data.width ?? '';
+                document.getElementById('wo_height').textContent = data.height ?? '';
+                document.getElementById('wo_exp_time').textContent = data.exp_time ?? '';
+                document.getElementById('wo_quantity').textContent = data.quantity ?? '';
+                document.getElementById('wo_part_description').textContent = data.part_description ?? '';
+            });
         });
     });
-});
-
 </script>
 
 @endsection

@@ -19,7 +19,7 @@
                                             <th>Sr No.</th>
                                             <th>Image</th>
                                             <th>Part Code</th>
-                                            <th>Work Order No</th>
+                                            <th>Work Order<br> No</th>
                                             <th>Date</th>
                                             <th>Size X</th>
                                             <th>Size Y</th>
@@ -83,6 +83,7 @@
 
 
 <!-- View Setup Sheet Modal -->
+<!-- Modal -->
 <div class="modal fade" id="viewSetupSheetModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
@@ -91,103 +92,159 @@
                 <h5 class="modal-title">Setup Sheet</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+
             <div class="modal-footer">
-                <button id="downloadSheetBtn" class="btn btn-success">Download</button>
+                <button id="downloadSheetBtn" class="btn btn-light">
+    <i class="fas fa-download"></i>
+</button>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
             </div>
 
             <div class="modal-body">
-                <!-- Sheet Header -->
-                <div class="text-center mb-3">
-                    <div id="sheet_image_container" class="mb-2"></div>
-                    <h4>Setup Sheet</h4>
-                </div>
+                <!-- A4 Portrait Wrapper -->
+                <div class="a4-portrait">
 
-                <!-- Main Sheet Table -->
-                <table class="table table-bordered table-sm text-center align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Part Code</th>
-                            <th>Work Order No</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="sheet_part_code"></td>
-                            <td id="sheet_work_order_no"></td>
-                            <td id="sheet_date"></td>
-                            <td id="sheet_description"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <!-- Sheet Header -->
+                    <div class="text-center mb-3">
+                        <div id="sheet_image_container" class="mb-2"></div>
+                        <h4>Setup Sheet</h4>
+                    </div>
 
-                <!-- Sizes & Settings -->
-                <table class="table table-bordered table-sm text-center align-middle mt-2">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Size X</th>
-                            <th>Size Y</th>
-                            <th>Size Z</th>
-                            <th>Setting</th>
-                            <th>E Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="sheet_size_x"></td>
-                            <td id="sheet_size_y"></td>
-                            <td id="sheet_size_z"></td>
-                            <td id="sheet_setting"></td>
-                            <td id="sheet_e_time"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <!-- Main Sheet Table -->
+                    <table class="table table-bordered table-sm text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Part Code</th>
+                                <th>Work Order No</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="sheet_part_code"></td>
+                                <td id="sheet_work_order_no"></td>
+                                <td id="sheet_date"></td>
+                                <td id="sheet_description"></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <!-- References & Clamping -->
-                <table class="table table-bordered table-sm text-center align-middle mt-2">
-                    <thead class="table-light">
-                        <tr>
-                            <th>X Refer</th>
-                            <th>Y Refer</th>
-                            <th>Z Refer</th>
-                            <th>Clamping</th>
-                            <th>Qty</th>
-                            <th>Thickness</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="sheet_x_refer"></td>
-                            <td id="sheet_y_refer"></td>
-                            <td id="sheet_z_refer"></td>
-                            <td id="sheet_clamping"></td>
-                            <td id="sheet_qty"></td>
-                            <td id="sheet_thickness"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <!-- Sizes & Settings -->
+                    <table class="table table-bordered table-sm text-center align-middle mt-2">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Size X</th>
+                                <th>Size Y</th>
+                                <th>Size Z</th>
+                                <th>Setting</th>
+                                <th>E Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="sheet_size_x"></td>
+                                <td id="sheet_size_y"></td>
+                                <td id="sheet_size_z"></td>
+                                <td id="sheet_setting"></td>
+                                <td id="sheet_e_time"></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <!-- Holes -->
-                <h6 class="mt-3">Dowel Holes</h6>
-                <table class="table table-bordered table-sm text-center align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Hole #</th>
-                            <th>X</th>
-                            <th>Y</th>
-                            <th>Dia</th>
-                            <th>Depth</th>
-                        </tr>
-                    </thead>
-                    <tbody id="holes_table_body"></tbody>
-                </table>
+                    <!-- References & Clamping -->
+                    <table class="table table-bordered table-sm text-center align-middle mt-2">
+                        <thead class="table-light">
+                            <tr>
+                                <th>X Refer</th>
+                                <th>Y Refer</th>
+                                <th>Z Refer</th>
+                                <th>Clamping</th>
+                                <th>Qty</th>
+                                <th>Thickness</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="sheet_x_refer"></td>
+                                <td id="sheet_y_refer"></td>
+                                <td id="sheet_z_refer"></td>
+                                <td id="sheet_clamping"></td>
+                                <td id="sheet_qty"></td>
+                                <td id="sheet_thickness"></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
+                    <!-- Holes -->
+                    <h6 class="mt-3">Dowel Holes</h6>
+                    <table class="table table-bordered table-sm text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Hole #</th>
+                                <th>X</th>
+                                <th>Y</th>
+                                <th>Dia</th>
+                                <th>Depth</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holes_table_body"></tbody>
+                    </table>
+
+                </div> <!-- /.a4-portrait -->
             </div>
 
         </div>
     </div>
 </div>
+
+
+<!-- CSS -->
+<style>
+   
+.a4-portrait {
+    width: 100%;          
+    min-height: 100%;     
+    padding: 0;           
+    margin: 0 auto;
+    background: #fff;
+    font-size: 15px;       
+}
+
+/* Print Settings */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 10mm;   
+    }
+
+    body * {
+        visibility: hidden;
+    }
+    #viewSetupSheetModal,
+    #viewSetupSheetModal * {
+        visibility: visible;
+    }
+
+    #viewSetupSheetModal .modal-dialog {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .a4-portrait {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        font-size: 20px;    
+    }
+}
+
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

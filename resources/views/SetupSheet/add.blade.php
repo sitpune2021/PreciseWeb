@@ -66,7 +66,7 @@
                                                     @endphp
                                                     @foreach($parts as $wo)
                                                     @php
-                                                        $partCode = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
+                                                    $partCode = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
                                                     @endphp
                                                     <option value="{{ $partCode }}"
                                                         {{ old('part_code', $setupSheet->part_code ?? '') == $partCode ? 'selected' : '' }}>
@@ -108,7 +108,7 @@
                                         <!-- Sizes -->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_x" class="form-label">Size In X  </label>
+                                                <label for="size_in_x" class="form-label">Size In X </label>
                                                 <input type="text" class="form-control" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? '') }}">
                                                 @error('size_in_x')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -118,7 +118,7 @@
 
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_y" class="form-label">Size In Y  </label>
+                                                <label for="size_in_y" class="form-label">Size In Y </label>
                                                 <input type="text" class="form-control" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? '') }}">
                                                 @error('size_in_y')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -128,7 +128,7 @@
 
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_z" class="form-label">Size In Z  </span></label>
+                                                <label for="size_in_z" class="form-label">Size In Z </span></label>
                                                 <input type="text" class="form-control" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? '') }}">
                                                 @error('size_in_z')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -494,12 +494,10 @@
 </script> -->
 
 
-
 <script>
     $(document).ready(function() {
-        let isEditMode = $("#setup_id").val() ? true : false;  
-        $("#customer_id").on("change", function() 
-        {
+        let isEditMode = $("#setup_id").val() ? true : false;
+        $("#customer_id").on("change", function() {
             let customer_id = $(this).val();
 
             if (customer_id) {

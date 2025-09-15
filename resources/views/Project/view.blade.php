@@ -16,12 +16,13 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>Sr.No</th>
-                                            <th>Project No.</th>                                      
+                                            <th>Sr.<br>No</th>
+                                            <th>Created <br>Date</th>
+                                            <th>Project<br>No.</th>
                                             <th>Customer Name</th>
-                                            <th>Customer Code</th>
-                                            <th>Project Name</th>                                          
-                                            <th>Created Date</th>
+                                            <th>Customer<br>Code</th>
+                                            <th>Project Name</th>
+                                            <th>Qty</th>
                                             <th width="12%">Action</th>
                                         </tr>
                                     </thead>
@@ -29,11 +30,13 @@
                                         @foreach($projects as $project)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $project->id }}</td>                                       
+                                            <td>{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}</td>
+                                            <td>{{ $project->id }}</td>
                                             <td>{{ $project->customer->name ?? '' }}</td>
                                             <td>{{ $project->customer?->code }}</td>
-                                              <td>{{ $project->project_name }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}</td>
+                                            <td>{{ $project->project_name }}</td>
+                                            <td>{{ $project->quantity }}</td>
+
                                             <td>
                                                 <!-- Edit -->
                                                 <a href="{{ route('editProject', base64_encode($project->id)) }}">
@@ -47,14 +50,12 @@
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewBtn"
                                                     data-id="{{ $project->id }}"
                                                     data-workorder="{{ $project->customer_id }}"
-                                                    data-name="{{ $project->project_name }}"                                                     
+                                                    data-name="{{ $project->project_name }}"
                                                     data-customer="{{ $project->customer->name ?? '' }}"
                                                     data-code="{{ $project->customer?->code }}"
                                                     data-qty="{{ $project->quantity }}"
                                                     data-date="{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}"
-                                                    data-desc="{{ $project->description ?? '' }}"
-                                                    data-start="{{ $project->start_date ?? '' }}"
-                                                    data-end="{{ $project->end_date ?? '' }}">
+                                                    data-desc="{{ $project->description ?? '' }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
 
@@ -88,29 +89,35 @@
                         <div class="modal-body">
                             <table class="table table-bordered">
                                 <tr>
+                                    <th>Date</th>
+                                    <td id="view_date"></td>
+                                </tr>
+
+                                <tr>
                                     <th>Project No.</th>
                                     <td id="view_workorder"></td>
                                 </tr>
-                                <tr>
-                                    <th>Project Name</th>
-                                    <td id="view_name"></td>
-                                </tr>
+
                                 <tr>
                                     <th>Customer Name</th>
                                     <td id="view_customer"></td>
                                 </tr>
+
                                 <tr>
                                     <th>Customer Code</th>
                                     <td id="view_code"></td>
                                 </tr>
+
+                                <tr>
+                                    <th>Project Name</th>
+                                    <td id="view_name"></td>
+                                </tr>
+
                                 <tr>
                                     <th>Quantity</th>
                                     <td id="view_qty"></td>
                                 </tr>
-                                <tr>
-                                    <th>Date</th>
-                                    <td id="view_date"></td>
-                                </tr>
+
 
 
                             </table>
@@ -129,7 +136,7 @@
         document.querySelectorAll(".viewBtn").forEach(btn => {
             btn.addEventListener("click", function() {
                 document.getElementById("view_workorder").textContent = this.dataset.workorder;
-                document.getElementById("view_name").textContent = this.dataset.name;                
+                document.getElementById("view_name").textContent = this.dataset.name;
                 document.getElementById("view_customer").textContent = this.dataset.customer;
                 document.getElementById("view_code").textContent = this.dataset.code;
                 document.getElementById("view_qty").textContent = this.dataset.qty;

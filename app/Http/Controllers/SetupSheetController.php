@@ -196,7 +196,7 @@ class SetupSheetController extends Controller
         $parts = WorkOrder::where('customer_id', $customerId)
             ->select(
                 'id',
-                'project_id',    
+                'project_id',   
                 'part',
                 'part_description',
                 'customer_id',
