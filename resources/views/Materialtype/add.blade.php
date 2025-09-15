@@ -69,7 +69,7 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Material Type List</h5>
-                    <a href="{{ route('trashMaterialType') }}" class="btn btn-warning btn-sm">View Trash</a>
+                    <!-- <a href="{{ route('trashMaterialType') }}" class="btn btn-warning btn-sm">View Trash</a> -->
                 </div>
  
                 <div class="card-body">

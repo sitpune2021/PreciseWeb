@@ -215,7 +215,7 @@
                     document.getElementById('sheet_image_container').innerHTML =
                         `<img src="/setup_images/${data.setup_image}" 
                           alt="Setup Image" 
-                          style="max-width:150px; height:auto;">`;
+                          style="max-width:500px; height:auto;">`;
                 } else {
                     document.getElementById('sheet_image_container').innerHTML = "";
                 }

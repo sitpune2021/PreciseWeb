@@ -1,23 +1,23 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
- 
+
             {{-- Success/Error Message --}}
             @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
             @endif
- 
+
             @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
             @endif
- 
+
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Trash Operators</h5>
@@ -31,7 +31,7 @@
                                     <th>Sr.No</th>
                                     <th class="text-center">Operator Name</th>
                                     <th class="text-center">Deleted At</th>
-                                    <th>Action</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,20 +39,20 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="text-center">{{ $o->operator_name }}</td>
-                                   <td class="text-center">
+                                    <td class="text-center">
                                         @if($o->deleted_at)
-                                            {{ $o->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
+                                        {{ $o->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
                                         @else
-                                            —
+                                        —
                                         @endif
-                                   </td>
- 
+                                    </td>
                                     <td class="text-center">
                                         <a href="{{ route('restoreOperator', base64_encode($o->id)) }}"
-                                           class="btn btn-success btn-sm"
-                                           onclick="return confirmRestore('{{ $o->operator_name }}', '{{ route('restoreOperator', base64_encode($o->id)) }}')">
-                                           Restore
+                                            class="btn btn-success btn-sm"
+                                            onclick="return confirmRestore('{{ $o->operator_name }}', '{{ route('restoreOperator', base64_encode($o->id)) }}')">
+                                            Restore
                                         </a>
+
                                     </td>
                                 </tr>
                                 @empty
@@ -65,36 +65,32 @@
                     </div>
                 </div>
             </div>
- 
+
         </div>
     </div>
 </div>
- 
+
 {{-- Custom JS --}}
 <script>
-function confirmRestore(name, url) {
-   
-    var message = "This operator already exists. Restored as '" + name + " (2)'.\nClick OK to restore or Cancel to abort.";
-    if(confirm(message)) {
-        window.location.href = url;
-        return false;
-    }
-    return false;
-}
+    let Operators = @json($Operators);
 </script>
 
 <script>
-function confirmRestore(name, url) {
-    var message = "'" + name + "'Do you want to restore?\nIf it is already active, it will be redirected to the Edit Page.";
-     
+    function confirmRestore(name, url) {
+        let exists = Operators.some(op => op.operator_name === name && op.deleted_at === null && op.is_active == 1);
 
-    if(confirm(message)) {
-        window.location.href = url;
+        let message;
+        if (exists) {
+            message = "'" + name + "' already exists.\nYou will be redirected to the Edit Page.\nDo you want to continue?";
+        } else {
+            message = "'" + name + "' Do you want to restore?";
+        }
+
+        if (confirm(message)) {
+            window.location.href = url;
+        }
         return false;
     }
-    return false;
-}
 </script>
 
- 
 @endsection

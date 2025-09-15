@@ -90,9 +90,6 @@ Route::get('/operators/edit/{id}',              [OperatorController::class, 'edi
 Route::put('/operators/update/{id}'           , [OperatorController::class, 'update'])->name('updateOperator');
 
 
- 
- 
-
 // Machine Routes
 Route::get('/AddMachine'                      , [MachineController::class, 'AddMachine'])->name('AddMachine');
 Route::post('/storeMachine'                   , [MachineController::class, 'storeMachine'])->name('storeMachine');
@@ -143,6 +140,8 @@ Route::post('/StoreMachinerecord'             , [MachinerecordController::class,
 Route::get('/EditMachinerecord/{id}'          , [MachinerecordController::class, 'edit'])->name('EditMachinerecord');
 Route::put('/UpdateMachinerecord/{id}'        , [MachinerecordController::class, 'update'])->name('UpdateMachinerecord');
 Route::get('/DeleteMachinerecord/{id}'        , [MachinerecordController::class, 'destroy'])->name('DeleteMachinerecord');
+
+Route::get('/getPartsByCustomer/{id}', [WorkOrderController::class, 'getPartsByCustomer']);
 
 // MaterialReq Routes
 Route::get('/AddMaterialReq'                  , [MaterialReqController::class, 'AddMaterialReq'])->name('AddMaterialReq');

@@ -103,7 +103,8 @@ class OperatorController extends Controller
     public function trash()
     {
         $trashedOperators = Operator::onlyTrashed()->orderBy('id', 'desc')->get();
-        return view('Operator.trash', compact('trashedOperators'));
+        $Operators = Operator::all();
+        return view('Operator.trash', compact('trashedOperators', 'Operators'));
     }
 
     // Restore operator
@@ -112,24 +113,22 @@ class OperatorController extends Controller
         $id = base64_decode($encryptedId);
         $operator = Operator::withTrashed()->findOrFail($id);
 
-        // Check if active operator with same name exists
+
         $exists = Operator::where('operator_name', $operator->operator_name)
             ->whereNull('deleted_at')
             ->where('is_active', 1)
             ->exists();
 
         if ($exists) {
-            // Redirect to edit page if active operator with same name exists
-            $operator->is_active = 0; // keep inactive
+            $operator->is_active = 0;
             $operator->restore();
             $operator->save();
 
             return redirect()->route('editOperator', base64_encode($operator->id))
-                ->with('success', "Operator '{$operator->operator_name}' restored. Edit to add to active list.");
+                ->with('success', "Operator '{$operator->operator_name}' already exists. Redirected to Edit Page.");
         }
 
-        // No active operator with same name → direct restore & activate
-        $operator->is_active = 1; // make active
+        $operator->is_active = 1;
         $operator->restore();
         $operator->save();
 

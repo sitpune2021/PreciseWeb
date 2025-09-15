@@ -9,12 +9,18 @@ use App\Models\Machine;
 use App\Models\Operator;
 use App\Models\Setting;
 use App\Models\SetupSheet;
+use App\Models\Customer;
 
 class MachinerecordController extends Controller
 {
 
     public function AddMachinerecord()
 {
+
+     $codes = Customer::where('status', 1)   // फक्त active
+            ->select('id', 'code', 'name')
+            ->orderBy('id', 'desc')
+            ->get();
     $workorders = WorkOrder::with('customer')
         ->whereHas('customer', function($q){
             $q->where('status', 1);  // Active customers फक्त
@@ -26,7 +32,7 @@ class MachinerecordController extends Controller
     $operators  = Operator::all();
     $settings   = Setting::all();
 
-    return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings'));
+    return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings','codes'));
 }
 
 
@@ -135,4 +141,19 @@ class MachinerecordController extends Controller
         }
         return response()->json([]);
     }
+
+
+public function getPartsByCustomer($customerId)
+{
+    $parts = WorkOrder::where('customer_id', $customerId)
+        ->select('id', 'part', 'project_id', 'part_description', 'quantity', 'exp_time')
+        ->orderBy('id', 'asc')
+        ->get();
+
+    return response()->json($parts);
+}
+
+
+
+
 }

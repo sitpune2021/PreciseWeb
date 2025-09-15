@@ -29,6 +29,7 @@
                                 <input type="text"
                                     class="form-control form-control-sm px-3 py-2"
                                     id="operator_name"
+                                    id="searchName"
                                     name="operator_name"
                                     value="{{ old('operator_name', isset($operator) ? $operator->operator_name : '') }}"
                                     placeholder="Enter Operator Name"

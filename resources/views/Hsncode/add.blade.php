@@ -1,10 +1,10 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
- 
+
             <!-- Form Start -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -16,7 +16,7 @@
                         @if(isset($hsn))
                         @method('PUT')
                         @endif
- 
+
                         <div class="row g-3">
                             <!-- HSN Code -->
                             <div class="col-md-3">
@@ -28,40 +28,40 @@
                                     @error('hsn_code') {{ $message }} @enderror
                                 </small>
                             </div>
- 
+
+                            <!-- SGST -->
                             <!-- SGST -->
                             <div class="col-md-3">
                                 <label for="sgst" class="form-label">SGST % <span class="text-red">*</span></label>
-                                <input type="number" step="0.01" class="form-control"
+                                <input type="number" step="0.01" min="0" class="form-control only-positive"
                                     name="sgst" value="{{ old('sgst', $hsn->sgst ?? '') }}"
                                     placeholder="SGST %">
                                 <small class="text-red d-block" style="min-height:18px;">
                                     @error('sgst') {{ $message }} @enderror
                                 </small>
                             </div>
- 
+
                             <!-- CGST -->
                             <div class="col-md-3">
                                 <label for="cgst" class="form-label">CGST % <span class="text-red">*</span></label>
-                                <input type="number" step="0.01" class="form-control"
+                                <input type="number" step="0.01" min="0" class="form-control only-positive"
                                     name="cgst" value="{{ old('cgst', $hsn->cgst ?? '') }}"
                                     placeholder="CGST %">
                                 <small class="text-red d-block" style="min-height:18px;">
                                     @error('cgst') {{ $message }} @enderror
                                 </small>
                             </div>
- 
+
                             <!-- IGST -->
                             <div class="col-md-3">
                                 <label for="igst" class="form-label">IGST % <span class="text-red">*</span></label>
-                                <input type="number" step="0.01" class="form-control"
+                                <input type="number" step="0.01" min="0" class="form-control only-positive"
                                     name="igst" value="{{ old('igst', $hsn->igst ?? '') }}"
                                     placeholder="IGST %">
                                 <small class="text-red d-block" style="min-height:18px;">
                                     @error('igst') {{ $message }} @enderror
                                 </small>
                             </div>
- 
                             <!-- Invoice Description -->
                             <div class="col-md-6">
                                 <label for="invoice_desc" class="form-label">Invoice Description<span class="text-red">*</span></label>
@@ -72,7 +72,7 @@
                                     @error('invoice_desc') {{ $message }} @enderror
                                 </small>
                             </div>
- 
+
                             <!-- Submit Button -->
                             <div class="col-md-2 d-flex">
                                 <button type="submit" class="btn btn-primary mt-2 w-100 align-self-center">
@@ -84,7 +84,7 @@
                 </div>
             </div>
             <!-- Form End -->
- 
+
             <!-- List Start -->
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -148,5 +148,12 @@
         </div>
     </div>
 </div>
- 
+<script>
+    document.querySelectorAll('.only-positive').forEach(input => {
+        input.addEventListener('input', function() {
+
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+    });
+</script>
 @endsection

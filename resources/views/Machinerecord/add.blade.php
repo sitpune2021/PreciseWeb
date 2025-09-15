@@ -24,6 +24,31 @@
                                 @endif
 
                                 <div class="row g-3">
+                                         <div class="col-md-4">
+                                            <div class="mb-">
+                                                <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
+                                                <select class="form-select js-example-basic-single"
+                                                    id="customer_id"
+                                                    name="customer_id"
+                                                    data-selected="{{ old('customer_id', $setupSheet->customer_id ?? '') }}"
+                                                    {{ isset($setupSheet) ? 'disabled' : '' }}>
+                                                    <option value="">Select Customer</option>
+                                                    @foreach($codes as $c)
+                                                    <option value="{{ $c->id }}" data-code="{{ $c->code }}"
+                                                        {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
+                                                        {{ $c->name }} - ({{ $c->code }})
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('customer_id')
+                                                <span class="text-red small">{{ $message }}</span>
+                                                @enderror
+
+                                                @if(isset($setupSheet))
+                                                <input type="hidden" name="customer_id" value="{{ $setupSheet->customer_id }}">
+                                                @endif
+                                            </div>
+                                        </div>
 
                                     <!-- Part No -->
                                     <div class="col-md-4">
@@ -125,7 +150,7 @@
                                         @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
                                     <!-- Estimated Time -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">Estimated Time (hrs) <span class="text-red">*</span></label>
                                         <input type="text" step="0.01" name="est_time" id="e_time" class="form-control"
                                             value="{{ old('est_time', $record->est_time ?? '') }}">
@@ -134,7 +159,7 @@
                                     </div>
 
                                     <!-- Start Time -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">Start Time <span class="text-red">*</span></label>
                                         <input type="datetime-local" name="start_time" class="form-control"
                                             value="{{ old('start_time', isset($record->start_time) ? date('Y-m-d\TH:i', strtotime($record->start_time)) : '') }}">
@@ -142,7 +167,7 @@
                                     </div>
 
                                     <!-- End Time -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">End Time <span class="text-red">*</span></label>
                                         <input type="datetime-local" name="end_time" class="form-control"
                                             value="{{ old('end_time', isset($record->end_time) ? date('Y-m-d\TH:i', strtotime($record->end_time)) : '') }}">

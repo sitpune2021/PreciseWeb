@@ -17,7 +17,7 @@ class WorkOrderController extends Controller
    public function addWorkOrder()
 {
     // Active customers only
-    $codes = Customer::where('status', 1)->select('id', 'code', 'name')->orderBy('name')->get();
+    $codes = Customer::where('status',1)->select('id', 'code', 'name')->orderBy('name')->get();
     $projects = Project::select('id', 'project_name')->orderBy('project_name')->get();
     $workorders = WorkOrder::with(['customer', 'project'])->orderBy('id', 'desc')->get();
  
@@ -149,7 +149,7 @@ class WorkOrderController extends Controller
     public function getProjects($customerId)
     {
         $projects = Project::where('customer_id', $customerId)
-            ->get(['id', 'project_name']);
+            ->get(['id', 'project_name','quantity']);
         return response()->json($projects);
     }
     
@@ -162,14 +162,7 @@ class WorkOrderController extends Controller
         return response()->json($parts);
     }
 
-    public function getProjectQuantity($projectId)
-{
-    $project = Project::find($projectId);
 
-    if ($project) {
-        return response()->json(['quantity' => $project->quantity]);
-    }
 
-    return response()->json(['quantity' => 0]); // default if project not found
-}
+
 }
