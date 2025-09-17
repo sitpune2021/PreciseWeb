@@ -10,30 +10,32 @@ use App\Models\Operator;
 use App\Models\Setting;
 use App\Models\SetupSheet;
 use App\Models\Customer;
+use App\Models\MaterialType;
 
 class MachinerecordController extends Controller
 {
 
     public function AddMachinerecord()
-{
+    {
 
-     $codes = Customer::where('status', 1)   // फक्त active
+        $codes = Customer::where('status', 1)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-    $workorders = WorkOrder::with('customer')
-        ->whereHas('customer', function($q){
-            $q->where('status', 1);  // Active customers फक्त
-        })
-        ->latest()
-        ->get();
+        $materialtype   = MaterialType::all();
+        $workorders = WorkOrder::with('customer')
+            ->whereHas('customer', function ($q) {
+                $q->where('status', 1);  // Active customers फक्त
+            })
+            ->latest()
+            ->get();
 
-    $machines   = Machine::all();
-    $operators  = Operator::all();
-    $settings   = Setting::all();
+        $machines   = Machine::all();
+        $operators  = Operator::all();
+        $settings   = Setting::all();
 
-    return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings','codes'));
-}
+        return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings', 'codes', 'materialtype'));
+    }
 
 
     public function StoreMachinerecord(Request $request)
@@ -42,18 +44,21 @@ class MachinerecordController extends Controller
             'part_no'     => 'required|string|max:100',
             'code'        => 'required|string|max:100',
             'work_order'  => 'required|string|max:100',
-            'first_set'   => 'required|string|max:100',
+            'first_set'   => 'nullable|string|max:100',
+
             'qty'         => 'required|integer|min:1',
             'machine'     => 'required|string|max:100',
             'operator'    => 'required|string|max:100',
             'setting_no'  => 'required|string|max:100',
             'est_time'    => 'required|string|max:100',
+            'material'    => 'required|string|max:200',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
+            'minute'      => 'required|numeric|min:0',
             'hrs'         => 'required|numeric|min:0',
             'time_taken'  => 'required|numeric|min:0',
             'actual_hrs'  => 'required|numeric|min:0',
-            'invoice_no'  => 'required|string|max:100',
+            'invoice_no'  => 'nullable|string|max:100',
         ]);
 
         Machinerecord::create($validated);
@@ -71,24 +76,28 @@ class MachinerecordController extends Controller
     }
 
     public function edit(string $encryptedId)
-{
-    $id = base64_decode($encryptedId);
-    $record = Machinerecord::findOrFail($id);
+    {
+        $id = base64_decode($encryptedId);
+        $codes = Customer::where('status', 1)
+            ->select('id', 'code', 'name')
+            ->orderBy('id', 'desc')
+            ->get();
+        $record = Machinerecord::findOrFail($id);
+        $materialtype   = MaterialType::all();
+        $workorders = WorkOrder::with('customer')
+            ->whereHas('customer', function ($q) use ($record) {
+                $q->where('status', 1)
+                    ->orWhere('id', $record->customer_id); // sadhya record chi customer included
+            })
+            ->latest()
+            ->get();
 
-    $workorders = WorkOrder::with('customer')
-        ->whereHas('customer', function($q) use ($record){
-            $q->where('status', 1)
-              ->orWhere('id', $record->customer_id); // sadhya record chi customer included
-        })
-        ->latest()
-        ->get();
+        $machines   = Machine::all();
+        $operators  = Operator::all();
+        $settings   = Setting::all();
 
-    $machines   = Machine::all();
-    $operators  = Operator::all();
-    $settings   = Setting::all();
-
-    return view('Machinerecord.add', compact('record', 'workorders', 'machines', 'operators', 'settings'));
-}
+        return view('Machinerecord.add', compact('record', 'workorders', 'machines', 'operators', 'settings', 'materialtype', 'codes'));
+    }
 
 
     public function update(Request $request, string $encryptedId)
@@ -100,18 +109,20 @@ class MachinerecordController extends Controller
             'part_no'     => 'required|string|max:100',
             'code'        => 'required|string|max:100',
             'work_order'  => 'required|string|max:100',
-            'first_set'   => 'required|string|max:100',
+            'first_set'   => 'nullable|string|max:100',
             'qty'         => 'required|integer|min:1',
             'machine'     => 'required|string|max:100',
             'operator'    => 'required|string|max:100',
             'setting_no'  => 'required|string|max:100',
+            'material'    => 'required|string|max:200',
             'est_time'    => 'required|string|max:100',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
+            'minute'      => 'required|numeric|min:0',
             'hrs'         => 'required|numeric|min:0',
             'time_taken'  => 'required|numeric|min:0',
             'actual_hrs'  => 'required|numeric|min:0',
-            'invoice_no'  => 'required|string|max:100',
+            'invoice_no'  => 'nullable|string|max:100',
         ]);
 
         $record->update($validated);
@@ -136,24 +147,9 @@ class MachinerecordController extends Controller
                 'work_order_no' => $data->customer_id,
                 'description' => $data->description,
                 'qty' => $data->qty,
-                'est_time' => $data->est_time,
+                'exp_time' => $data->exp_time,
             ]);
         }
         return response()->json([]);
     }
-
-
-public function getPartsByCustomer($customerId)
-{
-    $parts = WorkOrder::where('customer_id', $customerId)
-        ->select('id', 'part', 'project_id', 'part_description', 'quantity', 'exp_time')
-        ->orderBy('id', 'asc')
-        ->get();
-
-    return response()->json($parts);
-}
-
-
-
-
 }

@@ -18,10 +18,11 @@ class MaterialTypeController extends Controller
     // Store new material type
   public function storeMaterialType(Request $request)
 {
-    $request->validate([
-        'material_type' => 'required|string|max:255',
-        'material_rate' => 'required|numeric|min:0',
-    ]);
+   $request->validate([
+    'material_type'    => 'required|string|max:255',
+    'material_rate'    => 'required|numeric|min:0',
+    'material_gravity' => 'required|numeric|min:0',
+]);
  
     $exists = MaterialType::where('material_type', $request->material_type)
                 ->where('status', 1)
@@ -34,6 +35,7 @@ class MaterialTypeController extends Controller
     MaterialType::create([
         'material_type' => $request->material_type,
         'material_rate' => $request->material_rate,
+        'material_gravity' => $request->material_gravity,
         'status' => 1,
     ]);
 
@@ -56,14 +58,17 @@ class MaterialTypeController extends Controller
     $id = base64_decode($encryptedId);
 
     $request->validate([
-        'material_type'  => 'required|string|max:255|unique:material_types,material_type,' . $id,
-        'material_rate' => 'required|numeric|min:0',
-    ]);
+    'material_type'    => 'required|string|max:255',
+    'material_rate'    => 'required|numeric|min:0',
+    'material_gravity' => 'required|numeric|min:0',
+]);
 
     try {
         $materialtype = MaterialType::findOrFail($id);
         $materialtype->material_type = $request->material_type;
         $materialtype->material_rate = $request->material_rate;
+        $materialtype->material_gravity = $request->material_gravity;
+        
         $materialtype->save();
 
         return redirect()->route('AddMaterialType')

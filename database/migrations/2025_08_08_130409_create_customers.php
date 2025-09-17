@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer('login_id')->default(0);
             $table->string('name'); // required
             $table->string('code', 50)->nullable();
-            $table->string('per_hour_rate', 20)->nullable();
             $table->string('contact_person')->nullable();
             $table->string('phone_no', 15)->nullable();
             $table->string('email_id', 30)->nullable();

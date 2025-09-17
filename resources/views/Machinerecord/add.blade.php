@@ -24,31 +24,31 @@
                                 @endif
 
                                 <div class="row g-3">
-                                         <div class="col-md-4">
-                                            <div class="mb-">
-                                                <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                                <select class="form-select js-example-basic-single"
-                                                    id="customer_id"
-                                                    name="customer_id"
-                                                    data-selected="{{ old('customer_id', $setupSheet->customer_id ?? '') }}"
-                                                    {{ isset($setupSheet) ? 'disabled' : '' }}>
-                                                    <option value="">Select Customer</option>
-                                                    @foreach($codes as $c)
-                                                    <option value="{{ $c->id }}" data-code="{{ $c->code }}"
-                                                        {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                        {{ $c->name }} - ({{ $c->code }})
-                                                    </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('customer_id')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
+                                    <div class="col-md-4">
+                                        <div class="mb-">
+                                            <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
+                                            <select class="form-select js-example-basic-single"
+                                                id="customer_id"
+                                                name="customer_id"
+                                                data-selected="{{ old('customer_id', $setupSheet->customer_id ?? '') }}"
+                                                {{ isset($setupSheet) ? 'disabled' : '' }}>
+                                                <option value="">Select Customer</option>
+                                                @foreach($codes as $c)
+                                                <option value="{{ $c->id }}" data-code="{{ $c->code }}"
+                                                    {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
+                                                    {{ $c->name }} - ({{ $c->code }})
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('customer_id')
+                                            <span class="text-red small">{{ $message }}</span>
+                                            @enderror
 
-                                                @if(isset($setupSheet))
-                                                <input type="hidden" name="customer_id" value="{{ $setupSheet->customer_id }}">
-                                                @endif
-                                            </div>
+                                            @if(isset($setupSheet))
+                                            <input type="hidden" name="customer_id" value="{{ $setupSheet->customer_id }}">
+                                            @endif
                                         </div>
+                                    </div>
 
                                     <!-- Part No -->
                                     <div class="col-md-4">
@@ -82,7 +82,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Work Order No -->
                                     <div class="col-md-2">
                                         <label class="form-label">Work Order No</label>
@@ -92,7 +92,7 @@
 
                                     <!-- Part Description -->
                                     <div class="col-md-4">
-                                        <label class="form-label">First Set <span class="text-red">*</span></label>
+                                        <label class="form-label">First Set </label>
                                         <input type="text" name="first_set" id="first_set" class="form-control"
                                             value="{{ old('first_set', $record->first_set ?? '') }}">
                                         @error('first_set') <span class="text-red small">{{ $message }}</span> @enderror
@@ -136,7 +136,7 @@
                                     </div>
 
                                     <!-- Setting -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
                                         <select name="setting_no" class="form-control form-select">
                                             <option value="">Select Setting</option>
@@ -149,8 +149,24 @@
                                         </select>
                                         @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
+
+                                    <div class="col-md-2">
+                                        <label for="material" class="form-label">Material <span class="mandatory">*</span></label>
+                                        <select name="material" id="material" class="form-control form-select">
+                                            <option value="">Select Material</option>
+                                            @foreach($materialtype as $mat)
+                                            <option value="{{ $mat->material_type }}"
+                                                {{ old('material', $record->material ?? '') == $mat->material_type ? 'selected' : '' }}>
+                                                {{ $mat->material_type }}
+                                            </option>
+                                            @endforeach
+
+                                        </select>
+                                        @error('material') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
                                     <!-- Estimated Time -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Estimated Time (hrs) <span class="text-red">*</span></label>
                                         <input type="text" step="0.01" name="est_time" id="e_time" class="form-control"
                                             value="{{ old('est_time', $record->est_time ?? '') }}">
@@ -174,8 +190,19 @@
                                         @error('end_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
+                                    <div class="col-md-2">
+                                        <label class="form-label">Minute <span class="text-red">*</span></label>
+                                        <input type="number" name="minute" class="form-control"
+                                            value="{{ old('minute', $record->minute ?? '') }}">
+
+                                        @error('minute')
+                                        <span class="text-red small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+
                                     <!-- HRS -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">HRS <span class="text-red">*</span></label>
                                         <input type="number" step="0.01" name="hrs" class="form-control"
                                             value="{{ old('hrs', $record->hrs ?? '') }}">
@@ -183,7 +210,7 @@
                                     </div>
 
                                     <!-- Time Taken -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Time Taken <span class="text-red">*</span></label>
                                         <input type="number" step="0.01" name="time_taken" class="form-control"
                                             value="{{ old('time_taken', $record->time_taken ?? '') }}">
@@ -191,7 +218,7 @@
                                     </div>
 
                                     <!-- Actual HRS -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Actual HRS <span class="text-red">*</span></label>
                                         <input type="number" step="0.01" name="actual_hrs" class="form-control"
                                             value="{{ old('actual_hrs', $record->actual_hrs ?? '') }}">
@@ -200,7 +227,7 @@
 
                                     <!-- Invoice No -->
                                     <div class="col-md-3">
-                                        <label class="form-label">Invoice No <span class="text-red">*</span></label>
+                                        <label class="form-label">Invoice No</label>
                                         <input type="text" name="invoice_no" class="form-control"
                                             value="{{ old('invoice_no', $record->invoice_no ?? '') }}">
                                         @error('invoice_no') <span class="text-red small">{{ $message }}</span> @enderror
@@ -241,6 +268,7 @@
         document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
     });
 
+
     function calculateHours() {
         let start = document.querySelector('[name="start_time"]').value;
         let end = document.querySelector('[name="end_time"]').value;
@@ -249,17 +277,21 @@
             let startTime = new Date(start);
             let endTime = new Date(end);
 
-            if (endTime > startTime) {
-                let diff = (endTime - startTime) / (1000 * 60 * 60); // hours (actual)
+            if (endTime >= startTime) {
+                let diffMinutes = (endTime - startTime) / (1000 * 60); // minutes
+                let actualHrs = diffMinutes / 60; // hours (Actual HRS)
+                let hrs = diffMinutes * 0.02; // HRS (rate per min 0.02)
+                let timeTaken = hrs; // same as hrs
 
-                let factor = 0.83;
-                let actual = diff; // Actual HRS (24.00)
-                let hrs = diff / factor; // HRS (28.80)
-                let time = diff / factor; // TIME (28.80)
-
+                // fill values
                 document.querySelector('[name="hrs"]').value = hrs.toFixed(2);
-                document.querySelector('[name="time_taken"]').value = time.toFixed(2);
-                document.querySelector('[name="actual_hrs"]').value = actual.toFixed(2);
+                document.querySelector('[name="time_taken"]').value = timeTaken.toFixed(2);
+                document.querySelector('[name="actual_hrs"]').value = actualHrs.toFixed(2);
+
+                // अगर तुम्हें Minutes भी चाहिए तो hidden input बना सकते हो
+                if (document.querySelector('[name="minute"]')) {
+                    document.querySelector('[name="minute"]').value = diffMinutes.toFixed(0);
+                }
             }
         }
     }
@@ -269,6 +301,43 @@
     document.querySelector('[name="end_time"]').addEventListener('change', calculateHours);
 </script>
 
+<script>
+    document.getElementById('customer_id').addEventListener('change', function() {
+        let customerId = this.value;
+        let partSelect = document.getElementById('part_no');
+
+        partSelect.innerHTML = '<option value="">Select Part No</option>'; // reset
+
+        if (customerId) {
+            fetch(`/get-customer-parts/${customerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(part => {
+                        let option = document.createElement('option');
+                        option.value = part.part_no;
+                        option.textContent = part.part_no;
+                        option.setAttribute('data-code', part.code);
+                        option.setAttribute('data-workorder', part.project_id);
+                        option.setAttribute('data-partdesc', part.part_description);
+                        option.setAttribute('data-qty', part.quantity);
+                        option.setAttribute('data-e_time', part.exp_time);
+                        partSelect.appendChild(option);
+                    });
+                });
+        }
+    });
+
+ 
+    document.getElementById('part_no').addEventListener('change', function() {
+        let selected = this.options[this.selectedIndex];
+
+        document.getElementById('code').value = selected.getAttribute('data-code') || '';
+        document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
+        document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
+        document.getElementById('qty').value = selected.getAttribute('data-qty') || '';
+        document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
+    });
+</script>
 
 
 

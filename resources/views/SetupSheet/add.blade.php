@@ -22,9 +22,9 @@
                                     @endif
 
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
+                                                <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single"
                                                     id="customer_id"
                                                     name="customer_id"
@@ -34,8 +34,9 @@
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}" data-code="{{ $c->code }}"
                                                         {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                        {{ $c->name }} - ({{ $c->code }})
+                                                        {{ $c->code }}
                                                     </option>
+
                                                     @endforeach
                                                 </select>
                                                 @error('customer_id')
@@ -223,16 +224,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Thickness & Qty -->
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="thickness" class="form-label">Thickness <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="thickness" name="thickness" value="{{ old('thickness', $setupSheet->thickness ?? '') }}">
-                                                @error('thickness')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+
 
                                         <div class="col-md-2">
                                             <div class="mb-3">
@@ -492,6 +484,7 @@
         }
     });
 </script> -->
+
 
 
 <script>

@@ -1,10 +1,10 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
- 
+
             <!-- Form Start -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -14,12 +14,12 @@
                     <form action="{{ isset($materialtype) ? route('updateMaterialType', base64_encode($materialtype->id)) : route('storeMaterialType') }}" method="POST">
                         @csrf
                         @if(isset($materialtype))
-                            @method('PUT')
+                        @method('PUT')
                         @endif
- 
+
                         <div class="row align-items-end">
                             <!-- Material Type -->
-                            <div class="col-md-4 col-sm-6 mb-3 position-relative">
+                            <div class="col-md-3 col-sm-6 mb-3 position-relative">
                                 <label for="material_type" class="form-label">
                                     Material Type <span class="mandatory"> *</span>
                                 </label>
@@ -35,9 +35,26 @@
                                 </small>
                                 @enderror
                             </div>
- 
+
+                             <div class=" col-md-3 col-sm-6 mb-3 position-relative">
+                                    <label for="material_gravity" class="form-label">
+                                        Material Gravity <span class="mandatory">*</span>
+                                    </label>
+                                    <input type="number"
+                                        class="form-control form-control-sm px-3 py-2"
+                                        id="material_gravity"
+                                        name="material_gravity"
+                                        value="{{ old('material_gravity', isset($materialtype) ? $materialtype->material_gravity : '') }}"
+                                        placeholder="Enter Material Gravity">
+                                    @error('material_gravity')
+                                    <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;">
+                                        {{ $message }}
+                                    </small>
+                                    @enderror
+                            </div>
+
                             <!-- Material Rate -->
-                            <div class="col-md-4 col-sm-6 mb-3 position-relative">
+                            <div class=" col-md-3 col-sm-6 mb-3 position-relative">
                                 <label for="material_rate" class="form-label">
                                     Material Rate <span class="mandatory"> *</span>
                                 </label>
@@ -54,24 +71,24 @@
                                 @enderror
                             </div>
  
-                            <div class="col-md-2 col-sm-6 mb-3">
-                                <button type="submit" class="btn btn-primary w-100 px-3 py-2">
-                                    {{ isset($materialtype) ? 'Update' : 'Add' }}
-                                </button>
+                            <div class=" col-md-2 col-sm-6 mb-3">
+                                    <button type="submit" class="btn btn-primary w-100 px-3 py-2">
+                                        {{ isset($materialtype) ? 'Update' : 'Add' }}
+                                    </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
             <!-- Form End -->
- 
+
             <!-- List Start -->
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Material Type List</h5>
                     <!-- <a href="{{ route('trashMaterialType') }}" class="btn btn-warning btn-sm">View Trash</a> -->
                 </div>
- 
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -79,6 +96,7 @@
                                 <tr>
                                     <th>Sr.No</th>
                                     <th class="text-center">Material Type</th>
+                                    <th class="text-center">Material Gravity</th>
                                     <th class="text-center">Material Rate</th>
                                     <th>Action</th>
                                 </tr>
@@ -88,7 +106,8 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="text-center">{{ $m->material_type }}</td>
-                                  <td class="text-center">₹ {{ number_format($m->material_rate, 2) }}</td>
+                                    <td class="text-center">{{ $m->material_gravity }}</td>
+                                    <td class="text-center">₹ {{ number_format($m->material_rate, 2) }}</td>
                                     <td>
                                         <a href="{{ route('editMaterialType', base64_encode($m->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
@@ -112,9 +131,9 @@
                 </div>
             </div>
             <!-- List End -->
- 
+
         </div>
     </div>
 </div>
- 
+
 @endsection

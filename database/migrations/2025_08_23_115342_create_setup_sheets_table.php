@@ -29,7 +29,6 @@ return new class extends Migration
     $table->string('y_refer')->nullable();
     $table->string('z_refer')->nullable();
     $table->string('clamping')->nullable();
-    $table->string('thickness')->nullable();
     $table->string('qty')->nullable();
  
  

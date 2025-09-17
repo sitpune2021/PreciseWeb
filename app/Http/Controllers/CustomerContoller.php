@@ -27,7 +27,7 @@ class CustomerContoller extends Controller
         ]);
         $request->validate([
             'name' => 'required|string|max:255|unique:customers,name',
-            'per_hour_rate' => 'nullable|numeric|min:0',
+             
             'contact_person' => 'nullable|string|max:255|regex:/^[A-Za-z.\s]+$/',
             'phone_no' => 'nullable|digits:10|regex:/^[0-9]{10}$/|unique:customers,phone_no',
             'email_id' => 'nullable|email|max:40',
@@ -63,7 +63,7 @@ class CustomerContoller extends Controller
             'name'           => is_array($request->input('name')) ? $request->input('name')[0] : $request->input('name'),
             // 'code' => Str::substr($request->input('name'), 0, 3),
             'code'           => $request->input('code'),
-            'per_hour_rate'        => $request->input('per_hour_rate'),
+             
             'email_id'       => $request->input('email_id'),
             'contact_person' => is_array($request->input('contact_person')) ? $request->input('contact_person')[0] : $request->input('contact_person'),
             'phone_no'       => $request->input('phone_no'),
@@ -100,7 +100,7 @@ class CustomerContoller extends Controller
                 Rule::unique('customers', 'name')->ignore($id),
             ],
             'code' => ['nullable', Rule::unique('customers', 'code')->ignore($id ?? null),],
-            'per_hour_rate'     => 'nullable|numeric|min:0',
+             
             'contact_person'    => ['nullable', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
             'phone_no'          => 'nullable|string|max:20',
             'email_id'          => 'nullable|email|max:40',

@@ -13,7 +13,8 @@ return new class extends Migration
     {
        Schema::create('material_types', function (Blueprint $table) {
             $table->id();
-            $table->string('material_type');  
+            $table->string('material_type'); 
+            $table->decimal('material_gravity', 10, 2)->nullable(); 
             $table->decimal('material_rate', 10, 2);
             $table->boolean('status')->default(1);
              $table->softDeletes();

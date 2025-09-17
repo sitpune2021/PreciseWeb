@@ -48,7 +48,7 @@ class SetupSheetController extends Controller
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
 
-            'thickness' => 'required|string|min:1',
+         
             'qty' => ['required', 'integer', 'min:1'],
 
             // Hole Details (arrays)
@@ -135,7 +135,7 @@ class SetupSheetController extends Controller
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
 
-            'thickness'   => 'required|string|min:1',
+           
             'qty'         => ['required', 'integer', 'min:1'],
 
             'holes'        => 'required|array',

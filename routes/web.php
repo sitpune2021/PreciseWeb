@@ -18,6 +18,7 @@ use App\Http\Controllers\MaterialReqController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\HsncodeController;
 use App\Http\Controllers\MaterialTypeController;
+use App\Http\Controllers\FinancialYearController;
 
 
 Auth::routes();
@@ -64,6 +65,7 @@ Route::put('/updateWorkEntry/{id}'            , [WorkOrderController::class, 'up
 Route::get('/deleteWorkOrder/{id}'            , [WorkOrderController::class, 'destroy'])->name('deleteWorkOrder');
 Route::get('/get-projects/{customerId}'       , [WorkorderController::class, 'getProjects']);
 Route::get('/get-parts/{projectId}'           , [WorkorderController::class, 'getParts']);
+
 
 // Project Routes
 Route::get('/AddProject'                      , [ProjectController::class, 'AddProject'])->name('AddProject');
@@ -123,6 +125,14 @@ Route::get('/deleteMaterialType/{id}'         , [MaterialTypeController::class, 
 Route::get('/trashMaterialType'               , [MaterialTypeController::class, 'trashMaterialType'])->name('trashMaterialType');
 Route::get('/restoreMaterialType/{id}'        , [MaterialTypeController::class, 'restoreMaterialType'])->name('restoreMaterialType');
 
+ 
+Route::get('/financial-year/add'             , [FinancialYearController::class, 'AddFinancialYear'])->name('AddFinancialYear');
+Route::post('/financial-year/store'          , [FinancialYearController::class, 'storeFinancialYear'])->name('StoreFinancialYear');
+Route::get('/financial-year/edit/{id}'       , [FinancialYearController::class, 'edit'])->name('EditFinancialYear');
+Route::put('/financial-year/update/{id}'     , [FinancialYearController::class, 'update'])->name('UpdateFinancialYear');
+Route::get('/financial-year/delete/{id}'     , [FinancialYearController::class, 'destroy'])->name('DeleteFinancialYear');
+Route::post('/financial-year/status'         , [FinancialYearController::class, 'updateStatus'])->name('FinancialYearStatus');
+
 // Setupsheet Routes
 Route::get('/AddSetupSheet'                   , [SetupSheetController::class, 'AddSetupSheet'])->name('AddSetupSheet');
 Route::post('/storeSetupSheet'                , [SetupSheetController::class, 'storeSetupSheet'])->name('storeSetupSheet');
@@ -132,6 +142,8 @@ Route::get('/ViewSetupSheet'                  , [SetupSheetController::class, 'V
 Route::put('/updateSetupSheet/{encryptedId}'  , [SetupSheetController::class, 'update'])->name('updateSetupSheet');
 Route::get('/setup-sheet-data/{partNo}'       , [SetupSheetController::class, 'getSetupSheetData']);
 Route::get('/get-customer-parts/{id}'         , [SetupSheetController::class, 'getCustomerParts'])->name('getCustomerParts');
+Route::get('/getPartsByCustomer/{id}'         , [WorkOrderController::class, 'getPartsByCustomer']);
+
 
 // Machinerecord Routes 
 Route::get('/AddMachinerecord'                , [MachinerecordController::class, 'AddMachinerecord'])->name('AddMachinerecord');
@@ -141,7 +153,8 @@ Route::get('/EditMachinerecord/{id}'          , [MachinerecordController::class,
 Route::put('/UpdateMachinerecord/{id}'        , [MachinerecordController::class, 'update'])->name('UpdateMachinerecord');
 Route::get('/DeleteMachinerecord/{id}'        , [MachinerecordController::class, 'destroy'])->name('DeleteMachinerecord');
 
-Route::get('/getPartsByCustomer/{id}', [WorkOrderController::class, 'getPartsByCustomer']);
+
+
 
 // MaterialReq Routes
 Route::get('/AddMaterialReq'                  , [MaterialReqController::class, 'AddMaterialReq'])->name('AddMaterialReq');

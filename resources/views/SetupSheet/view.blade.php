@@ -54,16 +54,22 @@
                                                     <a href="{{ route('editSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-primary btn-icon viewSetupSheet"
+                                                    <!-- <button type="button" class="btn btn-primary btn-icon viewSetupSheet"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#viewSetupSheetModal"
                                                         data-sheet='@json($sheet)'>
                                                         <i class="ri-eye-fill align-bottom"></i>
-                                                    </button>
+                                                    </button> -->
                                                     <a href="{{ route('deleteSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-danger btn-icon waves-effect waves-light"
                                                         onclick="return confirm('Are you sure you want to delete this record?')">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </a>
+
+                                                    <button type="button" class="btn btn-warning btn-icon printSetupSheet"
+                                                        data-sheet='@json($sheet)'>
+                                                        <i class="fas fa-print"></i>
+                                                    </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -95,9 +101,9 @@
 
             <div class="modal-footer">
                 <button id="downloadSheetBtn" class="btn btn-light">
-    <i class="fas fa-download"></i>
-</button>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+                    <i class="fas fa-download"></i>
+                </button>
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
             </div>
 
@@ -162,7 +168,7 @@
                                 <th>Z Refer</th>
                                 <th>Clamping</th>
                                 <th>Qty</th>
-                                <th>Thickness</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -172,7 +178,7 @@
                                 <td id="sheet_z_refer"></td>
                                 <td id="sheet_clamping"></td>
                                 <td id="sheet_qty"></td>
-                                <td id="sheet_thickness"></td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -202,51 +208,50 @@
 
 <!-- CSS -->
 <style>
-   
-.a4-portrait {
-    width: 100%;          
-    min-height: 100%;     
-    padding: 0;           
-    margin: 0 auto;
-    background: #fff;
-    font-size: 15px;       
-}
-
-/* Print Settings */
-@media print {
-    @page {
-        size: A4 portrait;
-        margin: 10mm;   
-    }
-
-    body * {
-        visibility: hidden;
-    }
-    #viewSetupSheetModal,
-    #viewSetupSheetModal * {
-        visibility: visible;
-    }
-
-    #viewSetupSheetModal .modal-dialog {
-        position: absolute;
-        left: 0;
-        top: 0;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
     .a4-portrait {
         width: 100%;
         min-height: 100%;
-        margin: 0;
-        font-size: 20px;    
+        padding: 0;
+        margin: 0 auto;
+        background: #fff;
+        font-size: 15px;
     }
-}
 
+    /* Print Settings */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        body * {
+            visibility: hidden;
+        }
+
+        #viewSetupSheetModal,
+        #viewSetupSheetModal * {
+            visibility: visible;
+        }
+
+        #viewSetupSheetModal .modal-dialog {
+            position: absolute;
+            left: 0;
+            top: 0;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        .a4-portrait {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            font-size: 20px;
+        }
+    }
 </style>
 
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.viewSetupSheet').forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -293,7 +298,74 @@
                 document.getElementById('sheet_z_refer').textContent = data.z_refer ?? '';
                 document.getElementById('sheet_clamping').textContent = data.clamping ?? '';
                 document.getElementById('sheet_qty').textContent = data.qty ?? '';
-                document.getElementById('sheet_thickness').textContent = data.thickness ?? '';
+                
+            });
+        });
+    });
+</script> -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        function populateSheetData(data) {
+            let holesBody = document.getElementById("holes_table_body");
+            holesBody.innerHTML = "";
+            if (data.hole_x && data.hole_x.length > 0) {
+                for (let i = 0; i < data.hole_x.length; i++) {
+                    let row = `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${data.hole_x[i] ?? ''}</td>
+                    <td>${data.hole_y[i] ?? ''}</td>
+                    <td>${data.hole_dia[i] ?? ''}</td>
+                    <td>${data.hole_depth[i] ?? ''}</td>
+                </tr>`;
+                    holesBody.insertAdjacentHTML("beforeend", row);
+                }
+            }
+
+            if (data.setup_image) {
+                document.getElementById('sheet_image_container').innerHTML =
+                    `<img src="/setup_images/${data.setup_image}" 
+                  alt="Setup Image" 
+                  style="max-width:500px; height:auto;">`;
+            } else {
+                document.getElementById('sheet_image_container').innerHTML = "";
+            }
+
+            document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
+            document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
+            document.getElementById('sheet_date').textContent = data.date ?? '';
+            document.getElementById('sheet_description').textContent = data.description ?? '';
+
+            document.getElementById('sheet_size_x').textContent = data.size_in_x ?? '';
+            document.getElementById('sheet_size_y').textContent = data.size_in_y ?? '';
+            document.getElementById('sheet_size_z').textContent = data.size_in_z ?? '';
+            document.getElementById('sheet_setting').textContent = data.setting ?? '';
+            document.getElementById('sheet_e_time').textContent = data.e_time ?? '';
+
+            document.getElementById('sheet_x_refer').textContent = data.x_refer ?? '';
+            document.getElementById('sheet_y_refer').textContent = data.y_refer ?? '';
+            document.getElementById('sheet_z_refer').textContent = data.z_refer ?? '';
+            document.getElementById('sheet_clamping').textContent = data.clamping ?? '';
+            document.getElementById('sheet_qty').textContent = data.qty ?? '';
+        }
+
+        // Print Button Click
+        document.querySelectorAll('.printSetupSheet').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                let data = JSON.parse(this.getAttribute('data-sheet'));
+
+                populateSheetData(data);
+
+                // Create a hidden printable area
+                let printContents = document.querySelector('.a4-portrait').outerHTML;
+                let originalContents = document.body.innerHTML;
+
+                document.body.innerHTML = printContents;
+                window.print();
+                document.body.innerHTML = originalContents;
+                location.reload(); // reload to restore JS functionality
             });
         });
     });

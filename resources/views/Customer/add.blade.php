@@ -61,17 +61,7 @@
 
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="per_hour_rate" class="form-label">Per Hour Rate (₹)</label>
-                                                <input type="number" step="0.01" min="0" class="form-control" id="per_hour_rate" name="per_hour_rate"
-                                                    placeholder="Per Hour Rate"
-                                                    value="{{ old('per_hour_rate', $customer->per_hour_rate ?? '') }}">
-                                                @error('per_hour_rate')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                     
                                         <!--end col-->
                                         <div class="col-md-4">
                                             <div class="mb-3">

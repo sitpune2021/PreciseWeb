@@ -20,10 +20,12 @@ return new class extends Migration
             $table->integer('qty')->default(1);    // QTY
             $table->string('machine');             // M/C
             $table->string('operator');            // OP
-            $table->string('setting_no')->nullable();  // SET (1st, 2nd etc.)
+            $table->string('setting_no')->nullable(); 
+            $table->string('material')->nullable();  
             $table->string('est_time')->nullable();
             $table->dateTime('start_time')->nullable();   // START
-            $table->dateTime('end_time')->nullable();     // END
+            $table->dateTime('end_time')->nullable(); 
+            $table->integer('minute')->nullable();        
             $table->decimal('hrs', 5, 2)->nullable();     // HRS
             $table->decimal('time_taken', 5, 2)->nullable(); // TIME
             $table->decimal('actual_hrs', 5, 2)->nullable(); // HRS (Actual)

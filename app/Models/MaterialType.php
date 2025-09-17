@@ -12,10 +12,11 @@ class MaterialType extends Model
     use SoftDeletes;
     use HasFactory;
  
-    protected $fillable = [
-        'material_type',
-        'material_rate',
-        'status'
-    ];
+   protected $fillable = [
+    'material_type',
+    'material_rate',
+    'material_gravity',
+    'status',
+];
 }
  

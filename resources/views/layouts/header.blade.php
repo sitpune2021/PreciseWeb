@@ -601,13 +601,13 @@
                     <!-- Masters -->
                     <li class="menu-title"><span data-key="t-menu">Masters</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn') ? '' : 'collapsed' }}"
+                        <a class="nav-link menu-link {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn','AddFinancialYear') ? '' : 'collapsed' }}"
                             href="#sidebarMaster" data-bs-toggle="collapse" role="button"
-                            aria-expanded="{{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn') ? 'true' : 'false' }}"
+                            aria-expanded="{{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn','AddFinancialYear') ? 'true' : 'false' }}"
                             aria-controls="sidebarMaster">
                             <i class="ri-apps-2-line"></i> <span data-key="t-apps">Master</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn') ? 'show' : '' }}" id="sidebarMaster">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn','AddFinancialYear') ? 'show' : '' }}" id="sidebarMaster">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
                                     <a href="{{ route('AddOperator') }}" class="nav-link {{ request()->routeIs('AddOperator') ? 'active' : '' }}"> Add Operator </a>
@@ -623,10 +623,15 @@
                                 </li>
 
                                 <li class="nav-item">
-                                <a href="{{ route('AddMaterialType') }}"class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active' : '' }}">Add Material Type
-                                </a>
-                            </li> 
-                                
+                                    <a href="{{ route('AddMaterialType') }}" class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active' : '' }}">Add Material Type
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('AddFinancialYear') }}" class="nav-link {{ request()->routeIs('AddFinancialYear') ? 'active' : '' }}">Add Financial Year
+                                    </a>
+                                </li>
+
                             </ul>
                         </div>
                     </li>
@@ -755,7 +760,7 @@
                     </li>
 
 
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? '' : 'collapsed' }}"
                             href="#sidebarMaterialreq" data-bs-toggle="collapse" role="button"
                             aria-expanded="{{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? 'true' : 'false' }}"
@@ -772,7 +777,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> -->
 
 
                     <!-- Material Order -->

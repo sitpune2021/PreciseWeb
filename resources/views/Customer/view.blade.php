@@ -67,7 +67,7 @@
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewCustomerBtn"
                                                     data-name="{{ $c->name }}"
                                                     data-code="{{ $c->code }}"
-                                                    data-rate="{{ $c->per_hour_rate }}"                                      
+                                                                                         
                                                     data-email_id="{{ $c->email_id }}"
                                                     data-contact="{{ $c->contact_person }}"
                                                     data-phone="{{ $c->phone_no }}"
@@ -107,10 +107,7 @@
                                     <th>Name</th>
                                     <td id="cust_name"></td>
                                 </tr>
-                                <tr>
-                                    <th>Per hour rate</th>
-                                    <td id="cust_hour_rate"></td>
-                                </tr>
+                             
                               
                                  <tr>
                                     <th>Code</th>
@@ -147,7 +144,7 @@
                         btn.addEventListener("click", function() {
                             document.getElementById("cust_name").textContent = this.dataset.name;
                             document.getElementById("cust_code").textContent = this.dataset.code;
-                            document.getElementById("cust_hour_rate").textContent = this.dataset.rate;
+                          
                            
                             document.getElementById("email_id").textContent = this.dataset.email_id;
                             document.getElementById("cust_contact").textContent = this.dataset.contact;

@@ -354,7 +354,7 @@
                                             </td>
                                             `;
                                                 tableBody.appendChild(newRow);
-
+                                            clearDimensions();
                                                 newRow.querySelector(".deleteRow").addEventListener("click", function() {
                                                     newRow.remove();
                                                     updateSrNo();
@@ -416,46 +416,53 @@
                                         </script>
 
                                         <script>
-                                            document.addEventListener("DOMContentLoaded", function() {
-                                                let diameter = document.getElementById("dimeter");
-                                                let height = document.getElementById("height");
-                                                let length = document.getElementById("length");
-                                                let width = document.getElementById("width");
+    document.addEventListener("DOMContentLoaded", function() {
+        let diameter = document.getElementById("dimeter");
+        let height = document.getElementById("height");
+        let length = document.getElementById("length");
+        let width = document.getElementById("width");
 
-                                                function toggleFields() {
-                                                    if (diameter.value) {
+        function toggleFields() {
+            if (diameter.value) {
+                length.disabled = true;
+                width.disabled = true;
+                length.value = "";
+                width.value = "";
 
-                                                        length.disabled = true;
-                                                        width.disabled = true;
-                                                        length.value = "";
-                                                        width.value = "";
+                diameter.disabled = false;
+                height.disabled = false;
+            } else if (length.value || width.value) {
+                diameter.disabled = true;
+                diameter.value = "";
 
-                                                        diameter.disabled = false;
-                                                        height.disabled = false;
-                                                    } else if (length.value || width.value) {
+                length.disabled = false;
+                width.disabled = false;
+                height.disabled = false;
+            } else {
+                diameter.disabled = false;
+                length.disabled = false;
+                width.disabled = false;
+                height.disabled = false;
+            }
+        }
 
-                                                        diameter.disabled = true;
-                                                        diameter.value = "";
+        // 👉 हे function row add झाल्यावर कॉल कर
+        window.clearDimensions = function() {
+            diameter.value = "";
+            length.value = "";
+            width.value = "";
+            height.value = "";
+            toggleFields();
+        }
 
-                                                        length.disabled = false;
-                                                        width.disabled = false;
-                                                        height.disabled = false;
-                                                    } else {
+        diameter.addEventListener("input", toggleFields);
+        length.addEventListener("input", toggleFields);
+        width.addEventListener("input", toggleFields);
 
-                                                        diameter.disabled = false;
-                                                        length.disabled = false;
-                                                        width.disabled = false;
-                                                        height.disabled = false;
-                                                    }
-                                                }
+        toggleFields(); // initial check
+    });
+</script>
 
-                                                diameter.addEventListener("input", toggleFields);
-                                                length.addEventListener("input", toggleFields);
-                                                width.addEventListener("input", toggleFields);
-
-                                                toggleFields(); // initial check
-                                            });
-                                        </script>
 
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                         <script>

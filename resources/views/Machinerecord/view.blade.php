@@ -19,7 +19,8 @@
                                             <th>Sr.No</th>
                                             <th>Part No</th>
                                             <th>code</th>
-                                            <th>Work Order</th>                                            
+                                            <th>Work Order</th>
+                                            <th>First Set</th>
                                             <th>Qty</th>
                                             <th>Start Time</th>
                                             <th>End Time</th>
@@ -34,6 +35,7 @@
                                             <td>{{ $rec->part_no }}</td>
                                             <td>{{ $rec->code }}</td>
                                             <td>{{ $rec->work_order }}</td>
+                                            <td>{{ $rec->first_set }}</td>
                                             <td>{{ $rec->qty }}</td>
                                             <td>{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}</td>
                                             <td>{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}</td>
@@ -53,10 +55,12 @@
                                                     data-machine="{{ $rec->machine }}"
                                                     data-operator="{{ $rec->operator }}"
                                                     data-setting="{{ $rec->setting_no }}"
+                                                    data-material="{{ $rec->material }}"
                                                     data-qty="{{ $rec->qty }}"
                                                     data-start="{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}"
                                                     data-end="{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}"
                                                     data-est_time="{{ $rec->est_time }}"
+                                                    data-minute="{{ $rec->minute }}"
                                                     data-hrs="{{ $rec->hrs }}"
                                                     data-time_taken="{{ $rec->time_taken }}"
                                                     data-actual_hrs="{{ $rec->actual_hrs }}"
@@ -113,6 +117,10 @@
                                     <td id="view_setting"></td>
                                 </tr>
                                 <tr>
+                                    <th>Material type</th>
+                                    <td id="view_material"></td>
+                                </tr>
+                                <tr>
                                     <th>Quantity</th>
                                     <td id="view_qty"></td>
                                 </tr>
@@ -128,7 +136,11 @@
                                     <th>Estimated Time</th>
                                     <td id="view_est_time"></td>
                                 </tr>
-                                 <tr>
+                                <tr>
+                                    <th>Minute</th>
+                                    <td id="view_minute"></td>
+                                </tr>
+                                <tr>
                                     <th>Hrs</th>
                                     <td id="view_hrs"></td>
                                 </tr>
@@ -136,9 +148,9 @@
                                     <th>Time Taken</th>
                                     <td id="view_time_taken"></td>
                                 </tr>
-                               
-                                    <th>Actual Hrs</th>
-                                    <td id="view_actual_hrs"></td>
+
+                                <th>Actual Hrs</th>
+                                <td id="view_actual_hrs"></td>
                                 </tr>
                                 <tr>
                                     <th>Invoice No</th>
@@ -159,10 +171,12 @@
                             document.getElementById("view_machine").textContent = this.dataset.machine;
                             document.getElementById("view_operator").textContent = this.dataset.operator;
                             document.getElementById("view_setting").textContent = this.dataset.setting;
+                            document.getElementById("view_material").textContent = this.dataset.material;
                             document.getElementById("view_qty").textContent = this.dataset.qty;
                             document.getElementById("view_start").textContent = this.dataset.start;
                             document.getElementById("view_end").textContent = this.dataset.end;
                             document.getElementById("view_est_time").textContent = this.dataset.est_time;
+                            document.getElementById("view_minute").textContent = this.dataset.minute;
                             document.getElementById("view_hrs").textContent = this.dataset.hrs;
                             document.getElementById("view_time_taken").textContent = this.dataset.time_taken;
                             document.getElementById("view_actual_hrs").textContent = this.dataset.actual_hrs;
