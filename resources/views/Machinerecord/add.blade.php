@@ -25,7 +25,7 @@
 
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <div class="mb-">
+                                        <div class="">
                                             <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
                                             <select class="form-select js-example-basic-single"
                                                 id="customer_id"
@@ -151,7 +151,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <label for="material" class="form-label">Material <span class="mandatory">*</span></label>
+                                        <label for="material" class="form-label">Material type <span class="mandatory">*</span></label>
                                         <select name="material" id="material" class="form-control form-select">
                                             <option value="">Select Material</option>
                                             @foreach($materialtype as $mat)

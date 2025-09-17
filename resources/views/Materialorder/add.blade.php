@@ -56,43 +56,36 @@
 
                                     <!-- FINISH SIZE SECTION -->
                                     <div class="col-12 mt-3">
-                                        <h6 class="fw-bold">Finish Size</h6>
+                                        <h5 class="fw-bold">Finish Size</h5>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <label class="form-label">Diameter<span class="text-red">*</span></label>
+                                        <label class="form-label">Diameter</label>
                                         <input type="number" step="0.01" name="f_diameter" class="form-control"
                                             value="{{ old('f_diameter', $record->f_diameter ?? '') }}">
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">Length<span class="text-red">*</span></label>
+                                        <label class="form-label">Length</label>
                                         <input type="number" step="0.01" name="f_length" class="form-control"
                                             value="{{ old('f_length', $record->f_length ?? '') }}">
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">Width<span class="text-red">*</span></label>
+                                        <label class="form-label">Width</label>
                                         <input type="number" step="0.01" name="f_width" class="form-control"
                                             value="{{ old('f_width', $record->f_width ?? '') }}">
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">Height<span class="text-red">*</span></label>
+                                        <label class="form-label">Height</label>
                                         <input type="number" step="0.01" name="f_height" class="form-control"
                                             value="{{ old('f_height', $record->f_height ?? '') }}">
                                     </div>
 
                                      <!-- MATERIAL -->
-                                    <div class="col-md-3">
-                                        <label class="form-label">Material <span class="text-red">*</span></label>
-                                        <input type="text" name="material" class="form-control"
-                                            value="{{ old('material', $record->material ?? '') }}">
-                                        @error('material')
-                                        <span class="text-red small">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+                                    
 
                                     <!-- RAW SIZE SECTION -->
                                     <div class="col-12 mt-3">
-                                        <h6 class="fw-bold">Raw Size</h6>
+                                        <h5 class="fw-bold">Raw Size</h5>
                                     </div>
 
                                     <div class="col-md-2">
@@ -116,7 +109,14 @@
                                             value="{{ old('r_height', $record->r_height ?? '') }}">
                                     </div>
 
-                                   
+                                   <div class="col-md-3">
+                                        <label class="form-label">Material<span class="text-red">*</span></label>
+                                        <input type="text" name="material" class="form-control"
+                                            value="{{ old('material', $record->material ?? '') }}">
+                                        @error('material')
+                                        <span class="text-red small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
 
                                     <!-- QTY -->
                                     <div class="col-md-2">

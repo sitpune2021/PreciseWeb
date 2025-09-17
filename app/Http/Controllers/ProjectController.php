@@ -10,6 +10,8 @@ use Illuminate\Container\Attributes\Log;
 
 class ProjectController extends Controller
 {
+
+    
     public function AddProject()
     {
         $codes = Customer::where('status', 1)   // फक्त active
@@ -42,6 +44,7 @@ class ProjectController extends Controller
         $projectData = $validated;
         $projectData['customer_code'] = $customerCode; // set customer code
 
+        
         // Create project
         Project::create($projectData);
 

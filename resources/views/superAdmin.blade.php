@@ -1,5 +1,6 @@
 @php
 use App\Models\Client;
+use App\Models\Project; 
 use Carbon\Carbon;
 
 // Total Clients
@@ -16,14 +17,17 @@ $currentMonthClients = Client::whereMonth('created_at', Carbon::now()->month)
 ->count();
 $currentMonthPercentage = $currentMonthClients; // count = percentage
 
-
-
-
 // Renewal Clients
 $renewalsThisMonth = Client::whereYear('updated_at', Carbon::now()->year)
 ->whereMonth('updated_at', Carbon::now()->month)
 ->count();
 $renewalPercentage = $renewalsThisMonth; // count = percentage
+
+$projects = Project::with('customer')
+    ->orderBy('id', 'desc')
+    ->take(5)
+    ->get();
+$totalProjects = Project::count();
 @endphp
 
 
@@ -127,221 +131,116 @@ $renewalPercentage = $renewalsThisMonth; // count = percentage
             @endif
             @if(auth()->user()->user_type == 2)
             <!--end col-->
+<div class="col-xl-12">
+    <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
+            <h4 class="card-title mb-0">
+                <i class="ri-briefcase-4-line me-2 text-primary"></i> Latest Projects
+            </h4>
+            <a href="{{ route('ViewProject') }}" class="btn btn-sm btn-primary rounded-pill shadow-sm">
+                View All <i class="ri-arrow-right-line align-bottom"></i>
+            </a>
+        </div>
 
-            <div class="col-xl-6">
-                <div class="card card-height-100">
-                    <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Featured Companies</h4>
-                        <div class="flex-shrink-0">
-                            <a href="#!" class="btn btn-soft-primary btn-sm material-shadow-none">View All Companies <i class="ri-arrow-right-line align-bottom"></i></a>
-                        </div>
-                    </div>
-
-
-                    <div class="card-body">
-                        <div class="table-responsive table-card">
-                            <table class="table table-centered table-hover align-middle table-nowrap mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-xs me-2 flex-shrink-0">
-                                                    <div class="avatar-title bg-secondary-subtle rounded">
-                                                        <img src="{{asset('assets/images/companies/img-1.png')}}" alt="" height="16">
-                                                    </div>
-                                                </div>
-                                                <h6 class="mb-0">Force Medicines</h6>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover table-nowrap mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Project No.</th>
+                            <th>Customer</th>
+                            <th>Code</th>
+                            <th>Project</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($projects as $project)
+                            <tr class="align-middle">
+                                <td class="text-muted">{{ $loop->iteration }}</td>
+                                
+                                <td>
+                                    <span class="badge bg-light text-dark">
+                                        {{ \Carbon\Carbon::parse($project->date)->format('d M, Y') }}
+                                    </span>
+                                </td>
+                                
+                                <td>
+                                    <span class="fw-bold text-primary">#{{ $project->id }}</span>
+                                </td>
+                                
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-xs me-2">
+                                            <div class="avatar-title bg-primary-subtle text-primary rounded-circle">
+                                                <i class="ri-user-line"></i>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <i class="ri-map-pin-2-line text-primary me-1 align-bottom"></i> Cullera, Spain
-                                        </td>
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-secondary"><i class="ri-facebook-fill"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-danger"><i class="ri-mail-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-primary"><i class="ri-global-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-info"><i class="ri-twitter-line"></i></a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-link btn-sm material-shadow-none">View More <i class="ri-arrow-right-line align-bottom"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-xs me-2 flex-shrink-0">
-                                                    <div class="avatar-title bg-warning-subtle rounded">
-                                                        <img src="{{asset('assets/images/companies/img-3.png')}}" alt="" height="16">
-                                                    </div>
-                                                </div>
-                                                <h6 class="mb-0">Syntyce Solutions</h6>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <i class="ri-map-pin-2-line text-primary me-1 align-bottom"></i> Mughairah, UAE
-                                        </td>
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-secondary"><i class="ri-facebook-fill"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-danger"><i class="ri-mail-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-primary"><i class="ri-global-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-info"><i class="ri-twitter-line"></i></a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-link btn-sm material-shadow-none">View More <i class="ri-arrow-right-line align-bottom"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-xs me-2 flex-shrink-0">
-                                                    <div class="avatar-title bg-primary-subtle rounded">
-                                                        <img src="{{asset('assets/images/companies/img-2.png')}}" alt="" height="16">
-                                                    </div>
-                                                </div>
-                                                <h6 class="mb-0">Moetic Fashion</h6>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <i class="ri-map-pin-2-line text-primary me-1 align-bottom"></i> Mughairah, UAE
-                                        </td>
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-secondary"><i class="ri-facebook-fill"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-danger"><i class="ri-mail-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-primary"><i class="ri-global-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-info"><i class="ri-twitter-line"></i></a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-link btn-sm material-shadow-none">View More <i class="ri-arrow-right-line align-bottom"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-xs me-2 flex-shrink-0">
-                                                    <div class="avatar-title bg-danger-subtle rounded">
-                                                        <img src="{{asset('assets/images/companies/img-4.png')}}" alt="" height="16">
-                                                    </div>
-                                                </div>
-                                                <h6 class="mb-0">Meta4Systems</h6>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <i class="ri-map-pin-2-line text-primary me-1 align-bottom"></i> Germany
-                                        </td>
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-secondary"><i class="ri-facebook-fill"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-danger"><i class="ri-mail-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-primary"><i class="ri-global-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-info"><i class="ri-twitter-line"></i></a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-link btn-sm material-shadow-none">View More <i class="ri-arrow-right-line align-bottom"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-xs me-2 flex-shrink-0">
-                                                    <div class="avatar-title bg-danger-subtle rounded">
-                                                        <img src="{{asset('assets/images/companies/img-5.png')}}" alt="" height="16">
-                                                    </div>
-                                                </div>
-                                                <h6 class="mb-0">Themesbrand</h6>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <i class="ri-map-pin-2-line text-primary me-1 align-bottom"></i> Limestone, US
-                                        </td>
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-secondary"><i class="ri-facebook-fill"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-danger"><i class="ri-mail-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-primary"><i class="ri-global-line"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="#!" class="link-info"><i class="ri-twitter-line"></i></a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-link btn-sm material-shadow-none">View More <i class="ri-arrow-right-line align-bottom"></i></a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="align-items-center mt-4 pt-2 justify-content-between d-md-flex">
-                            <div class="flex-shrink-0 mb-2 mb-md-0">
-                                <div class="text-muted">
-                                    Showing <span class="fw-semibold">5</span> of <span class="fw-semibold">25</span> Results
-                                </div>
-                            </div>
-                            <ul class="pagination pagination-separated pagination-sm mb-0">
-                                <li class="page-item disabled">
-                                    <a href="#" class="page-link">←</a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link">1</a>
-                                </li>
-                                <li class="page-item active">
-                                    <a href="#" class="page-link">2</a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link">3</a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link">→</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                                        </div>
+                                        <span>{{ $project->customer->name ?? '-' }}</span>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <span class="badge bg-info-subtle text-info">
+                                        {{ $project->customer?->code ?? '—' }}
+                                    </span>
+                                </td>
+                                
+                                <td>
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">{{ $project->project_name }}</h6>
+                                        <small class="text-muted">{{ $project->description ?? '' }}</small>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <span class="badge bg-secondary-subtle text-dark">
+                                        {{ $project->quantity }}
+                                    </span>
+                                </td>
+                                
+                                <td>
+                                    <span class="badge 
+                                        @if($project->status == 'pending') bg-warning-subtle text-warning
+                                        @elseif($project->status == 'completed') bg-success-subtle text-success
+                                        @else bg-secondary-subtle text-secondary @endif
+                                    ">
+                                        {{ ucfirst($project->status ?? 'N/A') }}
+                                    </span>
+                                </td>
+                                
+                                <td class="text-end">
+                                    <a href="{{ route('editProject', base64_encode($project->id)) }}" 
+                                       class="btn btn-sm btn-outline-primary rounded-pill shadow-sm">
+                                        Details <i class="ri-arrow-right-line align-bottom"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">🚀 No projects found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted">
+                    Showing <span class="fw-semibold">{{ $projects->count() }}</span> of <span class="fw-semibold">{{ $totalProjects }}</span> Results
+                </small>
+                <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
             <div class="row">
                 <div class="col-xxl-8">
@@ -876,11 +775,11 @@ $renewalPercentage = $renewalsThisMonth; // count = percentage
                 <div class="col-sm-6">
                     <script>
                         document.write(new Date().getFullYear())
-                    </script> © Velzon.
+                    </script>  
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end d-none d-sm-block">
-                        Design & Develop by Themesbrand
+                        Design & Develop by 
                     </div>
                 </div>
             </div>
