@@ -24,16 +24,42 @@
 
                                 <div class="row g-3">
 
-                                    <!-- SR NO -->
-                                    <div class="col-md-2">
-                                        <label class="form-label">SR NO <span class="text-red">*</span></label>
-                                        <input type="number" name="sr_no" class="form-control"
-                                            value="{{ old('sr_no', $record->sr_no ?? '') }}">
-                                        @error('sr_no')
+                            
+                               <div class="col-md-4">
+                                        <label for="customer_id" class="form-label">Customer Name <span class="text-red small">*</span></label>
+                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
+                                            <option value="">Select Customer</option>
+                                            @foreach($codes as $c)
+                                            <option value="{{ $c->id }}"
+                                                data-code="{{ $c->code }}"
+                                                data-id="{{ $c->id }}"
+                                                {{ old('customer_id', $materialReq->customer_id ?? '') == $c->id ? 'selected' : '' }}>
+                                                {{ $c->name }} - ({{ $c->code }})
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                        @error('customer_id')
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div>
 
+                                    <!-- Customer Code -->
+                                    <div class="col-md-2">
+                                        <label for="code" class="form-label">Customer Code</label>
+                                        <input type="text" class="form-control" id="code" name="code"
+                                            value="{{ old('code', $materialReq->code ?? '') }}" readonly>
+                                    </div>
+
+                                    <!-- Work Order No -->
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
+                                            <input type="text" name="work_order_no" id="work_order_no"
+                                                class="form-control"
+                                                value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}" readonly>
+                                            @error('work_order_no') <span class="text-red small">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
                                     <!-- DATE -->
                                     <div class="col-md-3">
                                         <label class="form-label">Date <span class="text-red">*</span></label>
@@ -153,5 +179,6 @@
         </div> <!-- container-fluid -->
     </div> <!-- page-content -->
 </div> <!-- main-content -->
-
+ 
+<script></script>
 @endsection

@@ -10,6 +10,7 @@ class Operator extends Model
     use SoftDeletes;
     protected $fillable=[
         'operator_name',
+        'admin_id',
         'phone_no',
         'status',
         'is_active',

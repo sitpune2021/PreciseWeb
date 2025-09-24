@@ -13,6 +13,7 @@ return new class extends Migration
     {
        Schema::create('material_orders', function (Blueprint $table) {
     $table->id();
+     
     $table->integer('sr_no');
     $table->date('date');
     $table->string('work_order_desc');

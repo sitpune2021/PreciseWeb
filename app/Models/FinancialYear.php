@@ -7,5 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class FinancialYear extends Model
 {
      use SoftDeletes;
-    protected $fillable = ['year', 'status'];
+    protected $fillable = 
+    ['year',
+    'admin_id',
+     'status'];
 }

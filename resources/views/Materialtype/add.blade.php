@@ -40,7 +40,7 @@
                                     <label for="material_gravity" class="form-label">
                                         Material Gravity <span class="mandatory">*</span>
                                     </label>
-                                    <input type="number"
+                                    <input type="number"step="0.01" min="0"
                                         class="form-control form-control-sm px-3 py-2"
                                         id="material_gravity"
                                         name="material_gravity"

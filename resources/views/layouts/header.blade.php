@@ -694,6 +694,26 @@
                         </div>
                     </li>
 
+                    <li class="menu-title"><i class="ri-cpu-line me-2 text-primary"></i><span>Material Requirement</span></li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? '' : 'collapsed' }}"
+                            href="#sidebarMaterialreq" data-bs-toggle="collapse" role="button"
+                            aria-expanded="{{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? 'true' : 'false' }}"
+                            aria-controls="sidebarMaterialreq">
+                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Material Requirement</span>
+                        </a>
+                        <div class="collapse menu-dropdown {{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? 'show' : '' }}" id="sidebarMaterialreq">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="{{ route('AddMaterialReq') }}" class="nav-link {{ request()->routeIs('AddMaterialReq') ? 'active' : '' }}"> Add</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('ViewMaterialReq') }}" class="nav-link {{ request()->routeIs('ViewMaterialReq') ? 'active' : '' }}"> View</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
                     <!-- Material Order -->
                     <li class="menu-title"><i class="ri-shopping-bag-3-line me-2 text-success"></i><span>Material Orders</span></li>
                     <li class="nav-item">
@@ -723,24 +743,7 @@
                     </li>
 
 
-                    <!-- <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? '' : 'collapsed' }}"
-                            href="#sidebarMaterialreq" data-bs-toggle="collapse" role="button"
-                            aria-expanded="{{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? 'true' : 'false' }}"
-                            aria-controls="sidebarMaterialreq">
-                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Material Requirement</span>
-                        </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? 'show' : '' }}" id="sidebarMaterialreq">
-                            <ul class="nav nav-sm flex-column">
-                                <li class="nav-item">
-                                    <a href="{{ route('AddMaterialReq') }}" class="nav-link {{ request()->routeIs('AddMaterialReq') ? 'active' : '' }}"> Add</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('ViewMaterialReq') }}" class="nav-link {{ request()->routeIs('ViewMaterialReq') ? 'active' : '' }}"> View</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li> -->
+
 
 
 
@@ -791,6 +794,29 @@
     <script>
         $(document).ready(function() {
             $('.js-example-basic-single').select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+
+            // On select2 change
+            $('#customer_id').on('select2:select', function(e) {
+                let selectedOption = $(this).find(':selected');
+                let code = selectedOption.data('code') || '';
+                let id = selectedOption.data('id') || '';
+                $('#code').val(code);
+                $('#work_order_no').val(id)
+            });
+
+            // Trigger on page load (edit mode)
+            if ($('#customer_id').val()) {
+                let selectedOption = $('#customer_id').find(':selected');
+                let code = selectedOption.data('code') || '';
+                let id = selectedOption.data('id') || '';
+                $('#code').val(code);
+                $('#work_order_no').val(id)
+
+            }
         });
     </script>
     <!--datatable js-->

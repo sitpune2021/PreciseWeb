@@ -162,238 +162,209 @@
                                             </div>
                                         </div>
 
-                                        <!-- Dropdowns -->
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="x_refer" class="form-label">X Refer <span class="mandatory">*</span></label>
-                                                <select class="form-select" id="x_refer" name="x_refer">
-                                                    <option value="">Select X</option>
-                                                    <option value="Centre" {{ old('x_refer', $setupSheet->x_refer ?? '') == 'Centre' ? 'selected' : '' }}>Centre</option>
-                                                    <option value="Face Shown" {{ old('x_refer', $setupSheet->x_refer ?? '') == 'Face Shown' ? 'selected' : '' }}>Face Shown</option>
-                                                    <option value="Hole Centre" {{ old('x_refer', $setupSheet->x_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
-                                                </select>
-                                                @error('x_refer')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="y_refer" class="form-label">Y Refer <span class="mandatory">*</span></label>
-                                                <select class="form-select" id="y_refer" name="y_refer">
-                                                    <option value="">Select Y</option>
-                                                    <option value="Centre" {{ old('y_refer', $setupSheet->y_refer ?? '') == 'Centre' ? 'selected' : '' }}>Centre</option>
-                                                    <option value="Face Shown" {{ old('y_refer', $setupSheet->y_refer ?? '') == 'Face Shown' ? 'selected' : '' }}>Face Shown</option>
-                                                    <option value="Hole Centre" {{ old('y_refer', $setupSheet->y_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
-                                                </select>
-                                                @error('y_refer')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="z_refer" class="form-label">Z Refer <span class="mandatory">*</span></label>
-                                                <select class="form-select" id="z_refer" name="z_refer">
-                                                    <option value="">Select Z</option>
-                                                    <option value="Top" {{ old('z_refer', $setupSheet->z_refer ?? '') == 'Top' ? 'selected' : '' }}>Top</option>
-                                                    <option value="Centre" {{ old('z_refer', $setupSheet->z_refer ?? '') == 'Centre' ? 'selected' : '' }}>Centre</option>
-                                                    <option value="Face Shown" {{ old('z_refer', $setupSheet->z_refer ?? '') == 'Face Shown' ? 'selected' : '' }}>Face Shown</option>
-                                                    <option value="Hole Centre" {{ old('z_refer', $setupSheet->z_refer ?? '') == 'Hole Centre' ? 'selected' : '' }}>Hole Centre</option>
-                                                </select>
-                                                @error('z_refer')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="clamping" class="form-label">Clamping <span class="mandatory">*</span></label>
-                                                <select class="form-select" id="clamping" name="clamping">
-                                                    <option value="">Select Clamping</option>
-                                                    <option value="Vice" {{ old('clamping', $setupSheet->clamping ?? '') == 'Vice' ? 'selected' : '' }}>Vice</option>
-                                                    <option value="Fixture" {{ old('clamping', $setupSheet->clamping ?? '') == 'Fixture' ? 'selected' : '' }}>Fixture</option>
-                                                    <option value="Magnet" {{ old('clamping', $setupSheet->clamping ?? '') == 'Magnet' ? 'selected' : '' }}>Magnet</option>
-                                                </select>
-                                                @error('clamping')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
-                                                <input type="number" step="1" min="1" class="form-control" id="qty" name="qty"
-                                                    value="{{ old('qty', $setupSheet->qty ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
-                                                @error('qty')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="part_description" class="form-label">Part Description</label>
-                                                <input type="text" class="form-control" id="part_description"
-                                                    name="description"
-                                                    value="{{ old('description', $setupSheet->description ?? '') }}">
-                                                @error('part_description')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label for="setup_image" class="form-label">Upload Image</label>
-                                                <input type="file" class="form-control" id="setup_image" name="setup_image" accept="image/*">
-                                                @error('setup_image')
-                                                <span class="text-red small">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        @if(isset($setupSheet) && $setupSheet->setup_image)
-                                        <div class="col-md-2">
-                                            <div class="mt-2">
-                                                <img src="{{ asset('setup_images/'.$setupSheet->setup_image) }}"
-                                                    alt="Setup Image"
-                                                    class="img-thumbnail"
-                                                    style="width:70px; height:70px; object-fit:cover;">
-                                            </div>
-
-                                            @endif
-                                        </div>
-
-
-                                        <div class="col-md-12">
-                                            <h4 class="text-center mt-4 mb-3"><b>Dowel Holes</b></h4>
-                                        </div>
-
-                                        @php
-                                        $holesData = old('holes', $setupSheet->holes ?? []);
-                                        $holeXData = old('hole_x', $setupSheet->hole_x ?? []);
-                                        $holeYData = old('hole_y', $setupSheet->hole_y ?? []);
-                                        $holeDiaData = old('hole_dia', $setupSheet->hole_dia ?? []);
-                                        $holeDepthData = old('hole_depth', $setupSheet->hole_depth ?? []);
-                                        $count = max(count($holesData), count($holeXData), count($holeYData), count($holeDiaData), count($holeDepthData));
-                                        $count = $count > 0 ? $count : 1;
-                                        @endphp
-
-                                        <!-- <div id="dowel-holes-wrapper">
-                                            @for($i = 0; $i < $count; $i++)
-                                                <div class="row dowel-group mb-2">
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
-                                                        value="{{ $holesData[$i] ?? '' }}">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
-                                                        value="{{ $holeXData[$i] ?? '' }}">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"
-                                                        value="{{ $holeYData[$i] ?? '' }}">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"
-                                                        value="{{ $holeDiaData[$i] ?? '' }}">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_depth[]" placeholder="Hole Depth"
-                                                        value="{{ $holeDepthData[$i] ?? '' }}">
-                                                </div>
-                                                <div class="col-md-2 d-flex align-items-center">
-                                                    @if($i == 0)
-                                                    <button type="button" class="btn btn-success add-row">+</button>
-                                                    @else
-                                                    <button type="button" class="btn btn-danger remove-row">-</button>
-                                                    @endif
-                                                </div>
-                                        </div>
-                                        @endfor
-                                    </div> -->
-
-
-                                        <div id="dowel-holes-wrapper">
-                                            @for($i = 0; $i < $count; $i++)
-                                                <div class="row dowel-group mb-2">
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
-                                                        value="{{ old('holes.' . $i, $holesData[$i] ?? '') }}">
-                                                    @error('holes.' . $i)
+                                        <div class="row">
+                                            <!-- X Refer -->
+                                            <div class="col-md-2" style="position: relative;">
+                                                <div class="mb-3">
+                                                    <label for="x_refer" class="form-label">X Refer <span class="mandatory">*</span></label>
+                                                    <input type="text" id="x_refer" name="x_refer" class=" form-select"
+                                                        placeholder="Select or type" autocomplete="off"
+                                                        value="{{ old('x_refer', $setupSheet->x_refer ?? '') }}">
+                                                    <ul id="xOptions" class="dropdown-list">
+                                                        <li data-value="">Select X refer</li>
+                                                        <li data-value="Centre">Centre</li>
+                                                        <li data-value="Face Shown">Face Shown</li>
+                                                        <li data-value="Hole Centre">Hole Centre</li>
+                                                    </ul>
+                                                    @error('x_refer')
                                                     <span class="text-red small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
-                                                        value="{{ old('hole_x.' . $i, $holeXData[$i] ?? '') }}">
-                                                    @error('hole_x.' . $i)
-                                                    <span class="text-red small">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"
-                                                        value="{{ old('hole_y.' . $i, $holeYData[$i] ?? '') }}">
-                                                    @error('hole_y.' . $i)
-                                                    <span class="text-red small">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"
-                                                        value="{{ old('hole_dia.' . $i, $holeDiaData[$i] ?? '') }}">
-                                                    @error('hole_dia.' . $i)
-                                                    <span class="text-red small">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="hole_depth[]" placeholder="Hole Depth"
-                                                        value="{{ old('hole_depth.' . $i, $holeDepthData[$i] ?? '') }}">
-                                                    @error('hole_depth.' . $i)
-                                                    <span class="text-red small">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-md-2 d-flex align-items-center">
-                                                    @if($i == 0)
-                                                    <button type="button" class="btn btn-success add-row">+</button>
-                                                    @else
-                                                    <button type="button" class="btn btn-danger remove-row">-</button>
-                                                    @endif
-                                                </div>
-                                        </div>
-                                        @endfor
-                                    </div>
+                                            </div>
 
-                                    <!-- Submit -->
-                                    <div class="col-lg-12">
-                                        <div class="text-end">
-                                            <button type="submit" class="btn btn-primary">{{ isset($setupSheet) ? 'Update' : 'Submit' }}</button>
-                                            &nbsp;
-                                            @if(isset($setupSheet))
-                                            <a href="{{ route('ViewSetupSheet') }}" class="btn btn-info">Cancel</a>
-                                            @else
-                                            <button type="reset" class="btn btn-info">Reset</button>
-                                            @endif
+                                            <!-- Y Refer -->
+                                            <div class="col-md-2" style="position: relative;">
+                                                <div class="mb-3">
+                                                    <label for="y_refer" class="form-label">Y Refer <span class="mandatory">*</span></label>
+                                                    <input type="text" id="y_refer" name="y_refer" class="form-control form-select"
+                                                        placeholder="Select or type" autocomplete="off"
+                                                        value="{{ old('y_refer', $setupSheet->y_refer ?? '') }}">
+                                                    <ul id="yOptions" class="dropdown-list">
+                                                        <li data-value="">Select Y refer</li>
+                                                        <li data-value="Centre">Centre</li>
+                                                        <li data-value="Face Shown">Face Shown</li>
+                                                        <li data-value="Hole Centre">Hole Centre</li>
+                                                    </ul>
+                                                    @error('y_refer')
+                                                    <span class="text-red small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <!-- Z Refer -->
+                                            <div class="col-md-2" style="position: relative;">
+                                                <div class="mb-3">
+                                                    <label for="z_refer" class="form-label">Z Refer <span class="mandatory">*</span></label>
+                                                    <input type="text" id="z_refer" name="z_refer" class="form-control form-select"
+                                                        placeholder="Select or type" autocomplete="off"
+                                                        value="{{ old('z_refer', $setupSheet->z_refer ?? '') }}">
+                                                    <ul id="zOptions" class="dropdown-list">
+                                                        <li data-value="">Select Z refer</li>
+                                                        <li data-value="Top">Top</li>
+                                                        <li data-value="Centre">Centre</li>
+                                                        <li data-value="Face Shown">Face Shown</li>
+                                                        <li data-value="Hole Centre">Hole Centre</li>
+                                                    </ul>
+                                                    @error('z_refer')
+                                                    <span class="text-red small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="clamping" class="form-label">Clamping <span class="mandatory">*</span></label>
+                                                    <select class="form-select" id="clamping" name="clamping">
+                                                        <option value="">Select Clamping</option>
+                                                        <option value="Vice" {{ old('clamping', $setupSheet->clamping ?? '') == 'Vice' ? 'selected' : '' }}>Vice</option>
+                                                        <option value="Fixture" {{ old('clamping', $setupSheet->clamping ?? '') == 'Fixture' ? 'selected' : '' }}>Fixture</option>
+                                                        <option value="Magnet" {{ old('clamping', $setupSheet->clamping ?? '') == 'Magnet' ? 'selected' : '' }}>Magnet</option>
+                                                    </select>
+                                                    @error('clamping')
+                                                    <span class="text-red small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
+                                                    <input type="number" step="1" min="1" class="form-control" id="qty" name="qty"
+                                                        value="{{ old('qty', $setupSheet->qty ?? '') }}"
+                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
+                                                    @error('qty')
+                                                    <span class="text-red small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="part_description" class="form-label">Part Description</label>
+                                                    <input type="text" class="form-control" id="part_description"
+                                                        name="description"
+                                                        value="{{ old('description', $setupSheet->description ?? '') }}">
+                                                    @error('part_description')
+                                                    <span class="text-red small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="setup_image" class="form-label">Upload Image</label>
+                                                    <input type="file" class="form-control" id="setup_image" name="setup_image" accept="image/*">
+                                                    @error('setup_image')
+                                                    <span class="text-red small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            @if(isset($setupSheet) && $setupSheet->setup_image)
+                                            <div class="col-md-2">
+                                                <div class="mt-2">
+                                                    <img src="{{ asset('setup_images/'.$setupSheet->setup_image) }}"
+                                                        alt="Setup Image"
+                                                        class="img-thumbnail"
+                                                        style="width:70px; height:70px; object-fit:cover;">
+                                                </div>
+
+                                                @endif
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h4 class="text-center mt-4 mb-3"><b>Dowel Holes</b></h4>
+                                            </div>
+
+                                            @php
+                                            $holesData = old('holes', $setupSheet->holes ?? []);
+                                            $holeXData = old('hole_x', $setupSheet->hole_x ?? []);
+                                            $holeYData = old('hole_y', $setupSheet->hole_y ?? []);
+                                            $holeDiaData = old('hole_dia', $setupSheet->hole_dia ?? []);
+                                            $holeDepthData = old('hole_depth', $setupSheet->hole_depth ?? []);
+                                            $count = max(count($holesData), count($holeXData), count($holeYData), count($holeDiaData), count($holeDepthData));
+                                            $count = $count > 0 ? $count : 1;
+                                            @endphp
+
+
+                                            <div id="dowel-holes-wrapper">
+                                                @for($i = 0; $i < $count; $i++)
+                                                    <div class="row dowel-group mb-2">
+                                                    <div class="col-md-2">
+                                                        <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
+                                                            value="{{ old('holes.' . $i, $holesData[$i] ?? '') }}">
+                                                        @error('holes.' . $i)
+                                                        <span class="text-red small">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
+                                                            value="{{ old('hole_x.' . $i, $holeXData[$i] ?? '') }}">
+                                                        @error('hole_x.' . $i)
+                                                        <span class="text-red small">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"
+                                                            value="{{ old('hole_y.' . $i, $holeYData[$i] ?? '') }}">
+                                                        @error('hole_y.' . $i)
+                                                        <span class="text-red small">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"
+                                                            value="{{ old('hole_dia.' . $i, $holeDiaData[$i] ?? '') }}">
+                                                        @error('hole_dia.' . $i)
+                                                        <span class="text-red small">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="text" class="form-control" name="hole_depth[]" placeholder="Hole Depth"
+                                                            value="{{ old('hole_depth.' . $i, $holeDepthData[$i] ?? '') }}">
+                                                        @error('hole_depth.' . $i)
+                                                        <span class="text-red small">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-2 d-flex align-items-center">
+                                                        @if($i == 0)
+                                                        <button type="button" class="btn btn-success add-row">+</button>
+                                                        @else
+                                                        <button type="button" class="btn btn-danger remove-row">-</button>
+                                                        @endif
+                                                    </div>
+                                            </div>
+                                            @endfor
+                                        </div>
+
+                                        <!-- Submit -->
+                                        <div class="col-lg-12">
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-primary">{{ isset($setupSheet) ? 'Update' : 'Submit' }}</button>
+                                                &nbsp;
+                                                @if(isset($setupSheet))
+                                                <a href="{{ route('ViewSetupSheet') }}" class="btn btn-info">Cancel</a>
+                                                @else
+                                                <button type="reset" class="btn btn-info">Reset</button>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
+                                </form>
                             </div>
-                            </form>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
-            </div>
-        </div><!-- end row -->
+            </div><!-- end row -->
+        </div>
     </div>
-</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -576,6 +547,45 @@
         });
     });
 </script>
+<script>
+    function setupCustomDropdown(inputId, listId) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+        const items = list.querySelectorAll('li');
 
+        // Show on focus
+        input.addEventListener('focus', () => {
+            list.style.display = 'block';
+
+            // highlight already selected
+            items.forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.value === input.value) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Hide on blur
+        input.addEventListener('blur', () => {
+            setTimeout(() => list.style.display = 'none', 100);
+        });
+
+        // Select option
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                input.value = item.dataset.value;
+                items.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                list.style.display = 'none';
+            });
+        });
+    }
+
+    // Initialize all dropdowns
+    setupCustomDropdown('x_refer', 'xOptions');
+    setupCustomDropdown('y_refer', 'yOptions');
+    setupCustomDropdown('z_refer', 'zOptions');
+</script>
 
 @endsection

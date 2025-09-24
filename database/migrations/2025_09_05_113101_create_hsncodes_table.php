@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('hsncodes', function (Blueprint $table) {
            $table->id();
+            
             $table->string('hsn_code');
             $table->string('sgst');
             $table->string('cgst');

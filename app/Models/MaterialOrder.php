@@ -12,6 +12,7 @@ class MaterialOrder extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'admin_id',
         'sr_no',
         'date',
         'work_order_desc',

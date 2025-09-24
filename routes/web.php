@@ -48,6 +48,11 @@ Route::put('/updateCustomer/{id}'             , [CustomerContoller::class, 'upda
 Route::get('/deleteCustomer/{id}'             , [CustomerContoller::class, 'destroy'])->name('deleteCustomer');
 Route::post('/updateCustomerStatus'           , [CustomerContoller::class, 'updateCustomerStatus'])->name('updateCustomerStatus');
 
+Route::get('/customers'                       , [CustomerContoller::class, 'ViewCustomer'])->name('ViewCustomer');
+Route::post('/customers/import'               , [CustomerContoller::class, 'importCustomers'])->name('importCustomers');
+Route::get('/customers/export-sample'         , [CustomerContoller::class, 'exportSample'])->name('exportCustomers');
+
+ 
 // Vender Routes                                            
 Route::get('/AddVendor'                       , [VendorContoller::class, 'AddVendor'])->name('AddVendor');
 Route::post('/storeVendor'                    , [VendorContoller::class, 'storeVendor'])->name('storeVendor');
@@ -85,11 +90,9 @@ Route::get('/editOperator/{id}'               , [OperatorController::class, 'edi
 Route::put('/updateOperator/{id}'             , [OperatorController::class, 'update'])->name('updateOperator');
 Route::post('/updateOperatorStatus'           , [OperatorController::class,  'updateOperatorStatus'])->name('updateOperatorStatus');
 Route::get('/deleteOperator/{id}'             , [OperatorController::class, 'destroy'])->name('deleteOperator');
+
 Route::get('/trashoperator'                   , [OperatorController::class, 'trash'])->name('trashOperator');
 Route::get('/restoreoperator/{id}'            , [OperatorController::class, 'restore'])->name('restoreOperator');
-// Edit & Update Routes
-Route::get('/operators/edit/{id}',              [OperatorController::class, 'edit'])->name('editOperator');
-Route::put('/operators/update/{id}'           , [OperatorController::class, 'update'])->name('updateOperator');
 
 
 // Machine Routes
@@ -100,6 +103,10 @@ Route::put('/updateMachine/{id}'              , [MachineController::class, 'upda
 Route::get('/deleteMachine/{id}'              , [MachineController::class, 'destroy'])->name('deleteMachine');
 Route::post('/updateStatus'                   , [MachineController::class, 'updateStatus'])->name('updateStatus');
 
+Route::get('/trashmachine'                    , [MachineController::class, 'trash'])->name('trashmachine');
+Route::get('/restoremachine/{id}'             , [MachineController::class, 'restore'])->name('restoremachine');
+
+
 // Setting Routes
 Route::get('/AddSetting'                      , [SettingController::class, 'AddSetting'])->name('AddSetting');
 Route::post('/storeSetting'                   , [SettingController::class, 'storeSetting'])->name('storeSetting');
@@ -107,6 +114,9 @@ Route::get('/editSetting/{id}'                , [SettingController::class, 'edit
 Route::put('/updateSetting/{id}'              , [SettingController::class, 'updateSetting'])->name('updateSetting');
 Route::get('/deleteSetting/{id}'              , [SettingController::class, 'destroy'])->name('deleteSetting');
 Route::post('/updateSettingStatus'            , [SettingController::class,  'updateSettingStatus'])->name('updateSettingStatus');
+
+Route::get('/trashSetting'                    , [SettingController::class, 'trash'])->name('trashSetting');
+Route::get('/restoreSetting/{id}'             , [SettingController::class, 'restore'])->name('restoreSetting');
 
 // HSN Routes
 Route::get('hsn/add'                          , [HsncodeController::class, 'addHsn'])->name('addHsn');
@@ -126,12 +136,12 @@ Route::get('/trashMaterialType'               , [MaterialTypeController::class, 
 Route::get('/restoreMaterialType/{id}'        , [MaterialTypeController::class, 'restoreMaterialType'])->name('restoreMaterialType');
 
  
-Route::get('/financial-year/add'             , [FinancialYearController::class, 'AddFinancialYear'])->name('AddFinancialYear');
-Route::post('/financial-year/store'          , [FinancialYearController::class, 'storeFinancialYear'])->name('StoreFinancialYear');
-Route::get('/financial-year/edit/{id}'       , [FinancialYearController::class, 'edit'])->name('EditFinancialYear');
-Route::put('/financial-year/update/{id}'     , [FinancialYearController::class, 'update'])->name('UpdateFinancialYear');
-Route::get('/financial-year/delete/{id}'     , [FinancialYearController::class, 'destroy'])->name('DeleteFinancialYear');
-Route::post('/financial-year/status'         , [FinancialYearController::class, 'updateStatus'])->name('FinancialYearStatus');
+Route::get('/financial-year/add'              , [FinancialYearController::class, 'AddFinancialYear'])->name('AddFinancialYear');
+Route::post('/financial-year/store'           , [FinancialYearController::class, 'storeFinancialYear'])->name('StoreFinancialYear');
+Route::get('/financial-year/edit/{id}'        , [FinancialYearController::class, 'edit'])->name('EditFinancialYear');
+Route::put('/financial-year/update/{id}'      , [FinancialYearController::class, 'update'])->name('UpdateFinancialYear');
+Route::get('/financial-year/delete/{id}'      , [FinancialYearController::class, 'destroy'])->name('DeleteFinancialYear');
+Route::post('/financial-year/status'          , [FinancialYearController::class, 'updateStatus'])->name('FinancialYearStatus');
 
 // Setupsheet Routes
 Route::get('/AddSetupSheet'                   , [SetupSheetController::class, 'AddSetupSheet'])->name('AddSetupSheet');
@@ -153,9 +163,6 @@ Route::get('/EditMachinerecord/{id}'          , [MachinerecordController::class,
 Route::put('/UpdateMachinerecord/{id}'        , [MachinerecordController::class, 'update'])->name('UpdateMachinerecord');
 Route::get('/DeleteMachinerecord/{id}'        , [MachinerecordController::class, 'destroy'])->name('DeleteMachinerecord');
 
-
-
-
 // MaterialReq Routes
 Route::get('/AddMaterialReq'                  , [MaterialReqController::class, 'AddMaterialReq'])->name('AddMaterialReq');
 Route::get('/ViewMaterialReq'                 , [MaterialReqController::class, 'ViewMaterialReq'])->name('ViewMaterialReq');
@@ -164,6 +171,9 @@ Route::get('/editMaterialReq/{id}'            , [MaterialReqController::class, '
 Route::get('/deleteMaterialReq/{id}'          , [MaterialReqController::class, 'destroy'])->name('deleteMaterialReq');
 Route::put('/updateMaterialReq/{id}'          , [MaterialReqController::class, 'updateMaterialReq'])->name('updateMaterialReq');
 
+Route::get('/get-material/{id}'               , [MaterialReqController::class, 'getMaterial']);
+
+
 // Materialorder Routes
 Route::get('/AddMaterialorder'                , [MaterialorderController::class, 'AddMaterialorder'])->name('AddMaterialorder');
 Route::get('/ViewMaterialorder'               , [MaterialorderController::class, 'ViewMaterialorder'])->name('ViewMaterialorder');
@@ -171,6 +181,8 @@ Route::post('/storeMaterialorder'             , [MaterialorderController::class,
 Route::get('/editMaterialorder/{id}'          , [MaterialorderController::class, 'edit'])->name('editMaterialorder');
 Route::get('/deleteMaterialorder/{id}'        , [MaterialorderController::class, 'destroy'])->name('deleteMaterialorder');
 Route::put('/updateMaterialorder/{id}'        , [MaterialorderController::class, 'update'])->name('updateMaterialorder');
+
+
 
 // Invoice Routes
 Route::get('/AddInvoice'                      , [InvoiceController::class, 'AddInvoice'])->name('AddInvoice');

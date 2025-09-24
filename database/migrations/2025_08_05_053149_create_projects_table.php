@@ -13,6 +13,7 @@
         {
             Schema::create('projects', function (Blueprint $table) {
                 $table->id();
+                
 
                 // Customer relation
                 $table->unsignedBigInteger('customer_id')->nullable();
@@ -22,6 +23,7 @@
                 $table->unsignedBigInteger('user_id')->nullable();
                 $table->integer('quantity');
                 $table->date('date')->nullable();
+                $table->boolean('status')->default(1);
                 $table->softDeletes();
                 $table->timestamps();
             });

@@ -23,10 +23,10 @@ return new class extends Migration
             $table->date('date')->nullable();
             $table->string('description')->nullable();
             $table->string('work_order_no')->nullable();
-            $table->string('dia')->nullable();
            
  
             // Dimensions
+            $table->string('dia')->nullable();
             $table->double('length', 10, 2)->nullable();
             $table->double('width', 10, 2)->nullable();
             $table->double('height', 10, 2)->nullable();
@@ -34,8 +34,12 @@ return new class extends Migration
  
             // Material & Quantity
             $table->string('material')->nullable();
+            $table->string('material_rate')->nullable();
+            $table->string('material_gravity')->nullable();
             $table->double('qty', 10, 2)->nullable();
             $table->double('weight', 10, 3)->nullable();
+
+             $table->double('material_cost', 12, 2)->nullable();
  
             // Machine Processes
             $table->double('lathe', 10, 2)->nullable();

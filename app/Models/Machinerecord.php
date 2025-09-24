@@ -11,6 +11,7 @@ class MachineRecord extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
+        'admin_id',
     'part_no','code','work_order','first_set','qty','machine',
     'operator','setting_no','material','est_time','start_time',
     'end_time','minute','hrs','time_taken','actual_hrs','invoice_no'

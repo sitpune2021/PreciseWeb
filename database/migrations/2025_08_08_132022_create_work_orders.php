@@ -14,6 +14,7 @@ return new class extends Migration
 
     Schema::create('work_orders', function (Blueprint $table) {
     $table->id();
+   
     $table->unsignedBigInteger('customer_id');
     $table->unsignedBigInteger('project_id');
     $table->string('part');
@@ -26,6 +27,7 @@ return new class extends Migration
     $table->decimal('height', 10, 2)->nullable();
     $table->string('exp_time')->nullable();
     $table->integer('quantity');
+    $table->boolean('status')->default(1);
     $table->softDeletes();
     $table->timestamps();
 });

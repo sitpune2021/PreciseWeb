@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('machine_records', function (Blueprint $table) {
             $table->id();
+             
             $table->string('part_no');             // PART NO.
             $table->string('work_order')->nullable();
              $table->string('code', 100)->nullable();  // WO

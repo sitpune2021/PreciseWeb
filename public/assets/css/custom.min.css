@@ -3,6 +3,35 @@ span.mandatory {
     font-size: 16px;
     vertical-align: sub;
 }
-.text-red{
+
+.text-red {
     color: #ff0000;
+}
+
+
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+    display: none;
+}
+
+.dropdown-list li {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.dropdown-list li.active,
+.dropdown-list li:hover {
+    background-color: #49689dff;
+    color: #fff;
 }

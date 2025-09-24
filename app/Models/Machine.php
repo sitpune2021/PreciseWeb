@@ -10,6 +10,7 @@ class Machine extends Model
 {
     use SoftDeletes;
      protected $fillable=[
+        'admin_id',
         'machine_name',
         'status'
     ];

@@ -86,10 +86,8 @@
     </div>
 </div>
 
-
-
 <!-- View Setup Sheet Modal -->
-<!-- Modal -->
+
 <div class="modal fade" id="viewSetupSheetModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
@@ -106,178 +104,188 @@
                 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
             </div>
-
             <div class="modal-body">
                 <!-- A4 Portrait Wrapper -->
-                <div class="a4-portrait">
+                <div class="a4-portrait d-flex" style="height: 100%;">
 
-                    <!-- Sheet Header -->
-                    <div class="text-center mb-3">
-                        <div id="sheet_image_container" class="mb-2"></div>
-                        <h4>Setup Sheet</h4>
+                    <!-- Left Side: Image (70%) -->
+                    <div class="image-section d-flex align-items-center justify-content-start" style="flex: 0 0 70%; margin-top:30px;">
+                        <div id="sheet_image_container"></div>
                     </div>
 
-                    <!-- Main Sheet Table -->
-                    <table class="table table-bordered table-sm text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Part Code</th>
-                                <th>Work Order No</th>
-                                <th>Date</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td id="sheet_part_code"></td>
-                                <td id="sheet_work_order_no"></td>
-                                <td id="sheet_date"></td>
-                                <td id="sheet_description"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Right Side: Tables (30%) -->
+                    <div class="tables-section" style="flex: 0 0 30%; margin-top:30px;">
 
-                    <!-- Sizes & Settings -->
-                    <table class="table table-bordered table-sm text-center align-middle mt-2">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Size X</th>
-                                <th>Size Y</th>
-                                <th>Size Z</th>
-                                <th>Setting</th>
-                                <th>E Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td id="sheet_size_x"></td>
-                                <td id="sheet_size_y"></td>
-                                <td id="sheet_size_z"></td>
-                                <td id="sheet_setting"></td>
-                                <td id="sheet_e_time"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <!-- First Table 2x2 -->
+                        <table class="table table-bordered table-sm align-middle w-100">
+                            <tbody>
+                                <tr>
+                                    <th>Part Code</th>
+                                    <td id="sheet_part_code"></td>
+                                </tr>
+                                <tr>
+                                    <th>Work Order No</th>
+                                    <td id="sheet_work_order_no"></td>
+                                </tr>
+                                <tr>
+                                    <th>Date</th>
+                                    <td id="sheet_date"></td>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <td id="sheet_description"></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- References & Clamping -->
-                    <table class="table table-bordered table-sm text-center align-middle mt-2">
-                        <thead class="table-light">
-                            <tr>
-                                <th>X Refer</th>
-                                <th>Y Refer</th>
-                                <th>Z Refer</th>
-                                <th>Clamping</th>
-                                <th>Qty</th>
+                        <!-- Second Table -->
+                        <table class="table table-bordered text-center align-middle mt-2 w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Size X</th>
+                                    <th>Size Y</th>
+                                    <th>Size Z</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="sheet_size_x"></td>
+                                    <td id="sheet_size_y"></td>
+                                    <td id="sheet_size_z"></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td id="sheet_x_refer"></td>
-                                <td id="sheet_y_refer"></td>
-                                <td id="sheet_z_refer"></td>
-                                <td id="sheet_clamping"></td>
-                                <td id="sheet_qty"></td>
+                        <table class="table table-bordered text-center align-middle mt-2 w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Setting</th>
+                                    <th>E Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="sheet_setting"></td>
+                                    <td id="sheet_e_time"></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                            </tr>
-                        </tbody>
-                    </table>
+                        <!-- Third Table -->
+                        <table class="table table-bordered text-center align-middle mt-2 w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>X Refer</th>
+                                    <th>Y Refer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="sheet_x_refer"></td>
+                                    <td id="sheet_y_refer"></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- Holes -->
-                    <h6 class="mt-3">Dowel Holes</h6>
-                    <table class="table table-bordered table-sm text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Hole #</th>
-                                <th>X</th>
-                                <th>Y</th>
-                                <th>Dia</th>
-                                <th>Depth</th>
-                            </tr>
-                        </thead>
-                        <tbody id="holes_table_body"></tbody>
-                    </table>
+                        <table class="table table-bordered text-center align-middle mt-2 w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Z Refer</th>
+                                    <th>Clamping</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="sheet_z_refer"></td>
+                                    <td id="sheet_clamping"></td>
+                                    <td id="sheet_qty"></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                </div> <!-- /.a4-portrait -->
+                        <!-- Dowel Holes -->
+                        <h6 class="mt-3">Dowel Holes</h6>
+                        <table class="table table-bordered text-center align-middle w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Hole #</th>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                    <th>Dia</th>
+                                    <th>Depth</th>
+                                </tr>
+                            </thead>
+                            <tbody id="holes_table_body"></tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+                <!-- /.a4-portrait -->
             </div>
 
         </div>
     </div>
-</div>
 
-
-<!-- CSS -->
-<style>
-    .a4-portrait {
-        width: 100%;
-        min-height: 100%;
-        padding: 0;
-        margin: 0 auto;
-        background: #fff;
-        font-size: 15px;
-    }
-
-    /* Print Settings */
-    @media print {
-        @page {
-            size: A4 portrait;
-            margin: 10mm;
-        }
-
-        body * {
-            visibility: hidden;
-        }
-
-        #viewSetupSheetModal,
-        #viewSetupSheetModal * {
-            visibility: visible;
-        }
-
-        #viewSetupSheetModal .modal-dialog {
-            position: absolute;
-            left: 0;
-            top: 0;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
-
+    <!-- CSS -->
+    <style>
         .a4-portrait {
-            width: 100%;
-            min-height: 100%;
-            margin: 0;
-            font-size: 20px;
+            height: 1123px;
+            /* A4 height */
+            width: 794px;
+            /* A4 width */
+            margin: auto;
         }
-    }
-</style>
 
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.viewSetupSheet').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                let data = JSON.parse(this.getAttribute('data-sheet'));
+        .table th,
+        .table td {
+            padding: 6px !important;
+            font-size: 14px;
+            /* Bigger text */
+        }
 
+        /* Image resize properly */
+        #sheet_image_container {
+            width: 100%;
+            height: auto;
+        }
+
+        #sheet_image_container img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            function populateSheetData(data) {
                 let holesBody = document.getElementById("holes_table_body");
                 holesBody.innerHTML = "";
                 if (data.hole_x && data.hole_x.length > 0) {
                     for (let i = 0; i < data.hole_x.length; i++) {
                         let row = `
-                        <tr>
-                            <td>${i + 1}</td>
-                            <td>${data.hole_x[i] ?? ''}</td>
-                            <td>${data.hole_y[i] ?? ''}</td>
-                            <td>${data.hole_dia[i] ?? ''}</td>
-                            <td>${data.hole_depth[i] ?? ''}</td>
-                        </tr>`;
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${data.hole_x[i] ?? ''}</td>
+                    <td>${data.hole_y[i] ?? ''}</td>
+                    <td>${data.hole_dia[i] ?? ''}</td>
+                    <td>${data.hole_depth[i] ?? ''}</td>
+                </tr>`;
                         holesBody.insertAdjacentHTML("beforeend", row);
                     }
                 }
 
                 if (data.setup_image) {
                     document.getElementById('sheet_image_container').innerHTML =
-                        `<img src="/setup_images/${data.setup_image}" 
-                          alt="Setup Image" 
-                          style="max-width:500px; height:auto;">`;
+                        `<div style="width:500px; height:500px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center;">
+            <img src="/setup_images/${data.setup_image}" 
+                 alt="Setup Image" 
+                 style="max-width:100%; max-height:100%; object-fit:contain;">
+        </div>`;
                 } else {
                     document.getElementById('sheet_image_container').innerHTML = "";
                 }
@@ -298,111 +306,60 @@
                 document.getElementById('sheet_z_refer').textContent = data.z_refer ?? '';
                 document.getElementById('sheet_clamping').textContent = data.clamping ?? '';
                 document.getElementById('sheet_qty').textContent = data.qty ?? '';
-                
-            });
-        });
-    });
-</script> -->
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        function populateSheetData(data) {
-            let holesBody = document.getElementById("holes_table_body");
-            holesBody.innerHTML = "";
-            if (data.hole_x && data.hole_x.length > 0) {
-                for (let i = 0; i < data.hole_x.length; i++) {
-                    let row = `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td>${data.hole_x[i] ?? ''}</td>
-                    <td>${data.hole_y[i] ?? ''}</td>
-                    <td>${data.hole_dia[i] ?? ''}</td>
-                    <td>${data.hole_depth[i] ?? ''}</td>
-                </tr>`;
-                    holesBody.insertAdjacentHTML("beforeend", row);
-                }
             }
 
-            if (data.setup_image) {
-                document.getElementById('sheet_image_container').innerHTML =
-                    `<img src="/setup_images/${data.setup_image}" 
-                  alt="Setup Image" 
-                  style="max-width:500px; height:auto;">`;
-            } else {
-                document.getElementById('sheet_image_container').innerHTML = "";
-            }
+            // Print Button Click
+            document.querySelectorAll('.printSetupSheet').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    let data = JSON.parse(this.getAttribute('data-sheet'));
 
-            document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
-            document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
-            document.getElementById('sheet_date').textContent = data.date ?? '';
-            document.getElementById('sheet_description').textContent = data.description ?? '';
+                    populateSheetData(data);
 
-            document.getElementById('sheet_size_x').textContent = data.size_in_x ?? '';
-            document.getElementById('sheet_size_y').textContent = data.size_in_y ?? '';
-            document.getElementById('sheet_size_z').textContent = data.size_in_z ?? '';
-            document.getElementById('sheet_setting').textContent = data.setting ?? '';
-            document.getElementById('sheet_e_time').textContent = data.e_time ?? '';
+                    // Create a hidden printable area
+                    let printContents = document.querySelector('.a4-portrait').outerHTML;
+                    let originalContents = document.body.innerHTML;
 
-            document.getElementById('sheet_x_refer').textContent = data.x_refer ?? '';
-            document.getElementById('sheet_y_refer').textContent = data.y_refer ?? '';
-            document.getElementById('sheet_z_refer').textContent = data.z_refer ?? '';
-            document.getElementById('sheet_clamping').textContent = data.clamping ?? '';
-            document.getElementById('sheet_qty').textContent = data.qty ?? '';
-        }
-
-        // Print Button Click
-        document.querySelectorAll('.printSetupSheet').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                let data = JSON.parse(this.getAttribute('data-sheet'));
-
-                populateSheetData(data);
-
-                // Create a hidden printable area
-                let printContents = document.querySelector('.a4-portrait').outerHTML;
-                let originalContents = document.body.innerHTML;
-
-                document.body.innerHTML = printContents;
-                window.print();
-                document.body.innerHTML = originalContents;
-                location.reload(); // reload to restore JS functionality
+                    document.body.innerHTML = printContents;
+                    window.print();
+                    document.body.innerHTML = originalContents;
+                    location.reload(); // reload to restore JS functionality
+                });
             });
         });
-    });
-</script>
+    </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("downloadSheetBtn").addEventListener("click", function() {
-            const {
-                jsPDF
-            } = window.jspdf;
-            var element = document.querySelector("#viewSetupSheetModal .modal-body");
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("downloadSheetBtn").addEventListener("click", function() {
+                const {
+                    jsPDF
+                } = window.jspdf;
+                var element = document.querySelector("#viewSetupSheetModal .modal-body");
 
-            // Temporarily remove scroll to capture full content
-            const originalOverflow = element.style.overflow;
-            element.style.overflow = 'visible';
+                // Temporarily remove scroll to capture full content
+                const originalOverflow = element.style.overflow;
+                element.style.overflow = 'visible';
 
-            html2canvas(element, {
-                scale: 2,
-                useCORS: true
-            }).then((canvas) => {
-                const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF("p", "mm", "a4");
+                html2canvas(element, {
+                    scale: 2,
+                    useCORS: true
+                }).then((canvas) => {
+                    const imgData = canvas.toDataURL("image/png");
+                    const pdf = new jsPDF("p", "mm", "a4");
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-                pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-                pdf.save("SetupSheet.pdf");
+                    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+                    pdf.save("SetupSheet.pdf");
 
-                element.style.overflow = originalOverflow;
+                    element.style.overflow = originalOverflow;
+                });
             });
         });
-    });
-</script>
+    </script>
 
-@endsection
+    @endsection

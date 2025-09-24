@@ -53,6 +53,9 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Machine List</h5>
+                     <a href="{{ route('trashmachine') }}" class="btn btn-warning btn-sm">
+                        View Trash
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

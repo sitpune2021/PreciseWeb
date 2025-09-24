@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MaterialOrder;
-
+use App\Models\Customer;
 class MaterialorderController extends Controller
 {
   
     public function AddMaterialorder()
     {
-        return view('Materialorder.add');
+         $codes = Customer::where('status', 1)  
+            ->select('id', 'code', 'name')
+            ->orderBy('id', 'desc')
+            ->get();
+        $customers = Customer::where('status', 1)->orderBy('name')->get();
+        return view('Materialorder.add',compact('codes','customers'));
     }
 
   
@@ -95,4 +100,6 @@ class MaterialorderController extends Controller
         return redirect()->route('ViewMaterialorder')
                          ->with('success', 'Material Order deleted successfully.');
     }
+
+    
 }

@@ -24,7 +24,7 @@
                                     <!-- Customer Dropdown -->
                                     <div class="col-md-4">
                                         <label for="customer_id" class="form-label">Customer Name <span class="text-red">*</span></label>
-                                        <select class="form-select" id="customer_id" name="customer_id">
+                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
                                             <option value="">Select Customer</option>
                                             @foreach($customers as $c)
                                             <option value="{{ $c->id }}" data-code="{{ $c->code }}"
@@ -97,25 +97,7 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const customerSelect = document.getElementById('customer_id');
-        const codeInput = document.getElementById('code');
 
 
-        // Auto-fill Customer Code
-        customerSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const code = selectedOption.getAttribute('data-code') || '';
-            codeInput.value = code;
-        });
-
-        // Trigger on page load if customer already selected (edit mode)
-        if (customerSelect.value) {
-            customerSelect.dispatchEvent(new Event('change'));
-        }
-
-    });
-</script>
 
 @endsection

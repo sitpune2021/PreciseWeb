@@ -9,6 +9,7 @@ class Vendor extends Model
 {
     use SoftDeletes;
      protected $fillable = [
+        'admin_id',
         'vendor_name',
         'vendor_code',
         'contact_person',

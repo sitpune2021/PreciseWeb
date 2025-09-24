@@ -9,7 +9,7 @@ class WorkOrder extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-    
+        'admin_id',
         'customer_id',
         'part',
         //  'part_code',

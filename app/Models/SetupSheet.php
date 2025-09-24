@@ -10,6 +10,7 @@ class SetupSheet extends Model
     use SoftDeletes;
  
     protected $fillable = [
+        'admin_id',
         'customer_id',
         'part_code',
         'work_order_no',

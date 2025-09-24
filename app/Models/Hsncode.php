@@ -11,6 +11,7 @@ class Hsncode extends Model
 
     protected $fillable = [
         'hsn_code',
+        'admin_id',
         'sgst',
         'cgst',
         'igst',

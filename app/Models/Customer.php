@@ -14,6 +14,7 @@ class Customer extends Model
     // Define which fields are mass assignable
     protected $fillable = [
         'login_id',
+        'admin_id',
         'name',
         'code',
         'per_hour_rate',

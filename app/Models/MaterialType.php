@@ -13,6 +13,7 @@ class MaterialType extends Model
     use HasFactory;
  
    protected $fillable = [
+    
     'material_type',
     'material_rate',
     'material_gravity',

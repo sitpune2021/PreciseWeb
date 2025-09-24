@@ -10,6 +10,7 @@ class Setting extends Model
     use SoftDeletes;
 
     protected $fillable=[
+        'admin_id',
         'setting_name',
         'status',
     ];

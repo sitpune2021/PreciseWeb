@@ -13,6 +13,7 @@ return new class extends Migration
 {
     Schema::create('operators', function (Blueprint $table) {
         $table->id();
+        $table->integer('admin_id');
         $table->string('operator_name');
         $table->string('phone_no', 15);
         $table->boolean('status')->default(1)->index();
