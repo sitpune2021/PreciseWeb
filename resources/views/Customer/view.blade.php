@@ -12,17 +12,6 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Customers</h5>
 
-                            <!-- <form action="{{ route('ViewCustomer') }}" method="GET" class="d-flex align-items-center gap-2">
-                                <select name="financial_year" class="form-control">
-                                    <option value="">Select Year</option>
-                                    <option value="2025-26" {{ request('financial_year') == '2025-26' ? 'selected' : '' }}>2025-26</option>
-                                    <option value="2026-27" {{ request('financial_year') == '2026-27' ? 'selected' : '' }}>2026-27</option>
-                                    <option value="2027-28" {{ request('financial_year') == '2027-28' ? 'selected' : '' }}>2027-28</option>
-                                </select>
-                                <button type="submit" class="btn btn-success">Filter</button>
-                                <a href="{{ route('ViewCustomer') }}" class="btn btn-secondary">Reset</a>
-                            </form> -->
-
                             <form action="{{ route('ViewCustomer') }}" method="GET" class="d-flex align-items-center gap-2">
                                 <!-- Financial Year Dropdown -->
                                 <select name="financial_year" class="form-control form-select">
@@ -40,10 +29,6 @@
                                 <button type="submit" class="btn btn-success">Filter</button>
                                 <a href="{{ route('ViewCustomer') }}" class="btn btn-primary">Reset</a>
                             </form>
-
-
-
-
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
                                 <i class="ri-upload-2-line align-middle"></i> Customer Import
                             </button>

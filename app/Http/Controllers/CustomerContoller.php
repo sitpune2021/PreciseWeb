@@ -178,7 +178,7 @@ class CustomerContoller extends Controller
         if ($ext == 'csv') {
             $rows = array_map('str_getcsv', file($file->getRealPath()));
         } else {
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+            $spreadsheet = IOFactory::load($file->getRealPath());
             $rows = $spreadsheet->getActiveSheet()->toArray();
         }
 

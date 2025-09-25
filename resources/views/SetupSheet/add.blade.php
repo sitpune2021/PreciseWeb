@@ -162,7 +162,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row">
+                                      
                                             <!-- X Refer -->
                                             <div class="col-md-2" style="position: relative;">
                                                 <div class="mb-3">
@@ -297,13 +297,13 @@
                                             <div id="dowel-holes-wrapper">
                                                 @for($i = 0; $i < $count; $i++)
                                                     <div class="row dowel-group mb-2">
-                                                    <div class="col-md-2">
+                                                    <!-- <div class="col-md-2">
                                                         <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
                                                             value="{{ old('holes.' . $i, $holesData[$i] ?? '') }}">
                                                         @error('holes.' . $i)
                                                         <span class="text-red small">{{ $message }}</span>
                                                         @enderror
-                                                    </div>
+                                                    </div> -->
                                                     <div class="col-md-2">
                                                         <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
                                                             value="{{ old('hole_x.' . $i, $holeXData[$i] ?? '') }}">
@@ -368,95 +368,6 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- <script>
-    let editCustomer = $("#customer_id").data("selected");
-    let editPart = $("#part_code").data("selected");
-
-    if (editCustomer) {
-        $("#customer_id").val(editCustomer).trigger("change");
-
-        setTimeout(function() {
-            if (editPart) {
-                $("#part_code").val(editPart).trigger("change");
-            }
-        }, 600); 
-    }
-    $(document).ready(function() {
-
-        
-        $("#customer_id").on("change", function() {
-            let customer_id = $(this).val();
-
-            if (customer_id) {
-                $.ajax({
-                    url: "/get-customer-parts/" + customer_id,
-                    type: "GET",
-                    success: function(response) {
-                        let $partCode = $("#part_code");
-
-                        // clear old options
-                        $partCode.empty();
-                        $partCode.append('<option value="">Select Part Code</option>');
-
-                        // loop response and append options
-                        response.forEach(function(item) {
-                            $partCode.append(
-                                `<option value="${item.part_code}"
-                                         data-description="${item.part_description}"
-                                         data-workorder="${item.work_order_no}"
-                                         data-size_x="${item.size_in_x}"
-                                         data-size_y="${item.size_in_y}"
-                                         data-size_z="${item.size_in_z}"
-                                         data-qty="${item.qty}"
-                                         data-etime="${item.e_time}">
-                                     ${item.part_code}
-                                 </option>`
-                            );
-                        });
-                     
-                        $("#work_order_no").val(customer_id);
-
-                       
-                        let oldPart = $("#part_code").data("selected"); 
-                        if (oldPart) {
-                            $partCode.val(oldPart).trigger("change");
-                        }  
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                        alert("Something went wrong while fetching parts");
-                    },
-                });
-            } else {
-                $("#part_code").empty().append('<option value="">-- Select Part Code --</option>');
-                $("#work_order_no").val("");
-            }
-        });
-
-        // Part Code select change → auto fill
-        $(document).on("change", "#part_code", function() {
-            let selected = $(this).find(":selected");
-            if (selected.val()) {
-                $("#part_description").val(selected.data("description"));
-                $("#work_order_no").val(selected.data("workorder"));
-                $("#size_in_x").val(selected.data("size_x"));
-                $("#size_in_y").val(selected.data("size_y"));
-                $("#size_in_z").val(selected.data("size_z"));
-                $("#qty").val(selected.data("qty"));
-                $("#e_time").val(selected.data("etime"));
-            } else {
-                $("#part_description, #work_order_no, #size_in_x, #size_in_y, #size_in_z, #qty, #e_time").val("");
-            }
-        });
-
-        let editCustomer = $("#customer_id").data("selected");
-        if (editCustomer) {
-            $("#customer_id").val(editCustomer).trigger("change");
-        }
-    });
-</script> -->
-
-
 
 <script>
     $(document).ready(function() {
@@ -499,7 +410,7 @@
                     },
                 });
             } else {
-                $("#part_code").empty().append('<option value="">-- Select Part Code --</option>');
+                $("#part_code").empty().append('<option value="">Select Part Code</option>');
             }
         });
 
@@ -530,7 +441,7 @@
         $(document).on("click", ".add-row", function() {
             let newRow = `
         <div class="row dowel-group mb-2">
-            <div class="col-md-2"><input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"></div>
+
             <div class="col-md-2"><input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"></div>
             <div class="col-md-2"><input type="text" class="form-control" name="hole_y[]" placeholder="Hole Y"></div>
             <div class="col-md-2"><input type="text" class="form-control" name="hole_dia[]" placeholder="Hole Dia"></div>
@@ -549,43 +460,47 @@
 </script>
 <script>
     function setupCustomDropdown(inputId, listId) {
-        const input = document.getElementById(inputId);
-        const list = document.getElementById(listId);
-        const items = list.querySelectorAll('li');
+    const input = document.getElementById(inputId);
+    const list = document.getElementById(listId);
+    const items = list.querySelectorAll('li');
 
-        // Show on focus
-        input.addEventListener('focus', () => {
-            list.style.display = 'block';
-
-            // highlight already selected
-            items.forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.value === input.value) {
-                    item.classList.add('active');
-                }
-            });
-        });
-
-        // Hide on blur
-        input.addEventListener('blur', () => {
-            setTimeout(() => list.style.display = 'none', 100);
-        });
-
-        // Select option
+    function showList() {
+        list.style.display = 'block';
+        // highlight already selected
         items.forEach(item => {
-            item.addEventListener('click', () => {
-                input.value = item.dataset.value;
-                items.forEach(i => i.classList.remove('active'));
+            item.classList.remove('active');
+            if (item.dataset.value === input.value) {
                 item.classList.add('active');
-                list.style.display = 'none';
-            });
+            }
         });
     }
 
-    // Initialize all dropdowns
-    setupCustomDropdown('x_refer', 'xOptions');
-    setupCustomDropdown('y_refer', 'yOptions');
-    setupCustomDropdown('z_refer', 'zOptions');
+    // Show on focus OR click
+    input.addEventListener('focus', showList);
+    input.addEventListener('click', showList);
+
+    // Hide on blur
+    input.addEventListener('blur', () => {
+        setTimeout(() => list.style.display = 'none', 150);
+    });
+
+    // Select option
+    items.forEach(item => {
+        item.addEventListener('mousedown', (e) => {
+            e.preventDefault(); // blur block
+            input.value = item.dataset.value;
+            items.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            list.style.display = 'none';
+        });
+    });
+}
+
+// Initialize all dropdowns
+setupCustomDropdown('x_refer', 'xOptions');
+setupCustomDropdown('y_refer', 'yOptions');
+setupCustomDropdown('z_refer', 'zOptions');
+
 </script>
 
 @endsection

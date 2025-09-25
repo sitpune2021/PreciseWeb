@@ -25,13 +25,20 @@ span.mandatory {
     display: none;
 }
 
+ 
 .dropdown-list li {
     padding: 5px 10px;
     cursor: pointer;
 }
 
-.dropdown-list li.active,
-.dropdown-list li:hover {
-    background-color: #49689dff;
+/* Selected option (active) */
+.dropdown-list li.active {
+    background-color: rgb(5, 72, 174);
     color: #fff;
+}
+
+/* Hover फक्त वेगळा रंग (उदा. हलका ग्रे) */
+.dropdown-list li:hover:not(.active) {
+    background-color: #ddd;
+    color: #000;
 }

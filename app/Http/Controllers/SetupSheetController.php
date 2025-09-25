@@ -52,7 +52,7 @@ class SetupSheetController extends Controller
             'qty' => ['required', 'integer', 'min:1'],
 
             // Hole Details (arrays)
-            'holes'        => 'required|array',
+            'holes'        => 'nullable|array',
             'holes.*'      => 'required|numeric|min:0',
             'hole_x'       => 'required|array',
             'hole_x.*'     => 'required|numeric|min:0',
@@ -138,7 +138,7 @@ class SetupSheetController extends Controller
            
             'qty'         => ['required', 'integer', 'min:1'],
 
-            'holes'        => 'required|array',
+            'holes'        => 'nullable|array',
             'holes.*'      => 'required|numeric|min:0',
             'hole_x'       => 'required|array',
             'hole_x.*'     => 'required|numeric|min:0',

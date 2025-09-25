@@ -59,7 +59,7 @@
 
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="previous_part" class="form-label">Previous Part</label>
+                                                <label for="previous_part" class="form-label">Previous Part List</label>
                                                 <select class="form-control form-select" id="previous_part" name="previous_part">
                                                     <option value="">No Previous Part</option>
                                                 </select>
@@ -354,7 +354,7 @@
                                             </td>
                                             `;
                                                 tableBody.appendChild(newRow);
-                                            clearDimensions();
+                                                clearDimensions();
                                                 newRow.querySelector(".deleteRow").addEventListener("click", function() {
                                                     newRow.remove();
                                                     updateSrNo();
@@ -416,52 +416,52 @@
                                         </script>
 
                                         <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let diameter = document.getElementById("dimeter");
-        let height = document.getElementById("height");
-        let length = document.getElementById("length");
-        let width = document.getElementById("width");
+                                            document.addEventListener("DOMContentLoaded", function() {
+                                                let diameter = document.getElementById("dimeter");
+                                                let height = document.getElementById("height");
+                                                let length = document.getElementById("length");
+                                                let width = document.getElementById("width");
 
-        function toggleFields() {
-            if (diameter.value) {
-                length.disabled = true;
-                width.disabled = true;
-                length.value = "";
-                width.value = "";
+                                                function toggleFields() {
+                                                    if (diameter.value) {
+                                                        length.disabled = true;
+                                                        width.disabled = true;
+                                                        length.value = "";
+                                                        width.value = "";
 
-                diameter.disabled = false;
-                height.disabled = false;
-            } else if (length.value || width.value) {
-                diameter.disabled = true;
-                diameter.value = "";
+                                                        diameter.disabled = false;
+                                                        height.disabled = false;
+                                                    } else if (length.value || width.value) {
+                                                        diameter.disabled = true;
+                                                        diameter.value = "";
 
-                length.disabled = false;
-                width.disabled = false;
-                height.disabled = false;
-            } else {
-                diameter.disabled = false;
-                length.disabled = false;
-                width.disabled = false;
-                height.disabled = false;
-            }
-        }
+                                                        length.disabled = false;
+                                                        width.disabled = false;
+                                                        height.disabled = false;
+                                                    } else {
+                                                        diameter.disabled = false;
+                                                        length.disabled = false;
+                                                        width.disabled = false;
+                                                        height.disabled = false;
+                                                    }
+                                                }
 
-        // 👉 हे function row add झाल्यावर कॉल कर
-        window.clearDimensions = function() {
-            diameter.value = "";
-            length.value = "";
-            width.value = "";
-            height.value = "";
-            toggleFields();
-        }
+                                                // 👉 हे function row add झाल्यावर कॉल कर
+                                                window.clearDimensions = function() {
+                                                    diameter.value = "";
+                                                    length.value = "";
+                                                    width.value = "";
+                                                    height.value = "";
+                                                    toggleFields();
+                                                }
 
-        diameter.addEventListener("input", toggleFields);
-        length.addEventListener("input", toggleFields);
-        width.addEventListener("input", toggleFields);
+                                                diameter.addEventListener("input", toggleFields);
+                                                length.addEventListener("input", toggleFields);
+                                                width.addEventListener("input", toggleFields);
 
-        toggleFields(); // initial check
-    });
-</script>
+                                                toggleFields(); // initial check
+                                            });
+                                        </script>
 
 
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -576,32 +576,6 @@
                                                 @endif
                                             });
                                         </script>
-
-                                        <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-                                        <!-- <script>
-                                $(document).ready(function() {
-                                    $('#project_id').on('change', function() {
-                                        let projectId = $(this).val();
-                                        if (projectId) {
-                                            $.ajax({
-                                                url: '/get-parts/' + projectId,
-                                                type: 'GET',
-                                                dataType: 'json',
-                                                success: function(data) {
-                                                    $('#previous_part').empty(); 
-                                                    if (data.length > 0) {
-                                                        $.each(data, function(index, part) {
-                                                            $('#previous_part').append('<option>' + part + '</option>');
-                                                        });
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            $('#previous_part').empty().append('<option>No Previous Part</option>');
-                                        }
-                                    });
-                                });
-                                </script> -->
 
 
                                         @endsection

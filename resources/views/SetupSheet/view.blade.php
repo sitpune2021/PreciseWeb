@@ -209,7 +209,7 @@
                         <table class="table table-bordered text-center align-middle w-100">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Hole #</th>
+                                    <th>Hole</th>
                                     <th>X</th>
                                     <th>Y</th>
                                     <th>Dia</th>
@@ -281,7 +281,7 @@
 
                 if (data.setup_image) {
                     document.getElementById('sheet_image_container').innerHTML =
-                        `<div style="width:500px; height:500px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center;">
+                        `<div style="width:470px; height:470px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center;">
             <img src="/setup_images/${data.setup_image}" 
                  alt="Setup Image" 
                  style="max-width:100%; max-height:100%; object-fit:contain;">
