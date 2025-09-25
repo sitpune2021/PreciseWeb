@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Machinerecord;
+use App\Models\MachineRecord;
 use App\Models\WorkOrder;
 use App\Models\Machine;
 use App\Models\Operator;
@@ -61,14 +61,14 @@ class MachinerecordController extends Controller
             'invoice_no'  => 'nullable|string|max:100',
         ]);
 
-        Machinerecord::create($validated);
+        MachineRecord::create($validated);
 
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Added Successfully');
     }
 
     public function ViewMachinerecord()
     {
-        $record = Machinerecord::latest()->get();
+        $record = MachineRecord::latest()->get();
 
         $workorders = WorkOrder::with('customer')->latest()->get();
 
@@ -82,7 +82,7 @@ class MachinerecordController extends Controller
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-        $record = Machinerecord::findOrFail($id);
+        $record = MachineRecord::findOrFail($id);
         $materialtype   = MaterialType::all();
         $workorders = WorkOrder::with('customer')
             ->whereHas('customer', function ($q) use ($record) {
@@ -103,7 +103,7 @@ class MachinerecordController extends Controller
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $record = Machinerecord::findOrFail($id);
+        $record = MachineRecord::findOrFail($id);
 
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
@@ -133,7 +133,7 @@ class MachinerecordController extends Controller
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $record = Machinerecord::findOrFail($id);
+        $record = MachineRecord::findOrFail($id);
         $record->delete();
         return redirect()->route('ViewMachinerecord')->with('success', 'Branch deleted successfully.');
     }
