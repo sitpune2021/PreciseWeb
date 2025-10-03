@@ -39,6 +39,12 @@ class OperatorController extends Controller
                 'required',
                 'numeric',
                 'digits:10',
+                Rule::unique('operators', 'phone_no')
+                    ->where(function ($query) {
+                        $query->where('admin_id', Auth::id())
+                            ->whereNull('deleted_at')
+                            ->where('is_active', 1);
+                    }),
             ],
         ]);
 
@@ -93,6 +99,12 @@ class OperatorController extends Controller
                 'required',
                 'numeric',
                 'digits:10',
+                Rule::unique('operators', 'phone_no')
+                    ->where(function ($query) {
+                        $query->where('admin_id', Auth::id())
+                            ->whereNull('deleted_at')
+                            ->where('is_active', 1);
+                    }),
             ],
         ]);
 

@@ -15,9 +15,10 @@ class MachineController extends Controller
     public function AddMachine()
     {
         $machines = Machine::where('is_active', 1)
-            ->where('admin_id', Auth::id())           //admin_id
-            ->latest()
+            ->where('admin_id', Auth::id())
+            ->latest()  // <- latest uses created_at DESC
             ->get();
+
         return view('Machine.add', compact('machines'));
     }
 
@@ -75,6 +76,10 @@ class MachineController extends Controller
             ->firstOrFail();
 
         $machine->machine_name = $request->machine_name;
+        $machine->is_active = 1;
+        $machine->restore();
+        $machine->created_at = now(); // Make it appear on top
+        $machine->save();
         $machine->save();
 
         return redirect()->route('AddMachine')->with('success', 'Machine updated successfully.');
@@ -126,27 +131,24 @@ class MachineController extends Controller
         $id = base64_decode($encryptedId);
         $machine = Machine::withTrashed()
             ->where('id', $id)
-            ->where('admin_id', Auth::id())         //admin_id
+            ->where('admin_id', Auth::id())
             ->firstOrFail();
 
         $exists = Machine::where('machine_name', $machine->machine_name)
-            ->where('admin_id', Auth::id())             //admin_id
+            ->where('admin_id', Auth::id())
             ->whereNull('deleted_at')
             ->where('is_active', 1)
             ->exists();
 
-        if ($exists) {
-            $machine->is_active = 0;
-            $machine->restore();
-            $machine->save();
+        $machine->is_active = 1;  // ✅ active करा
+        $machine->restore();
+        $machine->save();
 
+        if ($exists) {
+            // Duplicate exists, redirect to edit page with warning
             return redirect()->route('editMachine', base64_encode($machine->id))
                 ->with('success', "Machine '{$machine->machine_name}' already exists. Redirected to Edit Page.");
         }
-
-        $machine->is_active = 1;
-        $machine->restore();
-        $machine->save();
 
         return redirect()->route('AddMachine')
             ->with('success', "Machine '{$machine->machine_name}' restored successfully.");

@@ -40,7 +40,7 @@
                                     <label for="material_gravity" class="form-label">
                                         Material Gravity <span class="mandatory">*</span>
                                     </label>
-                                    <input type="number"step="0.01" min="0"
+                                    <input type="number" step="0.01" min="0"
                                         class="form-control form-control-sm px-3 py-2"
                                         id="material_gravity"
                                         name="material_gravity"
@@ -86,7 +86,7 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Material Type List</h5>
-                    <!-- <a href="{{ route('trashMaterialType') }}" class="btn btn-warning btn-sm">View Trash</a> -->
+                    <a href="{{ route('trashMaterialType') }}" class="btn btn-warning btn-sm">View Trash</a>
                 </div>
 
                 <div class="card-body">
@@ -98,6 +98,7 @@
                                     <th class="text-center">Material Type</th>
                                     <th class="text-center">Material Gravity</th>
                                     <th class="text-center">Material Rate</th>
+                                    <th style="width: 15%;">Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -108,6 +109,25 @@
                                     <td class="text-center">{{ $m->material_type }}</td>
                                     <td class="text-center">{{ $m->material_gravity }}</td>
                                     <td class="text-center">₹ {{ number_format($m->material_rate, 2) }}</td>
+                                    <td>
+                                        <form action="{{ route('updateMaterialStatus') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $m->id }}">
+                                            <input type="hidden" name="status" value="0"> {{-- default value --}}
+                                            <div class="form-check form-switch d-flex justify-content-center">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    role="switch"
+                                                    id="statusSwitch{{ $m->id }}"
+                                                    name="status"
+                                                    value="1"
+                                                    onchange="this.form.submit()"
+                                                    {{ $m->status == 1 ? 'checked' : '' }}>
+                                            </div>
+                                        </form>
+
+                                    </td>
                                     <td>
                                         <a href="{{ route('editMaterialType', base64_encode($m->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>

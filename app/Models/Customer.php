@@ -29,4 +29,9 @@ class Customer extends Model
 {
     return $this->hasMany(Project::class,'customer_id');
 }
+
+public function materialOrders()
+{
+    return $this->hasMany(MaterialOrder::class);
+}
 }

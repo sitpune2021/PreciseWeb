@@ -11,32 +11,34 @@ use App\Models\Setting;
 use App\Models\SetupSheet;
 use App\Models\Customer;
 use App\Models\MaterialType;
+use Illuminate\Support\Facades\Auth;
 
 class MachinerecordController extends Controller
 {
-
     public function AddMachinerecord()
     {
-
         $codes = Customer::where('status', 1)
+            ->where('admin_id', Auth::id()) // Only current admin
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-        $materialtype   = MaterialType::all();
+
+        $materialtype = MaterialType::where('admin_id', Auth::id())->get(); // Only current admin
         $workorders = WorkOrder::with('customer')
+            ->where('admin_id', Auth::id()) // Only current admin
             ->whereHas('customer', function ($q) {
-                $q->where('status', 1);  // Active customers फक्त
+                $q->where('status', 1)
+                    ->where('admin_id', Auth::id());
             })
             ->latest()
             ->get();
 
-        $machines   = Machine::all();
-        $operators  = Operator::all();
-        $settings   = Setting::all();
+        $machines  = Machine::where('admin_id', Auth::id())->get(); // Only current admin
+        $operators = Operator::where('admin_id', Auth::id())->get(); // Only current admin
+        $settings  = Setting::where('admin_id', Auth::id())->get(); // Only current admin
 
         return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings', 'codes', 'materialtype'));
     }
-
 
     public function StoreMachinerecord(Request $request)
     {
@@ -45,7 +47,6 @@ class MachinerecordController extends Controller
             'code'        => 'required|string|max:100',
             'work_order'  => 'required|string|max:100',
             'first_set'   => 'nullable|string|max:100',
-
             'qty'         => 'required|integer|min:1',
             'machine'     => 'required|string|max:100',
             'operator'    => 'required|string|max:100',
@@ -61,6 +62,7 @@ class MachinerecordController extends Controller
             'invoice_no'  => 'nullable|string|max:100',
         ]);
 
+        $validated['admin_id'] = Auth::id(); // Assign admin_id
         MachineRecord::create($validated);
 
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Added Successfully');
@@ -68,9 +70,8 @@ class MachinerecordController extends Controller
 
     public function ViewMachinerecord()
     {
-        $record = MachineRecord::latest()->get();
-
-        $workorders = WorkOrder::with('customer')->latest()->get();
+        $record = MachineRecord::where('admin_id', Auth::id())->latest()->get(); // Only current admin
+        $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 
         return view('Machinerecord.view', compact('record', 'workorders'));
     }
@@ -78,32 +79,38 @@ class MachinerecordController extends Controller
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
+
+        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id); // Only current admin
         $codes = Customer::where('status', 1)
+            ->where('admin_id', Auth::id())
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-        $record = MachineRecord::findOrFail($id);
-        $materialtype   = MaterialType::all();
+
+        $materialtype = MaterialType::where('admin_id', Auth::id())->get(); // Only current admin
+
         $workorders = WorkOrder::with('customer')
+            ->where('admin_id', Auth::id())
             ->whereHas('customer', function ($q) use ($record) {
                 $q->where('status', 1)
-                    ->orWhere('id', $record->customer_id); // sadhya record chi customer included
+                    ->where('admin_id', Auth::id())
+                    ->orWhere('id', $record->customer_id); // include current record's customer
             })
             ->latest()
             ->get();
 
-        $machines   = Machine::all();
-        $operators  = Operator::all();
-        $settings   = Setting::all();
+        $machines  = Machine::where('admin_id', Auth::id())->get();
+        $operators = Operator::where('admin_id', Auth::id())->get();
+        $settings  = Setting::where('admin_id', Auth::id())->get();
 
         return view('Machinerecord.add', compact('record', 'workorders', 'machines', 'operators', 'settings', 'materialtype', 'codes'));
     }
 
-
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $record = MachineRecord::findOrFail($id);
+
+        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id); // Only current admin
 
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
@@ -125,6 +132,7 @@ class MachinerecordController extends Controller
             'invoice_no'  => 'nullable|string|max:100',
         ]);
 
+        $validated['admin_id'] = Auth::id(); // Ensure admin_id stays current admin
         $record->update($validated);
 
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Updated Successfully');
@@ -133,23 +141,65 @@ class MachinerecordController extends Controller
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $record = MachineRecord::findOrFail($id);
+        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id); // Only current admin
         $record->delete();
-        return redirect()->route('ViewMachinerecord')->with('success', 'Branch deleted successfully.');
+
+        return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record deleted successfully.');
     }
 
     public function fetchData($part_code)
     {
-        $data = SetupSheet::where('part_code', $part_code)->first();
+        $data = SetupSheet::where('part_code', $part_code)
+            ->where('admin_id', Auth::id()) // Only current admin
+            ->first();
 
         if ($data) {
             return response()->json([
                 'work_order_no' => $data->customer_id,
-                'description' => $data->description,
-                'qty' => $data->qty,
-                'exp_time' => $data->exp_time,
+                'description'   => $data->description,
+                'qty'           => $data->qty,
+                'exp_time'      => $data->exp_time,
             ]);
         }
+
         return response()->json([]);
+    }
+
+
+    public function trash()
+    {
+        $trashedMachines = MachineRecord::onlyTrashed()
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $machines = MachineRecord::all();
+
+        return view('Machinerecord.trash', compact('trashedMachines', 'machines'));
+    }
+
+
+    public function restore($encryptedId)
+    {
+        $id = base64_decode($encryptedId);
+        $machine = MachineRecord::withTrashed()->findOrFail($id);
+
+        // Duplicate check using part_no + work_order
+        $exists = MachineRecord::where('part_no', $machine->part_no)
+            ->where('work_order', $machine->work_order)
+            ->whereNull('deleted_at')
+            ->exists();
+
+        // Restore the record in any case
+        $machine->restore();
+
+        if ($exists) {
+            // Duplicate exists → redirect to edit page with updated message
+            return redirect()->route('EditMachinerecord', base64_encode($machine->id))
+                ->with('success', "Machine record with Part No '{$machine->part_no}' and Work Order '{$machine->work_order}' already exists. You will be redirected to the Edit Page.");
+        }
+
+        // No duplicate → redirect to main view
+        return redirect()->route('ViewMachinerecord')
+            ->with('success', "Machine record with Part No '{$machine->part_no}' restored successfully.");
     }
 }

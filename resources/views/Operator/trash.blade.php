@@ -30,6 +30,7 @@
                                 <tr>
                                     <th>Sr.No</th>
                                     <th class="text-center">Operator Name</th>
+                                    <th class="text-center">Mobile No</th>
                                     <th class="text-center">Deleted At</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -39,6 +40,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="text-center">{{ $o->operator_name }}</td>
+                                    <td class="text-center">{{ $o->phone_no }}</td>
                                     <td class="text-center">
                                         @if($o->deleted_at)
                                         {{ $o->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}

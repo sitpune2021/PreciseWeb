@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-
 class CustomerContoller extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show Add Customer Form
      */
     public function AddCustomer()
     {
@@ -20,58 +20,69 @@ class CustomerContoller extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created Customer
      */
     public function storeCustomer(Request $request)
     {
         $request->merge([
             'gst_no' => strtoupper($request->input('gst_no')),
         ]);
+
         $request->validate([
-            'name' => 'required|string|max:255|unique:customers,name',
-
-            'contact_person' => 'nullable|string|max:255|regex:/^[A-Za-z.\s]+$/',
-            'phone_no' => 'nullable|digits:10|regex:/^[0-9]{10}$/|unique:customers,phone_no',
-            'email_id' => 'nullable|email|max:40',
-            'gst_no' => 'nullable|regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/|unique:customers,gst_no',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('customers')->where(fn($query) => $query->where('admin_id', Auth::id())),
+            ],
+            'contact_person' => [
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-z.\s]+$/'
+            ],
+            'phone_no' => [
+                'nullable',
+                'digits:10',
+                'regex:/^[0-9]{10}$/',
+                Rule::unique('customers')->where(fn($query) => $query->where('admin_id', Auth::id())),
+            ],
+            'email_id' => [
+                'nullable',
+                'email',
+                'max:40',
+            ],
+            'gst_no' => [
+                'nullable',
+                'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',
+                Rule::unique('customers')->where(fn($query) => $query->where('admin_id', Auth::id())),
+            ],
             'address' => 'nullable|string',
-
-
         ]);
 
+        // Generate customer code
         $customer_name_words = explode(' ', trim($request->input('name')));
-        $code = '';
-
         if (count($customer_name_words) == 1) {
-
             $code = strtoupper(Str::substr($customer_name_words[0], 0, 3));
         } elseif (count($customer_name_words) == 2) {
-
             $code = strtoupper(Str::substr($customer_name_words[0], 0, 2) . Str::substr($customer_name_words[1], 0, 1));
         } else {
-
-            $firstLetter = Str::substr($customer_name_words[0], 0, 1);
-            $secondLetter = Str::substr($customer_name_words[1], 0, 1);
-            $thirdLetter = Str::substr($customer_name_words[2], 0, 1);
-            $code = strtoupper($firstLetter . $secondLetter . $thirdLetter);
+            $code = strtoupper(Str::substr($customer_name_words[0], 0, 1) .
+                Str::substr($customer_name_words[1], 0, 1) .
+                Str::substr($customer_name_words[2], 0, 1));
         }
 
-        $request->merge([
-            'code' => $code,
-        ]);
-
         Customer::create([
+            'admin_id'       => Auth::id(),
             'login_id'       => 0,
-            'name'           => is_array($request->input('name')) ? $request->input('name')[0] : $request->input('name'),
-            // 'code' => Str::substr($request->input('name'), 0, 3),
-            'code'           => $request->input('code'),
-
+            'name'           => $request->input('name'),
+            'code'           => $code,
             'email_id'       => $request->input('email_id'),
-            'contact_person' => is_array($request->input('contact_person')) ? $request->input('contact_person')[0] : $request->input('contact_person'),
+            'contact_person' => $request->input('contact_person'),
             'phone_no'       => $request->input('phone_no'),
             'gst_no'         => $request->input('gst_no'),
             'address'        => $request->input('address'),
-            'status'         => 1, // default active
+            'status'         => 1,
         ]);
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer created successfully.');
@@ -79,22 +90,22 @@ class CustomerContoller extends Controller
 
     public function ViewCustomer(Request $request)
     {
-        $query = Customer::orderBy('id', 'desc');
+        $query = Customer::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc');
 
         // Financial Year Filter
         if ($request->filled('financial_year')) {
-            // financial_year format: 2025-26
             $years = explode('-', $request->financial_year);
             $startYear = $years[0];
-            $endYear = $startYear + 1;
+            $endYear   = $startYear + 1;
 
             $startDateFY = $startYear . '-04-01 00:00:00';
-            $endDateFY = $endYear . '-03-31 23:59:59';
+            $endDateFY   = $endYear . '-03-31 23:59:59';
 
             $query->whereBetween('created_at', [$startDateFY, $endDateFY]);
         }
 
-        // Custom Start and End Date Filter (overrides financial year if provided)
+        // Custom Date Filter
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('created_at', [
                 $request->start_date . " 00:00:00",
@@ -107,17 +118,19 @@ class CustomerContoller extends Controller
         return view('Customer.view', compact('customer'));
     }
 
-
-
-
-
+    /**
+     * Edit Customer
+     */
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $customer = Customer::findOrFail($id);
+        $customer = Customer::where('admin_id', Auth::id())->findOrFail($id);
         return view('Customer.add', compact('customer'));
     }
 
+    /**
+     * Update Customer
+     */
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -127,44 +140,84 @@ class CustomerContoller extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('customers', 'name')->ignore($id),
+                Rule::unique('customers', 'name')
+                    ->ignore($id)
+                    ->where(fn($query) => $query->where('admin_id', Auth::id())),
             ],
-            'code' => ['nullable', Rule::unique('customers', 'code')->ignore($id ?? null),],
-
-            'contact_person'    => ['nullable', 'string', 'max:255', 'regex:/^[A-Za-z.\s]+$/'],
-            'phone_no'          => 'nullable|string|max:20',
-            'email_id'          => 'nullable|email|max:40',
-            'gst_no'            => 'nullable|string|max:20',
-            'address'           => 'nullable|string',
-
+            'code' => [
+                'nullable',
+                Rule::unique('customers', 'code')
+                    ->ignore($id)
+                    ->where(fn($query) => $query->where('admin_id', Auth::id())),
+            ],
+            'contact_person' => [
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-z.\s]+$/',
+            ],
+            'phone_no' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('customers', 'phone_no')
+                    ->ignore($id)
+                    ->where(fn($query) => $query->where('admin_id', Auth::id())),
+            ],
+            'email_id' => [
+                'nullable',
+                'email',
+                'max:40',
+            ],
+            'gst_no' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('customers', 'gst_no')
+                    ->ignore($id)
+                    ->where(fn($query) => $query->where('admin_id', Auth::id())),
+            ],
+            'address' => 'nullable|string',
         ]);
 
-        $customer = Customer::findOrFail($id);
+        $customer = Customer::where('admin_id', Auth::id())->findOrFail($id);
+
+        $validated['admin_id'] = Auth::id();
 
         $customer->update($validated);
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer updated successfully.');
     }
 
+    /**
+     * Delete Customer (soft delete)
+     */
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $customer = Customer::findOrFail($id);
-        $customer->status = 0; // inactive
+        $customer = Customer::where('admin_id', Auth::id())->findOrFail($id);
+        $customer->status = 0;
         $customer->save();
-        $customer->delete(); // soft delete
+        $customer->delete();
+
         return redirect()->route('ViewCustomer')->with('success', 'Customer deleted successfully.');
     }
 
+    /**
+     * Update Status (Active/Inactive)
+     */
     public function updateCustomerStatus(Request $request)
     {
-        $customer = Customer::findOrFail($request->id);
+        $customer = Customer::where('admin_id', Auth::id())->findOrFail($request->id);
         $customer->status = $request->has('status') ? 1 : 0;
         $customer->save();
 
         return back()->with('success', 'Status updated!');
     }
 
+    /**
+     * Import Customers from Excel/CSV
+     */
     public function importCustomers(Request $request)
     {
         $request->validate([
@@ -172,7 +225,7 @@ class CustomerContoller extends Controller
         ]);
 
         $file = $request->file('file');
-        $ext = $file->getClientOriginalExtension();
+        $ext  = $file->getClientOriginalExtension();
 
         $rows = [];
         if ($ext == 'csv') {
@@ -182,31 +235,33 @@ class CustomerContoller extends Controller
             $rows = $spreadsheet->getActiveSheet()->toArray();
         }
 
-        $duplicates = []; // duplicate names log  
+        $duplicates = [];
 
         foreach ($rows as $key => $row) {
             if ($key === 0) continue;
             if (empty(array_filter($row))) continue;
 
-            $name           = $row[0] ?? null;
-            $email          = $row[1] ?? null;
-            $code           = $row[2] ?? null;
-            $phone          = $row[4] ?? null;
-            $address        = $row[5] ?? null;
-            $person         = $row[3] ?? null;
-            $gst_no         = $row[6] ?? null;
-
+            $name    = $row[0] ?? null;
+            $email   = $row[1] ?? null;
+            $code    = $row[2] ?? null;
+            $person  = $row[3] ?? null;
+            $phone   = $row[4] ?? null;
+            $address = $row[5] ?? null;
+            $gst_no  = $row[6] ?? null;
 
             if (!$name) continue;
 
-            // check duplicate by name
-            $existing = Customer::where('name', $name)->first();
+            // Check duplicate per admin
+            $existing = Customer::where('name', $name)
+                ->where('admin_id', Auth::id())
+                ->first();
+
             if ($existing) {
                 $duplicates[] = $name;
-                continue; // skip insert
+                continue;
             }
 
-            // Auto-generate code if not provided
+            // Generate code if not provided
             if (!$code) {
                 $nameWords = explode(' ', $name);
                 if (count($nameWords) == 1) {
@@ -214,53 +269,50 @@ class CustomerContoller extends Controller
                 } elseif (count($nameWords) == 2) {
                     $code = strtoupper(substr($nameWords[0], 0, 2) . substr($nameWords[1], 0, 1));
                 } else {
-                    $code = strtoupper(substr($nameWords[0], 0, 1) . substr($nameWords[1], 0, 1) . substr($nameWords[2], 0, 1));
+                    $code = strtoupper(substr($nameWords[0], 0, 1) .
+                        substr($nameWords[1], 0, 1) .
+                        substr($nameWords[2], 0, 1));
                 }
             }
 
-            // sanitize phone
             $phone = substr(preg_replace('/[^0-9]/', '', $phone ?? ''), 0, 15);
 
-            // optional GST No validation
             if ($gst_no && !preg_match('/^[0-9A-Z]{15}$/', $gst_no)) {
                 $gst_no = null;
             }
 
-            // Insert new record
             Customer::create([
-                'name'     => $name,
-                'email_id' => $email,
-                'code'     => $code,
-                'address'  => $address,
-                'phone_no' => $phone,
+                'admin_id'       => Auth::id(),
+                'name'           => $name,
+                'email_id'       => $email,
+                'code'           => $code,
+                'address'        => $address,
+                'phone_no'       => $phone,
                 'contact_person' => $person,
-                'gst_no'   => $gst_no,
-                'status'   => 1
+                'gst_no'         => $gst_no,
+                'status'         => 1
             ]);
         }
 
-        // redirect with duplicate message
-        if (!empty($duplicates)) {
-            $message = 'Customers imported successfully! But these names already exist: ' . implode(', ', $duplicates);
-        } else {
-            $message = 'Customers imported successfully!';
-        }
+        $message = !empty($duplicates)
+            ? 'Customers imported successfully! But these names already exist: ' . implode(', ', $duplicates)
+            : 'Customers imported successfully!';
 
         return redirect()->back()->with('success', $message);
     }
 
-    // 🟢 Option 2: Download existing Excel file
+    /**
+     * Download Sample Excel
+     */
     public function exportSample()
     {
-
-
         $filePath = public_path('assets/excel/PRECISE_ENGINEERING.xlsx');
 
         if (file_exists($filePath)) {
             $headers = [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition' => 'attachment; filename="sample_customer.xlsx"',
-                'Content-Length' => filesize($filePath),
+                'Content-Length'      => filesize($filePath),
             ];
 
             return response()->make(file_get_contents($filePath), 200, $headers);
@@ -268,10 +320,4 @@ class CustomerContoller extends Controller
 
         abort(404, 'File not found.');
     }
-
-
-
-    // Helper function to generate code if not present
-
-
 }

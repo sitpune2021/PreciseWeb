@@ -13,19 +13,20 @@ class FinancialYearController extends Controller
         return view('FinancialYear.add', compact('years'));
     }
 
-    public function storeFinancialYear(Request $request)
-    {
-        $request->validate([
-            'year' => 'required|string|unique:financial_years,year|max:255',
-        ]);
+   public function storeFinancialYear(Request $request)
+{
+    $request->validate([
+        'year' => 'required|string|unique:financial_years,year|max:255',
+    ]);
 
-        FinancialYear::create([
-            'year' => $request->year,
-            'status' => $request->status ?? 0,
-        ]);
+    FinancialYear::create([
+        'year' => $request->year,
+        'status' => $request->status ?? 1, // default active
+    ]);
 
-        return redirect()->route('AddFinancialYear')->with('success', 'Financial Year added successfully');
-    }
+    return redirect()->route('AddFinancialYear')->with('success', 'Financial Year added successfully');
+}
+
 
     public function edit(string $encryptedId)
     {

@@ -31,7 +31,7 @@
                                                 <label for="name" class="form-label">Customer Name <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" placeholder="Customer Name" id="name" name="name"
                                                     value="{{ old('name', $customer->name ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
+                                                    oninput="this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '')">
                                                 @error('name')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
@@ -61,7 +61,7 @@
 
                                             </div>
                                         </div>
-                                     
+
                                         <!--end col-->
                                         <div class="col-md-4">
                                             <div class="mb-3">

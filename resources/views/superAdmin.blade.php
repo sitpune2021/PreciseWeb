@@ -1,7 +1,7 @@
 @php
 use App\Models\Client;
 use App\Models\Project;
-use App\Models\Customer;
+
 use App\Models\Operator;
 use App\Models\Machine;
 use App\Models\Setting;
@@ -12,6 +12,7 @@ use App\Models\Vendor;
 use App\Models\WorkOrder;
 use App\Models\SetupSheet;
 use App\Models\MachineRecord;
+use App\Models\MaterialReq;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -47,14 +48,7 @@ $projects = Project::with('customer')
 ->get();
 $totalProjects = Project::count();
 
-// ---------------- Customers ----------------
-$totalCustomers = Customer::count();
-$activeCustomers = Customer::where('status', 1)->count();
-$inactiveCustomers = Customer::where('status', 0)->count();
-$newThisMonthCustomers = Customer::whereMonth('created_at', Carbon::now()->month)
-->whereYear('created_at', Carbon::now()->year)
-->count();
-$latestCustomers = Customer::orderBy('created_at', 'desc')->take(5)->get();
+
 
 // ---------------- Operators ----------------
 $totalOperators = Operator::count();
@@ -139,6 +133,16 @@ for ($m = 1; $m <= 12; $m++) {
     $todayMachineRecords = MachineRecord::whereDate('created_at', Carbon::today())->count();
 
     $latestMachineRecords = MachineRecord::orderBy('created_at','desc')->take(5)->get();
+
+
+    // ---------------- Material Requirements ----------------
+    $latestMaterialReq =MaterialReq::with('customer','materialtype')
+    ->orderBy('created_at','desc')
+    ->take(5)
+    ->get();
+
+    $totalMaterialReq =MaterialReq::count();
+
 
 
 
@@ -244,8 +248,8 @@ for ($m = 1; $m <= 12; $m++) {
                 </div>
                 @endif
                 @if(auth()->user()->user_type == 2)
-        
-    
+
+
                 <!--------------------- project page ---------------------------------->
                 <div class="col-xl-12">
                     <div class="card shadow-lg border-0 rounded-4 h-100">
@@ -459,62 +463,6 @@ for ($m = 1; $m <= 12; $m++) {
                     </div>
                 </div>
 
-              
-                <!-- <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        var options = {
-                            chart: {
-                                type: "bar",
-                                height: 350,
-                                toolbar: {
-                                    show: false
-                                }
-                            },
-                            series: [{
-                                name: "Work Orders",
-                                data: @json($totals) // Your data
-                            }],
-                            xaxis: {
-                                categories: @json($months),
-                                title: {
-                                    text: "Months"
-                                }
-                            },
-                            yaxis: {
-                                min: 0,
-                                forceNiceScale: true,
-                                title: {
-                                    text: "No. of Work Orders"
-                                }
-                            },
-                            plotOptions: {
-                                bar: {
-                                    horizontal: false,
-                                    columnWidth: '50%',
-                                    endingShape: 'rounded'
-                                }
-                            },
-                            colors: ["#28a745", "#ffc107", "#17a2b8", "#dc3545", "#6f42c1", "#fd7e14"], // Multiple colors
-                            dataLabels: {
-                                enabled: true
-                            },
-                            tooltip: {
-                                theme: "dark",
-                                y: {
-                                    formatter: function(val) {
-                                        return val + " orders";
-                                    }
-                                }
-                            }
-                        };
-
-                        var chart = new ApexCharts(document.querySelector("#workOrderChart"), options);
-                        chart.render();
-                    });
-                </script> -->
-
-
-
 
                 <div class="row">
                     <!-- ====== Latest Machine Records (Big Table) ====== -->
@@ -581,140 +529,92 @@ for ($m = 1; $m <= 12; $m++) {
                             </div>
                         </div>
                     </div>
-    <!-- ----------------------customers page ------------------------------->
 
-               
-                    <!-- Customers Card -->
-                    <div class="col-xxl-4 mb-4">
-                        <div class="card shadow-sm border-0 rounded-4">
-                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0"><i class="ri-team-line text-primary me-2"></i> Customers</h5>
-                                <a href="{{ route('ViewCustomer') }}" class="btn btn-sm btn-outline-primary rounded-pill">
-                                    View All <i class="ri-arrow-right-line"></i>
-                                </a>
-                            </div>
-                            <div class="card-body">
-                                <div class="row text-center mb-3">
-                                    <div class="col">
-                                        <h4 class="fw-bold text-primary">{{ $totalCustomers }}</h4>
-                                        <small class="text-muted">Total</small>
+                    <!-- ========== Latest Material Requirements ========== -->
+                    <div class="row mt-4">
+                        <div class="col-xxl-6">
+                            <div class="card shadow-lg border-0 rounded-4 h-100">
+                                <div class="card-header bg-gradient bg-info-subtle border-0 rounded-top-4 d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0 d-flex align-items-center">
+                                        <i class="ri-cube-line me-2 text-info"></i> Latest Material Requirements
+                                    </h5>
+                                    <a href="{{ route('ViewMaterialReq') }}" class="btn btn-sm btn-info text-white shadow-sm">
+                                        View All <i class="ri-arrow-right-line ms-1"></i>
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table align-middle table-hover table-nowrap mb-0">
+                                            <thead class="table-light text-center">
+                                                <tr>
+                                                    <th>SR NO.</th>
+                                                    <th>Customer</th>
+                                                    <th>Code</th>
+                                                    <th>Material</th>
+                                                    <th>Qty</th>
+                                                    <th>Total Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($latestMaterialReq as $req)
+                                                <tr class="align-middle text-center">
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $req->customer->name ?? '-' }}</td>
+                                                    <td><span class="badge bg-primary">{{ $req->code }}</span></td>
+                                                    <td>{{ $req->materialtype->material_type ?? '-' }}</td>
+                                                    <td><span class="badge bg-dark">{{ $req->qty }}</span></td>
+                                                    <td class="fw-bold text-success">
+                                                        ₹ {{ number_format($req->total_cost,2) }}
+                                                    </td>
+                                                </tr>
+                                                @empty
+                                                <tr>
+                                                    <td colspan="6" class="text-center text-muted">
+                                                        <i class="ri-file-warning-line"></i> No Material Requirements Found
+                                                    </td>
+                                                </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="col">
-                                        <h4 class="fw-bold text-success">{{ $activeCustomers }}</h4>
-                                        <small class="text-muted">Active</small>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="fw-bold text-danger">{{ $inactiveCustomers }}</h4>
-                                        <small class="text-muted">Inactive</small>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="fw-bold text-info">{{ $newThisMonthCustomers }}</h4>
-                                        <small class="text-muted">New This Month</small>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">
+                                            Showing <span class="fw-semibold">{{ $latestMaterialReq->count() }}</span> of
+                                            <span class="fw-semibold">{{ $totalMaterialReq }}</span> Material Requirements
+                                        </small>
+                                        <a href="{{ route('ViewMaterialReq') }}" class="btn btn-link btn-sm">View More</a>
                                     </div>
                                 </div>
-                                <h6 class="fw-semibold">Latest Customers</h6>
-                                <ul class="list-group list-group-flush">
-                                    @forelse($latestCustomers as $cust)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span><i class="ri-user-3-line text-primary me-2"></i> {{ $cust->name }}</span>
-                                        <span class="badge {{ $cust->status ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $cust->status ? 'Active' : 'Inactive' }}
-                                        </span>
-                                    </li>
-                                    @empty
-                                    <li class="list-group-item text-muted">No recent customers</li>
-                                    @endforelse
-                                </ul>
                             </div>
                         </div>
-                
-
-                 
+                    </div>
+                    <br><br>
+                    @endif
                 </div>
 
-                </div>
-
-
-
-
-                @endif
             </div>
 
-        </div>
+            <!-- End Page-content -->
 
-        <!-- End Page-content -->
-
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end d-none d-sm-block">
-                            Design & Develop by
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-sm-end d-none d-sm-block">
+                                Design & Develop by
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </footer>
-    </div>
-
-
-    <!-- ApexCharts Script -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            function renderChart(id, color) {
-                var el = document.getElementById(id);
-                var percentage = parseInt(el.getAttribute("data-percentage"));
-
-                var options = {
-                    chart: {
-                        type: 'radialBar',
-                        height: 120,
-                        width: 120,
-                        sparkline: {
-                            enabled: true
-                        }
-                    },
-                    colors: [color],
-                    series: [percentage],
-                    plotOptions: {
-                        radialBar: {
-                            hollow: {
-                                size: '60%'
-                            },
-                            dataLabels: {
-                                name: {
-                                    show: false
-                                },
-                                value: {
-                                    fontSize: '22px',
-                                    fontWeight: 'bold',
-                                    formatter: function(val) {
-                                        return val + "%";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                var chart = new ApexCharts(el, options);
-                chart.render();
-            }
-
-            renderChart("total_clients_chart", "#FF5733");
-            renderChart("active_clients_chart", "#33B5FF");
-            renderChart("current_month_chart", "#28A745");
-
-            renderChart("renewal_chart", "#9C27B0");
-        });
-    </script>
+            </footer>
+        </div>
 
 
 
-    @endsection
+
+        @endsection

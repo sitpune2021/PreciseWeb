@@ -8,8 +8,19 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">View Machine Records</h5>
+                        <div class="card-header d-flex align-items-center">
+                            <h5 class="card-title mb-0">View Machine Records</h5>
+
+                            <div class="ms-auto d-flex gap-2">
+                                <a href="{{ route('trashMachineRecord') }}" class="btn btn-warning btn-sm">
+                                    View Trash
+                                </a>
+                                <!-- Add WorkOrder Button -->
+                                <a href="{{ route('AddMachinerecord') }}" class="btn btn-success btn-sm">
+                                    <i class="ri-add-line align-middle"></i> Add Machine Records
+                                </a>
+
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">

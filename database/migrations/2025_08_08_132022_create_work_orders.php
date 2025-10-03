@@ -14,7 +14,7 @@ return new class extends Migration
 
     Schema::create('work_orders', function (Blueprint $table) {
     $table->id();
-   
+    $table->integer('admin_id');
     $table->unsignedBigInteger('customer_id');
     $table->unsignedBigInteger('project_id');
     $table->string('part');

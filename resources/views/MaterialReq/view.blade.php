@@ -24,6 +24,7 @@
                                             <th>Date</th>
                                             <th>Work Order No</th>
                                             <th>Description</th>
+
                                             <th width="12%">Action</th>
                                         </tr>
                                     </thead>
@@ -39,15 +40,11 @@
 
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2 align-items-center">
-
-                                                    {{-- Edit --}}
                                                     <a href="{{ route('editMaterialReq', base64_encode($req->id)) }}"
                                                         class="btn btn-success btn-sm" title="Edit">
                                                         <i class="ri-pencil-fill"></i>
                                                     </a>
-                                                    {{-- View --}}
-                                                    <button type="button"
-                                                        class="btn btn-primary btn-sm viewMaterialReqBtn"
+                                                    <button type="button" class="btn btn-primary btn-sm viewMaterialReqBtn"
                                                         data-customer="{{ $req->customer->name ?? 'N/A' }}"
                                                         data-code="{{ $req->code }}"
                                                         data-date="{{ $req->date }}"
@@ -57,9 +54,10 @@
                                                         data-length="{{ $req->length }}"
                                                         data-width="{{ $req->width }}"
                                                         data-height="{{ $req->height }}"
-                                                        data-material="{{ $req->material }}"
+                                                        data-material="{{ $req->materialtype->material_type ?? 'N/A' }}"
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
+                                                        data-cost="{{ $req->material_cost ?? 'N/A' }}"
                                                         data-lathe="{{ $req->lathe }}"
                                                         data-mg4="{{ $req->mg4 }}"
                                                         data-mg2="{{ $req->mg2 }}"
@@ -72,11 +70,10 @@
                                                         data-edm_qty="{{ $req->edm_qty }}"
                                                         data-edm_rate="{{ $req->edm_rate }}"
                                                         data-cl="{{ $req->cl }}"
+
                                                         data-total_cost="{{ $req->total_cost }}">
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
-
-                                                    {{-- Delete --}}
                                                     <a href="{{ route('deleteMaterialReq', base64_encode($req->id)) }}"
                                                         onclick="return confirm('Are you sure you want to delete this record?')"
                                                         class="btn btn-danger btn-sm" title="Delete">
@@ -87,6 +84,7 @@
                                         </tr>
                                         @endforeach
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -152,6 +150,10 @@
                                 <tr>
                                     <th>Weight</th>
                                     <td id="mr_weight"></td>
+                                </tr>
+                                <tr>
+                                    <th> Material cost</th>
+                                    <td id="mr_cost"></td>
                                 </tr>
                                 <tr>
                                     <th>Lathe</th>
@@ -226,8 +228,11 @@
                             document.getElementById("mr_width").textContent = this.dataset.width;
                             document.getElementById("mr_height").textContent = this.dataset.height;
                             document.getElementById("mr_material").textContent = this.dataset.material;
+
                             document.getElementById("mr_qty").textContent = this.dataset.qty;
                             document.getElementById("mr_weight").textContent = this.dataset.weight;
+                            document.getElementById("mr_cost").textContent = this.dataset.cost;
+
                             document.getElementById("mr_lathe").textContent = this.dataset.lathe;
                             document.getElementById("mr_mg4").textContent = this.dataset.mg4;
                             document.getElementById("mr_mg2").textContent = this.dataset.mg2;
@@ -248,7 +253,6 @@
                     });
                 });
             </script>
-
 
         </div>
     </div>

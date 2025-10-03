@@ -30,6 +30,7 @@ class MachineRecord extends Model
         'time_taken',
         'actual_hrs',
         'invoice_no'
+        
     ];
 
     public function customer()

@@ -5,21 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\MaterialOrder;
 use App\Models\Customer;
+use App\Models\MaterialReq;
+
 class MaterialorderController extends Controller
 {
-  
+
     public function AddMaterialorder()
     {
-         $codes = Customer::where('status', 1)  
+        $codes = Customer::where('status', 1)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
         $customers = Customer::where('status', 1)->orderBy('name')->get();
-        return view('Materialorder.add',compact('codes','customers'));
+        return view('Materialorder.add', compact('codes', 'customers'));
     }
 
-  
-   public function ViewMaterialorder()
+
+    public function ViewMaterialorder()
     {
         $orders = MaterialOrder::latest()->paginate(10);
         return view('Materialorder.view', compact('orders'));
@@ -27,37 +29,37 @@ class MaterialorderController extends Controller
 
     public function storeMaterialorder(Request $request)
     {
-        
+
         $request->validate([
-    // Basic info
-    'sr_no'            => 'required|integer',
-    'date'             => 'required|date',
-    'work_order_desc'  => 'required|string|max:255',
+            // Basic info
+            'sr_no'            => 'required|integer',
+            'date'             => 'required|date',
+            'work_order_desc'  => 'required|string|max:255',
 
-    // Finish size (optional, numeric)
-    'f_diameter'       => 'nullable|numeric|min:0',
-    'f_length'         => 'nullable|numeric|min:0',
-    'f_width'          => 'nullable|numeric|min:0',
-    'f_height'         => 'nullable|numeric|min:0',
+            // Finish size (optional, numeric)
+            'f_diameter'       => 'nullable|numeric|min:0',
+            'f_length'         => 'nullable|numeric|min:0',
+            'f_width'          => 'nullable|numeric|min:0',
+            'f_height'         => 'nullable|numeric|min:0',
 
-    // Raw size (optional, numeric)
-    'r_diameter'       => 'nullable|numeric|min:0',
-    'r_length'         => 'nullable|numeric|min:0',
-    'r_width'          => 'nullable|numeric|min:0',
-    'r_height'         => 'nullable|numeric|min:0',
+            // Raw size (optional, numeric)
+            'r_diameter'       => 'nullable|numeric|min:0',
+            'r_length'         => 'nullable|numeric|min:0',
+            'r_width'          => 'nullable|numeric|min:0',
+            'r_height'         => 'nullable|numeric|min:0',
 
-    // Material
-    'material'         => 'required|string|max:255',
+            // Material
+            'material'         => 'required|string|max:255',
 
-    // Quantity
-    'quantity'         => 'required|integer|min:1',
-]);
+            // Quantity
+            'quantity'         => 'required|integer|min:1',
+        ]);
 
 
         MaterialOrder::create($request->all());
 
         return redirect()->route('ViewMaterialorder')
-                         ->with('success', 'Material Order created successfully.');
+            ->with('success', 'Material Order created successfully.');
     }
 
     /**
@@ -86,7 +88,7 @@ class MaterialorderController extends Controller
         $record->update($request->all());
 
         return redirect()->route('ViewMaterialorder')
-                         ->with('success', 'Material Order updated successfully.');
+            ->with('success', 'Material Order updated successfully.');
     }
 
     /**
@@ -98,8 +100,32 @@ class MaterialorderController extends Controller
         $record->delete();
 
         return redirect()->route('ViewMaterialorder')
-                         ->with('success', 'Material Order deleted successfully.');
+            ->with('success', 'Material Order deleted successfully.');
     }
 
-    
+
+    public function getMaterialReqByCustomer($customer_id)
+    {
+        $material = MaterialReq::where('customer_id', $customer_id)->first();
+
+        if (!$material) {
+            return response()->json([
+                'dia' => '',
+                'length' => '',
+                'width' => '',
+                'height' => '',
+                'material' => '',
+                'qty' => ''
+            ]);
+        }
+
+        return response()->json([
+            'dia' => $material->dia,
+            'length' => $material->length,
+            'width' => $material->width,
+            'height' => $material->height,
+            'material' => $material->material,
+            'qty' => $material->qty
+        ]);
+    }
 }

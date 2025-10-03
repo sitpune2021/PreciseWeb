@@ -21,7 +21,7 @@ class Project extends Model
         'customer_code',
         'quantity',
         'date',
-     
+        'user_id'
     ];
  public function customer()
 {

@@ -89,6 +89,9 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">HSN Code List</h5>
+                      <a href="{{ route('trashhsn') }}" class="btn btn-warning btn-sm">
+                        View Trash
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -149,10 +152,20 @@
     </div>
 </div>
 <script>
-    document.querySelectorAll('.only-positive').forEach(input => {
+    // Select all inputs with class "only-positive"
+    document.querySelectorAll('.only-positive').forEach(function(input) {
         input.addEventListener('input', function() {
+            // Agar negative value asel tar 0 kar
+            if (this.value < 0) {
+                this.value = '';
+            }
+        });
 
-            this.value = this.value.replace(/[^0-9.]/g, '');
+        // Optional: prevent typing "-" character
+        input.addEventListener('keydown', function(e) {
+            if (e.key === '-' || e.key === 'e') {
+                e.preventDefault();
+            }
         });
     });
 </script>

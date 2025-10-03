@@ -8,8 +8,27 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">View Work Order Entries</h5>
+
+
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">View Work Order Entries</h5>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Add WorkOrder Button -->
+                                <a href="{{ route('AddWorkOrder') }}" class="btn btn-success btn-sm">
+                                    <i class="ri-add-line align-middle"></i> Add WorkOrder
+                                </a>
+
+                                <!-- View Trash Button -->
+                                <a href="{{ route('trashWorkOrder') }}" class="btn btn-warning btn-sm">
+                                    View Trash
+                                </a>
+
+                                <!-- WorkOrder Import Modal Button -->
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="ri-upload-2-line align-middle"></i> WorkOrder Import
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -84,7 +103,33 @@
     </div>
 </div>
 
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('importWorkOrder') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import WorkOrder (Excel/CSV)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="excelFile" class="form-label">Choose Excel/CSV File</label>
+                        <input type="file" name="file" id="excelFile" class="form-control" accept=".xlsx,.xls,.csv" required>
+                    </div>
 
+                    <a href="{{ route('exportWorkOrder') }}" class="btn btn-success">
+                        <i class="ri-download-2-line"></i> Download Sample
+                    </a>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- View Work Order Modal -->
 <div class="modal fade" id="viewWorkOrderModal" tabindex="-1" aria-hidden="true">

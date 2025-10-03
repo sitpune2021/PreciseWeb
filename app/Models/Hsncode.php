@@ -17,5 +17,6 @@ class Hsncode extends Model
         'igst',
         'invoice_desc',
         'status',
+        'is_active',
     ];
 }

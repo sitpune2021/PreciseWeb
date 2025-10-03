@@ -16,6 +16,7 @@
                 
 
                 // Customer relation
+                $table->integer('admin_id'); 
                 $table->unsignedBigInteger('customer_id')->nullable();
                 $table->string('project_name');
                 // $table->string('customer_name');

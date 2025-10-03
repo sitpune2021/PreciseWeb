@@ -15,7 +15,7 @@ class MaterialReqController extends Controller
 
     public function AddMaterialReq()
     {
-        $codes = Customer::where('status', 1)  
+        $codes = Customer::where('status', 1)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
@@ -24,100 +24,90 @@ class MaterialReqController extends Controller
         return view('MaterialReq.add', compact('codes', 'materialtype', 'customers'));
     }
 
-    public function storeMaterialReq(Request $request)
-    {
-        $validated = $request->validate([
-            'customer_id'   => 'required|exists:customers,id',
-            'code'          => 'required|string|max:50|unique:material_reqs,code',
-            'date'          => 'required|date',
-            'description'   => 'required|string|max:255',
-            'work_order_no' => 'required|string|max:50',
-            'dia'           => 'nullable|numeric|min:0',
-            'length'        => 'nullable|numeric|min:0',
-            'width'         => 'nullable|numeric|min:0',
-            'height'        => 'required|numeric|min:0',
-            'material'      => 'required|exists:material_types,id',
-            'qty'           => 'required|numeric|min:1',
-            'lathe'         => 'nullable|numeric|min:0',
-            'mg4'           => 'nullable|numeric|min:0',
-            'mg2'           => 'nullable|numeric|min:0',
-            'rg2'           => 'nullable|numeric|min:0',
-            'sg4'           => 'nullable|numeric|min:0',
-            'sg2'           => 'nullable|numeric|min:0',
-            'vmc_cost'      => 'nullable|numeric|min:0',
-            'hrc'           => 'nullable|numeric|min:0',
-            'edm_qty'       => 'nullable|numeric|min:0',
-            'edm_rate'      => 'nullable|numeric|min:0',
-            'cl'            => 'nullable|string|max:50',
-        ]);
+public function storeMaterialReq(Request $request)
+{
+    $validated = $request->validate([
+        'customer_id'   => 'required|exists:customers,id',
+        'code'          => 'required|string|max:50|unique:material_reqs,code',
+        'date'          => 'required|date',
+        'description'   => 'required|string|max:255',
+        'work_order_no' => 'required|string|max:50',
+        'dia'           => 'nullable|numeric|min:0',
+        'length'        => 'nullable|numeric|min:0',
+        'width'         => 'nullable|numeric|min:0',
+        'height'        => 'required|numeric|min:0',
+        'material'      => 'required|exists:material_types,id',
+        'qty'           => 'required|numeric|min:1',
+        'lathe'         => 'nullable|numeric|min:0',
+        'mg4'           => 'nullable|numeric|min:0',
+        'mg2'           => 'nullable|numeric|min:0',
+        'rg2'           => 'nullable|numeric|min:0',
+        'sg4'           => 'nullable|numeric|min:0',
+        'sg2'           => 'nullable|numeric|min:0',
+        'vmc_cost'      => 'nullable|numeric|min:0',
+        'hrc'           => 'nullable|numeric|min:0',
+        'edm_qty'       => 'nullable|numeric|min:0',
+        'edm_rate'      => 'nullable|numeric|min:0',
+        'cl'            => 'nullable|string|max:50',
+    ]);
 
-        // Get material details
-        $material = MaterialType::findOrFail($request->material);
+    $material = MaterialType::findOrFail($request->material);
 
-        // 1) Volume (mm³)
+    // ✅ Volume calculation
+    if ($request->dia > 0) {
+        // Cylinder volume
+        $volume = pi() * pow(($request->dia / 2), 2) * $request->height;
+    } else {
+        // Rectangular volume
         $volume = $request->length * $request->width * $request->height;
-
-        // 2) Weight per piece (Kg)
-        $weight_per_piece = ($volume * $material->material_gravity) / 1000000;
-
-        // 3) Total weight (Kg)
-        $weight = $weight_per_piece * $request->qty;
-
-        // 4) Material Cost
-        $material_cost = $weight * $material->material_rate;
-
-        // 5) EDM Cost
-        $edm_cost = $request->edm_qty * $request->edm_rate;
-
-        // 6) Machine Cost
-        $machine_cost = $request->lathe
-            + $request->mg4
-            + $request->mg2
-            + $request->rg2
-            + $request->sg4
-            + $request->sg2
-            + $request->vmc_cost
-            + $request->hrc;
-
-        // 7) Final Total
-        $total_cost = $material_cost + $machine_cost + $edm_cost;
-
-        // 8) Round Excel-style
-        $weight = round($weight, 3);              // 5.578
-        $material_cost = round($material_cost, 2); // 2231.25
-        $total_cost = round($total_cost, 2);       // 9513.44
-
-
-        // ✅ Round like Excel
-        $weight = round($weight, 3);        // 5.578
-        $material_cost = round($material_cost, 2); // 2231.25
-        $total_cost = round($total_cost, 2);       // 9513.44
-
-
-        // Total Cost
-        $total_cost = $material_cost
-            + $request->lathe
-            + $request->mg4
-            + $request->mg2
-            + $request->rg2
-            + $request->sg4
-            + $request->sg2
-            + $request->vmc_cost
-            + $request->hrc
-            + $edm_cost;
-
-        // Save data
-        $data = $validated;
-        $data['material_gravity'] = $material->material_gravity;
-        $data['material_rate']    = $material->material_rate;
-        $data['weight']           = $weight;
-        $data['material_cost']    = $material_cost;
-        $data['total_cost']       = $total_cost;
-
-        MaterialReq::create($data);
-
-        return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement Added Successfully!');
     }
+
+    // ✅ Weight per piece
+    $weight_per_piece = ($volume * $material->material_gravity) / 1000000;
+
+    // ✅ Total weight
+    $weight = $weight_per_piece * $request->qty;
+
+    // ✅ Material cost
+    $material_cost = ($weight_per_piece * $material->material_rate) * $request->qty;
+
+    // ✅ EDM cost
+    $edm_cost = ($request->edm_qty * $request->edm_rate) * $request->qty;
+
+    // ✅ Machine cost
+    $machine_cost = (
+        $request->lathe +
+        $request->mg4 +
+        $request->mg2 +
+        $request->rg2 +
+        $request->sg4 +
+        $request->sg2 +
+        $request->vmc_cost +
+        $request->hrc
+    ) * $request->qty;
+
+    // ✅ Total cost
+    $total_cost = $material_cost + $edm_cost + $machine_cost;
+
+    // ✅ Round only at the end
+    $weight = round($weight, 3);
+    $material_cost = round($material_cost, 2);
+    $total_cost = round($total_cost, 2);
+
+    // ✅ Save
+    $data = $validated;
+    $data['material_gravity'] = $material->material_gravity;
+    $data['material_rate']    = $material->material_rate;
+    $data['weight']           = $weight;
+    $data['material_cost']    = $material_cost;
+    $data['total_cost']       = $total_cost;
+
+    MaterialReq::create($data);
+
+    return redirect()->route('ViewMaterialReq')
+        ->with('success', 'Material Requirement Added Successfully!');
+}
+
 
 
     public function ViewMaterialReq()
@@ -205,4 +195,6 @@ class MaterialReqController extends Controller
             'rate'    => $material->material_rate,
         ]);
     }
+
+    
 }

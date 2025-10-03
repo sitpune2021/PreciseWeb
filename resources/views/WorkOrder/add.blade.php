@@ -51,6 +51,14 @@
                                                 <label for="project_id" class="form-label">Project Name <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single" id="project_id" name="project_id">
                                                     <option value="">Select Project</option>
+                                                    @foreach($projects as $p)
+                                                    @if(isset($workorder) && $p->customer_id == $workorder->customer_id)
+                                                    <option value="{{ $p->id }}"
+                                                        {{ old('project_id', $workorder->project_id ?? '') == $p->id ? 'selected' : '' }}>
+                                                        {{ $p->project_name }}
+                                                    </option>
+                                                    @endif
+                                                    @endforeach
                                                 </select>
                                                 @error('project_id') <span class="text-red">{{ $message }}</span> @enderror
                                                 <span class="text-red project_id"></span>

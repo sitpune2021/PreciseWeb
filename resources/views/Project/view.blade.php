@@ -8,38 +8,25 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
-                        <!-- <div class="card-header">
-                            <h5 class="mb-0">View Projects</h5>
-                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="ri-upload-2-line align-middle"></i>Project Import
-                            </button>
-                        </div> -->
 
-                                <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Projects</h5>
 
-                            <form action="{{ route('ViewCustomer') }}" method="GET" class="d-flex align-items-center gap-2">
-                                <!-- Financial Year Dropdown -->
-                                <select name="financial_year" class="form-control form-select">
-                                    <option value="">Select Year</option>
-                                    <option value="2024-25" {{ request('financial_year') == '2024-25' ? 'selected' : '' }}>2024-25</option>
-                                    <option value="2025-26" {{ request('financial_year') == '2025-26' ? 'selected' : '' }}>2025-26</option>
-                                    <option value="2026-27" {{ request('financial_year') == '2026-27' ? 'selected' : '' }}>2026-27</option>
-                                    <option value="2027-28" {{ request('financial_year') == '2027-28' ? 'selected' : '' }}>2027-28</option>
-                                </select>
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Add Project Button -->
+                                <a href="{{ route('AddProject') }}" class="btn btn-success btn-sm">
+                                    <i class="ri-add-line align-middle"></i> Add Project
+                                </a>
 
-                                <!-- Custom Date Inputs -->
-                                <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
-                                <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
-
-                                <button type="submit" class="btn btn-success">Filter</button>
-                                <a href="{{ route('ViewCustomer') }}" class="btn btn-primary">Reset</a>
-                            </form>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="ri-upload-2-line align-middle"></i> Project Import
-                            </button>
+                                <!-- Project Import Button -->
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="ri-upload-2-line align-middle"></i> Project Import
+                                </button>
+                            </div>
 
                         </div>
+
+
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -106,8 +93,34 @@
                     </div>
                 </div>
             </div>
-     
 
+            <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ route('importProjects') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="importModalLabel">Import Projects (Excel/CSV)</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="excelFile" class="form-label">Choose Excel/CSV File</label>
+                                    <input type="file" name="file" id="excelFile" class="form-control" accept=".xlsx,.xls,.csv" required>
+                                </div>
+
+                                <a href="{{ route('exportProjects') }}" class="btn btn-success">
+                                    <i class="ri-download-2-line"></i> Download Sample
+                                </a>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <!-- View Modal -->
             <div class="modal fade" id="viewProjectModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">

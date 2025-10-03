@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\WorkOrder;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SetupSheetController extends Controller
 {
@@ -48,7 +49,7 @@ class SetupSheetController extends Controller
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
 
-         
+
             'qty' => ['required', 'integer', 'min:1'],
 
             // Hole Details (arrays)
@@ -135,7 +136,7 @@ class SetupSheetController extends Controller
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
 
-           
+
             'qty'         => ['required', 'integer', 'min:1'],
 
             'holes'        => 'nullable|array',
@@ -196,7 +197,7 @@ class SetupSheetController extends Controller
         $parts = WorkOrder::where('customer_id', $customerId)
             ->select(
                 'id',
-                'project_id',   
+                'project_id',
                 'part',
                 'part_description',
                 'customer_id',
@@ -227,5 +228,44 @@ class SetupSheetController extends Controller
         });
 
         return response()->json($formatted);
+    }
+
+    // Trash Setup Sheets
+    public function trash()
+    {
+        // Get soft deleted setup sheets
+        $trashedSheets = SetupSheet::onlyTrashed()
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // Get active setup sheets
+        $sheets = SetupSheet::all();
+
+        return view('SetupSheet.trash', compact('trashedSheets', 'sheets'));
+    }
+
+    // Restore setup sheet
+    public function restore($encryptedId)
+    {
+        $id = base64_decode($encryptedId);
+        $sheet = SetupSheet::withTrashed()->findOrFail($id);
+
+        // Check if a sheet with same part_code already exists
+        $exists = SetupSheet::where('part_code', $sheet->part_code)
+            ->whereNull('deleted_at')
+            ->exists();
+
+        if ($exists) {
+            // Restore anyway and redirect to edit
+            $sheet->restore();
+
+            return redirect()->route('editSetupSheet', base64_encode($sheet->id))
+                ->with('success', "Setup Sheet '{$sheet->part_code}' already exists. Redirected to Edit Page.");
+        }
+
+        $sheet->restore();
+
+        return redirect()->route('ViewSetupSheet')
+            ->with('success', "Setup Sheet '{$sheet->part_code}' restored successfully.");
     }
 }

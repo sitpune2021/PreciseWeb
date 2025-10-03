@@ -103,7 +103,7 @@
                                     <div class="col-md-2">
                                         <div class="mb-3">
                                             <label for="length" class="form-label">Length</label>
-                                            <input
+                                            <input autocomplete="off"
                                                 type="text"
                                                 class="form-control"
                                                 id="length"
@@ -119,7 +119,7 @@
                                     <div class="col-md-2">
                                         <div class="mb-3">
                                             <label for="width" class="form-label">Width </label>
-                                            <input
+                                            <input autocomplete="off"
                                                 type="text"
                                                 class="form-control"
                                                 id="width"
@@ -135,7 +135,7 @@
                                     <div class="col-md-2">
                                         <div class="mb-3">
                                             <label for="height" class="form-label">Height <span class="mandatory">*</span></label>
-                                            <input
+                                            <input autocomplete="off"
                                                 type="text"
                                                 class="form-control"
                                                 id="height"
@@ -211,9 +211,14 @@
 
                                     <div class="col-md-2">
                                         <label for="cost" class="form-label">Material Cost</label>
-                                        <input type="text" name="cost" id="cost"
+                                        <input type="text"
+                                            name="cost"
+                                            id="cost"
                                             class="form-control"
-                                            value="{{ old('cost', $materialReq->cost ?? '') }}" readonly>
+                                            value="{{ old('cost', $materialReq->cost ?? '') }}"
+
+                                            readonly>
+
                                     </div>
                                     <!-- Machine Processes -->
                                     <div class="col-md-2">
@@ -339,7 +344,7 @@
         </div>
     </div>
 </div>
- 
+
 <script>
     $('#material_type').change(function() {
         var id = $(this).val();
@@ -359,84 +364,71 @@
     });
 </script>
 
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-
-        // Function to round like Excel
-        function roundTo2(num) {
-            return Math.round(num * 100) / 100;
-        }
+    $(document).ready(function() {
 
         function calculate() {
-            let length = parseFloat(document.getElementById("length").value) || 0;
-            let width = parseFloat(document.getElementById("width").value) || 0;
-            let height = parseFloat(document.getElementById("height").value) || 0;
-            let qty = parseFloat(document.getElementById("qty").value) || 1;
 
-            let gravity = parseFloat(document.getElementById("material_gravity").value) || 0;
-            let rate = parseFloat(document.getElementById("material_rate").value) || 0;
+            let dia = parseFloat($("#dia").val()) || 0;
+            let len = parseFloat($("#length").val()) || 0;
+            let withs = parseFloat($("#width").val()) || 0;
+            let heigh = parseFloat($("#height").val()) || 0;
+            let sg = parseFloat($("#material_gravity").val()) || 0;
+            let rate = parseFloat($("#material_rate").val()) || 0;
+            let qty = parseFloat($("#qty").val()) || 1;
 
-            // Machine / EDM costs
-            let edm_qty = parseFloat(document.getElementById("edm_qty")?.value) || 0;
-            let edm_rate = parseFloat(document.getElementById("edm_rate")?.value) || 0;
+            let lathe = parseFloat($("#lathe").val()) || 0;
+            let vmc = parseFloat($("#vmc_cost").val()) || 0;
+            let edm = parseFloat($("#edm_rate").val()) || 0;
+            let cl = parseFloat($("#cl").val()) || 0;
 
-            let lathe = parseFloat(document.getElementById("lathe")?.value) || 0;
-            let mg4 = parseFloat(document.getElementById("mg4")?.value) || 0;
-            let mg2 = parseFloat(document.getElementById("mg2")?.value) || 0;
-            let rg2 = parseFloat(document.getElementById("rg2")?.value) || 0;
-            let sg4 = parseFloat(document.getElementById("sg4")?.value) || 0;
-            let sg2 = parseFloat(document.getElementById("sg2")?.value) || 0;
-            let vmc = parseFloat(document.getElementById("vmc_cost")?.value) || 0;
-            let hrc = parseFloat(document.getElementById("hrc")?.value) || 0;
+            let material_wt = ((Math.PI * (dia / 2) * (dia / 2) * heigh / 1000000) * sg) +
+                ((len * withs * heigh / 1000000) * sg);
 
-            // 🔹 Volume in mm³
-            let volume = length * width * height;
+            let mt_cost = material_wt * rate;
+            let mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
+            let mg2 = ((len * withs) * 2 * 0.5 / 100);
+            let rg2 = ((len * withs) * 2 * 0.3 / 100);
+            let sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
+            let sg2 = ((len * withs) * 2 * 0.6 / 100);
+            // let hrc = round((withs * 70),1);  
 
-            // 🔹 Weight per piece (Kg)
-            let weightPerPiece = (volume * gravity) / 1000000;
-            document.getElementById("weight").value = weightPerPiece.toFixed(3);
+            let hrc = Math.round((material_wt * 70) * 10) / 10;
 
-            // 🔹 Material Cost per piece
-            let materialCostPerPiece = weightPerPiece * rate;
-            document.getElementById("cost").value = materialCostPerPiece.toFixed(2);
+            let total_per_piece = (
+                lathe + mg4 + mg2 + rg2 + sg4 + sg2 +
+                vmc + edm + hrc + cl + mt_cost
+            );
+            let total_cost = total_per_piece * qty;
 
-            // 🔹 EDM Cost per piece
-            let edmCostPerPiece = edm_qty * edm_rate;
-
-            // 🔹 Machine Cost per piece
-            let machineCostPerPiece = lathe + mg4 + mg2 + rg2 + sg4 + sg2 + vmc + hrc;
-
-            // 🔹 Final Total (with qty)
-            let totalCost = roundTo2((materialCostPerPiece + edmCostPerPiece + machineCostPerPiece) * qty);
-            document.getElementById("total_cost").value = totalCost.toFixed(2);
+            $("#weight").val(material_wt.toFixed(3));
+            $("#cost").val(mt_cost.toFixed(2));
+            $("#mg4").val(mg4.toFixed(2));
+            $("#mg2").val(mg2.toFixed(2));
+            $("#rg2").val(rg2.toFixed(2));
+            $("#sg4").val(sg4.toFixed(2));
+            $("#sg2").val(sg2.toFixed(2));
+            $("#hrc").val(hrc.toFixed(2));
+            $("#total_cost").val(total_cost.toFixed(2));
         }
 
-        // Material select → gravity + rate set
-        document.getElementById("material_type").addEventListener("change", function() {
-            let gravity = this.options[this.selectedIndex].getAttribute("data-gravity");
-            let rate = this.options[this.selectedIndex].getAttribute("data-rate");
+        $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_rate, #cl")
+            .on("input change", calculate);
 
-            document.getElementById("material_gravity").value = gravity || "";
-            document.getElementById("material_rate").value = rate || "";
-
+        $("#material_type").on("change", function() {
+            let sg = $(this).find(":selected").data("gravity") || 0;
+            let rate = $(this).find(":selected").data("rate") || 0;
+            $("#material_gravity").val(sg);
+            $("#material_rate").val(rate);
             calculate();
         });
 
-        // Add input listeners
-        ["dia", "length", "width", "height", "qty", "edm_qty", "edm_rate",
-            "lathe", "mg4", "mg2", "rg2", "sg4", "sg2", "vmc_cost", "hrc"
-        ].forEach(id => {
-            let el = document.getElementById(id);
-            if (el) el.addEventListener("input", calculate);
-        });
-
-        // 🔹 Run on page load (for edit case)
-        calculate();
     });
 </script>
+
+
+
 
 
 

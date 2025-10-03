@@ -19,13 +19,10 @@
                             <form action="{{ isset($record) ? route('updateMaterialorder', base64_encode($record->id)) : route('storeMaterialorder') }}" method="POST">
                                 @csrf
                                 @if(isset($record))
-                                    @method('PUT')
+                                @method('PUT')
                                 @endif
-
                                 <div class="row g-3">
-
-                            
-                               <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <label for="customer_id" class="form-label">Customer Name <span class="text-red small">*</span></label>
                                         <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
                                             <option value="">Select Customer</option>
@@ -87,27 +84,27 @@
 
                                     <div class="col-md-2">
                                         <label class="form-label">Diameter</label>
-                                        <input type="number" step="0.01" name="f_diameter" class="form-control"
-                                            value="{{ old('f_diameter', $record->f_diameter ?? '') }}">
+                                        <input type="number" step="0.01" name="f_diameter" id="f_diameter" class="form-control"
+                                            value="{{ old('f_diameter', $materialReq->dia ?? $record->f_diameter ?? '') }}">
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">Length</label>
-                                        <input type="number" step="0.01" name="f_length" class="form-control"
-                                            value="{{ old('f_length', $record->f_length ?? '') }}">
+                                        <input type="number" step="0.01" id="f_length" name="f_length" class="form-control"
+                                            value="{{ old('f_length', $materialReq->length ?? $record->f_length ?? '') }}">
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">Width</label>
-                                        <input type="number" step="0.01" name="f_width" class="form-control"
-                                            value="{{ old('f_width', $record->f_width ?? '') }}">
+                                        <input type="number" step="0.01" id="f_width" name="f_width" class="form-control"
+                                            value="{{ old('f_width', $materialReq->width ?? $record->f_width ?? '') }}">
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">Height</label>
-                                        <input type="number" step="0.01" name="f_height" class="form-control"
-                                            value="{{ old('f_height', $record->f_height ?? '') }}">
+                                        <input type="number" step="0.01" name="f_height" id="f_height" class="form-control"
+                                            value="{{ old('f_height', $materialReq->height ?? $record->f_height ?? '') }}">
                                     </div>
 
-                                     <!-- MATERIAL -->
-                                    
+                                    <!-- MATERIAL -->
+
 
                                     <!-- RAW SIZE SECTION -->
                                     <div class="col-12 mt-3">
@@ -135,10 +132,10 @@
                                             value="{{ old('r_height', $record->r_height ?? '') }}">
                                     </div>
 
-                                   <div class="col-md-3">
+                                    <div class="col-md-3">
                                         <label class="form-label">Material<span class="text-red">*</span></label>
-                                        <input type="text" name="material" class="form-control"
-                                            value="{{ old('material', $record->material ?? '') }}">
+                                        <input type="text" name="material" id="material" class="form-control"
+                                            value="{{ old('material', $materialReq->material ?? $record->material ?? '') }}">
                                         @error('material')
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
@@ -147,8 +144,8 @@
                                     <!-- QTY -->
                                     <div class="col-md-2">
                                         <label class="form-label">Quantity <span class="text-red">*</span></label>
-                                        <input type="number" name="quantity" class="form-control"
-                                            value="{{ old('quantity', $record->quantity ?? '') }}">
+                                        <input type="number" name="quantity" id="quantity" class="form-control"
+                                            value="{{ old('quantity', $materialReq->qty ?? $record->quantity ?? '') }}">
                                         @error('quantity')
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
@@ -156,18 +153,18 @@
 
                                 </div>
 
-                                 <!-- Buttons -->
-                                    <div class="col-lg-12 text-end">
-                                        <button type="submit" class="btn btn-primary">
-                                            {{ isset($record) ? 'Update' : 'Submit' }}
-                                        </button>
-                                        &nbsp;
-                                        @if(isset($record))
-                                        <a href="{{ route('ViewMaterialorder') }}" class="btn btn-info">Cancel</a>
-                                        @else
-                                        <button type="reset" class="btn btn-info">Reset</button>
-                                        @endif
-                                    </div>
+                                <!-- Buttons -->
+                                <div class="col-lg-12 text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ isset($record) ? 'Update' : 'Submit' }}
+                                    </button>
+                                    &nbsp;
+                                    @if(isset($record))
+                                    <a href="{{ route('ViewMaterialorder') }}" class="btn btn-info">Cancel</a>
+                                    @else
+                                    <button type="reset" class="btn btn-info">Reset</button>
+                                    @endif
+                                </div>
 
                             </form>
 
@@ -176,9 +173,38 @@
                 </div>
             </div>
 
-        </div> <!-- container-fluid -->
+        </div>  ,
     </div> <!-- page-content -->
 </div> <!-- main-content -->
- 
-<script></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#customer_id').change(function() {
+        var id = $(this).val();
+        var code = $(this).find(':selected').data('code');
+        $('#code').val(code); // auto-fill customer code
+
+        if (id) {
+            $.ajax({
+                url: '/material-reqs/' + id, // must match the route above
+                type: 'GET',
+                success: function(data) {
+                    $('#f_diameter').val(data.dia);
+                    $('#f_length').val(data.length);
+                    $('#f_width').val(data.width);
+                    $('#f_height').val(data.height);
+                    $('#material').val(data.material);
+                    $('#quantity').val(data.qty);
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        } else {
+            $('#f_diameter, #f_length, #f_width, #f_height, #material, #quantity').val('');
+            $('#code').val('');
+        }
+    });
+</script>
 @endsection

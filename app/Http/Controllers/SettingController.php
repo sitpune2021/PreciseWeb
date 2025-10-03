@@ -13,10 +13,10 @@ class SettingController extends Controller
     public function AddSetting()
     {
         $settings = Setting::where('admin_id', Auth::id())
-            ->whereNull('deleted_at')
-            ->orderBy('is_active', 'desc')  
-            ->latest()
-            ->get();
+    ->whereNull('deleted_at')
+    ->orderBy('is_active', 'desc')  
+    ->latest()
+    ->get();
 
         return view('Setting.add', compact('settings'));
     }

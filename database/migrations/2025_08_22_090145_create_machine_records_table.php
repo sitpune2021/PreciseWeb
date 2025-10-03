@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('machine_records', function (Blueprint $table) {
             $table->id();
-             
-            $table->string('part_no');             // PART NO.
+            $table->integer('admin_id');
+            $table->string('part_no');  
             $table->string('work_order')->nullable();
              $table->string('code', 100)->nullable();  // WO
             $table->string('first_set')->nullable();   // 1ST SET
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->decimal('time_taken', 5, 2)->nullable(); // TIME
             $table->decimal('actual_hrs', 5, 2)->nullable(); // HRS (Actual)
             $table->string('invoice_no')->nullable(); // INVOICE NO
-            
+            // $table->boolean('is_active')->default(1);
             
             $table->softDeletes(); 
             $table->timestamps();

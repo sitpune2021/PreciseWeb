@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('hsncodes', function (Blueprint $table) {
            $table->id();
-            
+            $table->integer('admin_id');
             $table->string('hsn_code');
             $table->string('sgst');
             $table->string('cgst');
             $table->string('igst');
             $table->string('invoice_desc');
              $table->boolean('status')->default(1);
+             $table->boolean('is_active')->default(1); 
             $table->softDeletes();
             $table->timestamps();
         });

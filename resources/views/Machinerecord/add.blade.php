@@ -109,8 +109,8 @@
                                     <div class="col-md-3">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
                                         <select name="machine" class="form-control form-select">
-                                            <option value=""> Select Machine </option>
-                                            @foreach($machines as $machine)
+                                            <option value=""> Select Machine </option>           
+                                            @foreach($machines->where('status', 1) as $machine)
                                             <option value="{{ $machine->machine_name }}"
                                                 {{ old('machine', $record->machine ?? '') == $machine->machine_name ? 'selected' : '' }}>
                                                 {{ $machine->machine_name }}
@@ -125,7 +125,7 @@
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
                                         <select name="operator" class="form-control form-select">
                                             <option value="">Select Operator</option>
-                                            @foreach($operators as $operator)
+                                            @foreach($operators->where('status', 1) as $operator)
                                             <option value="{{ $operator->operator_name }}"
                                                 {{ old('operator', $record->operator ?? '') == $operator->operator_name ? 'selected' : '' }}>
                                                 {{ $operator->operator_name }}
@@ -135,17 +135,20 @@
                                         @error('operator') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
+
                                     <!-- Setting -->
                                     <div class="col-md-2">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
                                         <select name="setting_no" class="form-control form-select">
                                             <option value="">Select Setting</option>
-                                            @foreach($settings as $setting)
+
+                                            @foreach($settings->where('status', 1) as $setting)
                                             <option value="{{ $setting->setting_name }}"
                                                 {{ old('setting_no', $record->setting_no ?? '') == $setting->setting_name ? 'selected' : '' }}>
                                                 {{ $setting->setting_name }}
                                             </option>
                                             @endforeach
+
                                         </select>
                                         @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
@@ -154,7 +157,7 @@
                                         <label for="material" class="form-label">Material type <span class="mandatory">*</span></label>
                                         <select name="material" id="material" class="form-control form-select">
                                             <option value="">Select Material</option>
-                                            @foreach($materialtype as $mat)
+                                            @foreach($materialtype->where('status', 1) as $mat)
                                             <option value="{{ $mat->material_type }}"
                                                 {{ old('material', $record->material ?? '') == $mat->material_type ? 'selected' : '' }}>
                                                 {{ $mat->material_type }}
@@ -327,7 +330,7 @@
         }
     });
 
- 
+
     document.getElementById('part_no').addEventListener('change', function() {
         let selected = this.options[this.selectedIndex];
 

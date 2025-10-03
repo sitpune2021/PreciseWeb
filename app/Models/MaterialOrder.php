@@ -27,5 +27,15 @@ class MaterialOrder extends Model
         'material',
         'quantity',
     ];
+
+    public function customer()
+{
+    return $this->belongsTo(Customer::class);
+}
+
+public function materialReq() // optional
+{
+    return $this->belongsTo(MaterialReq::class);
+}
 }
 

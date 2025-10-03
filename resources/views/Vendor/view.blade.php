@@ -8,9 +8,19 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex align-items-center">
                             <h5 class="card-title mb-0">View Vendors</h5>
+                            <div class="ms-auto">
+                                <a href="{{ route('AddVendor') }}" class="btn btn-success btn-sm">
+                                    <i class="ri-add-line align-middle"></i> Add Vendor
+                                </a>
+                                <a href="{{ route('trashVendor') }}" class="btn btn-warning btn-sm">
+                                    View Trash
+                                </a>
+                            </div>
                         </div>
+
+
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -41,30 +51,30 @@
                                             <td>{{ $vendor->address }}</td>
                                             <td>
                                                 @if($vendor->status == 'Active')
-                                                    <span class="badge bg-success">Active</span>
+                                                <span class="badge bg-success">Active</span>
                                                 @else
-                                                    <span class="badge bg-danger">Inactive</span>
+                                                <span class="badge bg-danger">Inactive</span>
                                                 @endif
                                             </td>
 
-                                             <td>
-                                           
-                                             <a href="{{route('editVendor', base64_encode($vendor->id))}}">
+                                            <td>
+
+                                                <a href="{{route('editVendor', base64_encode($vendor->id))}}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </button>
                                                 </a>
 
-                                              
-                                                  <a href="{{route('deleteVendor', base64_encode($vendor->id))}}"
-                                                  onclick="return confirm('Are you sure you want to delete this record?')">
-                                                <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
-                                                    <i class="ri-delete-bin-fill align-bottom"></i>
-                                                </button>
+
+                                                <a href="{{route('deleteVendor', base64_encode($vendor->id))}}"
+                                                    onclick="return confirm('Are you sure you want to delete this record?')">
+                                                    <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
+                                                        <i class="ri-delete-bin-fill align-bottom"></i>
+                                                    </button>
                                                 </a>
                                             </td>
 
-                                           
+
                                         </tr>
                                         @endforeach
                                     </tbody>
