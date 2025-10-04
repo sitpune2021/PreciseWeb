@@ -6,23 +6,28 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\WorkOrder;
 use App\Models\Customer;
 use App\Models\Project;
+use App\Models\MaterialType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WorkOrderController extends Controller
 {
-    // Show form to add work orders
     public function addWorkOrder()
     {
         $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id()) // ✅ admin filter
+            ->where('admin_id', Auth::id())
             ->select('id', 'code', 'name')
             ->orderBy('name')
             ->get();
 
-        $projects = Project::where('admin_id', Auth::id()) // ✅ admin filter
-            ->select('id', 'project_name')
+        $materialtype = MaterialType::where('status', 1)
+            ->where('admin_id', Auth::id())
+            ->orderBy('material_type')
+            ->get();
+
+        $projects = Project::where('admin_id', Auth::id())
+            ->select('id', 'project_name', 'customer_id', 'quantity')
             ->orderBy('project_name')
             ->get();
 
@@ -31,19 +36,23 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('WorkOrder.add', compact('codes', 'projects', 'workorders'));
+        return view('WorkOrder.add', compact('codes', 'projects', 'workorders', 'materialtype'));
     }
 
+
     // View all work orders
+
     public function ViewWorkOrder()
     {
         $workorders = WorkOrder::with(['customer', 'project'])
-            ->where('admin_id', Auth::id()) // ✅ admin filter
+            ->where('admin_id', Auth::id())
+            ->orderBy('updated_at', 'desc')
             ->orderBy('id', 'desc')
             ->get();
 
         return view('WorkOrder.view', compact('workorders'));
     }
+
 
     // Store work order(s)
     public function storeWorkEntry(Request $request)
@@ -61,6 +70,7 @@ class WorkOrderController extends Controller
             'rows.*.height'            => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
             'rows.*.exp_time'          => 'nullable|string|max:50',
             'rows.*.quantity'          => 'required|integer|min:1',
+            'rows.*.material'          => 'required|string|max:200',
         ]);
 
         foreach ($validatedData['rows'] as $row) {
@@ -76,7 +86,8 @@ class WorkOrderController extends Controller
                 'exp_time'         => $row['exp_time'],
                 'quantity'         => $row['quantity'],
                 'part_description' => $row['part_description'],
-                'admin_id'         => Auth::id(), // ✅ assign admin_id
+                'material'         => $row['material'],
+                'admin_id'         => Auth::id(),
             ]);
         }
 
@@ -89,20 +100,26 @@ class WorkOrderController extends Controller
         $id = base64_decode($encryptedId);
 
         $workorder = WorkOrder::with(['customer', 'project'])
-            ->where('admin_id', Auth::id()) // ✅ admin filter
+            ->where('admin_id', Auth::id())
             ->findOrFail($id);
 
         $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id()) // ✅ admin filter
+            ->where('admin_id', Auth::id())
             ->select('id', 'code', 'name')
             ->get();
 
-        $projects = Project::where('admin_id', Auth::id()) // ✅ admin filter
+        $projects = Project::where('admin_id', Auth::id())
             ->select('id', 'project_name')
             ->get();
 
-        return view('WorkOrder.add', compact('workorder', 'codes', 'projects'));
+        $materialtype = MaterialType::where('status', 1)
+            ->where('admin_id', Auth::id())
+            ->orderBy('material_type')
+            ->get();
+
+        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype'));
     }
+
 
     // Update work order
     public function update(Request $request, string $encryptedId)
@@ -120,9 +137,10 @@ class WorkOrderController extends Controller
             'height'             => 'nullable|numeric',
             'exp_time'           => 'nullable|string|max:50',
             'quantity'           => 'required|integer|min:1',
+            'material'           => 'required|string|max:200',
         ]);
 
-        $workOrder = WorkOrder::where('admin_id', Auth::id()) // ✅ admin filter
+        $workOrder = WorkOrder::where('admin_id', Auth::id())
             ->findOrFail($id);
 
         $workOrder->update($validated);
@@ -135,7 +153,7 @@ class WorkOrderController extends Controller
     {
         $id = base64_decode($encryptedId);
 
-        $workOrder = WorkOrder::where('admin_id', Auth::id()) // ✅ admin filter
+        $workOrder = WorkOrder::where('admin_id', Auth::id())
             ->findOrFail($id);
 
         $workOrder->delete();
@@ -147,7 +165,7 @@ class WorkOrderController extends Controller
     public function getProjects($customerId)
     {
         $projects = Project::where('customer_id', $customerId)
-            ->where('admin_id', Auth::id()) // ✅ admin filter
+            ->where('admin_id', Auth::id())
             ->get(['id', 'project_name']);
         return response()->json($projects);
     }
@@ -156,7 +174,7 @@ class WorkOrderController extends Controller
     public function getParts($projectId)
     {
         $parts = WorkOrder::where('project_id', $projectId)
-            ->where('admin_id', Auth::id()) // ✅ admin filter
+            ->where('admin_id', Auth::id())
             ->orderBy('id', 'asc')
             ->pluck('part');
 
@@ -208,7 +226,7 @@ class WorkOrderController extends Controller
                     'name'     => $customerCode,
                     'code'     => $customerCode,
                     'status'   => 1,
-                    'admin_id' => Auth::id(), // ✅ assign admin
+                    'admin_id' => Auth::id(),
                 ]);
             }
 
@@ -221,14 +239,15 @@ class WorkOrderController extends Controller
                 'customer_id'      => $customer->id,
                 'part'             => $row[2] ?? null,
                 'date'             => $date,
-                'part_description' => $row[4] ?? '-',
-                'dimeter'          => (float)($row[5] ?? 0),
-                'length'           => (float)($row[6] ?? 0),
-                'width'            => (float)($row[7] ?? 0),
-                'height'           => (float)($row[8] ?? 0),
-                'exp_time'         => $row[9] ?? '-',
-                'quantity'         => (int)($row[10] ?? 0),
-                'admin_id'         => Auth::id(), // ✅ assign admin
+                'part_description' => $row[5] ?? '-',
+                'dimeter'          => (float)($row[6] ?? 0),
+                'length'           => (float)($row[7] ?? 0),
+                'width'            => (float)($row[8] ?? 0),
+                'height'           => (float)($row[9] ?? 0),
+                'exp_time'         => $row[10] ?? '-',
+                'quantity'         => (int)($row[11] ?? 0),
+                'material'         => $row[12] ?? null,
+                'admin_id'         => Auth::id(),
             ]);
         }
 
@@ -236,13 +255,41 @@ class WorkOrderController extends Controller
     }
 
     // Show trash
+
     public function trash()
     {
-        $trashedWorkOrders = WorkOrder::onlyTrashed()
-            ->where('admin_id', Auth::id()) // ✅ admin filter
-            ->orderBy('deleted_at', 'desc')
+
+        $trashWorkOrders = WorkOrder::onlyTrashed()
+            ->where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
             ->get();
 
-        return view('WorkOrder.trash', compact('trashedWorkOrders'));
+        $workOrders = WorkOrder::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('WorkOrder.trash', compact('trashWorkOrders', 'workOrders'));
+    }
+
+    // Restore WorkOrder
+    public function restore($encryptedId)
+    {
+        $id = base64_decode($encryptedId);
+        $workOrder = WorkOrder::withTrashed()->findOrFail($id);
+
+        $exists = WorkOrder::where('project_id', $workOrder->project_id)
+            ->where('customer_id', $workOrder->customer_id)
+            ->where('part', $workOrder->part)
+            ->whereNull('deleted_at')
+            ->exists();
+
+        $workOrder->restore();
+
+        if ($exists) {
+            return redirect()->route('editWorkOrder', base64_encode($workOrder->id))
+                ->with('success', "Work Order '{$workOrder->work_order_no}' already exists. Redirected to Edit Page.");
+        }
+        return redirect()->route('ViewWorkOrder')
+            ->with('success', "Work Order '{$workOrder->work_order_no}' restored successfully.");
     }
 }

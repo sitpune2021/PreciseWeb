@@ -13,10 +13,10 @@ class OperatorController extends Controller
     public function AddOperator()
     {
         $operators = Operator::where('is_active', 1)
-            ->where('admin_id', Auth::id())           //admin_id
-            ->latest()
+            ->where('admin_id', Auth::id())
+            ->orderBy('updated_at', 'desc')
             ->get();
-
+ 
         return view('Operator.add', compact('operators'));
     }
 
@@ -169,28 +169,30 @@ class OperatorController extends Controller
         $id = base64_decode($encryptedId);
         $operator = Operator::withTrashed()
             ->where('id', $id)
-            ->where('admin_id', Auth::id())         //admin_id
+            ->where('admin_id', Auth::id())
             ->firstOrFail();
-
+ 
         $exists = Operator::where('operator_name', $operator->operator_name)
-            ->where('admin_id', Auth::id())             //admin_id
+            ->where('admin_id', Auth::id())
             ->whereNull('deleted_at')
             ->where('is_active', 1)
             ->exists();
-
+ 
         if ($exists) {
             $operator->is_active = 0;
             $operator->restore();
+            $operator->touch();
             $operator->save();
-
+ 
             return redirect()->route('editOperator', base64_encode($operator->id))
                 ->with('success', "Operator '{$operator->operator_name}' already exists. Redirected to Edit Page.");
         }
-
+ 
         $operator->is_active = 1;
         $operator->restore();
+        $operator->touch();
         $operator->save();
-
+ 
         return redirect()->route('AddOperator')
             ->with('success', "Operator '{$operator->operator_name}' restored successfully.");
     }

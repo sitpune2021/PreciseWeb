@@ -13,7 +13,7 @@ return new class extends Migration
     {
     Schema::create('setup_sheets', function (Blueprint $table) {
     $table->id();
-      
+    $table->integer('admin_id');
      $table->unsignedBigInteger('customer_id')->nullable();
     $table->string('part_code')->nullable();
     $table->string('work_order_no')->nullable();

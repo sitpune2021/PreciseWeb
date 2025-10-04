@@ -9,9 +9,21 @@
                 <div class="col-lg-12">
                     <div class="card">
 
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <!-- Heading -->
                             <h5 class="mb-0">View Material Requirements</h5>
+
+                            <!-- Buttons on right -->
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('AddMaterialReq') }}" class="btn btn-success btn-sm">
+                                    <i class="ri-add-line align-middle"></i> Add Material Req
+                                </a>
+                                <a href="{{ route('trashMaterialReq') }}" class="btn btn-warning btn-sm">
+                                    <i class="ri-delete-bin-line align-middle"></i> View Trash
+                                </a>
+                            </div>
                         </div>
+
 
                         <div class="card-body">
                             <div class="table-responsive">

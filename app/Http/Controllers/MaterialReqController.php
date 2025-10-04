@@ -5,132 +5,123 @@ namespace App\Http\Controllers;
 use App\Models\MaterialReq;
 use App\Models\Customer;
 use App\Models\MaterialType;
-
-
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MaterialReqController extends Controller
 {
-
     public function AddMaterialReq()
     {
         $codes = Customer::where('status', 1)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
+
         $customers = Customer::where('status', 1)->orderBy('name')->get();
-        $materialtype   = MaterialType::all();
+        $materialtype = MaterialType::all();
+
         return view('MaterialReq.add', compact('codes', 'materialtype', 'customers'));
     }
 
-public function storeMaterialReq(Request $request)
-{
-    $validated = $request->validate([
-        'customer_id'   => 'required|exists:customers,id',
-        'code'          => 'required|string|max:50|unique:material_reqs,code',
-        'date'          => 'required|date',
-        'description'   => 'required|string|max:255',
-        'work_order_no' => 'required|string|max:50',
-        'dia'           => 'nullable|numeric|min:0',
-        'length'        => 'nullable|numeric|min:0',
-        'width'         => 'nullable|numeric|min:0',
-        'height'        => 'required|numeric|min:0',
-        'material'      => 'required|exists:material_types,id',
-        'qty'           => 'required|numeric|min:1',
-        'lathe'         => 'nullable|numeric|min:0',
-        'mg4'           => 'nullable|numeric|min:0',
-        'mg2'           => 'nullable|numeric|min:0',
-        'rg2'           => 'nullable|numeric|min:0',
-        'sg4'           => 'nullable|numeric|min:0',
-        'sg2'           => 'nullable|numeric|min:0',
-        'vmc_cost'      => 'nullable|numeric|min:0',
-        'hrc'           => 'nullable|numeric|min:0',
-        'edm_qty'       => 'nullable|numeric|min:0',
-        'edm_rate'      => 'nullable|numeric|min:0',
-        'cl'            => 'nullable|string|max:50',
-    ]);
+    public function storeMaterialReq(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_id'   => 'required|exists:customers,id',
+            'code'          => 'required|string|max:50',
+            'date'          => 'required|date',
+            'description'   => 'required|string|max:255',
+            'work_order_no' => 'required|string|max:50',
+            'dia'           => 'nullable|numeric|min:0',
+            'length'        => 'nullable|numeric|min:0',
+            'width'         => 'nullable|numeric|min:0',
+            'height'        => 'required|numeric|min:0',
+            'material'      => 'required|exists:material_types,id',
+            'qty'           => 'required|numeric|min:1',
+            'lathe'         => 'nullable|numeric|min:0',
+            'mg4'           => 'nullable|numeric|min:0',
+            'mg2'           => 'nullable|numeric|min:0',
+            'rg2'           => 'nullable|numeric|min:0',
+            'sg4'           => 'nullable|numeric|min:0',
+            'sg2'           => 'nullable|numeric|min:0',
+            'vmc_cost'      => 'nullable|numeric|min:0',
+            'hrc'           => 'nullable|numeric|min:0',
+            'edm_qty'       => 'nullable|numeric|min:0',
+            'edm_rate'      => 'nullable|numeric|min:0',
+            'cl'            => 'nullable|string|max:50',
+        ]);
 
-    $material = MaterialType::findOrFail($request->material);
+        $material = MaterialType::findOrFail($request->material);
 
-    // ✅ Volume calculation
-    if ($request->dia > 0) {
-        // Cylinder volume
-        $volume = pi() * pow(($request->dia / 2), 2) * $request->height;
-    } else {
-        // Rectangular volume
-        $volume = $request->length * $request->width * $request->height;
+        // Volume calculation
+        $volume = ($request->dia > 0)
+            ? pi() * pow(($request->dia / 2), 2) * $request->height
+            : $request->length * $request->width * $request->height;
+
+        $weight_per_piece = ($volume * $material->material_gravity) / 1000000;
+        $weight = round($weight_per_piece * $request->qty, 3);
+
+        $material_cost = round(($weight_per_piece * $material->material_rate) * $request->qty, 2);
+
+        $edm_cost = ($request->edm_qty * $request->edm_rate) * $request->qty;
+
+        $machine_cost = (
+            $request->lathe +
+            $request->mg4 +
+            $request->mg2 +
+            $request->rg2 +
+            $request->sg4 +
+            $request->sg2 +
+            $request->vmc_cost +
+            $request->hrc
+        ) * $request->qty;
+
+        $total_cost = round($material_cost + $edm_cost + $machine_cost, 2);
+
+        $data = $validated;
+        $data['material_gravity'] = $material->material_gravity;
+        $data['material_rate'] = $material->material_rate;
+        $data['weight'] = $weight;
+        $data['material_cost'] = $material_cost;
+        $data['total_cost'] = $total_cost;
+        $data['admin_id'] = Auth::id(); // <-- add admin_id
+
+        MaterialReq::create($data);
+
+        return redirect()->route('ViewMaterialReq')
+            ->with('success', 'Material Requirement Added Successfully!');
     }
-
-    // ✅ Weight per piece
-    $weight_per_piece = ($volume * $material->material_gravity) / 1000000;
-
-    // ✅ Total weight
-    $weight = $weight_per_piece * $request->qty;
-
-    // ✅ Material cost
-    $material_cost = ($weight_per_piece * $material->material_rate) * $request->qty;
-
-    // ✅ EDM cost
-    $edm_cost = ($request->edm_qty * $request->edm_rate) * $request->qty;
-
-    // ✅ Machine cost
-    $machine_cost = (
-        $request->lathe +
-        $request->mg4 +
-        $request->mg2 +
-        $request->rg2 +
-        $request->sg4 +
-        $request->sg2 +
-        $request->vmc_cost +
-        $request->hrc
-    ) * $request->qty;
-
-    // ✅ Total cost
-    $total_cost = $material_cost + $edm_cost + $machine_cost;
-
-    // ✅ Round only at the end
-    $weight = round($weight, 3);
-    $material_cost = round($material_cost, 2);
-    $total_cost = round($total_cost, 2);
-
-    // ✅ Save
-    $data = $validated;
-    $data['material_gravity'] = $material->material_gravity;
-    $data['material_rate']    = $material->material_rate;
-    $data['weight']           = $weight;
-    $data['material_cost']    = $material_cost;
-    $data['total_cost']       = $total_cost;
-
-    MaterialReq::create($data);
-
-    return redirect()->route('ViewMaterialReq')
-        ->with('success', 'Material Requirement Added Successfully!');
-}
-
-
 
     public function ViewMaterialReq()
     {
-        $materialReq = MaterialReq::orderBy('id', 'desc')->get();
-        $codes = Customer::select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+        // Only show current user's records
+        $materialReq = MaterialReq::where('admin_id', Auth::id())
+            ->orderBy('updated_at', 'desc')->get();
+
         return view('MaterialReq.view', compact('materialReq'));
     }
+
+    // public function ViewMaterialReq()
+    // {
+    //     $materialReq = MaterialReq::orderBy('updated_at', 'desc')->get();
+ 
+    //     return view('MaterialReq.view', compact('materialReq'));
+    // }
 
     public function editMaterialReq(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $materialReq = MaterialReq::findOrFail($id); // fetch the specific record
+        $materialReq = MaterialReq::where('admin_id', Auth::id())->findOrFail($id);
+
         $materialtype = MaterialType::all();
-        $codes = Customer::select('id', 'name', 'code')->get(); // Customer list for dropdown
+        $codes = Customer::select('id', 'name', 'code')->get();
+
         return view('MaterialReq.add', compact('codes', 'materialtype', 'materialReq'));
     }
 
-
-    // Update logic
     public function updateMaterialReq(Request $request, $id)
     {
         $id = base64_decode($id);
+        $materialReq = MaterialReq::where('admin_id', Auth::id())->findOrFail($id);
 
         $request->validate([
             'customer_id' => 'required',
@@ -138,41 +129,38 @@ public function storeMaterialReq(Request $request)
             'date' => 'required|date',
             'work_order_no' => 'required',
             'description' => 'required',
-
         ]);
 
-        $materialReq = MaterialReq::findOrFail($id);
-
-        $materialReq->customer_id = $request->customer_id;
-        $materialReq->code        = $request->code;
-        $materialReq->date        = $request->date;
-        $materialReq->work_order_no = $request->work_order_no;
-        $materialReq->description = $request->description;
-        $materialReq->dia         = $request->dia;
-        $materialReq->length      = $request->length;
-        $materialReq->width       = $request->width;
-        $materialReq->height      = $request->height;
-        $materialReq->material    = $request->material;
-        $materialReq->material_rate = $request->material_rate;
-        $materialReq->material_gravity = $request->material_gravity;
-        $materialReq->qty         = $request->qty;
-        $materialReq->weight      = $request->weight;
-        $materialReq->material_cost = $request->material_cost;
-        $materialReq->lathe       = $request->lathe;
-        $materialReq->mg4         = $request->mg4;
-        $materialReq->mg2         = $request->mg2;
-        $materialReq->rg2         = $request->rg2;
-        $materialReq->sg4         = $request->sg4;
-        $materialReq->sg2         = $request->sg2;
-        $materialReq->vmc_hrs     = $request->vmc_hrs;
-        $materialReq->vmc_cost    = $request->vmc_cost;
-        $materialReq->hrc         = $request->hrc;
-        $materialReq->edm_qty     = $request->edm_qty;
-        $materialReq->edm_rate    = $request->edm_rate;
-        $materialReq->cl          = $request->cl;
-        $materialReq->total_cost  = $request->total_cost;
-
-        $materialReq->save();
+        $materialReq->update([
+            'customer_id' => $request->customer_id,
+            'code' => $request->code,
+            'date' => $request->date,
+            'work_order_no' => $request->work_order_no,
+            'description' => $request->description,
+            'dia' => $request->dia,
+            'length' => $request->length,
+            'width' => $request->width,
+            'height' => $request->height,
+            'material' => $request->material,
+            'material_rate' => $request->material_rate,
+            'material_gravity' => $request->material_gravity,
+            'qty' => $request->qty,
+            'weight' => $request->weight,
+            'material_cost' => $request->material_cost,
+            'lathe' => $request->lathe,
+            'mg4' => $request->mg4,
+            'mg2' => $request->mg2,
+            'rg2' => $request->rg2,
+            'sg4' => $request->sg4,
+            'sg2' => $request->sg2,
+            'vmc_hrs' => $request->vmc_hrs,
+            'vmc_cost' => $request->vmc_cost,
+            'hrc' => $request->hrc,
+            'edm_qty' => $request->edm_qty,
+            'edm_rate' => $request->edm_rate,
+            'cl' => $request->cl,
+            'total_cost' => $request->total_cost,
+        ]);
 
         return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement updated successfully!');
     }
@@ -180,11 +168,43 @@ public function storeMaterialReq(Request $request)
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $materialReq = MaterialReq::findOrFail($id);
+        $materialReq = MaterialReq::where('admin_id', Auth::id())->findOrFail($id);
         $materialReq->delete();
-        return redirect()->route('ViewMaterialReq')->with('success', 'Branch deleted successfully.');
+
+        return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement deleted successfully.');
     }
 
+    public function trash()
+    {
+        $trashedMaterialReq = MaterialReq::onlyTrashed()
+            ->orderBy('id', 'desc')
+            ->get();
+ 
+        $materialReq = MaterialReq::all();
+        return view('MaterialReq.trash', compact('trashedMaterialReq', 'materialReq'));
+    }
+ 
+    public function restore($encryptedId)
+    {
+        $id = base64_decode($encryptedId);
+        $material = MaterialReq::withTrashed()->findOrFail($id);
+ 
+        $exists = MaterialReq::where('code', $material->code)
+            ->whereNull('deleted_at')
+            ->exists();
+ 
+        if ($exists) {
+            $material->restore();
+ 
+            return redirect()->route('editMaterialReq', base64_encode($material->id))
+                ->with('success', "Material Requirement '{$material->code}' already exists. Redirected to Edit Page.");
+        }
+ 
+        $material->restore();
+ 
+        return redirect()->route('ViewMaterialReq')
+            ->with('success', "Material Requirement '{$material->code}' restored successfully.");
+    }
 
     public function getMaterial($id)
     {
@@ -195,6 +215,4 @@ public function storeMaterialReq(Request $request)
             'rate'    => $material->material_rate,
         ]);
     }
-
-    
 }

@@ -57,7 +57,6 @@
                                     <td>{{ $m->start_time ? \Carbon\Carbon::parse($m->start_time)->format('d-m-Y h:i A') : '' }}</td>
                                     <td>{{ $m->end_time ? \Carbon\Carbon::parse($m->end_time)->format('d-m-Y h:i A') : '' }}</td>
                                     <td>{{ $m->invoice_no }}</td>
-
                                     <td class="text-center">
                                         @if($m->deleted_at)
                                         {{ $m->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
@@ -68,14 +67,14 @@
                                     <td class="text-center">
                                         <a href="{{ route('restoreMachineRecord', base64_encode($m->id)) }}"
                                             class="btn btn-success btn-sm"
-                                            onclick="return confirmRestore('{{ $m->machine_name }}', '{{ route('restoreMachineRecord', base64_encode($m->id)) }}')">
+                                            onclick="return confirmRestore('{{ $m->part_no }}', '{{ $m->work_order }}', '{{ route('restoreMachineRecord', base64_encode($m->id)) }}')">
                                             Restore
                                         </a>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted">No trashed machine records found.</td>
+                                    <td colspan="13" class="text-center text-muted">No trashed machine records found.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -91,19 +90,18 @@
 {{-- Custom JS --}}
 <script>
     let Machines = @json($machines);
-</script>
-<script>
-    function confirmRestore(name, url) {
+
+    function confirmRestore(partNo, workOrder, url) {
         // Check if duplicate exists
-        let exists = Machines.some(m => m.machine_name === name && m.deleted_at === null);
+        let exists = Machines.some(m => m.part_no === partNo && m.work_order === workOrder && m.deleted_at === null);
 
         let message;
         if (exists) {
-            // Duplicate exists → show message about redirecting to edit page
-            message = "Machine record '" + name + "' already exists.\nYou will be redirected to the Edit Page.\nDo you want to continue?";
+            // Duplicate → show message about redirecting to edit page
+            message = "Machine record with Part No '" + partNo + "' and Work Order '" + workOrder + "' already exists.\nYou will be redirected to the Edit Page.\nDo you want to continue?";
         } else {
-            // No duplicate → normal restore confirmation
-            message = "already exists '" + name + "'?\nYou will be redirected to the Edit Page after restore.";
+            // No duplicate → simple restore confirmation
+            message = "Do you want to restore Machine record with Part No '" + partNo + "' and Work Order '" + workOrder + "'?";
         }
 
         if (confirm(message)) {
@@ -112,7 +110,5 @@
         return false;
     }
 </script>
-
-
 
 @endsection

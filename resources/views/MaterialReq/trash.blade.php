@@ -1,27 +1,23 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
- 
+
             {{-- Success/Error Message --}}
             @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+            <div class="alert alert-success">{{ session('success') }}</div>
             @endif
- 
+
             @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
+            <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
- 
+
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Trash Work Orders</h5>
-                    <a href="{{ route('ViewWorkOrder') }}" class="btn btn-primary btn-sm">← Back to Work Orders</a>
+                    <h5 class="mb-0">Trash Material Requirements</h5>
+                    <a href="{{ route('ViewMaterialReq') }}" class="btn btn-primary btn-sm">← Back to Material Requirements</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -29,38 +25,42 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Sr.No</th>
-                                    <th class="text-center">Project ID</th>
-                                    <th class="text-center">Customer Code</th>
-                                    <th class="text-center">Part No.</th>
+                                    <th class="text-center">Customer</th>
+                                    <th class="text-center">Code</th>
+                                    <th class="text-center">Date</th>
+                                    <th class="text-center">Work Order No</th>
+                                    <th class="text-center">Description</th>
                                     <th class="text-center">Deleted At</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($trashWorkOrders as $wo)
+                                @forelse($trashedMaterialReq as $req)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td class="text-center">{{ $wo->project_id }}</td>
-                                    <td class="text-center">{{ $wo->customer?->code ?? '' }}</td>
-                                    <td class="text-center">{{ $wo->part }}</td>
+                                    <td>{{ $req->customer->name ?? 'N/A' }}</td>
+                                    <td>{{ $req->code }}</td>
+                                    <td>{{ $req->date }}</td>
+                                    <td>{{ $req->work_order_no }}</td>
+                                    <td>{{ $req->description }}</td>
                                     <td class="text-center">
-                                        @if($wo->deleted_at)
-                                        {{ $wo->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
+                                        @if($req->deleted_at)
+                                            {{ $req->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
                                         @else
-                                        —
+                                            —
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('restoreWorkOrder', base64_encode($wo->id)) }}"
+                                        <a href="{{ route('restoreMaterialReq', base64_encode($req->id)) }}"
                                             class="btn btn-success btn-sm"
-                                            onclick="return confirmRestore('{{ $wo->project_id }}', '{{ route('restoreWorkOrder', base64_encode($wo->id)) }}')">
+                                            onclick="return confirmRestore('{{ $req->code }}', '{{ route('restoreMaterialReq', base64_encode($req->id)) }}')">
                                             Restore
                                         </a>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted">No trashed work orders found.</td>
+                                    <td colspan="8" class="text-center text-muted">No trashed material requirements found.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -68,32 +68,30 @@
                     </div>
                 </div>
             </div>
- 
+
         </div>
     </div>
 </div>
- 
-{{-- Custom JS --}}
+
+{{-- JS --}}
 <script>
-    let WorkOrders = @json($workOrders);
- 
-    function confirmRestore(projectId, url) {
-        let exists = WorkOrders.some(wo =>
-            wo.project_id == projectId && wo.deleted_at === null
-        );
- 
+    let MaterialReq = @json($materialReq);
+
+    function confirmRestore(code, url) {
+        let exists = MaterialReq.some(m => m.code === code && m.deleted_at === null);
+
         let message;
         if (exists) {
-            message = "Work Order for Project ID '" + projectId + "' already exists.\nYou will be redirected to the Edit Page.\nDo you want to continue?";
+            message = "'" + code + "' already exists.\nYou will be redirected to the Edit Page.\nDo you want to continue?";
         } else {
-            message = "Do you want to restore Work Order for Project ID '" + projectId + "'?";
+            message = "Do you want to restore '" + code + "'?";
         }
- 
+
         if (confirm(message)) {
             window.location.href = url;
         }
         return false;
     }
 </script>
- 
+
 @endsection

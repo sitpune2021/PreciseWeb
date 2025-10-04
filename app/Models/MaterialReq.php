@@ -15,6 +15,7 @@ class MaterialReq extends Model
     protected $table = 'material_reqs';
 
     protected $fillable = [
+         'admin_id',
         'customer_id',
         'code',
         'date',

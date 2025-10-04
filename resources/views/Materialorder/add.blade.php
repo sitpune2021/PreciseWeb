@@ -177,34 +177,51 @@
     </div> <!-- page-content -->
 </div> <!-- main-content -->
 
-
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $('#customer_id').change(function() {
-        var id = $(this).val();
-        var code = $(this).find(':selected').data('code');
-        $('#code').val(code); // auto-fill customer code
+<!-- Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-        if (id) {
-            $.ajax({
-                url: '/material-reqs/' + id, // must match the route above
-                type: 'GET',
-                success: function(data) {
-                    $('#f_diameter').val(data.dia);
-                    $('#f_length').val(data.length);
-                    $('#f_width').val(data.width);
-                    $('#f_height').val(data.height);
-                    $('#material').val(data.material);
-                    $('#quantity').val(data.qty);
-                },
-                error: function(xhr) {
-                    console.error(xhr.responseText);
-                }
-            });
-        } else {
-            $('#f_diameter, #f_length, #f_width, #f_height, #material, #quantity').val('');
-            $('#code').val('');
-        }
+<script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+
+        // When customer changes
+        $('#customer_id').change(function() {
+            var customerId = $(this).val();
+
+            if(customerId) {
+                $.ajax({
+                    url: "{{ route('getCustomerData') }}", // We'll create this route
+                    type: "GET",
+                    data: { id: customerId },
+                    success: function(data) {
+                        // Fill fields
+                        $('#code').val(data.code ?? '');
+                        $('#work_order_no').val(data.work_order_no ?? '');
+                        $('#material').val(data.material ?? '');
+                        $('#quantity').val(data.qty ?? '');
+                        $('#f_diameter').val(data.f_diameter ?? '');
+                        $('#f_length').val(data.f_length ?? '');
+                        $('#f_width').val(data.f_width ?? '');
+                        $('#f_height').val(data.f_height ?? '');
+                        $('#r_diameter').val(data.r_diameter ?? '');
+                        $('#r_length').val(data.r_length ?? '');
+                        $('#r_width').val(data.r_width ?? '');
+                        $('#r_height').val(data.r_height ?? '');
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            } else {
+                // Clear fields if no customer selected
+                $('#code, #work_order_no, #material, #quantity, #f_diameter, #f_length, #f_width, #f_height, #r_diameter, #r_length, #r_width, #r_height').val('');
+            }
+        });
     });
 </script>
+
+ 
 @endsection

@@ -155,7 +155,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="exp_time" class="form-label">Exp Time (HH:MM) <span class="mandatory">*</span></label>
                                                 <input type="text" name="exp_time" id="exp_time"
@@ -168,7 +168,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="quantity" class="form-label">Quantity <span class="mandatory">*</span></label>
                                                 <input
@@ -187,6 +187,24 @@
                                                 <span class="text-red quantity"></span>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-3">
+                                            <label for="material" class="form-label">Material type <span class="mandatory">*</span></label>
+                                            <select name="material" id="material" class="form-control form-select">
+                                                <option value="">Select Material</option>
+                                                @foreach($materialtype as $mat)
+                                                <option value="{{ $mat->material_type }}"
+                                                    {{ old('material', $workorder->material ?? '') == $mat->material_type ? 'selected' : '' }}>
+                                                    {{ $mat->material_type }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('material')
+                                            <span class="text-red small">{{ $message }}</span>
+                                            @enderror
+                                            <span class="text-red material"></span>
+                                        </div>
+
 
                                         <div class="col-md-12">
                                             <div class="mb-3">
@@ -222,7 +240,8 @@
                                                         <th>Sr. No.</th>
                                                         <th>Customer</th>
                                                         <th>Part</th>
-                                                        <th>Pro.name</th>
+                                                        <th>Material<br>Type</th>
+                                                        <th>Project<br>.name</th>
                                                         <th>Date</th>
                                                         <th>Diameter</th>
                                                         <th>Length</th>
@@ -270,6 +289,7 @@
 
                                                 let customerVal = document.querySelector("#customer_id").value;
                                                 let part = document.getElementById("part").value;
+                                                let material = document.getElementById("material").value;
                                                 let project_id = document.getElementById("project_id").value;
                                                 let date = document.getElementById("date").value;
                                                 let exp_time = document.getElementById("exp_time").value;
@@ -300,6 +320,10 @@
                                                     $(".quantity").text("The Quantity field is required");
                                                     hasError = true;
                                                 }
+                                                if (!material) {
+                                                    $(".material").text("The Material field is required");
+                                                    hasError = true;
+                                                }
                                                 if (!description) {
                                                     $(".part_description_error").text("The Part description field is required");
                                                     hasError = true;
@@ -328,6 +352,10 @@
                                                 let customer = document.querySelector("#customer_id option:checked").text;
                                                 let customerVal = document.querySelector("#customer_id").value;
                                                 let part = document.getElementById("part").value;
+
+                                                let material = document.getElementById("material").value;
+                                                let material_name = document.querySelector("#material option:checked").text;
+
                                                 let project_id = document.getElementById("project_id").value;
                                                 let project_name = document.querySelector("#project_id option:checked").text;
                                                 let date = document.getElementById("date").value;
@@ -337,6 +365,7 @@
                                                 let height = document.getElementById("height").value;
                                                 let exp_time = document.getElementById("exp_time").value;
                                                 let quantity = document.getElementById("quantity").value;
+
                                                 let description = document.getElementById("part_description").value;
 
                                                 rowCount++;
@@ -344,25 +373,27 @@
 
                                                 let newRow = document.createElement("tr");
                                                 newRow.innerHTML = `
-                                            <td>${rowCount}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][customer_id]" value="${customerVal}">${customer}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][part]" value="${part}">${part}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][project_id]" value="${project_id}">${project_name}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][date]" value="${date}">${date}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][dimeter]" value="${dimeter}">${dimeter}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][length]" value="${length}">${length}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][width]" value="${width}">${width}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][height]" value="${height}">${height}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][exp_time]" value="${exp_time}">${exp_time}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][quantity]" value="${quantity}">${quantity}</td>
-                                            <td><input type="hidden" name="rows[${rowCount}][part_description]" value="${description}">${description}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm editRow">✏</button>
-                                                <button type="button" class="btn btn-danger btn-sm deleteRow">🗑</button>
-                                            </td>
+                                                <td>${rowCount}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][customer_id]" value="${customerVal}">${customer}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][part]" value="${part}">${part}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][material]" value="${material}">${material_name}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][project_id]" value="${project_id}">${project_name}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][date]" value="${date}">${date}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][dimeter]" value="${dimeter}">${dimeter}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][length]" value="${length}">${length}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][width]" value="${width}">${width}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][height]" value="${height}">${height}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][exp_time]" value="${exp_time}">${exp_time}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][quantity]" value="${quantity}">${quantity}</td>
+                                                <td><input type="hidden" name="rows[${rowCount}][part_description]" value="${description}">${description}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm editRow">✏</button>
+                                                    <button type="button" class="btn btn-danger btn-sm deleteRow">🗑</button>
+                                                </td>
                                             `;
                                                 tableBody.appendChild(newRow);
                                                 clearDimensions();
+
                                                 newRow.querySelector(".deleteRow").addEventListener("click", function() {
                                                     newRow.remove();
                                                     updateSrNo();
@@ -373,6 +404,9 @@
                                                     $('#customer_id').val(customerVal).trigger('change'); // 🔹 force select2 update
 
                                                     document.getElementById("part").value = part;
+
+                                                    document.getElementById("material").value = material;
+                                                    $('#material').val(material).trigger('change'); // 🔹 force select2 update
 
                                                     document.getElementById("project_id").value = project_id;
                                                     $('#project_id').val(project_id).trigger('change'); // 🔹 force select2 update
@@ -395,6 +429,7 @@
                                                     if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
                                                 });
                                                 $('#customer_id').val('').trigger('change');
+                                                $('#material').val('').trigger('change');
                                                 document.getElementById("workOrderTableWrapper").style.display = "block";
                                                 document.getElementById("submitBtn").style.display = "inline-block";
                                                 return true;

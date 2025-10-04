@@ -9,16 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 class HsncodeController extends Controller
 {
-    // Show add form + list
-    public function addHsn()
-    {
-        $hsncodes = Hsncode::where('is_active', 1)
-            ->where('admin_id', Auth::id()) // filter by logged-in admin
-            ->latest()
-            ->get();
-
-        return view('Hsncode.add', compact('hsncodes'));
-    }
+   public function addHsn()
+{
+    $hsncodes = Hsncode::where('is_active', 1)
+        ->where('admin_id', Auth::id())
+        ->orderBy('updated_at', 'desc')
+        ->get();
+ 
+    return view('Hsncode.add', compact('hsncodes'));
+}
 
     // Store record
     public function store(Request $request)
@@ -144,39 +143,39 @@ class HsncodeController extends Controller
         return view('Hsncode.trash', compact('trashedhsn', 'hsncodes'));
     }
 
-    // Restore
-    public function restore($encryptedId)
-    {
-        $id = base64_decode($encryptedId);
-
-        $hsncode = Hsncode::withTrashed()
-            ->where('id', $id)
-            ->where('admin_id', Auth::id())
-            ->firstOrFail();
-
-        // Check if same HSN already exists for same admin
-        $exists = Hsncode::where('hsn_code', $hsncode->hsn_code)
-            ->where('admin_id', Auth::id())
-            ->whereNull('deleted_at')
-            ->where('is_active', 1)
-            ->exists();
-
-        if ($exists) {
-            // Restore but keep inactive
-            $hsncode->is_active = 0;
-            $hsncode->restore();
-            $hsncode->save();
-
-            return redirect()->route('editHsn', base64_encode($hsncode->id))
-                ->with('success', "HSN Code '{$hsncode->hsn_code}' already exists. Redirected to Edit Page.");
-        }
-
-        // Normal restore
-        $hsncode->is_active = 1;
+   public function restore($encryptedId)
+{
+    $id = base64_decode($encryptedId);
+ 
+    $hsncode = Hsncode::withTrashed()
+        ->where('id', $id)
+        ->where('admin_id', Auth::id())
+        ->firstOrFail();
+ 
+    $exists = Hsncode::where('hsn_code', $hsncode->hsn_code)
+        ->where('admin_id', Auth::id())
+        ->whereNull('deleted_at')
+        ->where('is_active', 1)
+        ->exists();
+ 
+    if ($exists) {
+        $hsncode->is_active = 0;
         $hsncode->restore();
+        $hsncode->touch();
         $hsncode->save();
-
-        return redirect()->route('addHsn')
-            ->with('success', "HSN Code '{$hsncode->hsn_code}' restored successfully.");
+ 
+        return redirect()->route('editHsn', base64_encode($hsncode->id))
+            ->with('success', "HSN Code '{$hsncode->hsn_code}' already exists. Redirected to Edit Page.");
     }
+ 
+    $hsncode->is_active = 1;
+    $hsncode->restore();
+    $hsncode->touch();
+    $hsncode->save();
+ 
+    return redirect()->route('addHsn')
+        ->with('success', "HSN Code '{$hsncode->hsn_code}' restored successfully.");
+}
+ 
+
 }

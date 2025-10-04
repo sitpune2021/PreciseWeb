@@ -257,9 +257,16 @@ for ($m = 1; $m <= 12; $m++) {
                             <h4 class="card-title mb-0">
                                 <i class="ri-briefcase-4-line me-2 text-primary"></i> Latest Projects
                             </h4>
-                            <a href="{{ route('ViewProject') }}" class="btn btn-sm btn-primary rounded-pill shadow-sm">
-                                View All <i class="ri-arrow-right-line align-bottom"></i>
-                            </a>
+                            <div class="flex-shrink-0">
+                                <a href="{{ route('AddProject') }}"
+                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                    <i class="ri-add-line"></i> Add New
+                                </a>
+                                <a href="{{ route('ViewProject') }}"
+                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                    View All <i class="ri-arrow-right-line ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -346,12 +353,17 @@ for ($m = 1; $m <= 12; $m++) {
                         <div class="card card-height-100">
                             <div class="card-header border-0 d-flex align-items-center">
                                 <h4 class="card-title mb-0 flex-grow-1">Work Orders </h4>
-                                <div>
-                                    <button class="btn btn-soft-secondary btn-sm">ALL</button>
-                                    <button class="btn btn-soft-secondary btn-sm">1M</button>
-                                    <button class="btn btn-soft-secondary btn-sm">6M</button>
-                                    <button class="btn btn-soft-primary btn-sm">1Y</button>
+                                <div class="flex-shrink-0">
+                                    <a href="{{ route('AddWorkOrder') }}"
+                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                        <i class="ri-add-line"></i> Add New
+                                    </a>
+                                    <a href="{{ route('ViewWorkOrder') }}"
+                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                        View All <i class="ri-arrow-right-line ms-1"></i>
+                                    </a>
                                 </div>
+
                             </div>
 
                             <!-- Counters Row -->
@@ -410,9 +422,17 @@ for ($m = 1; $m <= 12; $m++) {
                                 <h5 class="card-title mb-0 d-flex align-items-center">
                                     <i class="ri-history-line me-2 text-warning"></i> Latest Setup Sheets
                                 </h5>
-                                <a href="{{ route('ViewSetupSheet') }}" class="btn btn-sm btn-warning text-dark fw-bold shadow-sm">
-                                    View All <i class="ri-arrow-right-line ms-1"></i>
-                                </a>
+
+                                <div class="flex-shrink-0">
+                                    <a href="{{ route('AddSetupSheet') }}"
+                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                        <i class="ri-add-line"></i> Add New
+                                    </a>
+                                    <a href="{{ route('ViewSetupSheet') }}"
+                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                        View All <i class="ri-arrow-right-line ms-1"></i>
+                                    </a>
+                                </div>
                             </div>
 
                             <div class="card-body">
@@ -471,10 +491,16 @@ for ($m = 1; $m <= 12; $m++) {
                             <div class="card-header align-items-center d-flex">
                                 <h4 class="card-title mb-0 flex-grow-1">Latest Machine Records</h4>
                                 <div class="flex-shrink-0">
-                                    <a href="{{ route('ViewMachinerecord') }}" class="btn btn-soft-info btn-sm material-shadow-none">
-                                        <i class="ri-file-list-3-line align-bottom"></i> View All
+                                    <a href="{{ route('AddMachinerecord') }}"
+                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                        <i class="ri-add-line"></i> Add New
+                                    </a>
+                                    <a href="{{ route('ViewMachinerecord') }}"
+                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                        View All <i class="ri-arrow-right-line ms-1"></i>
                                     </a>
                                 </div>
+
                             </div>
 
                             <div class="card-body">
@@ -534,13 +560,21 @@ for ($m = 1; $m <= 12; $m++) {
                     <div class="row mt-4">
                         <div class="col-xxl-6">
                             <div class="card shadow-lg border-0 rounded-4 h-100">
-                                <div class="card-header bg-gradient bg-info-subtle border-0 rounded-top-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title mb-0 d-flex align-items-center">
-                                        <i class="ri-cube-line me-2 text-info"></i> Latest Material Requirements
-                                    </h5>
-                                    <a href="{{ route('ViewMaterialReq') }}" class="btn btn-sm btn-info text-white shadow-sm">
-                                        View All <i class="ri-arrow-right-line ms-1"></i>
-                                    </a>
+                                <div class="card-header d-flex justify-content-between align-items-center 
+                         text-white border-0 rounded-top-4 py-3 px-4">
+                                    <h4 class="card-title mb-0 d-flex align-items-center">
+                                        <i class="ri-cube-line me-2"></i> Latest Material Requirements
+                                    </h4>
+                                    <div class="flex-shrink-0">
+                                        <a href="{{ route('AddMaterialReq') }}"
+                                            class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                            <i class="ri-add-line"></i> Add New
+                                        </a>
+                                        <a href="{{ route('ViewMaterialReq') }}"
+                                            class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                            View All <i class="ri-arrow-right-line ms-1"></i>
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -558,8 +592,18 @@ for ($m = 1; $m <= 12; $m++) {
                                             <tbody>
                                                 @forelse($latestMaterialReq as $req)
                                                 <tr class="align-middle text-center">
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $req->customer->name ?? '-' }}</td>
+                                                    <td class="text-muted">{{ $loop->iteration }}</td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center justify-content-start">
+                                                            <div class="avatar-xs me-2">
+                                                                <div class="avatar-title bg-info-subtle text-info rounded-circle">
+                                                                    <i class="ri-user-line"></i>
+                                                                </div>
+                                                            </div>
+                                                            <span>{{ $req->customer->name ?? '-' }}</span>
+                                                        </div>
+
+                                                    </td>
                                                     <td><span class="badge bg-primary">{{ $req->code }}</span></td>
                                                     <td>{{ $req->materialtype->material_type ?? '-' }}</td>
                                                     <td><span class="badge bg-dark">{{ $req->qty }}</span></td>
@@ -569,14 +613,16 @@ for ($m = 1; $m <= 12; $m++) {
                                                 </tr>
                                                 @empty
                                                 <tr>
-                                                    <td colspan="6" class="text-center text-muted">
-                                                        <i class="ri-file-warning-line"></i> No Material Requirements Found
+                                                    <td colspan="6" class="text-center text-muted py-4">
+                                                        <i class="ri-file-warning-line fs-3 d-block mb-2"></i>
+                                                        No Material Requirements Found
                                                     </td>
                                                 </tr>
                                                 @endforelse
                                             </tbody>
                                         </table>
                                     </div>
+
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <small class="text-muted">
                                             Showing <span class="fw-semibold">{{ $latestMaterialReq->count() }}</span> of
@@ -588,7 +634,7 @@ for ($m = 1; $m <= 12; $m++) {
                             </div>
                         </div>
                     </div>
-                    <br><br>
+
                     @endif
                 </div>
 

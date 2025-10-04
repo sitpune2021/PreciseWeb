@@ -13,20 +13,23 @@ use Illuminate\Support\Facades\Auth;
 class SetupSheetController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Add Setup Sheet Form
      */
     public function AddSetupSheet()
     {
-
-        $codes = Customer::where('status', 1)   // फक्त active
+        $codes = Customer::where('status', 1)
+            ->where('admin_id', Auth::id()) // Only current admin
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
 
-        $settings   = Setting::all();
+        $settings = Setting::where('admin_id', Auth::id())->get(); // Only current admin
         return view('SetupSheet.add', compact('codes', 'settings'));
     }
 
+    /**
+     * Store Setup Sheet
+     */
     public function storeSetupSheet(Request $request)
     {
         $validated = $request->validate([
@@ -40,7 +43,6 @@ class SetupSheetController extends Controller
             'size_in_y' => 'nullable|numeric|min:0',
             'size_in_z' => 'nullable|numeric|min:0',
 
-
             'setting'   => 'required|string|max:255',
             'e_time'    => 'required|string|max:255',
 
@@ -49,10 +51,9 @@ class SetupSheetController extends Controller
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
 
-
             'qty' => ['required', 'integer', 'min:1'],
 
-            // Hole Details (arrays)
+            // Hole Details
             'holes'        => 'nullable|array',
             'holes.*'      => 'required|numeric|min:0',
             'hole_x'       => 'required|array',
@@ -69,6 +70,7 @@ class SetupSheetController extends Controller
         ]);
 
         $setupSheet = new SetupSheet($validated);
+        $setupSheet->admin_id = Auth::id(); // Assign current admin
 
         if ($request->hasFile('setup_image')) {
             $image = $request->file('setup_image');
@@ -82,27 +84,33 @@ class SetupSheetController extends Controller
         return redirect()->route('ViewSetupSheet')->with('success', 'SetupSheet created successfully.');
     }
 
+    /**
+     * View All Setup Sheets
+     */
     public function ViewSetupSheet()
     {
-        $sheets = SetupSheet::orderBy('id', 'desc')->get();
+        $sheets = SetupSheet::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
         return view('SetupSheet.view', compact('sheets'));
     }
 
+    /**
+     * Edit Setup Sheet
+     */
     public function editSetupSheet(string $encryptedId)
     {
-
         $id = base64_decode($encryptedId);
-        $record = SetupSheet::findOrFail($id);
-        $setupSheet = SetupSheet::findOrFail($id);
-        $settings   = Setting::all();
-        $id = base64_decode($encryptedId);
-        $record = SetupSheet::findOrFail($id);
-        $setupSheet = SetupSheet::findOrFail($id);
-        $settings   = Setting::all();
+        $record = SetupSheet::where('admin_id', Auth::id())->findOrFail($id);
+        $setupSheet = $record;
+        $settings = Setting::where('admin_id', Auth::id())->get();
 
-        // Active customers + inactive customer 
-        $codes = Customer::where('status', 1)
-            ->orWhere('id', $setupSheet->customer_id)
+        // Active customers + current record customer
+        $codes = Customer::where(function ($q) use ($setupSheet) {
+            $q->where('status', 1)
+                ->where('admin_id', Auth::id())
+                ->orWhere('id', $setupSheet->customer_id);
+        })
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
@@ -110,12 +118,14 @@ class SetupSheetController extends Controller
         return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record'));
     }
 
+    /**
+     * Update Setup Sheet
+     */
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $setupSheet = SetupSheet::findOrFail($id);
+        $setupSheet = SetupSheet::where('admin_id', Auth::id())->findOrFail($id);
 
-        // Validation
         $validated = $request->validate([
             'customer_id'   => 'nullable|exists:customers,id',
             'part_code'     => 'required|string|max:255',
@@ -127,7 +137,6 @@ class SetupSheetController extends Controller
             'size_in_y' => 'nullable|numeric|min:0',
             'size_in_z' => 'nullable|numeric|min:0',
 
-
             'setting'   => 'required|string|max:255',
             'e_time'    => 'required|string|max:255',
 
@@ -135,7 +144,6 @@ class SetupSheetController extends Controller
             'y_refer'  => 'required|string|max:255',
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
-
 
             'qty'         => ['required', 'integer', 'min:1'],
 
@@ -154,29 +162,23 @@ class SetupSheetController extends Controller
             'setup_image'  => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        // Update normal fields
         $setupSheet->update($validated);
 
-        // Update image if uploaded
         if ($request->hasFile('setup_image')) {
             $image = $request->file('setup_image');
             $imageName = time() . '_' . $image->getClientOriginalName();
             $destinationPath = public_path('setup_images');
 
-            // Create folder if not exists
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
             }
 
-            // Move new image
             $image->move($destinationPath, $imageName);
 
-            // Delete old image if exists
             if ($setupSheet->setup_image && file_exists(public_path('setup_images/' . $setupSheet->setup_image))) {
                 unlink(public_path('setup_images/' . $setupSheet->setup_image));
             }
 
-            // Save new image name
             $setupSheet->setup_image = $imageName;
             $setupSheet->save();
         }
@@ -184,17 +186,24 @@ class SetupSheetController extends Controller
         return redirect()->route('ViewSetupSheet')->with('success', 'Setup Sheet updated successfully.');
     }
 
+    /**
+     * Delete Setup Sheet
+     */
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $setup = SetupSheet::findOrFail($id);
+        $setup = SetupSheet::where('admin_id', Auth::id())->findOrFail($id);
         $setup->delete();
-        return redirect()->route('ViewSetupSheet')->with('success', 'Branch deleted successfully.');
+        return redirect()->route('ViewSetupSheet')->with('success', 'Setup Sheet deleted successfully.');
     }
 
+    /**
+     * Get Customer Parts
+     */
     public function getCustomerParts($customerId)
     {
         $parts = WorkOrder::where('customer_id', $customerId)
+            ->where('admin_id', Auth::id())
             ->select(
                 'id',
                 'project_id',
@@ -214,7 +223,6 @@ class SetupSheetController extends Controller
             return [
                 'id' => $wo->id,
                 'part' => $wo->part,
-                // PartCode = CustomerCode_ProjectID_PartNo
                 'part_code' => ($wo->customer->code ?? '') . '_' . $wo->project_id . '_' . $wo->part,
                 'part_description' => $wo->part_description,
                 'size_in_x' => $wo->length,
@@ -222,7 +230,6 @@ class SetupSheetController extends Controller
                 'size_in_z' => $wo->height,
                 'e_time' => $wo->exp_time,
                 'qty' => $wo->quantity,
-                // Work order no = project_id
                 'work_order_no' => $wo->project_id,
             ];
         });
@@ -230,40 +237,42 @@ class SetupSheetController extends Controller
         return response()->json($formatted);
     }
 
-    // Trash Setup Sheets
+    /**
+     * Trash Setup Sheets
+     */
     public function trash()
     {
-        // Get soft deleted setup sheets
         $trashedSheets = SetupSheet::onlyTrashed()
+            ->where('admin_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
 
-        // Get active setup sheets
-        $sheets = SetupSheet::all();
+        $sheets = SetupSheet::where('admin_id', Auth::id())->get();
 
         return view('SetupSheet.trash', compact('trashedSheets', 'sheets'));
     }
 
-    // Restore setup sheet
+    /**
+     * Restore Setup Sheet
+     */
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $sheet = SetupSheet::withTrashed()->findOrFail($id);
+        $sheet = SetupSheet::withTrashed()
+            ->where('admin_id', Auth::id())
+            ->findOrFail($id);
 
-        // Check if a sheet with same part_code already exists
         $exists = SetupSheet::where('part_code', $sheet->part_code)
+            ->where('admin_id', Auth::id())
             ->whereNull('deleted_at')
             ->exists();
 
-        if ($exists) {
-            // Restore anyway and redirect to edit
-            $sheet->restore();
+        $sheet->restore();
 
+        if ($exists) {
             return redirect()->route('editSetupSheet', base64_encode($sheet->id))
                 ->with('success', "Setup Sheet '{$sheet->part_code}' already exists. Redirected to Edit Page.");
         }
-
-        $sheet->restore();
 
         return redirect()->route('ViewSetupSheet')
             ->with('success', "Setup Sheet '{$sheet->part_code}' restored successfully.");

@@ -23,7 +23,7 @@ class MachinerecordController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $materialtype = MaterialType::where('admin_id', Auth::id())->get(); // Only current admin
+        $materialtype = MaterialType::where('admin_id', Auth::id())->get(); 
         $workorders = WorkOrder::with('customer')
             ->where('admin_id', Auth::id()) // Only current admin
             ->whereHas('customer', function ($q) {
@@ -70,7 +70,7 @@ class MachinerecordController extends Controller
 
     public function ViewMachinerecord()
     {
-        $record = MachineRecord::where('admin_id', Auth::id())->latest()->get(); // Only current admin
+        $record = MachineRecord::where('admin_id', Auth::id())->latest()->get(); 
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 
         return view('Machinerecord.view', compact('record', 'workorders'));
@@ -80,7 +80,7 @@ class MachinerecordController extends Controller
     {
         $id = base64_decode($encryptedId);
 
-        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id); // Only current admin
+        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id);  
         $codes = Customer::where('status', 1)
             ->where('admin_id', Auth::id())
             ->select('id', 'code', 'name')
@@ -177,7 +177,6 @@ class MachinerecordController extends Controller
         return view('Machinerecord.trash', compact('trashedMachines', 'machines'));
     }
 
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -189,16 +188,16 @@ class MachinerecordController extends Controller
             ->whereNull('deleted_at')
             ->exists();
 
-        // Restore the record in any case
+        // Restore the record
         $machine->restore();
 
         if ($exists) {
-            // Duplicate exists → redirect to edit page with updated message
+            // Duplicate exists → redirect to edit page
             return redirect()->route('EditMachinerecord', base64_encode($machine->id))
                 ->with('success', "Machine record with Part No '{$machine->part_no}' and Work Order '{$machine->work_order}' already exists. You will be redirected to the Edit Page.");
         }
 
-        // No duplicate → redirect to main view
+        // No duplicate → redirect to main list
         return redirect()->route('ViewMachinerecord')
             ->with('success', "Machine record with Part No '{$machine->part_no}' restored successfully.");
     }

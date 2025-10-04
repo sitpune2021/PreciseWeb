@@ -9,13 +9,11 @@ use Illuminate\Validation\Rule;
 
 class MaterialTypeController extends Controller
 {
-    // Show form + list
     public function AddMaterialType()
     {
-
         $materialtypes = MaterialType::where('is_active', 1)
-            ->where('admin_id', Auth::id())           //admin_id
-            ->latest()
+            ->where('admin_id', Auth::id())
+            ->orderBy('updated_at', 'desc')
             ->get();
 
         return view('Materialtype.add', compact('materialtypes'));
@@ -173,7 +171,6 @@ class MaterialTypeController extends Controller
         return view('Materialtype.trash', compact('trashedmaterialtypes', 'materialtypes'));
     }
 
-    // Restore MaterialType
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -191,6 +188,7 @@ class MaterialTypeController extends Controller
         if ($exists) {
             $MaterialType->is_active = 1;
             $MaterialType->restore();
+            $MaterialType->touch();
             $MaterialType->save();
 
             return redirect()->route('editMaterialType', base64_encode($MaterialType->id))
@@ -199,6 +197,7 @@ class MaterialTypeController extends Controller
 
         $MaterialType->is_active = 1;
         $MaterialType->restore();
+        $MaterialType->touch();
         $MaterialType->save();
 
         return redirect()->route('AddMaterialType')

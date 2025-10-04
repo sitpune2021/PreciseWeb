@@ -104,28 +104,31 @@ class MaterialorderController extends Controller
     }
 
 
-    public function getMaterialReqByCustomer($customer_id)
-    {
-        $material = MaterialReq::where('customer_id', $customer_id)->first();
+    public function getCustomerData(Request $request)
+{
+    $customerId = $request->id;
 
-        if (!$material) {
-            return response()->json([
-                'dia' => '',
-                'length' => '',
-                'width' => '',
-                'height' => '',
-                'material' => '',
-                'qty' => ''
-            ]);
-        }
+    // Get the last material order for this customer (or any logic you need)
+    $materialReq = MaterialOrder::where('customer_id', $customerId)->latest()->first();
 
+    if($materialReq) {
         return response()->json([
-            'dia' => $material->dia,
-            'length' => $material->length,
-            'width' => $material->width,
-            'height' => $material->height,
-            'material' => $material->material,
-            'qty' => $material->qty
+            'code' => $materialReq->customer->code ?? '',
+            'work_order_no' => $materialReq->work_order_no ?? '',
+            'material' => $materialReq->material ?? '',
+            'qty' => $materialReq->quantity ?? '',
+            'f_diameter' => $materialReq->f_diameter ?? '',
+            'f_length' => $materialReq->f_length ?? '',
+            'f_width' => $materialReq->f_width ?? '',
+            'f_height' => $materialReq->f_height ?? '',
+            'r_diameter' => $materialReq->r_diameter ?? '',
+            'r_length' => $materialReq->r_length ?? '',
+            'r_width' => $materialReq->r_width ?? '',
+            'r_height' => $materialReq->r_height ?? '',
         ]);
+    } else {
+        return response()->json([]);
     }
+}
+
 }

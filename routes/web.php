@@ -157,7 +157,6 @@ Route::get('/trashMaterialType'               , [MaterialTypeController::class, 
 Route::get('/restoreMaterialType/{id}'        , [MaterialTypeController::class, 'restore'])->name('restoreMaterialType');
 
 
- 
 Route::get('/financial-year/add'              , [FinancialYearController::class, 'AddFinancialYear'])->name('AddFinancialYear');
 Route::post('/financial-year/store'           , [FinancialYearController::class, 'storeFinancialYear'])->name('StoreFinancialYear');
 Route::get('/financial-year/edit/{id}'        , [FinancialYearController::class, 'edit'])->name('EditFinancialYear');
@@ -191,8 +190,6 @@ Route::get('/DeleteMachinerecord/{id}'        , [MachinerecordController::class,
 Route::get('/trashMachineRecord'              , [MachinerecordController::class, 'trash'])->name('trashMachineRecord');
 Route::get('/restoreMachineRecord/{id}'       , [MachinerecordController::class, 'restore'])->name('restoreMachineRecord');
 
-
-
 // MaterialReq Routes
 Route::get('/AddMaterialReq'                   , [MaterialReqController::class, 'AddMaterialReq'])->name('AddMaterialReq');
 Route::get('/ViewMaterialReq'                  , [MaterialReqController::class, 'ViewMaterialReq'])->name('ViewMaterialReq');
@@ -200,6 +197,9 @@ Route::post('/storeMaterialReq'                , [MaterialReqController::class, 
 Route::get('/editMaterialReq/{id}'             , [MaterialReqController::class, 'editMaterialReq'])->name('editMaterialReq');
 Route::get('/deleteMaterialReq/{id}'           , [MaterialReqController::class, 'destroy'])->name('deleteMaterialReq');
 Route::put('/updateMaterialReq/{id}'           , [MaterialReqController::class, 'updateMaterialReq'])->name('updateMaterialReq');
+Route::get('/trashMaterialReq'                , [MaterialReqController::class, 'trash'])->name('trashMaterialReq');
+Route::get('/restoreMaterialReq/{id}'         , [MaterialReqController::class, 'restore'])->name('restoreMaterialReq');
+ 
 
 Route::get('/get-material/{id}'               , [MaterialReqController::class, 'getMaterial']);
 
@@ -211,7 +211,9 @@ Route::get('/editMaterialorder/{id}'          , [MaterialorderController::class,
 Route::get('/deleteMaterialorder/{id}'        , [MaterialorderController::class, 'destroy'])->name('deleteMaterialorder');
 Route::put('/updateMaterialorder/{id}'        , [MaterialorderController::class, 'update'])->name('updateMaterialorder');
 
-Route::get('/material-reqs/{customer_id}'     , [MaterialReqController::class, 'getMaterialReqByCustomer']);
+// Route::get('/material-reqs/{customer_id}'     , [MaterialReqController::class, 'getMaterialReqByCustomer']);
+Route::get('/get-customer-data', [App\Http\Controllers\MaterialOrderController::class, 'getCustomerData'])->name('getCustomerData');
+
 
 // Invoice Routes
 Route::get('/AddInvoice'                      , [InvoiceController::class, 'AddInvoice'])->name('AddInvoice');

@@ -157,6 +157,10 @@
                             <td id="wo_part"></td>
                         </tr>
                         <tr>
+                            <th>Material Type</th>
+                            <td id="wo_mtype"></td>
+                        </tr>
+                        <tr>
                             <th>Date</th>
                             <td id="wo_date"></td>
                         </tr>
@@ -212,12 +216,10 @@
                 document.getElementById('wo_work_order_no').textContent = data.project_id ?? '';
                 document.getElementById('wo_entry_code').textContent = data.customer?.code ?? '';
                 document.getElementById('wo_part').textContent = data.part ?? '';
+                document.getElementById('wo_mtype').textContent = data.material ?? '';
                 document.getElementById('wo_date').textContent = data.date ?? '';
-
-
                 document.getElementById('wo_part_code').textContent =
-                    (data.customer?.code ?? '') + '_' + (data.customer_id ?? '') + '_' + (data.part ?? '') + '_' + (data.quantity ?? '');
-
+                (data.customer?.code ?? '') + '_' + (data.customer_id ?? '') + '_' + (data.part ?? '') + '_' + (data.quantity ?? '');
                 document.getElementById('wo_diameter').textContent = data.dimeter ?? '';;
                 document.getElementById('wo_length').textContent = data.length ?? '';
                 document.getElementById('wo_width').textContent = data.width ?? '';

@@ -382,6 +382,7 @@
             let vmc = parseFloat($("#vmc_cost").val()) || 0;
             let edm = parseFloat($("#edm_rate").val()) || 0;
             let cl = parseFloat($("#cl").val()) || 0;
+            let hrcog = parseFloat($("#hrc").val()) || 0;
 
             let material_wt = ((Math.PI * (dia / 2) * (dia / 2) * heigh / 1000000) * sg) +
                 ((len * withs * heigh / 1000000) * sg);
@@ -394,7 +395,7 @@
             let sg2 = ((len * withs) * 2 * 0.6 / 100);
             // let hrc = round((withs * 70),1);  
 
-            let hrc = Math.round((material_wt * 70) * 10) / 10;
+            let hrc = hrcog ? hrcog :  Math.round((material_wt * 70) * 10) / 10;
 
             let total_per_piece = (
                 lathe + mg4 + mg2 + rg2 + sg4 + sg2 +
@@ -410,6 +411,7 @@
             $("#sg4").val(sg4.toFixed(2));
             $("#sg2").val(sg2.toFixed(2));
             $("#hrc").val(hrc.toFixed(2));
+
             $("#total_cost").val(total_cost.toFixed(2));
         }
 
@@ -423,6 +425,8 @@
             $("#material_rate").val(rate);
             calculate();
         });
+
+        $("#hrc").on("change", calculate);
 
     });
 </script>
