@@ -13,9 +13,7 @@
         {
             Schema::create('projects', function (Blueprint $table) {
                 $table->id();
-                
-
-                // Customer relation
+                $table->integer('project_no')->default(0)->comment('project number');
                 $table->integer('admin_id'); 
                 $table->unsignedBigInteger('customer_id')->nullable();
                 $table->string('project_name');

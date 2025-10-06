@@ -40,8 +40,11 @@ class SetupSheet extends Model
         'hole_dia'   => 'array',
         'hole_depth' => 'array',
     ];
-     public function customer()
-{
-    return $this->belongsTo(Customer::class,'customer_id');
+public function customer() {
+    return $this->belongsTo(Customer::class, 'customer_id');
+}
+
+public function project() {
+    return $this->belongsTo(Project::class, 'project_id');
 }
 }

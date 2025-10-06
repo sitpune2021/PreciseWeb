@@ -164,6 +164,9 @@ Route::put('/financial-year/update/{id}'      , [FinancialYearController::class,
 Route::get('/financial-year/delete/{id}'      , [FinancialYearController::class, 'destroy'])->name('DeleteFinancialYear');
 Route::post('/financial-year/status'          , [FinancialYearController::class, 'updateStatus'])->name('FinancialYearStatus');
 
+Route::get('/trashFinancial'                  , [FinancialYearController::class, 'trash'])->name('trashFinancial');
+Route::get('/restoreFinancial/{id}'           , [FinancialYearController::class, 'restore'])->name('restoreFinancial');
+
 // Setupsheet Routes
 Route::get('/AddSetupSheet'                   , [SetupSheetController::class, 'AddSetupSheet'])->name('AddSetupSheet');
 Route::post('/storeSetupSheet'                , [SetupSheetController::class, 'storeSetupSheet'])->name('storeSetupSheet');

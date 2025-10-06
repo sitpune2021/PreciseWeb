@@ -47,7 +47,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}</td>
-                                            <td>{{ $project->id }}</td>
+                                            <!-- <td>{{ $project->id }}</td> -->
+                                             <td>{{ $project->project_no }}</td>
                                             <td>{{ $project->customer->name ?? '' }}</td>
                                             <td>{{ $project->customer?->code }}</td>
                                             <td>{{ $project->project_name }}</td>

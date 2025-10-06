@@ -61,6 +61,10 @@ class ProjectController extends Controller
 
         $customer_code = $customer ? $customer->code : null;
 
+        $count = Project::where('admin_id', $adminId)->count();
+        $projectNo = $count + 1;
+
+        // dd($projectNo);
         Project::create([
             'customer_id'   => $request->customer_id,
             'customer_code' => $customer_code,
@@ -68,6 +72,7 @@ class ProjectController extends Controller
             'quantity'      => $request->quantity,
             'date'          => $request->date ?: now(),
             'admin_id'      => $adminId,
+            'project_no'    => $projectNo,
         ]);
 
         return redirect()->route('ViewProject')->with('success', 'Project added successfully.');

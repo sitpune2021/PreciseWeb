@@ -18,9 +18,11 @@ class MachineController extends Controller
             ->where('admin_id', Auth::id())
             ->orderBy('updated_at', 'desc')
             ->get();
- 
+
         return view('Machine.add', compact('machines'));
     }
+
+
     public function storeMachine(Request $request)
     {
         $request->validate([
@@ -30,7 +32,7 @@ class MachineController extends Controller
                 'max:255',
                 Rule::unique('machines', 'machine_name')
                     ->where(function ($query) {
-                        $query->where('admin_id', Auth::id())   // प्रत्येक admin साठी वेगळं
+                        $query->where('admin_id', Auth::id())
                             ->whereNull('deleted_at')
                             ->where('is_active', 1);
                     }),
@@ -125,30 +127,30 @@ class MachineController extends Controller
 
 
     // Restore machine
-   public function restore($encryptedId)
+    public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
         $machine = Machine::withTrashed()
             ->where('id', $id)
             ->where('admin_id', Auth::id())
             ->firstOrFail();
- 
+
         $exists = Machine::where('machine_name', $machine->machine_name)
             ->where('admin_id', Auth::id())
             ->whereNull('deleted_at')
             ->where('is_active', 1)
             ->exists();
- 
+
         $machine->is_active = 1;
         $machine->restore();
         $machine->touch();
         $machine->save();
- 
+
         if ($exists) {
             return redirect()->route('editMachine', base64_encode($machine->id))
                 ->with('success', "Machine '{$machine->machine_name}' already exists. Redirected to Edit Page.");
         }
- 
+
         return redirect()->route('AddMachine')
             ->with('success', "Machine '{$machine->machine_name}' restored successfully.");
     }

@@ -11,17 +11,25 @@ use Illuminate\Support\Facades\Auth;
 class MaterialReqController extends Controller
 {
     public function AddMaterialReq()
-    {
-        $codes = Customer::where('status', 1)
-            ->select('id', 'code', 'name')
-            ->orderBy('id', 'desc')
-            ->get();
+{
+    $adminId = Auth::id(); // get current admin id
 
-        $customers = Customer::where('status', 1)->orderBy('name')->get();
-        $materialtype = MaterialType::all();
+    $codes = Customer::where('status', 1)
+        ->where('admin_id', $adminId)
+        ->select('id', 'code', 'name')
+        ->orderBy('id', 'desc')
+        ->get();
 
-        return view('MaterialReq.add', compact('codes', 'materialtype', 'customers'));
-    }
+    $customers = Customer::where('status', 1)
+        ->where('admin_id', $adminId)
+        ->orderBy('name')
+        ->get();
+
+    $materialtype = MaterialType::where('admin_id', $adminId)->get();
+
+    return view('MaterialReq.add', compact('codes', 'materialtype', 'customers'));
+}
+
 
     public function storeMaterialReq(Request $request)
     {
@@ -52,7 +60,6 @@ class MaterialReqController extends Controller
 
         $material = MaterialType::findOrFail($request->material);
 
-        // Volume calculation
         $volume = ($request->dia > 0)
             ? pi() * pow(($request->dia / 2), 2) * $request->height
             : $request->length * $request->width * $request->height;
@@ -103,7 +110,7 @@ class MaterialReqController extends Controller
     // public function ViewMaterialReq()
     // {
     //     $materialReq = MaterialReq::orderBy('updated_at', 'desc')->get();
- 
+
     //     return view('MaterialReq.view', compact('materialReq'));
     // }
 
@@ -179,29 +186,29 @@ class MaterialReqController extends Controller
         $trashedMaterialReq = MaterialReq::onlyTrashed()
             ->orderBy('id', 'desc')
             ->get();
- 
+
         $materialReq = MaterialReq::all();
         return view('MaterialReq.trash', compact('trashedMaterialReq', 'materialReq'));
     }
- 
+
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
         $material = MaterialReq::withTrashed()->findOrFail($id);
- 
+
         $exists = MaterialReq::where('code', $material->code)
             ->whereNull('deleted_at')
             ->exists();
- 
+
         if ($exists) {
             $material->restore();
- 
+
             return redirect()->route('editMaterialReq', base64_encode($material->id))
                 ->with('success', "Material Requirement '{$material->code}' already exists. Redirected to Edit Page.");
         }
- 
+
         $material->restore();
- 
+
         return redirect()->route('ViewMaterialReq')
             ->with('success', "Material Requirement '{$material->code}' restored successfully.");
     }

@@ -10,5 +10,7 @@ class FinancialYear extends Model
     protected $fillable = 
     ['year',
     'admin_id',
-     'status'];
+     'status',
+     'is_active',
+];
 }

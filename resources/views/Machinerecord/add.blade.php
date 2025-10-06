@@ -57,11 +57,11 @@
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php
-                                            $partNo = ($wo->customer?->code ?? '') . '_' . ($wo->project_id ?? '') . '_' . ($wo->part ?? '');
+                                            $partNo = ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '');
                                             @endphp
                                             <option value="{{ $partNo }}"
                                                 data-code="{{ $wo->customer?->code ?? '' }}"
-                                                data-workorder="{{ $wo->project_id ?? '' }}"
+                                                data-workorder="{{ $wo->project?->project_no ?? '' }}"
                                                 data-partdesc="{{ $wo->part_description ?? '' }}"
                                                 data-qty="{{ $wo->quantity ?? '' }}"
                                                 data-e_time="{{ $wo->exp_time ?? '' }}"
@@ -281,17 +281,16 @@
             let endTime = new Date(end);
 
             if (endTime >= startTime) {
-                let diffMinutes = (endTime - startTime) / (1000 * 60); // minutes
-                let actualHrs = diffMinutes / 60; // hours (Actual HRS)
-                let hrs = diffMinutes * 0.02; // HRS (rate per min 0.02)
-                let timeTaken = hrs; // same as hrs
-
-                // fill values
+                let diffMinutes = (endTime - startTime) / (1000 * 60);  
+                let actualHrs = diffMinutes / 60;  
+                let hrs = diffMinutes * 0.02;  
+                let timeTaken = hrs;  
+              
                 document.querySelector('[name="hrs"]').value = hrs.toFixed(2);
                 document.querySelector('[name="time_taken"]').value = timeTaken.toFixed(2);
                 document.querySelector('[name="actual_hrs"]').value = actualHrs.toFixed(2);
 
-                // अगर तुम्हें Minutes भी चाहिए तो hidden input बना सकते हो
+                 
                 if (document.querySelector('[name="minute"]')) {
                     document.querySelector('[name="minute"]').value = diffMinutes.toFixed(0);
                 }

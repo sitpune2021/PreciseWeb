@@ -23,7 +23,7 @@ class MachinerecordController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $materialtype = MaterialType::where('admin_id', Auth::id())->get(); 
+        $materialtype = MaterialType::where('admin_id', Auth::id())->get();
         $workorders = WorkOrder::with('customer')
             ->where('admin_id', Auth::id()) // Only current admin
             ->whereHas('customer', function ($q) {
@@ -70,7 +70,7 @@ class MachinerecordController extends Controller
 
     public function ViewMachinerecord()
     {
-        $record = MachineRecord::where('admin_id', Auth::id())->latest()->get(); 
+        $record = MachineRecord::where('admin_id', Auth::id())->latest()->get();
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 
         return view('Machinerecord.view', compact('record', 'workorders'));
@@ -80,7 +80,7 @@ class MachinerecordController extends Controller
     {
         $id = base64_decode($encryptedId);
 
-        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id);  
+        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id);
         $codes = Customer::where('status', 1)
             ->where('admin_id', Auth::id())
             ->select('id', 'code', 'name')
@@ -150,12 +150,13 @@ class MachinerecordController extends Controller
     public function fetchData($part_code)
     {
         $data = SetupSheet::where('part_code', $part_code)
-            ->where('admin_id', Auth::id()) // Only current admin
+            ->where('admin_id', Auth::id())
+            ->with(['project:id,project_no'])
             ->first();
 
         if ($data) {
             return response()->json([
-                'work_order_no' => $data->customer_id,
+                'work_order_no' => $data->project->project_no ?? '',
                 'description'   => $data->description,
                 'qty'           => $data->qty,
                 'exp_time'      => $data->exp_time,
@@ -164,8 +165,6 @@ class MachinerecordController extends Controller
 
         return response()->json([]);
     }
-
-
     public function trash()
     {
         $trashedMachines = MachineRecord::onlyTrashed()

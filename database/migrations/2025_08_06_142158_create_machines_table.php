@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('machines', function (Blueprint $table) {
             $table->id();
-             $table->integer('admin_id');
+            $table->integer('admin_id');
             $table->string('machine_name');
-            $table->boolean('status')->default(1); // ✅ fixed
-             $table->boolean('is_active')->default(1);
+            $table->boolean('status')->default(1);  
+            $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
             

@@ -13,9 +13,10 @@ return new class extends Migration
 {
     Schema::create('financial_years', function (Blueprint $table) {
         $table->id();
-         
-        $table->string('year')->unique();
-        $table->boolean('status')->default(1);
+         $table->integer('admin_id'); 
+         $table->string('year');
+        $table->boolean('status')->default(1);  
+        $table->boolean('is_active')->default(1);
         $table->softDeletes();  
         $table->timestamps();
     });
