@@ -19,11 +19,6 @@
                                     <i class="ri-add-line align-middle"></i> Add WorkOrder
                                 </a>
 
-                                <!-- WorkOrder Import Modal Button -->
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
-                                    <i class="ri-upload-2-line align-middle"></i> WorkOrder Import
-                                </button>
-
                                  <!-- View Trash Button -->
                                 <a href="{{ route('trashWorkOrder') }}" class="btn btn-warning btn-sm">
                                     View Trash
@@ -58,12 +53,13 @@
 
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $project->project_no}}</td>
+                                           <td>{{ $project?->project_no ?? '' }}</td>
+
                                             <td>{{ $wo->customer?->code ?? '' }}</td>
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
                                             <td>
-                                                {{ ($wo->customer?->code ?? '') . '_' . ($wo->project_id ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
+                                                {{ ($wo->customer?->code ?? '') . '_' . ($wo->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
                                             </td>
                                             <!-- <td>{{ $wo->project->project_name ?? '' }}</td>                                           -->
 

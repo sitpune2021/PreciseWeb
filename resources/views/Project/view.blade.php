@@ -18,10 +18,6 @@
                                     <i class="ri-add-line align-middle"></i> Add Project
                                 </a>
 
-                                <!-- Project Import Button -->
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
-                                    <i class="ri-upload-2-line align-middle"></i> Project Import
-                                </button>
                             </div>
 
                         </div>

@@ -11,37 +11,31 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Customers</h5>
-                            <div class="d-flex gap-2">
-                                <a href="{{ route('AddCustomer') }}" class="btn btn-success btn-sm">
-                                    <i class="ri-add-line align-middle"></i> Add Customer
-                                </a>
-                           
 
-                            </div>
-                        </div>
-                            <!-- <form action="{{ route('ViewCustomer') }}" method="GET" class="d-flex align-items-center gap-2">
-                             
-                                <select name="financial_year" class="form-control form-select">
+                            <form action="{{ route('ViewCustomer') }}" method="GET" class="d-flex align-items-center gap-2">
+                                <select name="financial_year" class="form-control form-select form-select-sm">
                                     <option value="">Select Year</option>
                                     <option value="2025-26" {{ request('financial_year') == '2025-26' ? 'selected' : '' }}>2025-26</option>
                                     <option value="2026-27" {{ request('financial_year') == '2026-27' ? 'selected' : '' }}>2026-27</option>
                                     <option value="2027-28" {{ request('financial_year') == '2027-28' ? 'selected' : '' }}>2027-28</option>
                                 </select>
 
-                                
-                                <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
-                                <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+                                <input type="date" name="start_date" class="form-control form-control-sm" value="{{ request('start_date') }}">
+                                <input type="date" name="end_date" class="form-control form-control-sm" value="{{ request('end_date') }}">
 
-                                <button type="submit" class="btn btn-success">Filter</button>
-                                <a href="{{ route('ViewCustomer') }}" class="btn btn-primary">Reset</a>
-                            </form> -->
-                            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="ri-upload-2-line align-middle"></i> Customer Import
-                            </button> -->
+                                <button type="submit" class="btn btn-success btn-sm">Filter</button>
+                                <a href="{{ route('ViewCustomer') }}" class="btn btn-primary btn-sm">Reset</a>
+                            </form>
 
-                       
-
-
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('AddCustomer') }}" class="btn btn-success btn-sm">
+                                    <i class="ri-add-line align-middle"></i> Add Customer
+                                </a>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="ri-upload-2-line align-middle"></i> Customer Import
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
