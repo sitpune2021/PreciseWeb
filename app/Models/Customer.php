@@ -34,4 +34,9 @@ public function materialOrders()
 {
     return $this->hasMany(MaterialOrder::class);
 }
+    public function materialreq()
+{
+    return $this->hasOne(MaterialReq::class);
+}
+
 }

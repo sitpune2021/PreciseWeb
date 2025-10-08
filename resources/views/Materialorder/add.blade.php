@@ -24,15 +24,17 @@
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label for="customer_id" class="form-label">Customer Name <span class="text-red small">*</span></label>
-                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
+                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id" required>
                                             <option value="">Select Customer</option>
                                             @foreach($codes as $c)
                                             <option value="{{ $c->id }}"
                                                 data-code="{{ $c->code }}"
+                                                data-details="{{ $c->materialreq }}"
                                                 data-id="{{ $c->id }}"
-                                                {{ old('customer_id', $materialReq->customer_id ?? '') == $c->id ? 'selected' : '' }}>
+                                                {{ old('customer_id', $record->customer_id ?? '') == $c->id ? 'selected' : '' }}>
                                                 {{ $c->name }} - ({{ $c->code }})
                                             </option>
+
                                             @endforeach
                                         </select>
                                         @error('customer_id')
@@ -40,27 +42,31 @@
                                         @enderror
                                     </div>
 
+
                                     <!-- Customer Code -->
                                     <div class="col-md-2">
                                         <label for="code" class="form-label">Customer Code</label>
                                         <input type="text" class="form-control" id="code" name="code"
-                                            value="{{ old('code', $materialReq->code ?? '') }}" readonly>
+                                            value="{{ old('code', $record->customer->code ?? '') }}" readonly>
                                     </div>
 
                                     <!-- Work Order No -->
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
+                                            <label for="work_order_no" class="form-label">Sr No. <span class="mandatory">*</span></label>
                                             <input type="text" name="work_order_no" id="work_order_no"
                                                 class="form-control"
-                                                value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}" readonly>
-                                            @error('work_order_no') <span class="text-red small">{{ $message }}</span> @enderror
+                                                value="{{ old('work_order_no', $record->work_order_no ?? '') }}" readonly>
+                                            @error('work_order_no')
+                                            <span class="text-red small">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
+
                                     <!-- DATE -->
                                     <div class="col-md-3">
                                         <label class="form-label">Date <span class="text-red">*</span></label>
-                                        <input type="date" name="date" class="form-control"
+                                        <input type="date" name="date" id="date" class="form-control"
                                             value="{{ old('date', isset($record->date) ? \Carbon\Carbon::parse($record->date)->format('Y-m-d') : '') }}">
                                         @error('date')
                                         <span class="text-red small">{{ $message }}</span>
@@ -70,7 +76,7 @@
                                     <!-- WORK ORDER -->
                                     <div class="col-md-7">
                                         <label class="form-label">Work Order Description <span class="text-red">*</span></label>
-                                        <input type="text" name="work_order_desc" class="form-control"
+                                        <input type="text" name="work_order_desc" id="description" class="form-control"
                                             value="{{ old('work_order_desc', $record->work_order_desc ?? '') }}">
                                         @error('work_order_desc')
                                         <span class="text-red small">{{ $message }}</span>
@@ -173,55 +179,24 @@
                 </div>
             </div>
 
-        </div>  ,
+        </div> ,
     </div> <!-- page-content -->
 </div> <!-- main-content -->
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Select2 -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
     $(document).ready(function() {
-        $('.js-example-basic-single').select2();
-
-        // When customer changes
-        $('#customer_id').change(function() {
-            var customerId = $(this).val();
-
-            if(customerId) {
-                $.ajax({
-                    url: "{{ route('getCustomerData') }}", // We'll create this route
-                    type: "GET",
-                    data: { id: customerId },
-                    success: function(data) {
-                        // Fill fields
-                        $('#code').val(data.code ?? '');
-                        $('#work_order_no').val(data.work_order_no ?? '');
-                        $('#material').val(data.material ?? '');
-                        $('#quantity').val(data.qty ?? '');
-                        $('#f_diameter').val(data.f_diameter ?? '');
-                        $('#f_length').val(data.f_length ?? '');
-                        $('#f_width').val(data.f_width ?? '');
-                        $('#f_height').val(data.f_height ?? '');
-                        $('#r_diameter').val(data.r_diameter ?? '');
-                        $('#r_length').val(data.r_length ?? '');
-                        $('#r_width').val(data.r_width ?? '');
-                        $('#r_height').val(data.r_height ?? '');
-                    },
-                    error: function(xhr) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            } else {
-                // Clear fields if no customer selected
-                $('#code, #work_order_no, #material, #quantity, #f_diameter, #f_length, #f_width, #f_height, #r_diameter, #r_length, #r_width, #r_height').val('');
-            }
+        // On customer dropdown change
+        $('#customer_id').on('change', function() {
+            let selected = $(this).find(':selected'); // Selected option
+            let code = selected.data('code') || ''; // Get data-code
+            $('#code').val(code); // Fill the code input
         });
+
+        // If editing, auto-fill code for pre-selected customer
+        let selected = $('#customer_id').find(':selected');
+        if (selected.val()) {
+            $('#code').val(selected.data('code'));
+        }
     });
 </script>
 
- 
 @endsection

@@ -5,16 +5,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
 class MaterialOrder extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'admin_id',
-        'sr_no',
+        'customer_id',
         'date',
+        'work_order_no',
         'work_order_desc',
         'f_diameter',
         'f_length',
@@ -24,18 +23,19 @@ class MaterialOrder extends Model
         'r_length',
         'r_width',
         'r_height',
-        'material',
         'quantity',
+        'material',
+        'qty',
     ];
 
     public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function materialreq()
 {
-    return $this->belongsTo(Customer::class);
+    return $this->belongsTo(MaterialReq::class, 'MaterialReq');
 }
 
-public function materialReq() // optional
-{
-    return $this->belongsTo(MaterialReq::class);
 }
-}
-

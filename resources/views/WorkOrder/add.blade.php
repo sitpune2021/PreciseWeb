@@ -400,29 +400,29 @@
                                                 });
 
                                                 newRow.querySelector(".editRow").addEventListener("click", function() {
-                                                    document.getElementById("customer_id").value = customerVal;
-                                                    $('#customer_id').val(customerVal).trigger('change'); // 🔹 force select2 update
+    document.getElementById("customer_id").value = customerVal;
+    $('#customer_id').val(customerVal).trigger('change');
 
-                                                    document.getElementById("part").value = part;
+    // ✅ customer change झाल्यानंतर project load होतो, म्हणून setTimeout वापरून थोडा delay द्या
+    setTimeout(() => {
+        loadProjects(customerVal, project_id);
+    }, 500);
 
-                                                    document.getElementById("material").value = material;
-                                                    $('#material').val(material).trigger('change'); // 🔹 force select2 update
+    document.getElementById("part").value = part;
+    document.getElementById("material").value = material;
+    $('#material').val(material).trigger('change');
+    document.getElementById("date").value = date;
+    document.getElementById("dimeter").value = dimeter;
+    document.getElementById("length").value = length;
+    document.getElementById("width").value = width;
+    document.getElementById("height").value = height;
+    document.getElementById("exp_time").value = exp_time;
+    document.getElementById("quantity").value = quantity;
+    document.getElementById("part_description").value = description;
 
-                                                    document.getElementById("project_id").value = project_id;
-                                                    $('#project_id').val(project_id).trigger('change'); // 🔹 force select2 update
-
-                                                    document.getElementById("date").value = date;
-                                                    document.getElementById("dimeter").value = dimeter;
-                                                    document.getElementById("length").value = length;
-                                                    document.getElementById("width").value = width;
-                                                    document.getElementById("height").value = height;
-                                                    document.getElementById("exp_time").value = exp_time;
-                                                    document.getElementById("quantity").value = quantity;
-                                                    document.getElementById("part_description").value = description;
-
-                                                    newRow.remove();
-                                                    updateSrNo();
-                                                });
+    newRow.remove();
+    updateSrNo();
+});
 
 
                                                 document.querySelectorAll("input, textarea").forEach(el => {
@@ -489,7 +489,6 @@
                                                     }
                                                 }
 
-                                                // 👉 हे function row add झाल्यावर कॉल कर
                                                 window.clearDimensions = function() {
                                                     diameter.value = "";
                                                     length.value = "";
@@ -566,29 +565,24 @@
                                                         $('#previous_part').empty().append('<option value="">No Previous Part</option>');
                                                     }
                                                 }
-
-                                                // On customer change → load projects
+                                           
                                                 $('#customer_id').on('change', function() {
                                                     let customerId = $(this).val();
                                                     loadProjects(customerId);
                                                 });
-
-                                                // On project change → load parts + quantity
+                                          
                                                 $('#project_id').on('change', function() {
                                                     let projectId = $(this).val();
                                                     let qty = $(this).find(':selected').data('quantity');
 
-                                                    // 🔹 auto-fill quantity
+                                            
                                                     if (qty) {
                                                         $('#quantity').val(qty);
                                                     } else {
                                                         $('#quantity').val('');
                                                     }
 
-                                                    // Load previous parts
                                                     loadParts(projectId);
-
-                                                    // 🔹 part_description + project name 
                                                     let selectedText = $("#project_id option:selected").text();
                                                     if (selectedText && selectedText !== "Select Project") {
                                                         $('#part_description')
@@ -599,17 +593,14 @@
                                                     }
                                                 });
 
-                                                // Part description editable on double click
                                                 $('#part_description').on('dblclick', function() {
                                                     $(this).prop('readonly', false);
                                                 });
 
-                                                // Pre-load for edit (when editing existing workorder)
                                                 @if(isset($workorder))
                                                 loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
                                                 loadParts('{{ $workorder->project_id }}');
-
-                                                // 🔹 Edit mode  quantity
+                                           
                                                 setTimeout(function() {
                                                     let qty = $("#project_id option:selected").data('quantity');
                                                     if (qty) {

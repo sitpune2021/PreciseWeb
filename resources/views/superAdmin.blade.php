@@ -15,7 +15,8 @@ use App\Models\MachineRecord;
 use App\Models\MaterialReq;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Auth;
+ 
 
 // ---------------- Clients ----------------
 
@@ -43,106 +44,113 @@ $renewalPercentage = $renewalsThisMonth; // count = percentage
 
 // ---------------- Projects ----------------
 $projects = Project::with('customer')
-->orderBy('id', 'desc')
-->take(5)
-->get();
-$totalProjects = Project::count();
+    ->where('admin_id', Auth::id())
+    ->orderBy('id', 'desc')
+    ->take(5)
+    ->get();
 
-
+$totalProjects = Project::where('admin_id', Auth::id())->count();
 
 // ---------------- Operators ----------------
-$totalOperators = Operator::count();
-$activeOperators = Operator::where('status', 1)->count();
-$latestOperators = Operator::orderBy('created_at', 'desc')->take(5)->get();
+$totalOperators = Operator::where('admin_id', Auth::id())->count();
+$activeOperators = Operator::where('admin_id', Auth::id())->where('status', 1)->count();
+$latestOperators = Operator::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
 // ---------------- Machines ----------------
-$totalMachines = Machine::count();
-$activeMachines = Machine::where('status', 1)->count();
-$latestMachines = Machine::orderBy('created_at', 'desc')->take(5)->get();
+$totalMachines = Machine::where('admin_id', Auth::id())->count();
+$activeMachines = Machine::where('admin_id', Auth::id())->where('status', 1)->count();
+$latestMachines = Machine::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
 // ---------------- Settings ----------------
-$totalSettings = Setting::count();
-$activeSettings = Setting::where('status', 1)->count();
-$latestSettings = Setting::orderBy('created_at', 'desc')->take(5)->get();
+$totalSettings = Setting::where('admin_id', Auth::id())->count();
+$activeSettings = Setting::where('admin_id', Auth::id())->where('status', 1)->count();
+$latestSettings = Setting::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
 // ---------------- HSN Codes ----------------
-$totalHsn = Hsncode::count();
-$activeHsn = Hsncode::where('status', 1)->count();
-$latestHsn = Hsncode::orderBy('created_at', 'desc')->take(5)->get();
+$totalHsn = Hsncode::where('admin_id', Auth::id())->count();
+$activeHsn = Hsncode::where('admin_id', Auth::id())->where('status', 1)->count();
+$latestHsn = Hsncode::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
 // ---------------- Material Types ----------------
-$totalMaterialTypes = MaterialType::count();
-$latestMaterialTypes = MaterialType::orderBy('created_at', 'desc')->take(5)->get();
+$totalMaterialTypes = MaterialType::where('admin_id', Auth::id())->count();
+$latestMaterialTypes = MaterialType::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
 // ---------------- Financial Years ----------------
-$totalYears = FinancialYear::count();
-$activeYears = FinancialYear::where('status', 1)->count();
-$latestYears = FinancialYear::orderBy('created_at', 'desc')->take(5)->get();
+$totalYears = FinancialYear::where('admin_id', Auth::id())->count();
+$activeYears = FinancialYear::where('admin_id', Auth::id())->where('status', 1)->count();
+$latestYears = FinancialYear::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
-// ------------------Vendors--------------------
-$totalVendors = Vendor::count();
-$activeVendors = Vendor::where('status', 'Active')->count();
-$inactiveVendors = Vendor::where('status', 'Inactive')->count();
-$newThisMonthVendors = Vendor::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)
-->count();
-$latestVendors = Vendor::orderBy('created_at', 'desc')->take(5)->get();
+// ---------------- Vendors ----------------
+$totalVendors = Vendor::where('admin_id', Auth::id())->count();
+$activeVendors = Vendor::where('admin_id', Auth::id())->where('status', 'Active')->count();
+$inactiveVendors = Vendor::where('admin_id', Auth::id())->where('status', 'Inactive')->count();
+$newThisMonthVendors = Vendor::where('admin_id', Auth::id())
+    ->whereMonth('created_at', Carbon::now()->month)
+    ->whereYear('created_at', Carbon::now()->year)
+    ->count();
+$latestVendors = Vendor::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
-//-----------------------------WorkOrder-----------------
-// Monthly totals (already defined)
+// ---------------- Work Orders ----------------
 $workOrdersMonthly = WorkOrder::select(
-DB::raw('COUNT(id) as total'),
-DB::raw('MONTH(date) as month')
-)
-->whereYear('date', Carbon::now()->year)
-->groupBy('month')
-->pluck('total', 'month');
+        DB::raw('COUNT(id) as total'),
+        DB::raw('MONTH(date) as month')
+    )
+    ->where('admin_id', Auth::id())
+    ->whereYear('date', Carbon::now()->year)
+    ->groupBy('month')
+    ->pluck('total', 'month');
 
 $months = [];
 $totals = [];
 for ($m = 1; $m <= 12; $m++) {
-    $months[]=Carbon::create()->month($m)->format('M'); // Jan, Feb...
+    $months[] = Carbon::create()->month($m)->format('M'); // Jan, Feb...
     $totals[] = $workOrdersMonthly[$m] ?? 0;
-    }
+}
 
-    // Counters
-    $newWorkOrders = WorkOrder::where('status', 'new')->count();
-    $inProgress = WorkOrder::where('status', 'in_progress')->count();
-    $completed = WorkOrder::where('status', 'completed')->count();
-    $totalWorkOrders = WorkOrder::count();
+$newWorkOrders = WorkOrder::where('admin_id', Auth::id())->where('status', 'new')->count();
+$inProgress = WorkOrder::where('admin_id', Auth::id())->where('status', 'in_progress')->count();
+$completed = WorkOrder::where('admin_id', Auth::id())->where('status', 'completed')->count();
+$totalWorkOrders = WorkOrder::where('admin_id', Auth::id())->count();
 
-    // ------------ Setup Sheets (Dashboard) -------
-    $totalSheets = SetupSheet::count();
-    $newThisMonthSheets= SetupSheet::whereMonth('date', Carbon::now()->month)
+// ---------------- Setup Sheets ----------------
+$totalSheets = SetupSheet::where('admin_id', Auth::id())->count();
+$newThisMonthSheets = SetupSheet::where('admin_id', Auth::id())
+    ->whereMonth('date', Carbon::now()->month)
     ->whereYear('date', Carbon::now()->year)
     ->count();
-    $latestSheets = SetupSheet::orderBy('date','desc')->take(5)->get();
-
-    // ================== Machine Records ==================
-    $totalMachineRecords = MachineRecord::count();
-
-    $newThisMonthMachineRecords = MachineRecord::whereMonth('created_at', Carbon::now()->month)
-    ->whereYear('created_at', Carbon::now()->year)
-    ->count();
-
-    $lastMonthMachineRecords = MachineRecord::whereMonth('created_at', Carbon::now()->subMonth()->month)
-    ->whereYear('created_at', Carbon::now()->subMonth()->year)
-    ->count();
-
-    $thisYearMachineRecords = MachineRecord::whereYear('created_at', Carbon::now()->year)->count();
-
-    $todayMachineRecords = MachineRecord::whereDate('created_at', Carbon::today())->count();
-
-    $latestMachineRecords = MachineRecord::orderBy('created_at','desc')->take(5)->get();
-
-
-    // ---------------- Material Requirements ----------------
-    $latestMaterialReq =MaterialReq::with('customer','materialtype')
-    ->orderBy('created_at','desc')
+$latestSheets = SetupSheet::where('admin_id', Auth::id())
+    ->orderBy('date', 'desc')
     ->take(5)
     ->get();
 
-    $totalMaterialReq =MaterialReq::count();
+// ---------------- Machine Records ----------------
+$totalMachineRecords = MachineRecord::where('admin_id', Auth::id())->count();
+$newThisMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    ->whereMonth('created_at', Carbon::now()->month)
+    ->whereYear('created_at', Carbon::now()->year)
+    ->count();
+$lastMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    ->whereMonth('created_at', Carbon::now()->subMonth()->month)
+    ->whereYear('created_at', Carbon::now()->subMonth()->year)
+    ->count();
+$thisYearMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    ->whereYear('created_at', Carbon::now()->year)
+    ->count();
+$todayMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    ->whereDate('created_at', Carbon::today())
+    ->count();
+$latestMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    ->orderBy('created_at', 'desc')
+    ->take(5)
+    ->get();
 
+// ---------------- Material Requirements ----------------
+$latestMaterialReq = MaterialReq::with('customer', 'materialtype')
+    ->where('admin_id', Auth::id())
+    ->orderBy('created_at', 'desc')
+    ->take(5)
+    ->get();
+$totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
 
 
 

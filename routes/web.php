@@ -210,12 +210,18 @@ Route::get('/get-material/{id}'               , [MaterialReqController::class, '
 Route::get('/AddMaterialorder'                , [MaterialorderController::class, 'AddMaterialorder'])->name('AddMaterialorder');
 Route::get('/ViewMaterialorder'               , [MaterialorderController::class, 'ViewMaterialorder'])->name('ViewMaterialorder');
 Route::post('/storeMaterialorder'             , [MaterialorderController::class, 'storeMaterialorder'])->name('storeMaterialorder');
-Route::get('/editMaterialorder/{id}'          , [MaterialorderController::class, 'edit'])->name('editMaterialorder');
+Route::get('/editMaterialorder/{id}'          , [MaterialorderController::class, 'editMaterialorder'])->name('editMaterialorder');
 Route::get('/deleteMaterialorder/{id}'        , [MaterialorderController::class, 'destroy'])->name('deleteMaterialorder');
 Route::put('/updateMaterialorder/{id}'        , [MaterialorderController::class, 'update'])->name('updateMaterialorder');
 
+Route::get('materialorder/trash', [MaterialorderController::class, 'trash'])->name('trashMaterialorder');
+Route::get('materialorder/restore/{id}', [MaterialorderController::class, 'restore'])->name('restoreMaterialorder');
+
+
 // Route::get('/material-reqs/{customer_id}'     , [MaterialReqController::class, 'getMaterialReqByCustomer']);
-Route::get('/get-customer-data', [App\Http\Controllers\MaterialOrderController::class, 'getCustomerData'])->name('getCustomerData');
+Route::get('/get-customer-data/{id}'           , [MaterialorderController::class, 'getCustomerData'])->name('getCustomerData');
+
+
 
 
 // Invoice Routes
