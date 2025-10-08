@@ -6,7 +6,7 @@
         <div class="container-fluid">
 
             @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
             <div class="card shadow-sm">
@@ -32,29 +32,29 @@
                             </thead>
                             <tbody>
                                 @forelse($trashedOrders as $order)
-                                    <tr class="text-center">
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $order->customer->name ?? 'N/A' }}</td>
-                                        <td>{{ $order->date }}</td>
-                                        <td>{{ $order->work_order_desc }}</td>
-                                        <td>{{ $order->material }}</td>
-                                        <td>{{ $order->quantity }}</td>
-                                        <td>
-                                            {{ optional($order->deleted_at)->timezone('Asia/Kolkata')->format('d-m-Y h:i A') ?? '—' }}
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-success btn-sm"
-                                                onclick="confirmRestore('{{ $order->work_order_desc }}', '{{ route('restoreMaterialorder', base64_encode($order->id)) }}')">
-                                                Restore
-                                            </button>
-                                        </td>
-                                    </tr>
+                                <tr class="text-center">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $order->customer->name ?? 'N/A' }}</td>
+                                    <td>{{ $order->date }}</td>
+                                    <td>{{ $order->work_order_desc }}</td>
+                                    <td>{{ $order->material }}</td>
+                                    <td>{{ $order->quantity }}</td>
+                                    <td>
+                                        {{ optional($order->deleted_at)->timezone('Asia/Kolkata')->format('d-m-Y h:i A') ?? '—' }}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm"
+                                            onclick="confirmRestore('{{ $order->work_order_desc }}', '{{ route('restoreMaterialorder', base64_encode($order->id)) }}')">
+                                            Restore
+                                        </button>
+                                    </td>
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center text-muted">
-                                            No trashed material orders found.
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">
+                                        No trashed material orders found.
+                                    </td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -71,9 +71,9 @@
 
     function confirmRestore(desc, url) {
         let exists = activeOrders.some(o => o.work_order_desc === desc && o.deleted_at === null);
-        let message = exists
-            ? `'${desc}' already exists.\nRedirecting to Edit Page. Continue?`
-            : `Do you want to restore '${desc}'?`;
+        let message = exists ?
+            `'${desc}' already exists.\nRedirecting to Edit Page. Continue?` :
+            `Do you want to restore '${desc}'?`;
 
         if (confirm(message)) {
             window.location.href = url;

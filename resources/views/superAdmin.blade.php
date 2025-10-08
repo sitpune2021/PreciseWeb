@@ -16,7 +16,7 @@ use App\Models\MaterialReq;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
- 
+
 
 // ---------------- Clients ----------------
 
@@ -44,10 +44,10 @@ $renewalPercentage = $renewalsThisMonth; // count = percentage
 
 // ---------------- Projects ----------------
 $projects = Project::with('customer')
-    ->where('admin_id', Auth::id())
-    ->orderBy('id', 'desc')
-    ->take(5)
-    ->get();
+->where('admin_id', Auth::id())
+->orderBy('id', 'desc')
+->take(5)
+->get();
 
 $totalProjects = Project::where('admin_id', Auth::id())->count();
 
@@ -85,74 +85,74 @@ $totalVendors = Vendor::where('admin_id', Auth::id())->count();
 $activeVendors = Vendor::where('admin_id', Auth::id())->where('status', 'Active')->count();
 $inactiveVendors = Vendor::where('admin_id', Auth::id())->where('status', 'Inactive')->count();
 $newThisMonthVendors = Vendor::where('admin_id', Auth::id())
-    ->whereMonth('created_at', Carbon::now()->month)
-    ->whereYear('created_at', Carbon::now()->year)
-    ->count();
+->whereMonth('created_at', Carbon::now()->month)
+->whereYear('created_at', Carbon::now()->year)
+->count();
 $latestVendors = Vendor::where('admin_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get();
 
 // ---------------- Work Orders ----------------
 $workOrdersMonthly = WorkOrder::select(
-        DB::raw('COUNT(id) as total'),
-        DB::raw('MONTH(date) as month')
-    )
-    ->where('admin_id', Auth::id())
-    ->whereYear('date', Carbon::now()->year)
-    ->groupBy('month')
-    ->pluck('total', 'month');
+DB::raw('COUNT(id) as total'),
+DB::raw('MONTH(date) as month')
+)
+->where('admin_id', Auth::id())
+->whereYear('date', Carbon::now()->year)
+->groupBy('month')
+->pluck('total', 'month');
 
 $months = [];
 $totals = [];
 for ($m = 1; $m <= 12; $m++) {
-    $months[] = Carbon::create()->month($m)->format('M'); // Jan, Feb...
+    $months[]=Carbon::create()->month($m)->format('M'); // Jan, Feb...
     $totals[] = $workOrdersMonthly[$m] ?? 0;
-}
+    }
 
-$newWorkOrders = WorkOrder::where('admin_id', Auth::id())->where('status', 'new')->count();
-$inProgress = WorkOrder::where('admin_id', Auth::id())->where('status', 'in_progress')->count();
-$completed = WorkOrder::where('admin_id', Auth::id())->where('status', 'completed')->count();
-$totalWorkOrders = WorkOrder::where('admin_id', Auth::id())->count();
+    $newWorkOrders = WorkOrder::where('admin_id', Auth::id())->where('status', 'new')->count();
+    $inProgress = WorkOrder::where('admin_id', Auth::id())->where('status', 'in_progress')->count();
+    $completed = WorkOrder::where('admin_id', Auth::id())->where('status', 'completed')->count();
+    $totalWorkOrders = WorkOrder::where('admin_id', Auth::id())->count();
 
-// ---------------- Setup Sheets ----------------
-$totalSheets = SetupSheet::where('admin_id', Auth::id())->count();
-$newThisMonthSheets = SetupSheet::where('admin_id', Auth::id())
+    // ---------------- Setup Sheets ----------------
+    $totalSheets = SetupSheet::where('admin_id', Auth::id())->count();
+    $newThisMonthSheets = SetupSheet::where('admin_id', Auth::id())
     ->whereMonth('date', Carbon::now()->month)
     ->whereYear('date', Carbon::now()->year)
     ->count();
-$latestSheets = SetupSheet::where('admin_id', Auth::id())
+    $latestSheets = SetupSheet::where('admin_id', Auth::id())
     ->orderBy('date', 'desc')
     ->take(5)
     ->get();
 
-// ---------------- Machine Records ----------------
-$totalMachineRecords = MachineRecord::where('admin_id', Auth::id())->count();
-$newThisMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    // ---------------- Machine Records ----------------
+    $totalMachineRecords = MachineRecord::where('admin_id', Auth::id())->count();
+    $newThisMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereMonth('created_at', Carbon::now()->month)
     ->whereYear('created_at', Carbon::now()->year)
     ->count();
-$lastMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    $lastMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereMonth('created_at', Carbon::now()->subMonth()->month)
     ->whereYear('created_at', Carbon::now()->subMonth()->year)
     ->count();
-$thisYearMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    $thisYearMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereYear('created_at', Carbon::now()->year)
     ->count();
-$todayMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    $todayMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereDate('created_at', Carbon::today())
     ->count();
-$latestMachineRecords = MachineRecord::where('admin_id', Auth::id())
+    $latestMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->orderBy('created_at', 'desc')
     ->take(5)
     ->get();
 
-// ---------------- Material Requirements ----------------
-$latestMaterialReq = MaterialReq::with('customer', 'materialtype')
+    // ---------------- Material Requirements ----------------
+    $latestMaterialReq = MaterialReq::with('customer', 'materialtype')
     ->where('admin_id', Auth::id())
     ->orderBy('created_at', 'desc')
     ->take(5)
     ->get();
-$totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
+    $totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
 
-
+ 
 
 
 
@@ -259,96 +259,83 @@ $totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
 
 
                 <!--------------------- project page ---------------------------------->
-                <div class="col-xl-12">
-                    <div class="card shadow-lg border-0 rounded-4 h-100">
-                        <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
-                            <h4 class="card-title mb-0">
-                                <i class="ri-briefcase-4-line me-2 text-primary"></i> Latest Projects
-                            </h4>
-                            <div class="flex-shrink-0">
-                                <a href="{{ route('AddProject') }}"
-                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                                    <i class="ri-add-line"></i> Add New
-                                </a>
-                                <a href="{{ route('ViewProject') }}"
-                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                                    View All <i class="ri-arrow-right-line ms-1"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table align-middle table-hover table-nowrap mb-0">
-                                    <thead class="table-light text-center">
-                                        <tr>
-                                            <th>SR NO.</th>
-                                            <th>Date</th>
-                                            <th>Project No.</th>
-                                            <th>Customer</th>
-                                            <th>Code</th>
-                                            <th>Project</th>
-                                            <th>Qty</th>
+             <div class="col-xl-12">
+    <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
+            <h4 class="card-title mb-0">
+                <i class="ri-briefcase-4-line me-2 text-primary"></i> Latest Projects
+            </h4>
+            <div class="flex-shrink-0">
+                <a href="{{ route('AddProject') }}"
+                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                    <i class="ri-add-line"></i> Add New
+                </a>
+                <a href="{{ route('ViewProject') }}"
+                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                    View All <i class="ri-arrow-right-line ms-1"></i>
+                </a>
+            </div>
+        </div>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($projects as $project)
-                                        <tr class="align-middle">
-                                            <td class="text-muted">{{ $loop->iteration }}</td>
-                                            <td>
-                                                <span class="badge   text-dark">
-                                                    {{ \Carbon\Carbon::parse($project->date)->format('d M, Y') }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="fw-bold text-primary">{{ $project->id }}</span>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-xs me-2">
-                                                        <div class="avatar-title bg-primary-subtle text-primary rounded-circle">
-                                                            <i class="ri-user-line"></i>
-                                                        </div>
-                                                    </div>
-                                                    <span>{{ $project->customer->name ?? '-' }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge text-info">
-                                                    {{ $project->customer?->code ?? '—' }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <h6 class="mb-0  ">{{ $project->project_name }}</h6>
-                                                    <small class="text-muted">{{ $project->description ?? '' }}</small>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge   text-dark">
-                                                    {{ $project->quantity }}
-                                                </span>
-                                            </td>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover table-nowrap mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>SR NO.</th>
+                            <th>Date</th>
+                            <th>Project No.</th>
+                            <th>Code</th>
+                            <th>Project</th>
+                            <th>Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($projects as $project)
+                        <tr class="align-middle text-center">
+                            <td class="text-muted">{{ $loop->iteration }}</td>
+                            <td>
+                                <span class="badge text-dark">
+                                    {{ \Carbon\Carbon::parse($project->date)->format('d M, Y') }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-primary">{{ $project->id }}</span>
+                            </td>
+                            <td>
+                                <span class="">
+                                    {{ $project->customer?->code ?? '—' }}
+                                </span>
+                            </td>
+                            <td class="text-start">
+                                <div>
+                                    <h6 class="mb-0">{{ $project->project_name }}</h6>
+                                    <small class="text-muted">{{ $project->description ?? '' }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge text-dark">{{ $project->quantity }}</span>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No projects found</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center text-muted"> No projects found</td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted">
+                    Showing <span class="fw-semibold">{{ $projects->count() }}</span> of <span class="fw-semibold">{{ $totalProjects }}</span> Results
+                </small>
+                <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <small class="text-muted">
-                                    Showing <span class="fw-semibold">{{ $projects->count() }}</span> of <span class="fw-semibold">{{ $totalProjects }}</span> Results
-                                </small>
-                                <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- project end -->
 
 
@@ -590,7 +577,7 @@ $totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
                                             <thead class="table-light text-center">
                                                 <tr>
                                                     <th>SR NO.</th>
-                                                    <th>Customer</th>
+                                                    
                                                     <th>Code</th>
                                                     <th>Material</th>
                                                     <th>Qty</th>
@@ -601,20 +588,10 @@ $totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
                                                 @forelse($latestMaterialReq as $req)
                                                 <tr class="align-middle text-center">
                                                     <td class="text-muted">{{ $loop->iteration }}</td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center justify-content-start">
-                                                            <div class="avatar-xs me-2">
-                                                                <div class="avatar-title bg-info-subtle text-info rounded-circle">
-                                                                    <i class="ri-user-line"></i>
-                                                                </div>
-                                                            </div>
-                                                            <span>{{ $req->customer->name ?? '-' }}</span>
-                                                        </div>
-
-                                                    </td>
-                                                    <td><span class="badge bg-primary">{{ $req->code }}</span></td>
+                                                    
+                                                    <td><span  >{{ $req->code }}</span></td>
                                                     <td>{{ $req->materialtype->material_type ?? '-' }}</td>
-                                                    <td><span class="badge bg-dark">{{ $req->qty }}</span></td>
+                                                    <td><span  >{{ $req->qty }}</span></td>
                                                     <td class="fw-bold text-success">
                                                         ₹ {{ number_format($req->total_cost,2) }}
                                                     </td>
@@ -643,12 +620,14 @@ $totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
                         </div>
                     </div>
 
+ 
+
                     @endif
-                    
+
                 </div>
 
             </div>
-<br><br>
+            <br><br>
             <!-- End Page-content -->
 
             <footer class="footer">

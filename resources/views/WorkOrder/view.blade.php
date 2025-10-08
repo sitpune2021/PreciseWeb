@@ -59,7 +59,8 @@
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
                                             <td>
-                                                {{ ($wo->customer?->code ?? '') . '_' . ($wo->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
+                                               {{ ($wo->customer?->code ?? '') . '_' . ($project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
+
                                             </td>
                                             <!-- <td>{{ $wo->project->project_name ?? '' }}</td>                                           -->
 

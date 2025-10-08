@@ -20,9 +20,9 @@
                                     @if(isset($workorder)) @method('PUT') @endif
 
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
+                                                <label for="customer_id" class="form-label">Customer  <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single"
                                                     id="customer_id"
                                                     name="customer_id"
@@ -31,7 +31,7 @@
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}"
                                                         {{ old('customer_id', $workorder->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                        {{ $c->name }} - ({{ $c->code }})
+                                                         {{ $c->code }}
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -46,7 +46,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="project_id" class="form-label">Project Name <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single" id="project_id" name="project_id">
@@ -79,7 +79,7 @@
 
 
                                         <div class="col-md-2">
-                                            <div class="mb-3">
+                                            <div class="mb-2">
                                                 <label for="part" class="form-label">Part <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="part" name="part"
                                                     placeholder="Enter New Part" value="{{ old('part', $workorder->part ?? '') }}">
@@ -90,7 +90,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
                                                 <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $workorder->date ?? '') }}">
@@ -99,7 +99,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="dimeter" class="form-label">Diameter</label>
                                                 <input
@@ -113,7 +113,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="length" class="form-label">Length</label>
                                                 <input
@@ -127,7 +127,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="width" class="form-label">Width</label>
                                                 <input
@@ -141,7 +141,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="height" class="form-label">Height</label>
                                                 <input
@@ -155,7 +155,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="exp_time" class="form-label">Exp Time (HH:MM) <span class="mandatory">*</span></label>
                                                 <input type="text" name="exp_time" id="exp_time"
@@ -206,7 +206,7 @@
                                         </div>
 
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-9">
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">
                                                     Part Description <span class="mandatory">*</span>

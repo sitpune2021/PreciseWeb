@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,15 +10,23 @@ use Illuminate\Support\Facades\Auth; // ✅ Import Auth
 
 class MaterialorderController extends Controller
 {
-    public function AddMaterialorder()
-    {
-        $codes = Customer::where('status', 1)->with('materialreq')
-            ->orderBy('id', 'desc')
-            ->get();
+   public function AddMaterialorder()
+{
+    $adminId = Auth::id();  
 
-        $customers = Customer::where('status', 1)->orderBy('name')->get();
-        return view('Materialorder.add', compact('codes', 'customers'));
-    }
+    $codes = Customer::where('status', 1)
+        ->where('admin_id', $adminId)
+        ->with('materialreq')
+        ->orderBy('id', 'desc')
+        ->get();
+
+    $customers = Customer::where('status', 1)
+        ->where('admin_id', $adminId)
+        ->orderBy('name')
+        ->get();
+
+    return view('Materialorder.add', compact('codes', 'customers'));
+}
 
     public function ViewMaterialorder()
     {
@@ -29,10 +38,12 @@ class MaterialorderController extends Controller
         return view('Materialorder.view', compact('orders'));
     }
 
-    public function storeMaterialorder(Request $request)
+ public function storeMaterialorder(Request $request)
     {
-        $request->validate([
+        // ✅ Server-side validation
+        $validatedData = $request->validate([
             'customer_id'     => 'required|exists:customers,id',
+            'work_order_no'   => 'required|string|max:255',
             'date'            => 'required|date',
             'work_order_desc' => 'required|string|max:255',
             'f_diameter'      => 'nullable|numeric|min:0',
@@ -47,11 +58,11 @@ class MaterialorderController extends Controller
             'quantity'        => 'required|integer|min:1',
         ]);
 
-        // ✅ Add admin_id
-        $data = $request->all();
-        $data['admin_id'] = Auth::id();
+        // Add admin_id for tracking
+        $validatedData['admin_id'] = Auth::id();
 
-        MaterialOrder::create($data);
+        // Save to database
+        MaterialOrder::create($validatedData);
 
         return redirect()->route('ViewMaterialorder')
             ->with('success', 'Material Order created successfully.');
@@ -59,24 +70,37 @@ class MaterialorderController extends Controller
 
     public function editMaterialorder($id)
     {
-        $codes = Customer::where('status', 1)
-            ->select('id', 'code', 'name')
-            ->orderBy('id', 'desc')
-            ->get();
+        $decodedId = base64_decode($id);
 
-        $customers = Customer::where('status', 1)->orderBy('name')->get();
-        $record = MaterialOrder::where('admin_id', Auth::id())
-            ->findOrFail(base64_decode($id));
+        $record = MaterialOrder::withTrashed()
+            ->where('admin_id', Auth::id())
+            ->findOrFail($decodedId);
+
+        $codes = Customer::where('status', 1)->select('id', 'code', 'name')->get();
+        $customers = Customer::where('status', 1)->get();
 
         return view('Materialorder.add', compact('record', 'codes', 'customers'));
     }
 
+
+
     public function update(Request $request, $id)
     {
+        $decodedId = base64_decode($id);
+
+        $record = MaterialOrder::withTrashed()
+            ->where('admin_id', Auth::id())
+            ->findOrFail($decodedId);
+
+        if ($record->trashed()) {
+            $record->restore();
+        }
+
         $validated = $request->validate([
             'customer_id'     => 'required|exists:customers,id',
             'date'            => 'required|date',
             'work_order_desc' => 'required|string|max:255',
+            'work_order_no'   => 'required|string|max:255',
             'f_diameter'      => 'nullable|numeric|min:0',
             'f_length'        => 'nullable|numeric|min:0',
             'f_width'         => 'nullable|numeric|min:0',
@@ -89,13 +113,10 @@ class MaterialorderController extends Controller
             'quantity'        => 'required|integer|min:1',
         ]);
 
-        $record = MaterialOrder::where('admin_id', Auth::id())
-            ->findOrFail(base64_decode($id));
-
         $record->update($validated);
 
         return redirect()->route('ViewMaterialorder')
-            ->with('success', 'Material Order updated successfully.');
+            ->with('success', "Material Order '{$record->work_order_desc}' updated successfully.");
     }
 
     public function destroy($id)
@@ -142,6 +163,7 @@ class MaterialorderController extends Controller
         return redirect()->route('ViewMaterialorder')
             ->with('success', "Material Order '{$order->work_order_desc}' restored successfully.");
     }
+
 
     public function getCustomerData($id)
     {

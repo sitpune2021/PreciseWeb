@@ -214,8 +214,8 @@ Route::get('/editMaterialorder/{id}'          , [MaterialorderController::class,
 Route::get('/deleteMaterialorder/{id}'        , [MaterialorderController::class, 'destroy'])->name('deleteMaterialorder');
 Route::put('/updateMaterialorder/{id}'        , [MaterialorderController::class, 'update'])->name('updateMaterialorder');
 
-Route::get('materialorder/trash', [MaterialorderController::class, 'trash'])->name('trashMaterialorder');
-Route::get('materialorder/restore/{id}', [MaterialorderController::class, 'restore'])->name('restoreMaterialorder');
+Route::get('materialorder/trash'              , [MaterialorderController::class, 'trash'])->name('trashMaterialorder');
+Route::get('materialorder/restore/{id}'       , [MaterialorderController::class, 'restore'])->name('restoreMaterialorder');
 
 
 // Route::get('/material-reqs/{customer_id}'     , [MaterialReqController::class, 'getMaterialReqByCustomer']);

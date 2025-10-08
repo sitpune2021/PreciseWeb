@@ -28,16 +28,16 @@
                                     <div class="row">
 
                                         <!-- Customer -->
-                                        <div class="col-md-4">
-                                            <label for="customer_id" class="form-label">Customer Name <span class="text-red small">*</span></label>
+                                        <div class="col-md-3">
+                                            <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
                                             <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
-                                                <option value="">Select Customer</option>
+                                                <option value="">Select Customer Code</option>
                                                 @foreach($codes as $c)
                                                 <option value="{{ $c->id }}"
                                                     data-code="{{ $c->code }}"
                                                     data-id="{{ $c->id }}"
                                                     {{ old('customer_id', $materialReq->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                    {{ $c->name }} - ({{ $c->code }})
+                                                     {{ $c->code }}
                                                 </option>
                                                 @endforeach
                                             </select>
