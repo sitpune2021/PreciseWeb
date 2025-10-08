@@ -16,7 +16,7 @@ class OperatorController extends Controller
             ->where('admin_id', Auth::id())
             ->orderBy('updated_at', 'desc')
             ->get();
- 
+
         return view('Operator.add', compact('operators'));
     }
 
@@ -90,7 +90,7 @@ class OperatorController extends Controller
                 Rule::unique('operators', 'operator_name')
                     ->ignore($operator->id)
                     ->where(function ($query) {
-                        $query->where('admin_id', Auth::id())               //admin_id
+                        $query->where('admin_id', Auth::id())
                             ->whereNull('deleted_at')
                             ->where('is_active', 1);
                     }),
@@ -100,6 +100,7 @@ class OperatorController extends Controller
                 'numeric',
                 'digits:10',
                 Rule::unique('operators', 'phone_no')
+                    ->ignore($operator->id)
                     ->where(function ($query) {
                         $query->where('admin_id', Auth::id())
                             ->whereNull('deleted_at')
@@ -107,7 +108,6 @@ class OperatorController extends Controller
                     }),
             ],
         ]);
-
         $operator->update([
             'operator_name' => $request->operator_name,
             'phone_no'      => $request->phone_no,
@@ -171,28 +171,28 @@ class OperatorController extends Controller
             ->where('id', $id)
             ->where('admin_id', Auth::id())
             ->firstOrFail();
- 
+
         $exists = Operator::where('operator_name', $operator->operator_name)
             ->where('admin_id', Auth::id())
             ->whereNull('deleted_at')
             ->where('is_active', 1)
             ->exists();
- 
+
         if ($exists) {
             $operator->is_active = 0;
             $operator->restore();
             $operator->touch();
             $operator->save();
- 
+
             return redirect()->route('editOperator', base64_encode($operator->id))
                 ->with('success', "Operator '{$operator->operator_name}' already exists. Redirected to Edit Page.");
         }
- 
+
         $operator->is_active = 1;
         $operator->restore();
         $operator->touch();
         $operator->save();
- 
+
         return redirect()->route('AddOperator')
             ->with('success', "Operator '{$operator->operator_name}' restored successfully.");
     }

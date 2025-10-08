@@ -30,11 +30,12 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>Sr.No</th>
+                                            <th>#</th>
+                                             <th>Sr.No</th>
                                             <th>Customer</th>
                                             <th>Code</th>
                                             <th>Date</th>
-                                            <th>Work Order No</th>
+                                           
                                             <th>Description</th>
 
                                             <th width="12%">Action</th>
@@ -44,10 +45,11 @@
                                         @foreach($materialReq as $req)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $req->work_order_no }}</td>
                                             <td>{{ $req->customer->name ?? 'N/A' }}</td>
                                             <td>{{ $req->code }}</td>
                                             <td>{{ $req->date }}</td>
-                                            <td>{{ $req->work_order_no }}</td>
+                                            
                                             <td>{{ $req->description }}</td>
 
                                             <td class="text-center">
@@ -66,7 +68,7 @@
                                                         data-length="{{ $req->length }}"
                                                         data-width="{{ $req->width }}"
                                                         data-height="{{ $req->height }}"
-                                                        data-material="{{ $req->materialtype->material_type ?? 'N/A' }}"
+                                                       data-material="{{ $req->material ?? 'N/A' }}"
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
                                                         data-cost="{{ $req->material_cost ?? 'N/A' }}"

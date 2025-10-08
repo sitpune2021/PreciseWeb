@@ -162,13 +162,23 @@ class WorkOrderController extends Controller
     }
 
     // Get projects by customer (AJAX)
+    // public function getProjects($customerId)
+    // {
+    //     $projects = Project::where('customer_id', $customerId)
+    //         ->where('admin_id', Auth::id())
+    //         ->get(['id', 'project_name']);
+    //     return response()->json($projects);
+    // }
+
     public function getProjects($customerId)
-    {
-        $projects = Project::where('customer_id', $customerId)
-            ->where('admin_id', Auth::id())
-            ->get(['id', 'project_name']);
-        return response()->json($projects);
-    }
+{
+    $projects = Project::where('customer_id', $customerId)
+        ->where('admin_id', Auth::id())
+        ->select('id', 'project_name', 'quantity')
+        ->get();
+ 
+    return response()->json($projects);
+}
 
     // Get previous parts by project (AJAX)
     public function getParts($projectId)
@@ -180,6 +190,8 @@ class WorkOrderController extends Controller
 
         return response()->json($parts);
     }
+
+    
 
 
     public function trash()

@@ -56,7 +56,7 @@
                                         <!-- Work Order No -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
+                                                <label for="work_order_no" class="form-label">SR .No<span class="mandatory">*</span></label>
                                                 <input type="text" name="work_order_no" id="work_order_no"
                                                     class="form-control"
                                                     value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}" readonly>
