@@ -53,7 +53,7 @@
                                     <!-- Part No -->
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
-                                        <select name="part_no" id="part_no" class="form-control form-select ">
+                                        <select name="part_no" id="part_no" class="form-control form-select js-example-basic-single">
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php

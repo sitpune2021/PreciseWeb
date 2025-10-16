@@ -729,18 +729,33 @@
                     </li>
 
                     <!-- Invoice -->
-                    <li class="menu-title"><i class="ri-bill-line me-2 text-warning"></i><span>Invoices</span></li>
+                    <li class="menu-title">
+                        <i class="ri-bill-line me-2 text-warning"></i>
+                        <span>Invoices</span>
+                    </li>
+
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddInvoice','ViewInvoice') ? '' : 'collapsed' }}" href="#sidebarInvoice" data-bs-toggle="collapse">
-                            <i class="ri-file-list-3-line"></i> <span>Invoice</span>
+                        <a class="nav-link menu-link {{ request()->routeIs('invoice.create','invoice.index') ? '' : 'collapsed' }}"
+                            href="#sidebarInvoice"
+                            data-bs-toggle="collapse">
+                            <i class="ri-file-list-3-line"></i>
+                            <span>Invoice</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddInvoice','ViewInvoice') ? 'show' : '' }}" id="sidebarInvoice">
+
+                        <div class="collapse menu-dropdown {{ request()->routeIs('invoice.index') ? 'show' : '' }}"
+                            id="sidebarInvoice">
                             <ul class="nav nav-sm flex-column">
-                                <li class="nav-item"><a href="{{ route('AddInvoice') }}" class="nav-link {{ request()->routeIs('AddInvoice') ? 'active' : '' }}"><i class="ri-add-line me-1"></i> Add</a></li>
-                                <li class="nav-item"><a href="{{ route('ViewInvoice') }}" class="nav-link {{ request()->routeIs('ViewInvoice') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
+                                <li class="nav-item">
+                                    <a href="{{ route('invoice.index') }}"
+                                        class="nav-link {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
+                                        <i class="ri-eye-line me-1"></i> View
+                                    </a>
+                                </li>
                             </ul>
                         </div>
+
                     </li>
+
 
                     <br><br><br><br><br><br><br><br>
                     @endif

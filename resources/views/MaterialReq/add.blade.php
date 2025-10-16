@@ -30,20 +30,26 @@
                                         <!-- Customer -->
                                         <div class="col-md-3">
                                             <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
-                                            <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
+                                            <select class="form-select js-example-basic-single" id="customer_id" name="customer_id"
+                                                {{ isset($materialReq) ? 'disabled' : '' }}>
                                                 <option value="">Select Customer Code</option>
                                                 @foreach($codes as $c)
                                                 <option value="{{ $c->id }}"
                                                     data-code="{{ $c->code }}"
                                                     data-id="{{ $c->id }}"
                                                     {{ old('customer_id', $materialReq->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                     {{ $c->code }}
+                                                    {{ $c->code }}
                                                 </option>
                                                 @endforeach
                                             </select>
                                             @error('customer_id')
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
+
+                                            @if(isset($materialReq))
+
+                                            <input type="hidden" name="customer_id" value="{{ $materialReq->customer_id }}">
+                                            @endif
                                         </div>
 
                                         <!-- Customer Code -->
@@ -77,7 +83,7 @@
                                         <!-- Description -->
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <label for="description" class="form-label">Description <span class="mandatory">*</span></label>
+                                                <label for="description" class="form-label">Description </label>
                                                 <input type="text" name="description" id="description" class="form-control" value="{{ old('description', $materialReq->description ?? '') }}">
                                                 @error('description') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
@@ -216,10 +222,8 @@
                                                 name="cost"
                                                 id="cost"
                                                 class="form-control"
-                                                value="{{ old('cost', $materialReq->cost ?? '') }}"
-
+                                                value="{{ old('cost', $materialReq->material_cost ?? '') }}"
                                                 readonly>
-
                                         </div>
                                         <!-- Machine Processes -->
                                         <div class="col-md-2">
@@ -370,7 +374,6 @@
         $(document).ready(function() {
 
             function calculate() {
-
                 let dia = parseFloat($("#dia").val()) || 0;
                 let len = parseFloat($("#length").val()) || 0;
                 let withs = parseFloat($("#width").val()) || 0;
@@ -380,29 +383,40 @@
                 let qty = parseFloat($("#qty").val()) || 1;
 
                 let lathe = parseFloat($("#lathe").val()) || 0;
-                let vmc = parseFloat($("#vmc_cost").val()) || 0;
+                let vmc_cost = parseFloat($("#vmc_cost").val()) || 0;
+                let vmc_hrs = parseFloat($("#vmc_hrs").val()) || 0;
                 let edm = parseFloat($("#edm_rate").val()) || 0;
                 let cl = parseFloat($("#cl").val()) || 0;
                 let hrcog = parseFloat($("#hrc").val()) || 0;
 
+              
                 let material_wt = ((Math.PI * (dia / 2) * (dia / 2) * heigh / 1000000) * sg) +
                     ((len * withs * heigh / 1000000) * sg);
 
                 let mt_cost = material_wt * rate;
+
                 let mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
                 let mg2 = ((len * withs) * 2 * 0.5 / 100);
                 let rg2 = ((len * withs) * 2 * 0.3 / 100);
                 let sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
                 let sg2 = ((len * withs) * 2 * 0.6 / 100);
-                // let hrc = round((withs * 70),1);  
+
+                let vmc_hr = vmc_hrs * vmc_cost;
 
                 let hrc = hrcog ? hrcog : Math.round((material_wt * 70) * 10) / 10;
 
                 let total_per_piece = (
                     lathe + mg4 + mg2 + rg2 + sg4 + sg2 +
-                    vmc + edm + hrc + cl + mt_cost
+                    vmc_hr + edm + hrc + cl + mt_cost
                 );
+
                 let total_cost = total_per_piece * qty;
+
+                $("#vmc_hrs").on("input", function() {
+                    let hrs = parseFloat($(this).val()) || 0;
+                    $("#vmc_cost").val((hrs * 450).toFixed(2));
+                    $("#vmc_cost").trigger("input");
+                });
 
                 $("#weight").val(material_wt.toFixed(3));
                 $("#cost").val(mt_cost.toFixed(2));
@@ -411,12 +425,12 @@
                 $("#rg2").val(rg2.toFixed(2));
                 $("#sg4").val(sg4.toFixed(2));
                 $("#sg2").val(sg2.toFixed(2));
+                $("#vmc_total").val(vmc_hr.toFixed(2));
                 $("#hrc").val(hrc.toFixed(2));
-
                 $("#total_cost").val(total_cost.toFixed(2));
             }
 
-            $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_rate, #cl")
+            $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #vmc_hrs, #edm_rate, #cl, #hrc")
                 .on("input change", calculate);
 
             $("#material_type").on("change", function() {
@@ -426,9 +440,7 @@
                 $("#material_rate").val(rate);
                 calculate();
             });
-
-            $("#hrc").on("change", calculate);
-
         });
     </script>
+
     @endsection

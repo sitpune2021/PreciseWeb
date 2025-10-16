@@ -24,7 +24,7 @@
                                 <div class="row g-3">
                                     <div class="col-md-3">
                                         <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
-                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id" required>
+                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id" >
                                             <option value="">Select Customer Code</option>
                                             @foreach($codes as $c)
                                             <option value="{{ $c->id }}"
@@ -75,7 +75,7 @@
 
                                     <!-- WORK ORDER -->
                                     <div class="col-md-7">
-                                        <label class="form-label">Work Order Description <span class="text-red">*</span></label>
+                                        <label class="form-label">Work Order Description  </label>
                                         <input type="text" name="work_order_desc" id="description" class="form-control"
                                             value="{{ old('work_order_desc', $record->work_order_desc ?? '') }}">
                                         @error('work_order_desc')

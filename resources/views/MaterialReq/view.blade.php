@@ -32,7 +32,7 @@
                                         <tr>
                                             <th>#</th>
                                              <th>Sr.No</th>
-                                            <th>Customer</th>
+                                            <th>Customer Code</th>
                                             <th>Code</th>
                                             <th>Date</th>
                                            
@@ -46,7 +46,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $req->work_order_no }}</td>
-                                            <td>{{ $req->customer->name ?? 'N/A' }}</td>
+                                            <td>{{ $req->customer->code ?? 'N/A' }}</td>
                                             <td>{{ $req->code }}</td>
                                             <td>{{ $req->date }}</td>
                                             
@@ -59,7 +59,7 @@
                                                         <i class="ri-pencil-fill"></i>
                                                     </a>
                                                     <button type="button" class="btn btn-primary btn-sm viewMaterialReqBtn"
-                                                        data-customer="{{ $req->customer->name ?? 'N/A' }}"
+                                                        data-customer="{{ $req->customer->code ?? 'N/A' }}"
                                                         data-code="{{ $req->code }}"
                                                         data-date="{{ $req->date }}"
                                                         data-workorder="{{ $req->work_order_no }}"
@@ -118,7 +118,7 @@
                         <div class="modal-body">
                             <table class="table table-bordered">
                                 <tr>
-                                    <th>Customer Name</th>
+                                    <th>Customer Code</th>
                                     <td id="mr_customer"></td>
                                 </tr>
                                 <tr>

@@ -35,6 +35,23 @@ public function project()
     return $this->belongsTo(Project::class, 'project_id');
 }
 
+  public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order'); 
+    }
+
+
+ public function machineRecords()
+    {
+        // local key in work_orders = id
+        return $this->hasMany(MachineRecord::class, 'work_order', 'id');
+    }
+
+    public function hsn()
+{
+    return $this->belongsTo(Hsncode::class, 'material', 'material_type');
+}
+
 
     
 }

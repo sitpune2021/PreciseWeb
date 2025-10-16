@@ -88,10 +88,12 @@ class SetupSheetController extends Controller
      */
     public function ViewSetupSheet()
     {
-        $sheets = SetupSheet::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
+       $sheets = SetupSheet::where('admin_id', Auth::id())
+             ->orderBy('updated_at', 'desc')
+             ->orderBy('id', 'desc')          
+              ->get();
         return view('SetupSheet.view', compact('sheets'));
+    
     }
 
     /**
@@ -270,7 +272,8 @@ class SetupSheetController extends Controller
             ->whereNull('deleted_at')
             ->exists();
 
-        $sheet->restore();
+       $sheet->restore();  
+            $sheet->touch();
 
         if ($exists) {
             return redirect()->route('editSetupSheet', base64_encode($sheet->id))

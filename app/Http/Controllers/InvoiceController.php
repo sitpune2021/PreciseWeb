@@ -2,189 +2,213 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoice;
 use App\Models\Client;
+use App\Models\Invoice;
+use App\Models\Customer;
+use App\Models\Hsncode;
+use App\Models\WorkOrder;
+use App\Models\MaterialType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class InvoiceController extends Controller
 {
-
-    public function AddInvoice()
+    public function index(Request $request)
     {
-        $user = Auth::user();
-        $client = Client::where('login_id', $user->id)->first();
-
-        return view('invoices.add', compact('client'));
-    }
-
-    public function StoreInvoice(Request $request)
-    {
-        // dd($request);
-
-        $request->validate([
-    'invoice_no'        => 'required|unique:invoices,invoice_no',
-    'invoice_date'      => 'required|date',
-    'buyer_name'        => 'required|string|max:255',
-    'description'       => 'required|string|max:255',
-    'qty'               => 'required|integer|min:1',
-    'rate'              => 'required|numeric|min:0',
-        'our_ch_no'         => 'nullable|string|max:255',
-    'our_ch_no_date'    => 'nullable|date',
-    'y_ch_no'           => 'nullable|string|max:255',
-    'y_ch_no_date'      => 'nullable|date',
-    'p_o_no'            => 'nullable|string|max:255',
-    'p_o_no_date'       => 'nullable|date',
-    'description_fast'  => 'nullable|string|max:255',
-    'gst_no'            => 'nullable|string|max:50',
-    'msme_no'           => 'nullable|string|max:50',
-
-    // Buyer & Consignee
-    
-    'buyer_address'     => 'nullable|string',
-    'consignee_name'    => 'nullable|string|max:255',
-    'consignee_address' => 'nullable|string',
-
-    // Contacts
-    'ki_attn_name'      => 'nullable|string|max:255',
-    '_ki_contact_no'    => 'nullable|string|max:20',
-    'ki_gst'            => 'nullable|string|max:50',
-    'kind_attn_name'    => 'nullable|string|max:255',
-    'contact_no'        => 'nullable|string|max:20',
-    'kind_gst'          => 'nullable|string|max:50',
-
-    // Items
-   
-    'hsn_code'          => 'nullable|string|max:50',
- 
-    'amount'            => 'nullable|numeric|min:0',
-    'hrs_per_job'       => 'nullable|numeric|min:0',
-    'cost'              => 'nullable|numeric|min:0',
-
-    // Totals
-    'sub_total'         => 'nullable|numeric|min:0',
-    'sgst'              => 'nullable|numeric|min:0',
-    'cgst'              => 'nullable|numeric|min:0',
-    'igst'              => 'nullable|numeric|min:0',
-    'total_tax_payable' => 'nullable|numeric|min:0',
-    'grand_total'       => 'nullable|numeric|min:0',
-
-    // Others
-    'declaration'       => 'nullable|string|max:255',
-    'note'              => 'nullable|string',
-    'bank_details'      => 'nullable|string',
-    'amount_in_words'   => 'nullable|string|max:255',
-]);
-
-$user   = Auth::user();
-$client = Client::where('login_id', $user->id)->firstOrFail();
-
-$amount    = $request->qty * $request->rate;
-$subTotal  = $amount;
-$total     = $subTotal + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
-
-$data               = $request->all();
-$data['client_id']  = $client->id;
-$data['amount']     = $amount;
-$data['sub_total']  = $subTotal;
-$data['grand_total'] = $total;
-
-Invoice::create($data);
+        $adminId = Auth::id();
 
 
+        $workOrders = WorkOrder::where('admin_id', $adminId)
+            ->where('status', 1)
+            ->with('customer')
+            ->get();
 
+        $customers = Customer::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->orderBy('name')
+            ->get();
 
-     
-     
+        $customerId = $request->input('customer_id');
 
- 
+        $invoices = Invoice::with(['customer', 'items']);
 
-
-
-        $user   = Auth::user();
-        $client = Client::where('login_id', $user->id)->first();
-
-        if (!$client) {
-            return redirect()->back()->with('error', 'Client not found for this user.');
+        if ($customerId) {
+            $invoices->where('customer_id', $customerId);
         }
 
-            $amount = $request->qty * $request->rate;
-                $subTotal = $amount;
-                $total = $subTotal + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
+        $invoices = $invoices->latest()->get();
 
-                $data = $request->except(['amount', 'sub_total', 'grand_total']);
-                $data['client_id'] = $client->id;
-                $data['amount'] = $amount;
-                $data['sub_total'] = $subTotal;
-                $data['grand_total'] = $total;
-
-
-        Invoice::create($data);
-
-        return redirect()->route('ViewInvoice')->with('success', 'Invoice created successfully.');
+        return view('invoice.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
 
-    public function ViewInvoice()
+    public function create()
     {
-        $invoices = Invoice::with('client')->latest()->get();
-        return view('invoices.view', compact('invoices'));
+        $adminId = Auth::id();
+
+        $customers = Customer::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->get();
+
+        $hsncodes = Hsncode::where('is_active', 1)
+            ->where('admin_id', $adminId)
+            ->get();
+
+        $workOrders = WorkOrder::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->with('customer')
+            ->get(['id', 'customer_id', 'part_description', 'exp_time', 'quantity', 'material', 'date']);
+
+        return view('invoice.add', compact('customers', 'hsncodes', 'workOrders'));
     }
 
-    public function editInvoice(string $encryptedId)
+    public function store(Request $request)
+    {   
+        $validated = $request->validate([
+            'customer_id' => 'required',
+            'desc.*'      => 'required|string',
+            'hsn.*'       => 'required|string',
+            'qty.*'       => 'required|numeric|min:1',
+            'rate.*'      => 'required|numeric|min:0',
+            'amount.*'    => 'required|numeric|min:0',
+            'hrs.*'       => 'nullable|string',
+            'vmc_hr.*'    => 'nullable|numeric|min:0',
+            'adj.*'       => 'nullable|numeric|min:0',
+            'sub_total'   => 'required|numeric|min:0',
+            'total_tax'   => 'required|numeric|min:0',
+            'adjustment'  => 'nullable|numeric',
+            'round_off'   => 'nullable|numeric',
+            'grand_total' => 'required|numeric|min:0',
+        ]);
+
+        $adminId = auth()->id();
+
+        $invoice = Invoice::create([
+            'customer_id'     => $request->customer_id,
+            'sub_total'       => $request->sub_total,
+            'total_tax'       => $request->total_tax,
+            'adjustment'      => $request->adj_total ?? 0,
+            'round_off'       => $request->round_off ?? 0,
+            'grand_total'     => $request->grand_total,
+            'total_hrs'       => array_sum($request->hrs ?? []),
+            'total_vmc'       => array_sum($request->vmc ?? []),
+            'declaration'     => $request->declaration,
+            'note'            => $request->note,
+            'amount_in_words' => $request->amount_words,
+            'admin_id'        => $adminId,
+            'invoice_no'      => 'INV-' . time(),
+            'invoice_date'    => now(),
+        ]);
+
+        foreach ($request->desc as $i => $desc) {
+            $invoice->items()->create([
+                'part_name' => $desc ?? '',
+                'hsn_code'  => $request->hsn[$i] ?? null,
+                'qty'       => $request->qty[$i] ?? 0,
+                'rate'      => $request->rate[$i] ?? 0,
+                'amount'    => $request->amount[$i] ?? 0,
+                'hrs'       => isset($request->hrs[$i])
+                    ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i]))
+                    : 0,
+                'vmc'       => $request->vmc_hr[$i] ?? 0,
+                'adj'       => $request->adj[$i] ?? 0,
+                'sgst'      => $request->sgst_amt ?? 0,
+                'cgst'      => $request->cgst_amt ?? 0,
+                'igst'      => $request->igst ?? 0,
+                'invoice_id' => $invoice->id,
+            ]);
+
+
+
+            if (!empty($request->work_order_id[$i])) {
+                // dd($request->work_order_id);
+                $workOrder = WorkOrder::find($request->work_order_id[$i]);
+                if ($workOrder) {
+
+                    $workOrder->update(['status' => 2]);
+                }
+            }
+        }
+
+        return redirect()->route('invoice.index')->with('success', 'Invoice created successfully!');
+    }
+
+    public function download($id)
     {
-        $id = base64_decode($encryptedId);
+        $invoice = Invoice::with(['customer', 'items'])->findOrFail($id);
 
-        $invoice = Invoice::findOrFail($id);
-
-        $user   = Auth::user();
-        $client = Client::where('login_id', $user->id)->first();
-
-        return view('invoices.add', compact('invoice', 'client'));
+        $pdf = PDF::loadView('invoice.pdf', compact('invoice'));
+        return $pdf->download('Invoice-' . $invoice->invoice_no . '.pdf');
     }
 
-   public function updateInvoice(Request $request, string $encryptedId)
-{
-    $id = base64_decode($encryptedId);
-    $invoice = Invoice::findOrFail($id);
-
-    $request->validate([
-        'invoice_no'   => 'required|unique:invoices,invoice_no,' . $invoice->id,
-        'invoice_date' => 'required|date',
-        'buyer_name'   => 'required|string|max:255',
-        'description'  => 'required|string|max:255', // ✔ description वापरा
-        'qty'          => 'required|integer|min:1',
-        'rate'         => 'required|numeric|min:0',
+    public function printInvoice($id)
+    {
+        $invoice = Invoice::with('items')->findOrFail($id);
+        $adminId = Auth::id();
+       $c = Client::where('login_id', $adminId)->first([
+        'name',
+        'phone_no',
+        'email_id',
+        'gst_no',
+        'logo',
+        'address'
     ]);
 
-    $user   = Auth::user();
-    $client = Client::where('login_id', $user->id)->firstOrFail();
-
-    $amount    = $request->qty * $request->rate;
-    $subTotal  = $amount;
-    $total     = $subTotal + ($request->cgst ?? 0) + ($request->sgst ?? 0) + ($request->igst ?? 0);
-
-    $data               = $request->all();
-    $data['client_id']  = $client->id;
-    $data['amount']     = $amount;
-    $data['sub_total']  = $subTotal;
-    $data['grand_total'] = $total;  
-
-    $invoice->update($data);
-
-    return redirect()->route('ViewInvoice')->with('success', 'Invoice updated successfully.');
-}
-
-    public function destroy(Invoice $invoice)
-    {
-        $invoice->delete();
-        return redirect()->route('ViewInvoice')->with('success', 'Invoice deleted successfully.');
+        return view('invoice.print', compact('invoice', 'c'));
     }
 
-    public function printInvoice($encryptedId)
+    public function getHsnDetails($id)
     {
-        $id = base64_decode($encryptedId);
-        $invoice = Invoice::with('client')->findOrFail($id);
+        $hsn = Hsncode::where('id', $id)
+            ->where('admin_id', Auth::id())
+            ->first();
 
-        return view('invoices.print', compact('invoice'));
+        if ($hsn) {
+            return response()->json([
+                'hsn_code' => $hsn->hsn_code,
+                'sgst'     => $hsn->sgst,
+                'cgst'     => $hsn->cgst,
+                'igst'     => $hsn->igst,
+            ]);
+        }
+
+        return response()->json(['error' => 'Not Found'], 404);
+    }
+
+    public function getMachineRecords($customer_id)
+    {
+        $adminId = Auth::id();
+
+        $records = WorkOrder::where('admin_id', $adminId)
+            ->where('customer_id', $customer_id)
+            ->where('status', 1)
+            ->with(['machineRecords' => function ($q) {
+                $q->select('id', 'work_order', 'hrs', 'actual_hrs', 'est_time', 'admin_id');
+            }])
+            ->get(['id', 'part_description', 'exp_time', 'quantity', 'material']);
+
+        if ($records->isEmpty()) {
+            return response()->json([]);
+        }
+
+        $materials = MaterialType::where('admin_id', $adminId)
+            ->get(['material_type', 'material_rate']);
+
+        $data = $records->map(function ($r) use ($materials) {
+            $machine = $r->machineRecords->first();
+            $mat = $materials->firstWhere('material_type', $r->material);
+
+            return [
+                'id'              => $r->id,
+                'part_description' => $r->part_description,
+                'quantity'        => $r->quantity,
+                'exp_time'        => $r->exp_time,
+                'vmc_hr'          => $machine->hrs ?? 0,
+                'material_type'   => $r->material,
+                'material_rate'   => $mat->material_rate ?? 0,
+            ];
+        });
+
+        return response()->json($data);
     }
 }

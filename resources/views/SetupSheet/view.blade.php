@@ -127,7 +127,8 @@
                     <!-- Sheet Header -->
                     <div class="text-center mb-3">
                         <div id="sheet_image_container" class="mb-2"></div>
-                        <h4>Setup Sheet</h4>
+                        <!-- <h4>Setup Sheet</h4> -->
+                        <h5 id="sheet_description_heading" class="mt-1 text-muted"></h5>
                     </div>
 
                     <!-- Main Sheet Table -->
@@ -137,7 +138,7 @@
                                 <th>Part Code</th>
                                 <th>Work Order No</th>
                                 <th>Date</th>
-                                <th>Description</th>
+                                <th>Part Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -309,6 +310,7 @@
             document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
             document.getElementById('sheet_date').textContent = data.date ?? '';
             document.getElementById('sheet_description').textContent = data.description ?? '';
+            document.getElementById('sheet_description_heading').textContent = data.description ?? '';
 
             document.getElementById('sheet_size_x').textContent = data.size_in_x ?? '';
             document.getElementById('sheet_size_y').textContent = data.size_in_y ?? '';

@@ -15,30 +15,43 @@ use Illuminate\Support\Facades\Auth;
 
 class MachinerecordController extends Controller
 {
-    public function AddMachinerecord()
+ public function AddMachinerecord()
     {
         $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id()) // Only current admin
+            ->where('admin_id', Auth::id())
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-
-        $materialtype = MaterialType::where('admin_id', Auth::id())->get();
+ 
+        $materialtype = MaterialType::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+ 
         $workorders = WorkOrder::with('customer')
-            ->where('admin_id', Auth::id()) // Only current admin
+            ->where('admin_id', Auth::id())
             ->whereHas('customer', function ($q) {
                 $q->where('status', 1)
                     ->where('admin_id', Auth::id());
             })
             ->latest()
             ->get();
-
-        $machines  = Machine::where('admin_id', Auth::id())->get(); // Only current admin
-        $operators = Operator::where('admin_id', Auth::id())->get(); // Only current admin
-        $settings  = Setting::where('admin_id', Auth::id())->get(); // Only current admin
-
+ 
+        $machines = Machine::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+ 
+        $operators = Operator::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+ 
+        $settings = Setting::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+ 
         return view('Machinerecord.add', compact('workorders', 'machines', 'operators', 'settings', 'codes', 'materialtype'));
     }
+ 
+ 
 
     public function StoreMachinerecord(Request $request)
     {
@@ -79,31 +92,59 @@ class MachinerecordController extends Controller
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-
+ 
+ 
         $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id);
-        $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id())
+ 
+ 
+        $codes = Customer::where(function ($q) use ($record) {
+            $q->where('status', 1)
+                ->where('admin_id', Auth::id())
+                ->orWhere('id', $record->customer_id);
+        })
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-
-        $materialtype = MaterialType::where('admin_id', Auth::id())->get(); // Only current admin
-
+ 
+     
+        $materialtype = MaterialType::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+ 
+       
         $workorders = WorkOrder::with('customer')
             ->where('admin_id', Auth::id())
             ->whereHas('customer', function ($q) use ($record) {
                 $q->where('status', 1)
                     ->where('admin_id', Auth::id())
-                    ->orWhere('id', $record->customer_id); // include current record's customer
-            })
-            ->latest()
+                    ->orWhere('id', $record->customer_id);
+                    })
+                    ->latest()
+                    ->get();
+ 
+   
+        $machines = Machine::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
             ->get();
-
-        $machines  = Machine::where('admin_id', Auth::id())->get();
-        $operators = Operator::where('admin_id', Auth::id())->get();
-        $settings  = Setting::where('admin_id', Auth::id())->get();
-
-        return view('Machinerecord.add', compact('record', 'workorders', 'machines', 'operators', 'settings', 'materialtype', 'codes'));
+ 
+   
+        $operators = Operator::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+ 
+        $settings = Setting::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+ 
+        return view('Machinerecord.add', compact(
+            'record',
+            'workorders',
+            'machines',
+            'operators',
+            'settings',
+            'materialtype',
+            'codes'
+        ));
     }
 
     public function update(Request $request, string $encryptedId)

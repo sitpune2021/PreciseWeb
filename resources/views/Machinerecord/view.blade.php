@@ -15,11 +15,9 @@
                                 <a href="{{ route('trashMachineRecord') }}" class="btn btn-warning btn-sm">
                                     View Trash
                                 </a>
-                                <!-- Add WorkOrder Button -->
                                 <a href="{{ route('AddMachinerecord') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Machine Records
                                 </a>
-
                             </div>
                         </div>
                         <div class="card-body">
@@ -29,12 +27,8 @@
                                         <tr>
                                             <th>Sr.No</th>
                                             <th>Part No</th>
-                                            <th>code</th>
-                                            <th>Work Order</th>
                                             <th>First Set</th>
                                             <th>Qty</th>
-                                            <th>Start Time</th>
-                                            <th>End Time</th>
                                             <th>Invoice No</th>
                                             <th width="12%">Action</th>
                                         </tr>
@@ -44,12 +38,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $rec->part_no }}</td>
-                                            <td>{{ $rec->code }}</td>
-                                            <td>{{ $rec->work_order }}</td>
                                             <td>{{ $rec->first_set }}</td>
                                             <td>{{ $rec->qty }}</td>
-                                            <td>{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}</td>
-                                            <td>{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}</td>
                                             <td>{{ $rec->invoice_no }}</td>
                                             <td>
                                                 <a href="{{ route('EditMachinerecord', base64_encode($rec->id)) }}">
@@ -62,6 +52,7 @@
                                                     class="btn btn-primary btn-sm viewBtn"
                                                     data-id="{{ $rec->id }}"
                                                     data-part="{{ $rec->part_no }}"
+                                                    data-first_set="{{ $rec->first_set }}"
                                                     data-workorder="{{ $rec->work_order }}"
                                                     data-machine="{{ $rec->machine }}"
                                                     data-operator="{{ $rec->operator }}"
@@ -78,8 +69,7 @@
                                                     data-invoice_no="{{ $rec->invoice_no }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-
-
+                                                
                                                 <a href="{{ route('DeleteMachinerecord', base64_encode($rec->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-sm">
@@ -110,6 +100,10 @@
                                 <tr>
                                     <th>Part No</th>
                                     <td id="view_part"></td>
+                                </tr>
+                                <tr>
+                                    <th>First Set</th>
+                                    <td id="view_first_set"></td>
                                 </tr>
                                 <tr>
                                     <th>Work Order</th>
@@ -159,9 +153,9 @@
                                     <th>Time Taken</th>
                                     <td id="view_time_taken"></td>
                                 </tr>
-
-                                <th>Actual Hrs</th>
-                                <td id="view_actual_hrs"></td>
+                                <tr>
+                                    <th>Actual Hrs</th>
+                                    <td id="view_actual_hrs"></td>
                                 </tr>
                                 <tr>
                                     <th>Invoice No</th>
@@ -178,6 +172,7 @@
                     document.querySelectorAll(".viewBtn").forEach(btn => {
                         btn.addEventListener("click", function() {
                             document.getElementById("view_part").textContent = this.dataset.part;
+                            document.getElementById("view_first_set").textContent = this.dataset.first_set;
                             document.getElementById("view_workorder").textContent = this.dataset.workorder;
                             document.getElementById("view_machine").textContent = this.dataset.machine;
                             document.getElementById("view_operator").textContent = this.dataset.operator;
@@ -200,5 +195,8 @@
                 });
             </script>
 
+        </div>
+    </div>
+</div>
 
-            @endsection
+@endsection

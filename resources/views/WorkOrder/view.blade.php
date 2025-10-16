@@ -31,9 +31,9 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.<br>No</th>
-                                            <th>Work <br>Order No.</th>
-                                            <th>Customer <br>Code</th>
-                                            <th>Part<br>No.</th>
+                                            <!-- <th>Work <br>Order No.</th> -->
+                                            <!-- <th>Customer <br>Code</th> -->
+                                            <!-- <th>Part<br>No.</th> -->
                                             <th>Date</th>
                                             <th>Part Code</th>
 
@@ -53,10 +53,10 @@
 
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                           <td>{{ $project?->project_no ?? '' }}</td>
+                                           <!-- <td>{{ $project?->project_no ?? '' }}</td> -->
 
-                                            <td>{{ $wo->customer?->code ?? '' }}</td>
-                                            <td>{{ $wo->part }}</td>
+                                            <!-- <td>{{ $wo->customer?->code ?? '' }}</td> -->
+                                            <!-- <td>{{ $wo->part }}</td> -->
                                             <td>{{ $wo->date }}</td>
                                             <td>
                                                {{ ($wo->customer?->code ?? '') . '_' . ($project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}

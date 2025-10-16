@@ -219,14 +219,25 @@ Route::get('materialorder/restore/{id}'        , [MaterialorderController::class
 // Route::get('/material-reqs/{customer_id}'     , [MaterialReqController::class, 'getMaterialReqByCustomer']);
 Route::get('/get-customer-data/{id}'           , [MaterialorderController::class, 'getCustomerData'])->name('getCustomerData');
 
-// Invoice Routes
-Route::get('/AddInvoice'                       , [InvoiceController::class, 'AddInvoice'])->name('AddInvoice');
-Route::get('/ViewInvoice'                      , [InvoiceController::class, 'ViewInvoice'])->name('ViewInvoice');
-Route::post('/StoreInvoice'                    , [InvoiceController::class, 'StoreInvoice'])->name('StoreInvoice');
-Route::get('/editInvoice/{id}'                 , [InvoiceController::class, 'editInvoice'])->name('editInvoice');
-Route::put('/updateInvoice/{id}'               , [InvoiceController::class, 'updateInvoice'])->name('updateInvoice');
-Route::get('/deleteInvoice/{id}'               , [InvoiceController::class,  'destroy'])->name('deleteInvoice');
-Route::get('/printInvoice/{id}'                , [InvoiceController::class, 'printInvoice'])->name('printInvoice');
+
+Route::get('invoice'                            , [InvoiceController::class, 'index'])->name('invoice.index');
+Route::get('invoice/add'                        , [InvoiceController::class, 'create'])->name('invoice.add');
+Route::post('invoice/store'                     , [InvoiceController::class, 'store'])->name('invoice.store');
+
+Route::get('invoice/{id}/download'              , [InvoiceController::class, 'download'])->name('invoice.download');
+Route::get('invoice/print/{id}'                 , [InvoiceController::class, 'printInvoice'])->name('invoice.print');
+
+Route::get('get-hsn-details/{id}'               , [InvoiceController::class, 'getHsnDetails'])->name('get.hsn.details');
+Route::get('/invoice/fetch-machine-records/{customer_id}', [InvoiceController::class, 'getMachineRecords']);
+
+Route::get('/invoice/get-machine-details/{id}', [InvoiceController::class, 'getMachineDetails']); 
+Route::get('/invoice/fetch-material-rate/{material}', [InvoiceController::class, 'getMaterialRate']);
+
+
+
+
+
+
 
 
 

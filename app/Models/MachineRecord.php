@@ -37,4 +37,10 @@ class MachineRecord extends Model
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
+
+ public function workOrder()
+    {
+        // foreign key in machine_records = work_order
+        return $this->belongsTo(WorkOrder::class, 'work_order', 'id');
+    }
 }

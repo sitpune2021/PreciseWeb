@@ -29,7 +29,7 @@
                                         <tr class="table-white text-center">
                                             <th rowspan="2">#</th>
                                             <th rowspan="2">Sr.No</th>
-                                            <th rowspan="2">Customer Name</th>
+                                            <th rowspan="2">Customer Code</th>
 
                                             <th rowspan="2">Date</th>
                                             <th rowspan="2">Work Order desc</th>
@@ -46,7 +46,7 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">{{ $order->work_order_no }}</td>
-                                            <td class="text-center">{{ $order->customer->name ?? 'N/A' }}</td>
+                                            <td class="text-center">{{ $order->customer->code ?? 'N/A' }}</td>
 
                                             <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
                                             <td class="text-start">{{ $order->work_order_desc }}</td>
@@ -63,7 +63,7 @@
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm viewBtn"
                                                     data-no="{{ $order->work_order_no }}"
-                                                    data-name="{{ $order->customer->name ?? 'N/A' }}"
+                                                    data-name="{{ $order->customer->code ?? 'N/A' }}"
                                                     data-date="{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}"
                                                     data-desc="{{ $order->work_order_desc }}"
                                                     data-fdia="{{ $order->f_diameter }}"
@@ -108,14 +108,15 @@
 <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header   text-white">
+            <div class="modal-header text-white">
                 <h5 class="modal-title">Material Order Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <table class="table table-bordered">
+
+                <table class="table table-bordered mb-3">
                     <tr>
-                        <th>Customer Name</th>
+                        <th>Customer Code</th>
                         <td id="v_name"></td>
                     </tr>
                     <tr>
@@ -131,44 +132,6 @@
                         <td id="v_desc"></td>
                     </tr>
                     <tr>
-                        <th colspan="2" class="text-center bg-light">Finish Size</th>
-                    </tr>
-                    <tr>
-                        <th>DIA</th>
-                        <td id="v_fdia"></td>
-                    </tr>
-                    <tr>
-                        <th>Length</th>
-                        <td id="v_flen"></td>
-                    </tr>
-                    <tr>
-                        <th>Width</th>
-                        <td id="v_fwid"></td>
-                    </tr>
-                    <tr>
-                        <th>Height</th>
-                        <td id="v_fhei"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2" class="text-center bg-light">Raw Size</th>
-                    </tr>
-                    <tr>
-                        <th>DIA</th>
-                        <td id="v_rdia"></td>
-                    </tr>
-                    <tr>
-                        <th>Length</th>
-                        <td id="v_rlen"></td>
-                    </tr>
-                    <tr>
-                        <th>Width</th>
-                        <td id="v_rwid"></td>
-                    </tr>
-                    <tr>
-                        <th>Height</th>
-                        <td id="v_rhei"></td>
-                    </tr>
-                    <tr>
                         <th>Material</th>
                         <td id="v_mat"></td>
                     </tr>
@@ -177,34 +140,87 @@
                         <td id="v_qty"></td>
                     </tr>
                 </table>
+
+                <!-- Finish & Raw Size side-by-side -->
+                <div class="row text-center mb-3">
+                    <div class="col-6">
+                        <table class="table table-bordered">
+                            <tr class="bg-light">
+                                <th colspan="2">Finish Size</th>
+                            </tr>
+                            <tr>
+                                <th>DIA</th>
+                                <td id="v_fdia"></td>
+                            </tr>
+                            <tr>
+                                <th>Length</th>
+                                <td id="v_flen"></td>
+                            </tr>
+                            <tr>
+                                <th>Width</th>
+                                <td id="v_fwid"></td>
+                            </tr>
+                            <tr>
+                                <th>Height</th>
+                                <td id="v_fhei"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-6">
+                        <table class="table table-bordered">
+                            <tr class="bg-light">
+                                <th colspan="2">Raw Size</th>
+                            </tr>
+                            <tr>
+                                <th>DIA</th>
+                                <td id="v_rdia"></td>
+                            </tr>
+                            <tr>
+                                <th>Length</th>
+                                <td id="v_rlen"></td>
+                            </tr>
+                            <tr>
+                                <th>Width</th>
+                                <td id="v_rwid"></td>
+                            </tr>
+                            <tr>
+                                <th>Height</th>
+                                <td id="v_rhei"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 
-<!-- 🔹 SCRIPT -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.viewBtn').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                document.getElementById('v_date').innerText = this.dataset.date;
-                document.getElementById('v_no').innerText = this.dataset.no;
+                // Basic info
                 document.getElementById('v_name').innerText = this.dataset.name;
+                document.getElementById('v_no').innerText = this.dataset.no;
+                document.getElementById('v_date').innerText = this.dataset.date;
                 document.getElementById('v_desc').innerText = this.dataset.desc;
+                document.getElementById('v_mat').innerText = this.dataset.mat;
+                document.getElementById('v_qty').innerText = this.dataset.qty;
+
+                // Finish Size
                 document.getElementById('v_fdia').innerText = this.dataset.fdia;
                 document.getElementById('v_flen').innerText = this.dataset.flen;
                 document.getElementById('v_fwid').innerText = this.dataset.fwid;
                 document.getElementById('v_fhei').innerText = this.dataset.fhei;
+
+                // Raw Size
                 document.getElementById('v_rdia').innerText = this.dataset.rdia;
                 document.getElementById('v_rlen').innerText = this.dataset.rlen;
                 document.getElementById('v_rwid').innerText = this.dataset.rwid;
                 document.getElementById('v_rhei').innerText = this.dataset.rhei;
-                document.getElementById('v_mat').innerText = this.dataset.mat;
-                document.getElementById('v_qty').innerText = this.dataset.qty;
 
-                // Show modal
-                var modal = new bootstrap.Modal(document.getElementById('viewModal'));
-                modal.show();
+                new bootstrap.Modal(document.getElementById('viewModal')).show();
             });
         });
     });

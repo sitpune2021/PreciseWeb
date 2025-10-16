@@ -9,69 +9,41 @@ class Invoice extends Model
 {
     use HasFactory;
 
-   protected $fillable = [
-    'client_id',
-    'invoice_no',
-    'invoice_date',
-    'our_ch_no',
-    'our_ch_no_date',
-    'y_ch_no',
-    'y_ch_no_date',
-    'p_o_no',
-    'p_o_no_date',
-    'description_fast',
-    'gst_no',
-    'msme_no',
+    protected $fillable = [
+        'admin_id',
+        'customer_id',
+        'client_id',
+        'invoice_no',
+        'invoice_date',
+        'sub_total',
+        'total_tax',
+        'adjustment',
+        'round_off',
+        'grand_total',
+        'total_hrs',
+        'total_vmc',
+        'declaration',
+        'note',
+        'amount_in_words',
+        'status',
+    ];
 
-    // Buyer
-    'buyer_name',
-    'buyer_address',
+    protected $casts = [
+        'invoice_date' => 'datetime',
+    ];
 
-    // Consignee
-    'consignee_name',
-    'consignee_address',
-
-    // Extra Contact
-    'ki_attn_name',
-    '_ki_contact_no',
-    'ki_gst',
-    
-    'kind_attn_name',
-    'contact_no',
-    'kind_gst',
-
-    // Item
-    'description',
-    'hsn_code',
-    'qty',
-    'rate',
-    'amount',
-    'hrs_per_job',
-    'cost',
-
-    // Totals
-    'sub_total',
-    'sgst',
-    'cgst',
-    'igst',
-    'total_tax_payable',
-    'grand_total',
-
-    // Others
-    'declaration',
-    'note',
-    'bank_details',
-    'amount_in_words',
-];
-
-
-
-
-    // Relations
-   
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
 
     public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 }

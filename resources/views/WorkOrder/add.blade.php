@@ -22,16 +22,16 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
+                                                <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single"
                                                     id="customer_id"
                                                     name="customer_id"
                                                     {{ isset($workorder) ? 'disabled' : '' }}>
-                                                    <option value="">Select Customer</option>
+                                                    <option value="">Select Customer Code</option>
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}"
                                                         {{ old('customer_id', $workorder->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                         {{ $c->code }}
+                                                        {{ $c->code }}
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -206,7 +206,7 @@
                                         </div>
 
 
-                                        <div class="col-md-9">
+                                        <!-- <div class="col-md-9">
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">
                                                     Part Description <span class="mandatory">*</span>
@@ -218,6 +218,14 @@
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
                                                 <span class="text-red part_description_error"></span>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-md-9">
+                                            <div class="mb-3">
+                                                <label for="part_description" class="form-label">Part Description</label>
+                                                <input type="text" class="form-control" id="part_description" name="part_description"
+                                                    placeholder="Description"
+                                                    value="{{ old('part_description', $workorder->part_description ?? '') }}">
                                             </div>
                                         </div>
 
@@ -238,7 +246,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Sr. No.</th>
-                                                        <th>Customer</th>
+                                                        <th>Customer Code</th>
                                                         <th>Part</th>
                                                         <th>Material<br>Type</th>
                                                         <th>Project<br>.name</th>
@@ -324,10 +332,10 @@
                                                     $(".material").text("The Material field is required");
                                                     hasError = true;
                                                 }
-                                                if (!description) {
-                                                    $(".part_description_error").text("The Part description field is required");
-                                                    hasError = true;
-                                                }
+                                                // if (!description) {
+                                                //     $(".part_description_error").text("The Part description field is required");
+                                                //     hasError = true;
+                                                // }
 
                                                 return !hasError;
                                             }
@@ -399,50 +407,50 @@
                                                     updateSrNo();
                                                 });
 
-                                               newRow.querySelector(".editRow").addEventListener("click", function() {
-                                            let row = this.closest('tr');
- 
-                                            // Get all values from row
-                                            let customerVal = row.querySelector('input[name*="[customer_id]"]').value;
-                                            let projectId = row.querySelector('input[name*="[project_id]"]').value;
-                                            let part = row.querySelector('input[name*="[part]"]').value;
-                                            let material = row.querySelector('input[name*="[material]"]').value;
-                                            let date = row.querySelector('input[name*="[date]"]').value;
-                                            let dimeter = row.querySelector('input[name*="[dimeter]"]').value;
-                                            let length = row.querySelector('input[name*="[length]"]').value;
-                                            let width = row.querySelector('input[name*="[width]"]').value;
-                                            let height = row.querySelector('input[name*="[height]"]').value;
-                                            let exp_time = row.querySelector('input[name*="[exp_time]"]').value;
-                                            let quantity = row.querySelector('input[name*="[quantity]"]').value;
-                                            let description = row.querySelector('input[name*="[part_description]"]').value;
- 
-                                            // Set customer first
-                                            $('#customer_id').val(customerVal).trigger('change');
- 
-                                            // Wait until AJAX finishes loading projects
-                                            let interval = setInterval(function() {
-                                                if ($('#project_id option').length > 1) {  
-                                                    $('#project_id').val(projectId).trigger('change');
-                                                    clearInterval(interval);
-                                                }
-                                            }, 100);
- 
-                                            // Set other fields
-                                            $('#part').val(part);
-                                            $('#material').val(material).trigger('change');
-                                            $('#date').val(date);
-                                            $('#dimeter').val(dimeter);
-                                            $('#length').val(length);
-                                            $('#width').val(width);
-                                            $('#height').val(height);
-                                            $('#exp_time').val(exp_time);
-                                            $('#quantity').val(quantity);
-                                            $('#part_description').val(description);
- 
-                                            // Remove row from table
-                                            row.remove();
-                                            updateSrNo();
-                                        });
+                                                newRow.querySelector(".editRow").addEventListener("click", function() {
+                                                    let row = this.closest('tr');
+
+                                                    // Get all values from row
+                                                    let customerVal = row.querySelector('input[name*="[customer_id]"]').value;
+                                                    let projectId = row.querySelector('input[name*="[project_id]"]').value;
+                                                    let part = row.querySelector('input[name*="[part]"]').value;
+                                                    let material = row.querySelector('input[name*="[material]"]').value;
+                                                    let date = row.querySelector('input[name*="[date]"]').value;
+                                                    let dimeter = row.querySelector('input[name*="[dimeter]"]').value;
+                                                    let length = row.querySelector('input[name*="[length]"]').value;
+                                                    let width = row.querySelector('input[name*="[width]"]').value;
+                                                    let height = row.querySelector('input[name*="[height]"]').value;
+                                                    let exp_time = row.querySelector('input[name*="[exp_time]"]').value;
+                                                    let quantity = row.querySelector('input[name*="[quantity]"]').value;
+                                                    let description = row.querySelector('input[name*="[part_description]"]').value;
+
+                                                    // Set customer first
+                                                    $('#customer_id').val(customerVal).trigger('change');
+
+                                                    // Wait until AJAX finishes loading projects
+                                                    let interval = setInterval(function() {
+                                                        if ($('#project_id option').length > 1) {
+                                                            $('#project_id').val(projectId).trigger('change');
+                                                            clearInterval(interval);
+                                                        }
+                                                    }, 100);
+
+                                                    // Set other fields
+                                                    $('#part').val(part);
+                                                    $('#material').val(material).trigger('change');
+                                                    $('#date').val(date);
+                                                    $('#dimeter').val(dimeter);
+                                                    $('#length').val(length);
+                                                    $('#width').val(width);
+                                                    $('#height').val(height);
+                                                    $('#exp_time').val(exp_time);
+                                                    $('#quantity').val(quantity);
+                                                    $('#part_description').val(description);
+
+                                                    // Remove row from table
+                                                    row.remove();
+                                                    updateSrNo();
+                                                });
 
 
                                                 document.querySelectorAll("input, textarea").forEach(el => {
@@ -527,9 +535,9 @@
 
 
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                     <script>
+                                        <script>
                                             $(document).ready(function() {
- 
+
                                                 // Load projects based on customer
                                                 function loadProjects(customerId, selectedProjectId = null) {
                                                     if (customerId) {
@@ -540,7 +548,7 @@
                                                             success: function(data) {
                                                                 let projectDropdown = $('#project_id');
                                                                 projectDropdown.html('<option value="">Select Project</option>');
- 
+
                                                                 if (data.length > 0) {
                                                                     $.each(data, function(index, project) {
                                                                         let selected = '';
@@ -560,7 +568,7 @@
                                                         $('#previous_part').html('<option value="">No Previous Part</option>');
                                                     }
                                                 }
- 
+
                                                 // Load parts based on project
                                                 function loadParts(projectId) {
                                                     if (projectId) {
@@ -570,7 +578,7 @@
                                                             dataType: 'json',
                                                             success: function(data) {
                                                                 $('#previous_part').empty();
- 
+
                                                                 if (data.length > 0) {
                                                                     $.each(data, function(index, part) {
                                                                         $('#previous_part').append('<option value="' + part + '">' + part + '</option>');
@@ -584,42 +592,42 @@
                                                         $('#previous_part').empty().append('<option value="">No Previous Part</option>');
                                                     }
                                                 }
- 
+
                                                 $('#customer_id').on('change', function() {
                                                     let customerId = $(this).val();
                                                     loadProjects(customerId);
                                                 });
- 
+
                                                 // 🔹 Fixed project change handler
                                                 $('#project_id').off('change').on('change', function() {
                                                     let selectedOption = $(this).find(':selected');
                                                     let projectId = selectedOption.val();
                                                     let qty = selectedOption.data('quantity');
                                                     let selectedText = selectedOption.text();
- 
+
                                                     loadParts(projectId);
- 
+
                                                     // Auto-fill part description
                                                     if (selectedText && selectedText !== "Select Project") {
                                                         $('#part_description').val(selectedText).prop('readonly', true);
                                                     } else {
                                                         $('#part_description').val('').prop('readonly', false);
                                                     }
- 
+
                                                     // Only set quantity if adding new row, not editing existing row
                                                     if ($('#workOrderTableWrapper').is(':hidden')) {
                                                         $('#quantity').val(qty || '');
                                                     }
                                                 });
- 
+
                                                 $('#part_description').on('dblclick', function() {
                                                     $(this).prop('readonly', false);
                                                 });
- 
+
                                                 @if(isset($workorder))
                                                 loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
                                                 loadParts('{{ $workorder->project_id }}');
- 
+
                                                 setTimeout(function() {
                                                     let qty = $("#project_id option:selected").data('quantity');
                                                     if (qty) {

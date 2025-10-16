@@ -45,7 +45,7 @@ class MaterialorderController extends Controller
             'customer_id'     => 'required|exists:customers,id',
             'work_order_no'   => 'required|string|max:255',
             'date'            => 'required|date',
-            'work_order_desc' => 'required|string|max:255',
+            'work_order_desc' => 'nullable|string|max:255',
             'f_diameter'      => 'nullable|numeric|min:0',
             'f_length'        => 'nullable|numeric|min:0',
             'f_width'         => 'nullable|numeric|min:0',
@@ -99,7 +99,7 @@ class MaterialorderController extends Controller
         $validated = $request->validate([
             'customer_id'     => 'required|exists:customers,id',
             'date'            => 'required|date',
-            'work_order_desc' => 'required|string|max:255',
+            'work_order_desc' => 'nullable|string|max:255',
             'work_order_no'   => 'required|string|max:255',
             'f_diameter'      => 'nullable|numeric|min:0',
             'f_length'        => 'nullable|numeric|min:0',

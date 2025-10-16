@@ -39,4 +39,8 @@ public function materialOrders()
     return $this->hasOne(MaterialReq::class);
 }
 
+public function invoices() {
+        return $this->hasMany(Invoice::class);
+    }
+
 }
