@@ -24,36 +24,9 @@
                                 @endif
 
                                 <div class="row g-3">
-                                    <!-- <div class="col-md-4">
-                                        <div class="">
-                                            <label for="customer_id" class="form-label">Customer Name <span class="mandatory">*</span></label>
-                                            <select class="form-select js-example-basic-single"
-                                                id="customer_id"
-                                                name="customer_id"
-                                                data-selected="{{ old('customer_id', $setupSheet->customer_id ?? '') }}"
-                                                {{ isset($setupSheet) ? 'disabled' : '' }}>
-                                                <option value="">Select Customer</option>
-                                                @foreach($codes as $c)
-                                                <option value="{{ $c->id }}" data-code="{{ $c->code }}"
-                                                    {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                    {{ $c->name }} - ({{ $c->code }})
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('customer_id')
-                                            <span class="text-red small">{{ $message }}</span>
-                                            @enderror
-
-                                            @if(isset($setupSheet))
-                                            <input type="hidden" name="customer_id" value="{{ $setupSheet->customer_id }}">
-                                            @endif
-                                        </div>
-                                    </div> -->
-
-                                    <!-- Part No -->
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
-                                        <select name="part_no" id="part_no" class="form-control form-select js-example-basic-single">
+                                        <select name="part_no" id="part_no" class="form-control form-select ">
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php

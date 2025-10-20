@@ -63,7 +63,7 @@ class InvoiceController extends Controller
     }
 
     public function store(Request $request)
-    {   
+    {
         $validated = $request->validate([
             'customer_id' => 'required',
             'desc.*'      => 'required|string',
@@ -108,8 +108,8 @@ class InvoiceController extends Controller
                 'rate'      => $request->rate[$i] ?? 0,
                 'amount'    => $request->amount[$i] ?? 0,
                 'hrs'       => isset($request->hrs[$i])
-                    ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i]))
-                    : 0,
+                ? floatval(preg_replace('/[^0-9.\-]/', '',
+                 $request->hrs[$i])): 0,
                 'vmc'       => $request->vmc_hr[$i] ?? 0,
                 'adj'       => $request->adj[$i] ?? 0,
                 'sgst'      => $request->sgst_amt ?? 0,
@@ -145,14 +145,14 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::with('items')->findOrFail($id);
         $adminId = Auth::id();
-       $c = Client::where('login_id', $adminId)->first([
-        'name',
-        'phone_no',
-        'email_id',
-        'gst_no',
-        'logo',
-        'address'
-    ]);
+        $c = Client::where('login_id', $adminId)->first([
+            'name',
+            'phone_no',
+            'email_id',
+            'gst_no',
+            'logo',
+            'address'
+        ]);
 
         return view('invoice.print', compact('invoice', 'c'));
     }
