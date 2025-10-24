@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Invoice PE{{ $invoice->invoice_no ?? 'XXXX' }}</title>
     <style>
-        @page { size: A4; margin: 10mm; }
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
@@ -12,23 +17,44 @@
             margin: 0;
         }
 
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #000; padding: 4px 6px; vertical-align: top; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-        .no-border { border: none !important; }
-        .center { text-align: center; }
-        .right { text-align: right; }
-        .bold { font-weight: bold; }
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+
+        .no-border {
+            border: none !important;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
 
         .header-left {
-          background-color: #cafae2;
-          vertical-align: top;
+            background-color: #cafae2;
+            vertical-align: top;
         }
 
         .company-box {
             display: flex;
             align-items: flex-start;
         }
+
         .company-logo {
             width: 90px;
             height: 90px;
@@ -45,10 +71,18 @@
             text-decoration: underline;
         }
 
-        .small { font-size: 11px; }
+        .small {
+            font-size: 11px;
+        }
 
-        h2 { margin: 0; padding: 0; }
-        h3 { margin: 4px 0 0 0; }
+        h2 {
+            margin: 0;
+            padding: 0;
+        }
+
+        h3 {
+            margin: 4px 0 0 0;
+        }
 
         .invoice-title {
             text-align: center;
@@ -83,7 +117,11 @@
         }
 
         @media print {
-            body, table, th, td {
+
+            body,
+            table,
+            th,
+            td {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 color-adjust: exact !important;
@@ -96,6 +134,7 @@
         }
     </style>
 </head>
+
 <body>
 
     {{-- Title --}}
@@ -109,7 +148,7 @@
         <tr>
             {{-- Company Info --}}
             <td class="header-left" width="50%">
-               <div class="company-box">
+                <div class="company-box">
                     <div class="company-logo">
                         @if(isset($c) && $c->logo)
                         <img src="{{ asset($c->logo) }}" alt="Client Logo" width="90" height="90">
@@ -123,50 +162,50 @@
                             {{ $c->address ?? 'Company Address' }}<br>
                             Phone: {{ $c->phone_no ?? '-' }}<br>
                             E-mail: {{ $c->email_id ?? '-' }}<br>
-                            GSTIN: {{ $c->gst_no ?? '-' }}
+                            <!-- GSTIN: {{ $c->gst_no ?? '-' }} -->
                         </p>
                     </div>
                 </div>
             </td>
 
             {{-- Invoice Info --}}
-          <td width="50%">
-    <table style="width:100%; border-collapse: collapse; font-size:12px;">
+            <td width="50%">
+                <table style="width:100%; border-collapse: collapse; font-size:12px;">
 
-        <tr>
-            <td style="width:20%;"><strong>Invoice No. :</strong></td>
-            <td style="width:30%;"><strong>{{ 'PE' . preg_replace('/[^0-9]/', '', $invoice->invoice_no ?? '0000') }}</strong></td>
-            <td style="width:20%;"><strong>Date :</strong></td>
-            <td style="width:30%;">{{ \Carbon\Carbon::parse($invoice->invoice_date ?? now())->format('d-M-Y') }}</td>
+                    <tr>
+                        <td style="width:20%;"><strong>Invoice No. :</strong></td>
+                        <td style="width:30%;"><strong>{{ 'PE' . preg_replace('/[^0-9]/', '', $invoice->invoice_no ?? '0000') }}</strong></td>
+                        <td style="width:20%;"><strong>Date :</strong></td>
+                        <td style="width:30%;">{{ \Carbon\Carbon::parse($invoice->invoice_date ?? now())->format('d-M-Y') }}</td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td style="width:20%;"><strong>Our Ch.No. :</strong></td>
+                        <td style="width:30%;">{{ $invoice->our_ch_no ?? '-' }}</td>
+                        <td style="width:20%;"><strong>Date :</strong></td>
+                        <td style="width:30%;">{{ $invoice->our_ch_date ?? '-' }}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td style="width:20%;"><strong>Y.Ch.No. :</strong></td>
+                        <td style="width:30%;">{{ $invoice->y_ch_no ?? '-' }}</td>
+                        <td style="width:20%;"><strong>Date :</strong></td>
+                        <td style="width:30%;">{{ $invoice->y_ch_date ?? '-' }}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td style="width:20%;"><strong>P.O.No. :</strong></td>
+                        <td style="width:30%;">{{ $invoice->p_o_no ?? '-' }}</td>
+                        <td style="width:20%;"><strong>Date :</strong></td>
+                        <td style="width:30%;">{{ $invoice->p_o_date ?? '-' }}</td>
+                    </tr>
+                </table>
+            </td>
         </tr>
-        
-        
-
-        <tr>
-            <td style="width:20%;"><strong>Our Ch.No. :</strong></td>
-            <td style="width:30%;">{{ $invoice->our_ch_no ?? '-' }}</td>
-            <td style="width:20%;"><strong>Date :</strong></td>
-            <td style="width:30%;">{{ $invoice->our_ch_date ?? '-' }}</td>
-        </tr>
-
-    
-        <tr>
-            <td style="width:20%;"><strong>Y.Ch.No. :</strong></td>
-            <td style="width:30%;">{{ $invoice->y_ch_no ?? '-' }}</td>
-            <td style="width:20%;"><strong>Date :</strong></td>
-            <td style="width:30%;">{{ $invoice->y_ch_date ?? '-' }}</td>
-        </tr>
-
-
-        <tr>
-            <td style="width:20%;"><strong>P.O.No. :</strong></td>
-            <td style="width:30%;">{{ $invoice->p_o_no ?? '-' }}</td>
-            <td style="width:20%;"><strong>Date :</strong></td>
-            <td style="width:30%;">{{ $invoice->p_o_date ?? '-' }}</td>
-        </tr>
-    </table>
-</td>
-</tr>
     </table>
 
     {{-- Subtitle --}}
@@ -186,32 +225,32 @@
             </td>
         </tr>
     </table>
-    
 
 
-    {{-- Consignee / Buyer --}}
+
     <table>
         <tr>
             <td width="50%">
                 <strong>Consignee:</strong><br>
                 {{ $invoice->buyer_name ?? 'N/A' }}<br>
                 {{ $invoice->buyer_address ?? '' }}<br>
-                Kind Attn: {{ $invoice->kind_attn ?? 'N/A' }}<br>
-                Contact: {{ $invoice->contact ?? '-' }}<br>
-                GST: {{ $invoice->buyer_gst ?? 'N/A' }}
+                Customer Name: {{ $invoice->customer->name ?? 'N/A' }}<br>
+                Contact: {{ $invoice->customer->phone_no ?? 'N/A' }}<br>
+                GST: {{ $invoice->customer->gst_no ?? 'N/A' }}
             </td>
+
             <td width="50%">
                 <strong>Buyer (if other than Consignee):</strong><br>
                 {{ $invoice->buyer2_name ?? '-' }}<br>
                 {{ $invoice->buyer2_address ?? '' }}<br>
-                Kind Attn: {{ $invoice->buyer2_kind_attn ?? '-' }}<br>
-                Contact: {{ $invoice->buyer2_contact ?? '-' }}<br>
-                GST: {{ $invoice->buyer2_gst ?? '-' }}
+                Customer Name: {{ $invoice->customer->name ?? 'N/A' }}<br>
+                Contact: {{ $invoice->customer->phone_no ?? 'N/A' }}<br>
+                GST: {{ $invoice->customer->gst_no ?? 'N/A' }}
             </td>
         </tr>
     </table>
 
-  {{-- Item Table --}}
+    {{-- Item Table --}}
     <table style="margin-top:5px;">
         <thead>
             <tr class="center bold">
@@ -228,7 +267,7 @@
             @foreach($invoice->items as $i => $item)
             <tr>
                 <td class="center">{{ $i + 1 }}</td>
-                <td class="center">{{ $item->wo_no ?? '-' }}</td>
+                <td class="center">{{ $item->id?? '-' }}</td>
                 <td>{{ $item->part_name ?? '' }}</td>
                 <td class="center">{{ $item->hsn_code ?? '' }}</td>
                 <td class="center">{{ $item->qty ?? 1 }}</td>
@@ -239,51 +278,84 @@
         </tbody>
     </table>
 
-    {{-- Totals and Declaration --}}
-  {{-- Totals and Declaration --}}
-{{-- Totals and Declaration --}}
-<!-- Totals and Declaration -->
-<table style="margin-top:10px; width:100%; border-collapse: collapse;">
-    <tr>
-        <!-- Declaration Box -->
-        <td width="68%" rowspan="6" class="declaration-box" style="padding:12px; font-size:13px; line-height:1.4; vertical-align:top; border:1px solid #000;">
-            <p style="margin:2px 0;"><strong>Declaration:</strong> We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</p>
-            <p style="margin:2px 0;">Reverse charge applicable: No</p>
-            <hr>
-            <p style="margin:2px 0;">Note: Interest will be charged @ 24% p.a. on overdue unpaid bills after 45 days.</p>
-            <hr>
-            <p style="margin:2px 0; font-weight:bold;">
-                HDFC BANK, CHINCHWAD BRANCH | A/C No: 0522102000003366 | IFSC: HDFC0000522
-            </p>
-            <hr>
-            <p style="margin:2px 0;">Amount in Words: {{ $invoice->amount_in_words ?? '' }}</p>
-        </td>
 
-        <!-- Totals Columns -->
-        <td width="17%" class="right" style="padding:6px; font-weight:bold;">Sub Total</td>
-        <td width="15%" class="right" style="padding:6px; font-weight:bold;">{{ number_format($invoice->sub_total ?? 0, 2) }}</td>
-    </tr>
-    <tr>
-        <td class="right" style="padding:6px; font-weight:bold;">CGST ({{ $invoice->cgst_rate ?? 9 }}%)</td>
-        <td class="right" style="padding:6px; font-weight:bold;">{{ number_format($invoice->cgst ?? 0, 2) }}</td>
-    </tr>
-    <tr>
-        <td class="right" style="padding:6px; font-weight:bold;">SGST ({{ $invoice->sgst_rate ?? 9 }}%)</td>
-        <td class="right" style="padding:6px; font-weight:bold;">{{ number_format($invoice->sgst ?? 0, 2) }}</td>
-    </tr>
-    <tr>
-        <td class="right" style="padding:6px; font-weight:bold;">IGST</td>
-        <td class="right" style="padding:6px; font-weight:bold;">{{ number_format($invoice->igst ?? 0, 2) }}</td>
-    </tr>
-    <tr>
-        <td class="right" style="padding:6px; font-weight:bold;">Total Tax Payable</td>
-        <td class="right" style="padding:6px; font-weight:bold;">{{ number_format(($invoice->cgst + $invoice->sgst + $invoice->igst) ?? 0, 2) }}</td>
-    </tr>
-    <tr class="bold">
-        <td class="right" style="padding:6px; font-weight:bold;">Grand Total</td>
-        <td class="right" style="padding:6px; font-weight:bold;">{{ number_format($invoice->grand_total ?? 0, 2) }}</td>
-    </tr>
-</table>
+    <!-- Totals and Declaration -->
+    <table style="margin-top:10px; width:100%; border-collapse: collapse;">
+        <tr>
+            <!-- Declaration Box -->
+            <td width="68%" rowspan="6" class="declaration-box" style="padding:12px; font-size:13px; line-height:1.4; vertical-align:top; border:1px solid #000;">
+                <p style="margin:2px 0;"><strong>Declaration:</strong> We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</p>
+                <p style="margin:2px 0;">Reverse charge applicable: No</p>
+                <hr>
+                <p style="margin:2px 0;">Note: Interest will be charged @ 24% p.a. on overdue unpaid bills after 45 days.</p>
+                <hr>
+                <p style="margin:2px 0; font-weight:bold;">
+                    HDFC BANK, CHINCHWAD BRANCH | A/C No: 0522102000003366 | IFSC: HDFC0000522
+                </p>
+                <hr>
+                <p style="margin:2px 0;">Amount in Words: {{ $invoice->amount_in_words ?? '' }}</p>
+            </td>
+
+            <!-- Totals Section -->
+        <tr>
+            <td colspan="3" class="right" style="padding:6px; font-weight:bold;">Sub Total</td>
+            <td class="right" style="padding:6px; font-weight:bold;">
+                {{ number_format($invoice->sub_total ?? 0, 2) }}
+            </td>
+        </tr>
+
+        @php
+        $cgst_total = $invoice->items->sum('cgst') ?? 0;
+        $sgst_total = $invoice->items->sum('sgst') ?? 0;
+
+        $totalTaxRate = ($invoice->cgst_rate ?? 0) + ($invoice->sgst_rate ?? 0);
+
+        $totalTaxAmt = $cgst_total + $sgst_total;
+        @endphp
+
+        <tr>
+            <td class="right" style="padding:6px; font-weight:bold;">CGST</td>
+            <td class="right" style="padding:6px;">
+                {{ isset($invoice->cgst_rate) ? $invoice->cgst_rate . '%' : '0%' }}
+            </td>
+            <td class="right" style="padding:6px;">
+                {{ number_format($cgst_total, 2) }}
+            </td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td class="right" style="padding:6px; font-weight:bold;">SGST</td>
+            <td class="right" style="padding:6px;">
+                {{ isset($invoice->sgst_rate) ? $invoice->sgst_rate . '%' : '0%' }}
+            </td>
+            <td class="right" style="padding:6px;">
+                {{ number_format($sgst_total, 2) }}
+            </td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td class="right" style="padding:6px; font-weight:bold;">Total Tax Payable</td>
+            <td class="right" style="padding:6px;">
+                {{ $totalTaxRate }}%
+            </td>
+            <td class="right" style="padding:6px; font-weight:bold;">
+                {{ number_format($totalTaxAmt, 2) }}
+            </td>
+            <td></td>
+        </tr>
+
+
+
+        <tr class="bold">
+            <td colspan="3" class="right" style="padding:6px; font-weight:bold;">Grand Total</td>
+            <td class="right" style="padding:6px; font-weight:bold;">
+                {{ number_format($invoice->grand_total ?? 0, 2) }}
+            </td>
+        </tr>
+
+    </table>
 
 
     {{-- Signatures --}}
@@ -297,14 +369,15 @@
         </tr>
     </table>
 
-<script>
-window.onload = function() {
-    window.print();
-    window.onafterprint = function() {
-        window.location.href = "{{ route('invoice.index') }}";
-    };
-};
-</script>
+    <script>
+        window.onload = function() {
+            window.print();
+            window.onafterprint = function() {
+                window.location.href = "{{ route('invoice.index') }}";
+            };
+        };
+    </script>
 
 </body>
+
 </html>

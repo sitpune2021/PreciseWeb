@@ -37,7 +37,7 @@
                                                     data-code="{{ $c->code }}"
                                                     data-id="{{ $c->id }}"
                                                     {{ old('customer_id', $materialReq->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                     {{ $c->code }}
+                                                    {{ $c->code }}
                                                 </option>
                                                 @endforeach
                                             </select>
@@ -77,7 +77,7 @@
                                         <!-- Description -->
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <label for="description" class="form-label">Description <span class="mandatory">*</span></label>
+                                                <label for="description" class="form-label">Description </label>
                                                 <input type="text" name="description" id="description" class="form-control" value="{{ old('description', $materialReq->description ?? '') }}">
                                                 @error('description') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
@@ -154,9 +154,10 @@
                                                 <option value="{{ $mt->id }}"
                                                     data-gravity="{{ $mt->material_gravity }}"
                                                     data-rate="{{ $mt->material_rate }}"
-                                                    {{ old('material', $materialReq->material ?? '') == $mt->material_type ? 'selected' : '' }}>
+                                                    {{ old('material', $materialReq->material ?? '') == $mt->id ? 'selected' : '' }}>
                                                     {{ $mt->material_type }}
                                                 </option>
+
 
                                                 @endforeach
                                             </select>
@@ -365,12 +366,12 @@
         });
     </script>
 
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
 
-            function calculate() {
-
+            function calculate(auto = true) {
                 let dia = parseFloat($("#dia").val()) || 0;
                 let len = parseFloat($("#length").val()) || 0;
                 let withs = parseFloat($("#width").val()) || 0;
@@ -383,58 +384,104 @@
                 let vmc = parseFloat($("#vmc_cost").val()) || 0;
                 let edm = parseFloat($("#edm_rate").val()) || 0;
                 let cl = parseFloat($("#cl").val()) || 0;
-                let hrcog = parseFloat($("#hrc").val()) || 0;
 
+                // current user values (manual inputs)
+                let mg4 = parseFloat($("#mg4").val());
+                let mg2 = parseFloat($("#mg2").val());
+                let rg2 = parseFloat($("#rg2").val());
+                let sg4 = parseFloat($("#sg4").val());
+                let sg2 = parseFloat($("#sg2").val());
+                let hrcVal = parseFloat($("#hrc").val());
+
+                // material weight
                 let material_wt = ((Math.PI * (dia / 2) * (dia / 2) * heigh / 1000000) * sg) +
                     ((len * withs * heigh / 1000000) * sg);
-
                 let mt_cost = material_wt * rate;
-                let mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
-                let mg2 = ((len * withs) * 2 * 0.5 / 100);
-                let rg2 = ((len * withs) * 2 * 0.3 / 100);
-                let sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
-                let sg2 = ((len * withs) * 2 * 0.6 / 100);
-                // let hrc = round((withs * 70),1);  
 
-                let hrc = hrcog ? hrcog : Math.round((material_wt * 70) * 10) / 10;
+                // Auto calculate only if auto mode AND not manually edited
+                if (auto && !$("#mg4").data("manual")) mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
+                if (auto && !$("#mg2").data("manual")) mg2 = ((len * withs) * 2 * 0.5 / 100);
+                if (auto && !$("#rg2").data("manual")) rg2 = ((len * withs) * 2 * 0.3 / 100);
+                if (auto && !$("#sg4").data("manual")) sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
+                if (auto && !$("#sg2").data("manual")) sg2 = ((len * withs) * 2 * 0.6 / 100);
+                if (auto && !$("#hrc").data("manual")) hrcVal = Math.round((material_wt * 70) * 10) / 10;
 
-                let total_per_piece = (
-                    lathe + mg4 + mg2 + rg2 + sg4 + sg2 +
-                    vmc + edm + hrc + cl + mt_cost
-                );
+                // total calculation
+                let total_per_piece = (lathe +
+                    (mg4 || 0) + (mg2 || 0) + (rg2 || 0) + (sg4 || 0) + (sg2 || 0) +
+                    vmc + edm + (hrcVal || 0) + cl + mt_cost);
                 let total_cost = total_per_piece * qty;
 
-                 $("#vmc_hrs").on("input", function() {
-                    let hrs = parseFloat($(this).val()) || 0;
-                    $("#vmc_cost").val((hrs * 450).toFixed(2));
-                    $("#vmc_cost").trigger("input");
-                });
-
+                // update display
                 $("#weight").val(material_wt.toFixed(3));
                 $("#cost").val(mt_cost.toFixed(2));
-                $("#mg4").val(mg4.toFixed(2));
-                $("#mg2").val(mg2.toFixed(2));
-                $("#rg2").val(rg2.toFixed(2));
-                $("#sg4").val(sg4.toFixed(2));
-                $("#sg2").val(sg2.toFixed(2));
-                $("#hrc").val(hrc.toFixed(2));
-
                 $("#total_cost").val(total_cost.toFixed(2));
+
+                // update auto fields only when auto-calculating & not manually edited
+                if (auto) {
+                    if (!$("#mg4").data("manual")) $("#mg4").val((mg4 || 0).toFixed(2));
+                    if (!$("#mg2").data("manual")) $("#mg2").val((mg2 || 0).toFixed(2));
+                    if (!$("#rg2").data("manual")) $("#rg2").val((rg2 || 0).toFixed(2));
+                    if (!$("#sg4").data("manual")) $("#sg4").val((sg4 || 0).toFixed(2));
+                    if (!$("#sg2").data("manual")) $("#sg2").val((sg2 || 0).toFixed(2));
+                    if (!$("#hrc").data("manual")) $("#hrc").val((hrcVal || 0).toFixed(2));
+                }
             }
 
-            $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_rate, #cl")
-                .on("input change", calculate);
-
+            // Auto material rate & gravity
             $("#material_type").on("change", function() {
                 let sg = $(this).find(":selected").data("gravity") || 0;
                 let rate = $(this).find(":selected").data("rate") || 0;
                 $("#material_gravity").val(sg);
                 $("#material_rate").val(rate);
-                calculate();
+                calculate(true);
             });
 
-            $("#hrc").on("change", calculate);
+            // VMC Hours → auto cost
+            $("#vmc_hrs").on("input", function() {
+                let hrs = parseFloat($(this).val()) || 0;
+                $("#vmc_cost").val((hrs * 450).toFixed(2));
+                calculate(false);
+            });
 
+            // Auto recalculation for main dimensions and material
+            $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_rate, #cl")
+                .on("input change", function() {
+                    // 🟢 whenever L/W/H/D change → reset manual flags so auto value can come
+                    if ($(this).is("#length, #width, #height, #dia")) {
+                        $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
+                            if ($(this).val().trim() === "") {
+                                $(this).data("manual", false); // allow auto fill again
+                            }
+                        });
+                    }
+                    calculate(true);
+                });
+
+            // Manual override (user input or delete) for MG4–SG2–HRC
+            $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").on("input", function() {
+                let val = $(this).val().trim();
+                $(this).data("manual", true); // mark field as manually touched
+
+                if (val === "") {
+                    $(this).val(""); // keep blank if deleted
+                }
+
+                calculate(false); // recalc after manual change/delete
+            });
+
+            // 🟢 On page load (edit mode): mark blank fields as manual so auto won't refill
+            $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
+                let val = $(this).val().trim();
+                if (val === "" || val === "0" || isNaN(parseFloat(val))) {
+                    $(this).data("manual", true); // mark blank as manual so auto skip kare
+                }
+            });
+
+            // Initial calculation
+            calculate(true);
         });
     </script>
+
+
     @endsection

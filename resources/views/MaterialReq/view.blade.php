@@ -71,7 +71,8 @@
                                                        data-material="{{ $req->material ?? 'N/A' }}"
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
-                                                        data-cost="{{ $req->material_cost ?? 'N/A' }}"
+                                                        
+                                                        data-cost="{{ $req->material_cost ?? '' }}"
                                                         data-lathe="{{ $req->lathe }}"
                                                         data-mg4="{{ $req->mg4 }}"
                                                         data-mg2="{{ $req->mg2 }}"
@@ -246,7 +247,7 @@
                             document.getElementById("mr_qty").textContent = this.dataset.qty;
                             document.getElementById("mr_weight").textContent = this.dataset.weight;
                             document.getElementById("mr_cost").textContent = this.dataset.cost;
-
+                                    
                             document.getElementById("mr_lathe").textContent = this.dataset.lathe;
                             document.getElementById("mr_mg4").textContent = this.dataset.mg4;
                             document.getElementById("mr_mg2").textContent = this.dataset.mg2;

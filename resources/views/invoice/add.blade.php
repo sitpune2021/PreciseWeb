@@ -51,14 +51,14 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label class="form-label fw-bold">HSN Code</label>
-                            <select name="hsn_code" id="hsnSelect" class="form-select">
-                                <option value="">Select HSN</option>
-                                @foreach($hsncodes as $h)
+                            <select name="hsn[]" id="hsnSelect" class="form-select" required>
+                            <option value="">Select HSN</option>
+                            @foreach($hsncodes as $h)
                                 <option value="{{ $h->hsn_code }}" data-sgst="{{ $h->sgst }}" data-cgst="{{ $h->cgst }}">
                                     {{ $h->hsn_code }}
                                 </option>
-                                @endforeach
-                            </select>
+                            @endforeach
+                        </select>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fw-bold">Sub Total (₹)</label>
@@ -66,7 +66,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label fw-bold">SGST %</label>
-                            <input type="text" id="sgst_percent" name="sgst_percent" class="form-control" readonly>
+                            <input type="text" id="sgst_percent" name="sgst" class="form-control" readonly>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label fw-bold">CGST %</label>

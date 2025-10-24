@@ -168,7 +168,7 @@ class InvoiceController extends Controller
                 'hsn_code' => $hsn->hsn_code,
                 'sgst'     => $hsn->sgst,
                 'cgst'     => $hsn->cgst,
-                'igst'     => $hsn->igst,
+                // 'igst'     => $hsn->igst,
             ]);
         }
 
