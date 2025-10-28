@@ -25,9 +25,9 @@ class ProjectController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $customers = Customer::where('status', 1)
+       $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
-            ->orderBy('name')
+            ->orderBy('id', 'desc')
             ->get();
 
         return view('Project.add', compact('customers', 'codes'));

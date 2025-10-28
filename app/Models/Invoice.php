@@ -24,6 +24,7 @@ class Invoice extends Model
         'total_vmc',
         'declaration',
         'note',
+        'bank_details',
         'amount_in_words',
         'status',
     ];

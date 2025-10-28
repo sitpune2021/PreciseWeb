@@ -230,6 +230,8 @@ Route::get('invoice/print/{id}'                 , [InvoiceController::class, 'pr
 Route::get('get-hsn-details/{id}'               , [InvoiceController::class, 'getHsnDetails'])->name('get.hsn.details');
 Route::get('/invoice/fetch-machine-records/{customer_id}', [InvoiceController::class, 'getMachineRecords']);
 
+
+
 Route::get('/invoice/get-machine-details/{id}', [InvoiceController::class, 'getMachineDetails']); 
 Route::get('/invoice/fetch-material-rate/{material}', [InvoiceController::class, 'getMaterialRate']);
 

@@ -10,9 +10,25 @@
                 @csrf
 
                 <!-- Customer -->
+
+                <!-- <div class="col-md-4">
+    <label for="customer_id" class="form-label">Customer Code <span class="text-red">*</span>
+    </label>
+    <select class="form-select js-example-basic-single" id="customerSelect" name="customer_id">
+        <option value="">Select Customer</option>
+        @foreach($customers as $cust)
+            <option value="{{ $cust->id }}">{{ $cust->name }} ({{ $cust->code ?? '' }})</option>
+        @endforeach
+    </select>
+    @error('customer_id')
+        <span class="text-red small">{{ $message }}</span>
+    @enderror
+</div> -->
+
+
                 <div class="mb-4">
                     <label class="form-label fw-bold">Select Customer <span class="text-danger">*</span></label>
-                    <select name="customer_id" class="form-select w-50" id="customerSelect" required>
+                    <select name="customer_id" class="form-select w-50  " id="customerSelect">
                         <option value="">Select Customer</option>
                         @foreach($customers as $cust)
                         <option value="{{ $cust->id }}">{{ $cust->name }} ({{ $cust->code ?? '' }})</option>
@@ -51,22 +67,24 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label class="form-label fw-bold">HSN Code</label>
-                            <select name="hsn[]" id="hsnSelect" class="form-select" required>
-                            <option value="">Select HSN</option>
-                            @foreach($hsncodes as $h)
+                            <select name="hsn_code" id="hsnSelect" class="form-select">
+                                <option value="">Select HSN</option>
+                                @foreach($hsncodes as $h)
                                 <option value="{{ $h->hsn_code }}" data-sgst="{{ $h->sgst }}" data-cgst="{{ $h->cgst }}">
                                     {{ $h->hsn_code }}
                                 </option>
-                            @endforeach
-                        </select>
+                                @endforeach
+                            </select>
                         </div>
+
+
                         <div class="col-md-3">
                             <label class="form-label fw-bold">Sub Total (₹)</label>
                             <input type="text" id="sub_total" name="sub_total" class="form-control" readonly>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label fw-bold">SGST %</label>
-                            <input type="text" id="sgst_percent" name="sgst" class="form-control" readonly>
+                            <input type="text" id="sgst_percent" name="sgst_percent" class="form-control" readonly>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label fw-bold">CGST %</label>
@@ -85,7 +103,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fw-bold">Round Off (₹)</label>
-                            <input type="text" id="round_off" name="round_off" class="form-control" readonly>
+                            <input type="text" id="round_off" name="round_off" class="form-control">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fw-bold text-success">Grand Total (₹)</label>
@@ -104,13 +122,18 @@
                         <label class="form-label fw-bold">Declaration</label>
                         <textarea name="declaration" class="form-control" rows="2">All particulars are true.</textarea>
                     </div>
+
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Note</label>
                         <textarea name="note" class="form-control" rows="2"></textarea>
                     </div>
                     <div class="col-md-4">
+                        <label class="form-label fw-bold">bank Details</label>
+                        <textarea name="bank_details" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Amount in Words</label>
-                        <textarea id="amount_words" class="form-control" rows="2" readonly></textarea>
+                        <textarea id="amount_words" name="amount_in_words" class="form-control" rows="2" readonly></textarea>
                     </div>
                 </div>
 

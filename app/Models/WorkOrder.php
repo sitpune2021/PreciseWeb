@@ -43,7 +43,6 @@ public function project()
 
  public function machineRecords()
     {
-        // local key in work_orders = id
         return $this->hasMany(MachineRecord::class, 'work_order', 'id');
     }
 

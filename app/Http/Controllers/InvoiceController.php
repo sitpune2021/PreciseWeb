@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\Hsncode;
+use App\Models\MachineRecord;
 use App\Models\WorkOrder;
 use App\Models\MaterialType;
 use Illuminate\Http\Request;
@@ -24,10 +25,10 @@ class InvoiceController extends Controller
             ->with('customer')
             ->get();
 
-        $customers = Customer::where('status', 1)
-            ->where('admin_id', $adminId)
-            ->orderBy('name')
-            ->get();
+       $customers = Customer::where('status', 1)
+        ->where('admin_id', $adminId)
+        ->orderBy('id', 'desc')
+       ->get(); 
 
         $customerId = $request->input('customer_id');
 
@@ -67,7 +68,7 @@ class InvoiceController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required',
             'desc.*'      => 'required|string',
-            'hsn.*'       => 'required|string',
+            'hsn_code.*'  => 'required|string',
             'qty.*'       => 'required|numeric|min:1',
             'rate.*'      => 'required|numeric|min:0',
             'amount.*'    => 'required|numeric|min:0',
@@ -94,7 +95,8 @@ class InvoiceController extends Controller
             'total_vmc'       => array_sum($request->vmc ?? []),
             'declaration'     => $request->declaration,
             'note'            => $request->note,
-            'amount_in_words' => $request->amount_words,
+            'bank_details'     => $request->bank_details,
+            'amount_in_words' => $request->amount_in_words,
             'admin_id'        => $adminId,
             'invoice_no'      => 'INV-' . time(),
             'invoice_date'    => now(),
@@ -103,13 +105,17 @@ class InvoiceController extends Controller
         foreach ($request->desc as $i => $desc) {
             $invoice->items()->create([
                 'part_name' => $desc ?? '',
-                'hsn_code'  => $request->hsn[$i] ?? null,
+
+                'hsn_code'  => $request->hsn_code ?? null,
                 'qty'       => $request->qty[$i] ?? 0,
                 'rate'      => $request->rate[$i] ?? 0,
                 'amount'    => $request->amount[$i] ?? 0,
                 'hrs'       => isset($request->hrs[$i])
-                ? floatval(preg_replace('/[^0-9.\-]/', '',
-                 $request->hrs[$i])): 0,
+                    ? floatval(preg_replace(
+                        '/[^0-9.\-]/',
+                        '',
+                        $request->hrs[$i]
+                    )) : 0,
                 'vmc'       => $request->vmc_hr[$i] ?? 0,
                 'adj'       => $request->adj[$i] ?? 0,
                 'sgst'      => $request->sgst_amt ?? 0,
@@ -117,9 +123,6 @@ class InvoiceController extends Controller
                 'igst'      => $request->igst ?? 0,
                 'invoice_id' => $invoice->id,
             ]);
-
-
-
             if (!empty($request->work_order_id[$i])) {
                 // dd($request->work_order_id);
                 $workOrder = WorkOrder::find($request->work_order_id[$i]);
@@ -159,56 +162,72 @@ class InvoiceController extends Controller
 
     public function getHsnDetails($id)
     {
-        $hsn = Hsncode::where('id', $id)
+        $hsn_code = Hsncode::where('id', $id)
             ->where('admin_id', Auth::id())
             ->first();
 
-        if ($hsn) {
+        if ($hsn_code) {
             return response()->json([
-                'hsn_code' => $hsn->hsn_code,
-                'sgst'     => $hsn->sgst,
-                'cgst'     => $hsn->cgst,
-                // 'igst'     => $hsn->igst,
+                'hsn_code' => $hsn_code->hsn_code,
+                'sgst'     => $hsn_code->sgst,
+                'cgst'     => $hsn_code->cgst,
+                'igst'     => $hsn_code->igst,
             ]);
         }
 
         return response()->json(['error' => 'Not Found'], 404);
     }
 
-    public function getMachineRecords($customer_id)
-    {
-        $adminId = Auth::id();
 
-        $records = WorkOrder::where('admin_id', $adminId)
-            ->where('customer_id', $customer_id)
-            ->where('status', 1)
-            ->with(['machineRecords' => function ($q) {
-                $q->select('id', 'work_order', 'hrs', 'actual_hrs', 'est_time', 'admin_id');
-            }])
-            ->get(['id', 'part_description', 'exp_time', 'quantity', 'material']);
-
-        if ($records->isEmpty()) {
-            return response()->json([]);
-        }
-
-        $materials = MaterialType::where('admin_id', $adminId)
-            ->get(['material_type', 'material_rate']);
-
-        $data = $records->map(function ($r) use ($materials) {
-            $machine = $r->machineRecords->first();
-            $mat = $materials->firstWhere('material_type', $r->material);
-
-            return [
-                'id'              => $r->id,
-                'part_description' => $r->part_description,
-                'quantity'        => $r->quantity,
-                'exp_time'        => $r->exp_time,
-                'vmc_hr'          => $machine->hrs ?? 0,
-                'material_type'   => $r->material,
-                'material_rate'   => $mat->material_rate ?? 0,
-            ];
-        });
-
-        return response()->json($data);
+public function getMachineRecords($customer_id)
+{
+    $adminId = Auth::id();
+ 
+ 
+    $usedWorkOrders = \DB::table('invoice_items')
+        ->join('invoices', 'invoice_items.invoice_id', '=', 'invoices.id')
+        ->where('invoices.customer_id', $customer_id)
+        ->where('invoices.admin_id', $adminId)
+        ->pluck('invoice_items.part_name')
+        ->toArray();
+ 
+    $records = WorkOrder::where('admin_id', $adminId)
+        ->where('customer_id', $customer_id)
+        ->where('status', 1)
+        ->whereNotIn('part_description', $usedWorkOrders)
+        ->orderBy('id', 'asc')
+        ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
+ 
+    if ($records->isEmpty()) {
+        return response()->json([]);
     }
+ 
+    $machineRecords = MachineRecord::where('admin_id', $adminId)
+        ->get(['id', 'work_order', 'hrs']);
+ 
+    $materials = MaterialType::where('admin_id', $adminId)
+        ->get(['material_type', 'material_rate']);
+ 
+    $data = $records->map(function ($r) use ($materials, $machineRecords) {
+     
+        $machine = $machineRecords->first(function ($m) use ($r) {
+            return trim(strtolower($m->work_order)) === trim(strtolower($r->project_id));
+        });
+ 
+        $mat = $materials->firstWhere('material_type', $r->material);
+ 
+        return [
+            'id'               => $r->id,
+            'project_id'       => $r->project_id,
+            'part_description' => $r->part_description,
+            'quantity'         => $r->quantity,
+            'exp_time'         => $r->exp_time,
+            'vmc_hr'           => $machine->hrs ?? 0,
+            'material_type'    => $r->material,
+            'material_rate'    => $mat->material_rate ?? 0,
+        ];
+    });
+ 
+    return response()->json($data);
+}
 }

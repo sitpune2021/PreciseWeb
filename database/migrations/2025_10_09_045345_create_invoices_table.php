@@ -24,6 +24,7 @@ class CreateInvoicesTable extends Migration
             $table->decimal('total_vmc', 16, 3)->default(0);
             $table->text('declaration')->nullable();
             $table->text('note')->nullable();
+            $table->text('bank_details')->nullable();
             $table->string('amount_in_words')->nullable();
             $table->string('status')->nullable()->default('draft');
             $table->timestamps();
