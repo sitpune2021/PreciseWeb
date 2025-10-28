@@ -255,23 +255,14 @@
 
     $cgst_rate = $hsnMaster->cgst ?? 0;
     $sgst_rate = $hsnMaster->sgst ?? 0;
+    $igst_rate = $cgst_rate + $sgst_rate; // ✅
 
-    // IGST rate = CGST + SGST (rate-wise)
-    $igst_rate = $cgst_rate + $sgst_rate;
+    $cgst_total = ($invoice->sub_total * $cgst_rate) / 100;
+    $sgst_total = ($invoice->sub_total * $sgst_rate) / 100;
+    $igst_total = $cgst_total + $sgst_total; // ✅ IGST = SGST + CGST
 
-    // Calculate total tax amounts
-    $cgst_total = $invoice->items->sum('cgst') ?? 0;
-    $sgst_total = $invoice->items->sum('sgst') ?? 0;
-
-    // IGST total = (CGST total + SGST total)
-    $igst_total = $cgst_total + $sgst_total;
-
-    // Total tax %
-    $totalTaxRate = $cgst_rate + $sgst_rate + $igst_rate;
-
-    // Total tax amount
-    $totalTaxAmt = $cgst_total + $sgst_total + $igst_total;
     @endphp
+
 
 
     <table style="margin-top:10px; width:100%; border-collapse: collapse;">

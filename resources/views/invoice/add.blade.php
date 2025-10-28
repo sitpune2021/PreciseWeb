@@ -10,32 +10,20 @@
                 @csrf
 
                 <!-- Customer -->
-
-                <!-- <div class="col-md-4">
-    <label for="customer_id" class="form-label">Customer Code <span class="text-red">*</span>
-    </label>
-    <select class="form-select js-example-basic-single" id="customerSelect" name="customer_id">
-        <option value="">Select Customer</option>
-        @foreach($customers as $cust)
-            <option value="{{ $cust->id }}">{{ $cust->name }} ({{ $cust->code ?? '' }})</option>
-        @endforeach
-    </select>
-    @error('customer_id')
-        <span class="text-red small">{{ $message }}</span>
-    @enderror
-</div> -->
-
-
+                 <div class="col-5">
                 <div class="mb-4">
                     <label class="form-label fw-bold">Select Customer <span class="text-danger">*</span></label>
-                    <select name="customer_id" class="form-select w-50  " id="customerSelect">
+                    <select name="customer_id"
+                        class="form-select w-50 js-example-basic-single"
+                        id="customerSelect">
                         <option value="">Select Customer</option>
                         @foreach($customers as $cust)
                         <option value="{{ $cust->id }}">{{ $cust->name }} ({{ $cust->code ?? '' }})</option>
                         @endforeach
                     </select>
-                </div>
 
+                </div>
+          </div>
                 <!-- Items -->
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -212,18 +200,33 @@
     /* ================================
        ON CUSTOMER CHANGE
        ================================ */
-    $('#customerSelect').on('change', function() {
-        const customerId = $(this).val();
-        $('#itemsTable tbody').empty();
-        $('#machineSelectTemplate').empty();
-        $('#addItemBtn').prop('disabled', true)
-            .removeClass('btn-success')
-            .addClass('btn-secondary');
-        globalSGST = 0;
-        globalCGST = 0;
-        $('#sgst_percent, #cgst_percent, #total_tax_percent').val('');
-        if (customerId) fetchMachineRecords(customerId);
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+
+        $('#customerSelect').on('select2:select', function(e) {
+            let selectedOption = $(this).find(':selected');
+            let code = selectedOption.data('code') || '';
+            let id = selectedOption.data('id') || '';
+            $('#code').val(code);
+            $('#work_order_no').val(id);
+            let details = selectedOption.data('details') || '';
+            console.log(details);
+        });
+
+        $('#customerSelect').on('change', function() {
+            const customerId = $(this).val();
+            $('#itemsTable tbody').empty();
+            $('#machineSelectTemplate').empty();
+            $('#addItemBtn').prop('disabled', true)
+                .removeClass('btn-success')
+                .addClass('btn-secondary');
+            globalSGST = 0;
+            globalCGST = 0;
+            $('#sgst_percent, #cgst_percent, #total_tax_percent').val('');
+            if (customerId) fetchMachineRecords(customerId);
+        });
     });
+
 
     /* ================================
        MACHINE SELECT CHANGE
@@ -262,6 +265,7 @@
     function calculateTotals() {
         let sub = 0;
 
+        // --- Sub Total Calculation ---
         $('#itemsTable tbody tr').each(function() {
             const qty = parseFloat($(this).find('.qty').val()) || 0;
             const exp = parseFloat($(this).find('.hrs').val()) || 0;
@@ -277,20 +281,28 @@
             sub += amount;
         });
 
+        // --- GST Calculation ---
         const sgstAmt = (sub * (globalSGST || 0)) / 100;
         const cgstAmt = (sub * (globalCGST || 0)) / 100;
-        const totalTax = sgstAmt + cgstAmt;
+        const igstAmt = sgstAmt + cgstAmt; // ✅ IGST = SGST + CGST
 
+        const totalTax = igstAmt;
         const beforeRound = sub + totalTax;
         const roundOff = Math.round(beforeRound) - beforeRound;
         const grand = beforeRound + roundOff;
 
+        // --- Update Values ---
         $('#sub_total').val(sub.toFixed(2));
         $('#sgst_amt').val(sgstAmt.toFixed(2));
         $('#cgst_amt').val(cgstAmt.toFixed(2));
         $('#total_tax').val(totalTax.toFixed(2));
         $('#round_off').val(roundOff.toFixed(2));
         $('#grand_total').val(grand.toFixed(2));
+
+        // IGST percentage auto update
+        const igstPercent = (globalSGST + globalCGST).toFixed(2);
+        $('#total_tax_percent').val(igstPercent);
+
         $('#amount_words').val(numberToWords(Math.round(grand)) + " only");
     }
 

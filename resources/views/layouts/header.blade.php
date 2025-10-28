@@ -829,32 +829,32 @@
                 $('#r_height').val(details.r_height || '')
             });
 
-            // // Trigger on page load (edit mode)
-            // if ($('#customer_id').val()) {
-            //     let selectedOption = $('#customer_id').find(':selected');
-            //     let code = selectedOption.data('code') || '';
-            //     let id = selectedOption.data('id') || '';
-            //     let details = selectedOption.data('details') || '';
-            //     console.log(details);
+            // Trigger on page load (edit mode)
+            if ($('#customer_id').val()) {
+                let selectedOption = $('#customer_id').find(':selected');
+                let code = selectedOption.data('code') || '';
+                let id = selectedOption.data('id') || '';
+                let details = selectedOption.data('details') || '';
+                console.log(details);
 
-            //     $('#code').val(code);
-            //     $('#work_order_no').val(id)
-            //     $('#description').val(details.description || '');
-            //     $('#code').val(details.code || '');
-            //     $('#work_order_no').val(details.work_order_no || '');
-            //     $('#material').val(details.material || '');
-            //     $('#quantity').val(details.qty || '');
-            //     $('#f_diameter').val(details.f_diameter || '');
-            //     $('#f_length').val(details.f_length || '');
-            //     $('#f_width').val(details.f_width || '');
-            //     $('#f_height').val(details.f_height || '');
-            //     $('#r_diameter').val(details.r_diameter || '');
-            //     $('#r_length').val(details.r_length || '');
-            //     $('#r_width').val(details.r_width || '');
-            //     $('#r_height').val(details.r_height || '')
+                $('#code').val(code);
+                $('#work_order_no').val(id)
+                $('#description').val(details.description || '');
+                $('#code').val(details.code || '');
+                $('#work_order_no').val(details.work_order_no || '');
+                $('#material').val(details.material || '');
+                $('#quantity').val(details.qty || '');
+                $('#f_diameter').val(details.f_diameter || '');
+                $('#f_length').val(details.f_length || '');
+                $('#f_width').val(details.f_width || '');
+                $('#f_height').val(details.f_height || '');
+                $('#r_diameter').val(details.r_diameter || '');
+                $('#r_length').val(details.r_length || '');
+                $('#r_width').val(details.r_width || '');
+                $('#r_height').val(details.r_height || '')
 
 
-            // }
+            }
         });
     </script>
     <!--datatable js-->
