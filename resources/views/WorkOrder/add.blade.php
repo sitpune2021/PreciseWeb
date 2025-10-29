@@ -189,12 +189,12 @@
                                         </div>
 
                                         <div class="col-md-3">
-                                            <label for="material" class="form-label">Material type <span class="mandatory">*</span></label>
+                                            <label for="material" class="form-label">Material Type <span class="mandatory">*</span></label>
                                             <select name="material" id="material" class="form-control form-select">
                                                 <option value="">Select Material</option>
                                                 @foreach($materialtype as $mat)
                                                 <option value="{{ $mat->material_type }}"
-                                                    {{ old('material', $workorder->material ?? '') == $mat->material_type ? 'selected' : '' }}>
+                                                    {{ (isset($workorder) && $workorder->material == $mat->material_type) || old('material') == $mat->material_type ? 'selected' : '' }}>
                                                     {{ $mat->material_type }}
                                                 </option>
                                                 @endforeach
@@ -205,21 +205,6 @@
                                             <span class="text-red material"></span>
                                         </div>
 
-
-                                        <!-- <div class="col-md-9">
-                                            <div class="mb-3">
-                                                <label for="part_description" class="form-label">
-                                                    Part Description <span class="mandatory">*</span>
-                                                </label>
-                                                <input type="text" class="form-control" id="part_description" name="part_description"
-                                                    placeholder="Description"
-                                                    value="{{ old('part_description', $workorder->part_description ?? '') }}">
-                                                @error('part_description')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-red part_description_error"></span>
-                                            </div>
-                                        </div> -->
                                         <div class="col-md-9">
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">Part Description</label>

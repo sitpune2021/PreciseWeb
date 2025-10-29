@@ -10,20 +10,27 @@
                 @csrf
 
                 <!-- Customer -->
-                 <div class="col-5">
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Select Customer <span class="text-danger">*</span></label>
-                    <select name="customer_id"
-                        class="form-select w-50 js-example-basic-single"
-                        id="customerSelect">
-                        <option value="">Select Customer</option>
-                        @foreach($customers as $cust)
-                        <option value="{{ $cust->id }}">{{ $cust->name }} ({{ $cust->code ?? '' }})</option>
-                        @endforeach
-                    </select>
+                <div class="col-5">
+                    <div class="mb-4">
+                        <label class="form-label">Select Customer <span class="text-danger">*</span></label>
+                        <select name="customer_id"
+                            class="form-select w-50 js-example-basic-single @error('customer_id') is-invalid @enderror"
+                            id="customerSelect">
+                            <option value="">Select Customer</option>
+                            @foreach($customers as $cust)
+                            <option value="{{ $cust->id }}" {{ old('customer_id') == $cust->id ? 'selected' : '' }}>
+                                {{ $cust->name }} ({{ $cust->code ?? '' }})
+                            </option>
+                            @endforeach
+                        </select>
 
+                        {{-- ✅ Error Message --}}
+                        @error('customer_id')
+                        <div class="text-danger mt-1 small">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
-          </div>
+
                 <!-- Items -->
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center">

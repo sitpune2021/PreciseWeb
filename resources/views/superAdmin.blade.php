@@ -13,6 +13,7 @@ use App\Models\WorkOrder;
 use App\Models\SetupSheet;
 use App\Models\MachineRecord;
 use App\Models\MaterialReq;
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -152,7 +153,28 @@ for ($m = 1; $m <= 12; $m++) {
     ->get();
     $totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
 
- 
+
+    // ---------------- Invoices ----------------
+    $totalInvoices = Invoice::where('admin_id', Auth::id())->count();
+
+    $pendingInvoices = Invoice::where('admin_id', Auth::id())
+    ->where('status', 'pending')
+    ->count();
+
+    $completedInvoices = Invoice::where('admin_id', Auth::id())
+    ->where('status', 'completed')
+    ->count();
+
+    $currentMonthInvoices = Invoice::where('admin_id', Auth::id())
+    ->whereMonth('created_at', Carbon::now()->month)
+    ->whereYear('created_at', Carbon::now()->year)
+    ->count();
+
+    $latestInvoices = Invoice::where('admin_id', Auth::id())
+    ->with('customer')
+    ->orderBy('created_at', 'desc')
+    ->take(5)
+    ->get();
 
 
 
@@ -259,82 +281,82 @@ for ($m = 1; $m <= 12; $m++) {
 
 
                 <!--------------------- project page ---------------------------------->
-             <div class="col-xl-12">
-    <div class="card shadow-lg border-0 rounded-4 h-100">
-        <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
-            <h4 class="card-title mb-0">
-                <i class="ri-briefcase-4-line me-2 text-primary"></i> Latest Projects
-            </h4>
-            <div class="flex-shrink-0">
-                <a href="{{ route('AddProject') }}"
-                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                    <i class="ri-add-line"></i> Add New
-                </a>
-                <a href="{{ route('ViewProject') }}"
-                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                    View All <i class="ri-arrow-right-line ms-1"></i>
-                </a>
-            </div>
-        </div>
+                <div class="col-xl-12">
+                    <div class="card shadow-lg border-0 rounded-4 h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
+                            <h4 class="card-title mb-0">
+                                <i class="ri-briefcase-4-line me-2 text-primary"></i> Latest Projects
+                            </h4>
+                            <div class="flex-shrink-0">
+                                <a href="{{ route('AddProject') }}"
+                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                    <i class="ri-add-line"></i> Add New
+                                </a>
+                                <a href="{{ route('ViewProject') }}"
+                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                    View All <i class="ri-arrow-right-line ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
 
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table align-middle table-hover table-nowrap mb-0">
-                    <thead class="table-light text-center">
-                        <tr>
-                            <th>SR NO.</th>
-                            <th>Date</th>
-                            <th>Project No.</th>
-                            <th>Code</th>
-                            <th>Project</th>
-                            <th>Qty</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($projects as $project)
-                        <tr class="align-middle text-center">
-                            <td class="text-muted">{{ $loop->iteration }}</td>
-                            <td>
-                                <span class="badge text-dark">
-                                    {{ \Carbon\Carbon::parse($project->date)->format('d M, Y') }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="fw-bold text-primary">{{ $project->id }}</span>
-                            </td>
-                            <td>
-                                <span class="">
-                                    {{ $project->customer?->code ?? '—' }}
-                                </span>
-                            </td>
-                            <td class="text-start">
-                                <div>
-                                    <h6 class="mb-0">{{ $project->project_name }}</h6>
-                                    <small class="text-muted">{{ $project->description ?? '' }}</small>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge text-dark">{{ $project->quantity }}</span>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No projects found</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table align-middle table-hover table-nowrap mb-0">
+                                    <thead class="table-light text-center">
+                                        <tr>
+                                            <th>SR NO.</th>
+                                            <th>Date</th>
+                                            <th>Project No.</th>
+                                            <th>Code</th>
+                                            <th>Project</th>
+                                            <th>Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($projects as $project)
+                                        <tr class="align-middle text-center">
+                                            <td class="text-muted">{{ $loop->iteration }}</td>
+                                            <td>
+                                                <span class="badge text-dark">
+                                                    {{ \Carbon\Carbon::parse($project->date)->format('d M, Y') }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold text-primary">{{ $project->id }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="">
+                                                    {{ $project->customer?->code ?? '—' }}
+                                                </span>
+                                            </td>
+                                            <td class="text-start">
+                                                <div>
+                                                    <h6 class="mb-0">{{ $project->project_name }}</h6>
+                                                    <small class="text-muted">{{ $project->description ?? '' }}</small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge text-dark">{{ $project->quantity }}</span>
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">No projects found</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <small class="text-muted">
-                    Showing <span class="fw-semibold">{{ $projects->count() }}</span> of <span class="fw-semibold">{{ $totalProjects }}</span> Results
-                </small>
-                <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a>
-            </div>
-        </div>
-    </div>
-</div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">
+                                    Showing <span class="fw-semibold">{{ $projects->count() }}</span> of <span class="fw-semibold">{{ $totalProjects }}</span> Results
+                                </small>
+                                <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- project end -->
 
@@ -515,24 +537,37 @@ for ($m = 1; $m <= 12; $m++) {
                                         <tbody>
                                             @forelse($latestMachineRecords as $rec)
                                             <tr>
-                                                <td><a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a></td>
+                                                <td>
+                                                    <a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a>
+                                                </td>
                                                 <td class="fw-bold">{{ $rec->part_no }}</td>
                                                 <td>{{ $rec->work_order }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($rec->date)->format('d M Y') }}</td>
+
+                                                {{-- ✅ Date from start_time --}}
                                                 <td>
-                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('H:i A') : '-' }}
+                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
                                                 </td>
+
+                                                {{-- ✅ Start Time --}}
                                                 <td>
-                                                    {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('H:i A') : '-' }}
+                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('h:i A') : '-' }}
                                                 </td>
+
+                                                {{-- ✅ End Time --}}
+                                                <td>
+                                                    {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('h:i A') : '-' }}
+                                                </td>
+
+                                                {{-- ✅ Total Run (Hrs) --}}
                                                 <td>
                                                     @if($rec->start_time && $rec->end_time)
                                                     @php
-                                                    $hours = \Carbon\Carbon::parse($rec->start_time)->diffInHours(\Carbon\Carbon::parse($rec->end_time));
-
+                                                    $diffInMinutes = \Carbon\Carbon::parse($rec->start_time)
+                                                    ->diffInMinutes(\Carbon\Carbon::parse($rec->end_time));
+                                                    $hours = number_format($diffInMinutes / 60, 2);
                                                     @endphp
-                                                    <span class="badge bg-success">
-                                                        {{ $hours }}h
+                                                    <span class="text-success">
+                                                        {{ $hours }} hr
                                                     </span>
                                                     @else
                                                     <span class="text-muted">Running...</span>
@@ -545,6 +580,7 @@ for ($m = 1; $m <= 12; $m++) {
                                             </tr>
                                             @endforelse
                                         </tbody>
+
                                     </table>
                                 </div>
                             </div>
@@ -577,7 +613,7 @@ for ($m = 1; $m <= 12; $m++) {
                                             <thead class="table-light text-center">
                                                 <tr>
                                                     <th>SR NO.</th>
-                                                    
+
                                                     <th>Code</th>
                                                     <th>Material</th>
                                                     <th>Qty</th>
@@ -588,10 +624,10 @@ for ($m = 1; $m <= 12; $m++) {
                                                 @forelse($latestMaterialReq as $req)
                                                 <tr class="align-middle text-center">
                                                     <td class="text-muted">{{ $loop->iteration }}</td>
-                                                    
-                                                    <td><span  >{{ $req->code }}</span></td>
+
+                                                    <td><span>{{ $req->code }}</span></td>
                                                     <td>{{ $req->materialtype->material_type ?? '-' }}</td>
-                                                    <td><span  >{{ $req->qty }}</span></td>
+                                                    <td><span>{{ $req->qty }}</span></td>
                                                     <td class="fw-bold text-success">
                                                         ₹ {{ number_format($req->total_cost,2) }}
                                                     </td>
@@ -620,7 +656,78 @@ for ($m = 1; $m <= 12; $m++) {
                         </div>
                     </div>
 
- 
+                    {{-- ================= INVOICE SUMMARY ================= --}}
+                    <div class="card mt-4 shadow-sm border-0 rounded-3">
+                        <div class="card-body">
+
+                            {{-- Header Row (Title + Stats) --}}
+                            <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <h5 class="fw-bold text-primary mb-3 me-4">📄 Invoice Summary</h5>
+                                    <div class="d-flex flex-wrap align-items-center">
+                                        <div class="px-3 py-2 bg-light border rounded shadow-sm text-center me-3 mb-2" style="min-width: 140px;">
+                                            <h6 class="text-primary fw-semibold mb-1" style="font-size: 0.85rem;">Total Invoices</h6>
+                                            <h5 class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">{{ $totalInvoices }}</h5>
+                                        </div>
+                                        <div class="px-3 py-2 bg-light border rounded shadow-sm text-center mb-2" style="min-width: 140px;">
+                                            <h6 class="text-info fw-semibold mb-1" style="font-size: 0.85rem;">This Month</h6>
+                                            <h5 class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">{{ $currentMonthInvoices }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Buttons --}}
+                                <div class="text-end">
+                                    <a href="{{ route('invoice.add') }}"
+                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                        <i class="ri-add-line"></i> Add Invoice
+                                    </a>
+                                    <a href="{{ route('invoice.index') }}"
+                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                        View All <i class="ri-arrow-right-line ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            {{-- Divider --}}
+                            <hr class="text-muted">
+
+                            {{-- Invoice List Table --}}
+                            <div class="table-responsive">
+                                <table class="table align-middle table-hover table-nowrap mb-0 text-center">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>SR NO.</th>
+                                            <th>Date</th>
+                                            <th>Invoice No.</th>
+                                            <th>Customer</th>
+                                            <th>Grand Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($latestInvoices as $invoice)
+                                        <tr>
+                                            <td class="text-muted">{{ $loop->iteration }}</td>
+                                            <td>
+                                                <span class="badge bg-light text-dark">
+                                                    {{ \Carbon\Carbon::parse($invoice->created_at)->format('d M, Y') }}
+                                                </span>
+                                            </td>
+                                            <td class="fw-bold text-primary">{{ $invoice->invoice_no }}</td>
+                                            <td class="fw-semibold text-dark">{{ $invoice->customer->name ?? '—' }}</td>
+                                            <td class="fw-bold text-dark">{{ number_format($invoice->grand_total, 2) }}</td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">No invoices found</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
 
                     @endif
 

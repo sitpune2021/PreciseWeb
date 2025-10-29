@@ -49,7 +49,7 @@
                                         <input type="text" class="form-control" id="code" name="code"
                                             value="{{ old('code', $record->customer->code ?? '') }}" readonly>
                                     </div>
-
+                                   
                                     <!-- Work Order No -->
                                     <div class="col-md-3">
                                         <div class="mb-3">

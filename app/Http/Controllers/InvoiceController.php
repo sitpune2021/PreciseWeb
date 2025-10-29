@@ -26,9 +26,9 @@ class InvoiceController extends Controller
             ->get();
 
        $customers = Customer::where('status', 1)
-        ->where('admin_id', $adminId)
-        ->orderBy('id', 'desc')
-       ->get(); 
+    ->where('admin_id', $adminId)
+    ->orderBy('id', 'desc') // 🔹 नवीन entry top वर आणते
+    ->get(); 
 
         $customerId = $request->input('customer_id');
 

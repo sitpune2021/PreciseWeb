@@ -154,11 +154,9 @@
                                                 <option value="{{ $mt->id }}"
                                                     data-gravity="{{ $mt->material_gravity }}"
                                                     data-rate="{{ $mt->material_rate }}"
-                                                    {{ old('material', $materialReq->material ?? '') == $mt->id ? 'selected' : '' }}>
+                                                    {{ old('material', $materialReq->material ?? $record->material ?? '') == $mt->id ? 'selected' : '' }}>
                                                     {{ $mt->material_type }}
                                                 </option>
-
-
                                                 @endforeach
                                             </select>
 
@@ -166,6 +164,7 @@
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
                                         </div>
+
 
 
                                         <div class="col-md-2">
@@ -212,12 +211,12 @@
 
 
                                         <div class="col-md-2">
-                                            <label for="cost" class="form-label">Material Cost</label>
+                                            <label for="material_cost" class="form-label">Material Cost</label>
                                             <input type="text"
-                                                name="cost"
-                                                id="cost"
+                                                name="material_cost"
+                                                id="material_cost"
                                                 class="form-control"
-                                                value="{{ old('cost', $materialReq->cost ?? '') }}"
+                                                value="{{ old('material_cost', $materialReq->material_cost ?? '') }}"
 
                                                 readonly>
 
@@ -414,7 +413,7 @@
 
                 // update display
                 $("#weight").val(material_wt.toFixed(3));
-                $("#cost").val(mt_cost.toFixed(2));
+                $("#material_cost").val(mt_cost.toFixed(2));
                 $("#total_cost").val(total_cost.toFixed(2));
 
                 // update auto fields only when auto-calculating & not manually edited
@@ -437,44 +436,41 @@
                 calculate(true);
             });
 
-            // VMC Hours → auto cost
+
             $("#vmc_hrs").on("input", function() {
                 let hrs = parseFloat($(this).val()) || 0;
                 $("#vmc_cost").val((hrs * 450).toFixed(2));
                 calculate(false);
             });
 
-            // Auto recalculation for main dimensions and material
             $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_rate, #cl")
                 .on("input change", function() {
-                    // 🟢 whenever L/W/H/D change → reset manual flags so auto value can come
+                 
                     if ($(this).is("#length, #width, #height, #dia")) {
                         $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
                             if ($(this).val().trim() === "") {
-                                $(this).data("manual", false); // allow auto fill again
+                                $(this).data("manual", false);  
                             }
                         });
                     }
                     calculate(true);
                 });
 
-            // Manual override (user input or delete) for MG4–SG2–HRC
             $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").on("input", function() {
                 let val = $(this).val().trim();
-                $(this).data("manual", true); // mark field as manually touched
+                $(this).data("manual", true);
 
                 if (val === "") {
-                    $(this).val(""); // keep blank if deleted
+                    $(this).val(""); 
                 }
 
-                calculate(false); // recalc after manual change/delete
+                calculate(false); 
             });
 
-            // 🟢 On page load (edit mode): mark blank fields as manual so auto won't refill
             $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
                 let val = $(this).val().trim();
                 if (val === "" || val === "0" || isNaN(parseFloat(val))) {
-                    $(this).data("manual", true); // mark blank as manual so auto skip kare
+                    $(this).data("manual", true); 
                 }
             });
 
