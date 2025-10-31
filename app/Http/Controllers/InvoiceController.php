@@ -19,29 +19,30 @@ class InvoiceController extends Controller
     {
         $adminId = Auth::id();
 
+        $customers = Customer::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->orderBy('id', 'desc') 
+            ->get();
 
         $workOrders = WorkOrder::where('admin_id', $adminId)
             ->where('status', 1)
             ->with('customer')
             ->get();
 
-       $customers = Customer::where('status', 1)
-    ->where('admin_id', $adminId)
-    ->orderBy('id', 'desc') // 🔹 नवीन entry top वर आणते
-    ->get(); 
-
         $customerId = $request->input('customer_id');
 
-        $invoices = Invoice::with(['customer', 'items']);
+        $invoices = Invoice::with(['customer', 'items'])
+            ->where('admin_id', $adminId);
 
-        if ($customerId) {
-            $invoices->where('customer_id', $customerId);
+        if (!empty($customerId)) {
+            $invoices->where('customer_id', $customerId); 
         }
 
         $invoices = $invoices->latest()->get();
 
         return view('invoice.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
+
 
     public function create()
     {
@@ -63,6 +64,80 @@ class InvoiceController extends Controller
         return view('invoice.add', compact('customers', 'hsncodes', 'workOrders'));
     }
 
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'customer_id' => 'required',
+    //         'desc.*'      => 'required|string',
+    //         'hsn_code.*'  => 'required|string',
+    //         'qty.*'       => 'required|numeric|min:1',
+    //         'rate.*'      => 'required|numeric|min:0',
+    //         'amount.*'    => 'required|numeric|min:0',
+    //         'hrs.*'       => 'nullable|string',
+    //         'vmc_hr.*'    => 'nullable|numeric|min:0',
+    //         'adj.*'       => 'nullable|numeric|min:0',
+    //         'sub_total'   => 'required|numeric|min:0',
+    //         'total_tax'   => 'required|numeric|min:0',
+    //         'adjustment'  => 'nullable|numeric',
+    //         'round_off'   => 'nullable|numeric',
+    //         'grand_total' => 'required|numeric|min:0',
+    //     ]);
+
+    //     $adminId = auth()->id();
+
+    //     $invoice = Invoice::create([
+    //         'customer_id'     => $request->customer_id,
+    //         'sub_total'       => $request->sub_total,
+    //         'total_tax'       => $request->total_tax,
+    //         'adjustment'      => $request->adj_total ?? 0,
+    //         'round_off'       => $request->round_off ?? 0,
+    //         'grand_total'     => $request->grand_total,
+    //         'total_hrs'       => array_sum($request->hrs ?? []),
+    //         'total_vmc'       => array_sum($request->vmc ?? []),
+    //         'declaration'     => $request->declaration,
+    //         'note'            => $request->note,
+    //         'bank_details'     => $request->bank_details,
+    //         'amount_in_words' => $request->amount_in_words,
+    //         'admin_id'        => $adminId,
+    //         'invoice_no'      => 'INV-' . time(),
+    //         'invoice_date'    => now(),
+    //     ]);
+
+    //     foreach ($request->desc as $i => $desc) {
+    //         $invoice->items()->create([
+    //             'part_name' => $desc ?? '',
+    //             'project_id'  => $request->project_id[$i] ?? null,
+    //             'hsn_code'  => $request->hsn_code ?? null,
+    //             'qty'       => $request->qty[$i] ?? 0,
+    //             'rate'      => $request->rate[$i] ?? 0,
+    //             'amount'    => $request->amount[$i] ?? 0,
+    //             'hrs'       => isset($request->hrs[$i])
+    //                 ? floatval(preg_replace(
+    //                     '/[^0-9.\-]/',
+    //                     '',
+    //                     $request->hrs[$i]
+    //                 )) : 0,
+    //             'vmc'       => $request->vmc_hr[$i] ?? 0,
+    //             'adj'       => $request->adj[$i] ?? 0,
+    //             'sgst'      => $request->sgst_amt ?? 0,
+    //             'cgst'      => $request->cgst_amt ?? 0,
+    //             'igst'      => $request->igst ?? 0,
+    //             'invoice_id' => $invoice->id,
+    //         ]);
+    //         if (!empty($request->work_order_id[$i])) {
+    //             // dd($request->work_order_id);
+    //             $workOrder = WorkOrder::find($request->work_order_id[$i]);
+    //             if ($workOrder) {
+
+    //                 $workOrder->update(['status' => 2]);
+    //             }
+    //         }
+    //     }
+
+    //     return redirect()->route('invoice.index')->with('success', 'Invoice created successfully!');
+    // }
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -77,12 +152,36 @@ class InvoiceController extends Controller
             'adj.*'       => 'nullable|numeric|min:0',
             'sub_total'   => 'required|numeric|min:0',
             'total_tax'   => 'required|numeric|min:0',
-            'adjustment'  => 'nullable|numeric',
-            'round_off'   => 'nullable|numeric',
             'grand_total' => 'required|numeric|min:0',
         ]);
 
         $adminId = auth()->id();
+
+
+        $customer = Customer::find($request->customer_id);
+        $words = explode(' ', $customer->customer_name);
+        $prefix = '';
+        foreach ($words as $w) {
+            $prefix .= strtoupper(substr($w, 0, 1));
+        }
+
+
+        $year = date('y');
+        $financialYear = $year . ($year + 1);
+
+        $lastInvoice = Invoice::where('admin_id', $adminId)
+            ->where('invoice_no', 'LIKE', $prefix . $financialYear . '%')
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        if ($lastInvoice) {
+            $lastNumber = (int) substr($lastInvoice->invoice_no, -3);
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = "001";
+        }
+
+        $invoiceNo = $prefix . $financialYear . "-G" . $newNumber;
 
         $invoice = Invoice::create([
             'customer_id'     => $request->customer_id,
@@ -95,27 +194,22 @@ class InvoiceController extends Controller
             'total_vmc'       => array_sum($request->vmc ?? []),
             'declaration'     => $request->declaration,
             'note'            => $request->note,
-            'bank_details'     => $request->bank_details,
+            'bank_details'    => $request->bank_details,
             'amount_in_words' => $request->amount_in_words,
             'admin_id'        => $adminId,
-            'invoice_no'      => 'INV-' . time(),
+            'invoice_no'      => $invoiceNo, 
             'invoice_date'    => now(),
         ]);
 
         foreach ($request->desc as $i => $desc) {
             $invoice->items()->create([
                 'part_name' => $desc ?? '',
-
+                'project_id'  => $request->project_id[$i] ?? null,
                 'hsn_code'  => $request->hsn_code ?? null,
                 'qty'       => $request->qty[$i] ?? 0,
                 'rate'      => $request->rate[$i] ?? 0,
                 'amount'    => $request->amount[$i] ?? 0,
-                'hrs'       => isset($request->hrs[$i])
-                    ? floatval(preg_replace(
-                        '/[^0-9.\-]/',
-                        '',
-                        $request->hrs[$i]
-                    )) : 0,
+                'hrs'       => isset($request->hrs[$i]) ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i])) : 0,
                 'vmc'       => $request->vmc_hr[$i] ?? 0,
                 'adj'       => $request->adj[$i] ?? 0,
                 'sgst'      => $request->sgst_amt ?? 0,
@@ -123,18 +217,20 @@ class InvoiceController extends Controller
                 'igst'      => $request->igst ?? 0,
                 'invoice_id' => $invoice->id,
             ]);
+
             if (!empty($request->work_order_id[$i])) {
-                // dd($request->work_order_id);
                 $workOrder = WorkOrder::find($request->work_order_id[$i]);
                 if ($workOrder) {
-
                     $workOrder->update(['status' => 2]);
                 }
             }
         }
 
-        return redirect()->route('invoice.index')->with('success', 'Invoice created successfully!');
+        return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
+
+
+
 
     public function download($id)
     {
@@ -179,55 +275,55 @@ class InvoiceController extends Controller
     }
 
 
-public function getMachineRecords($customer_id)
-{
-    $adminId = Auth::id();
- 
- 
-    $usedWorkOrders = \DB::table('invoice_items')
-        ->join('invoices', 'invoice_items.invoice_id', '=', 'invoices.id')
-        ->where('invoices.customer_id', $customer_id)
-        ->where('invoices.admin_id', $adminId)
-        ->pluck('invoice_items.part_name')
-        ->toArray();
- 
-    $records = WorkOrder::where('admin_id', $adminId)
-        ->where('customer_id', $customer_id)
-        ->where('status', 1)
-        ->whereNotIn('part_description', $usedWorkOrders)
-        ->orderBy('id', 'asc')
-        ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
- 
-    if ($records->isEmpty()) {
-        return response()->json([]);
-    }
- 
-    $machineRecords = MachineRecord::where('admin_id', $adminId)
-        ->get(['id', 'work_order', 'hrs']);
- 
-    $materials = MaterialType::where('admin_id', $adminId)
-        ->get(['material_type', 'material_rate']);
- 
-    $data = $records->map(function ($r) use ($materials, $machineRecords) {
-     
-        $machine = $machineRecords->first(function ($m) use ($r) {
-            return trim(strtolower($m->work_order)) === trim(strtolower($r->project_id));
+    public function getMachineRecords($customer_id)
+    {
+        $adminId = Auth::id();
+
+
+        $usedWorkOrders = \DB::table('invoice_items')
+            ->join('invoices', 'invoice_items.invoice_id', '=', 'invoices.id')
+            ->where('invoices.customer_id', $customer_id)
+            ->where('invoices.admin_id', $adminId)
+            ->pluck('invoice_items.part_name')
+            ->toArray();
+
+        $records = WorkOrder::where('admin_id', $adminId)
+            ->where('customer_id', $customer_id)
+            ->where('status', 1)
+            ->whereNotIn('part_description', $usedWorkOrders)
+            ->orderBy('id', 'asc')
+            ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
+
+        if ($records->isEmpty()) {
+            return response()->json([]);
+        }
+
+        $machineRecords = MachineRecord::where('admin_id', $adminId)
+            ->get(['id', 'work_order', 'hrs']);
+
+        $materials = MaterialType::where('admin_id', $adminId)
+            ->get(['material_type', 'material_rate']);
+
+        $data = $records->map(function ($r) use ($materials, $machineRecords) {
+
+            $machine = $machineRecords->first(function ($m) use ($r) {
+                return trim(strtolower($m->work_order)) === trim(strtolower($r->project_id));
+            });
+
+            $mat = $materials->firstWhere('material_type', $r->material);
+
+            return [
+                'id'               => $r->id,
+                'project_id'       => $r->project_id,
+                'part_description' => $r->part_description,
+                'quantity'         => $r->quantity,
+                'exp_time'         => $r->exp_time,
+                'vmc_hr'           => $machine->hrs ?? 0,
+                'material_type'    => $r->material,
+                'material_rate'    => $mat->material_rate ?? 0,
+            ];
         });
- 
-        $mat = $materials->firstWhere('material_type', $r->material);
- 
-        return [
-            'id'               => $r->id,
-            'project_id'       => $r->project_id,
-            'part_description' => $r->part_description,
-            'quantity'         => $r->quantity,
-            'exp_time'         => $r->exp_time,
-            'vmc_hr'           => $machine->hrs ?? 0,
-            'material_type'    => $r->material,
-            'material_rate'    => $mat->material_rate ?? 0,
-        ];
-    });
- 
-    return response()->json($data);
-}
+
+        return response()->json($data);
+    }
 }

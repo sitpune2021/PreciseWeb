@@ -147,14 +147,16 @@
                                         </div>
 
                                         <div class="col-md-3">
-                                            <label for="material_type" class="form-label">Material Type <span class="mandatory">*</span></label>
+                                            <label for="material_type" class="form-label">
+                                                Material Type <span class="mandatory">*</span>
+                                            </label>
                                             <select name="material" id="material_type" class="form-control form-select">
                                                 <option value="">Select Material</option>
                                                 @foreach($materialtype as $mt)
                                                 <option value="{{ $mt->id }}"
                                                     data-gravity="{{ $mt->material_gravity }}"
                                                     data-rate="{{ $mt->material_rate }}"
-                                                    {{ old('material', $materialReq->material ?? $record->material ?? '') == $mt->id ? 'selected' : '' }}>
+                                                    {{ old('material', $materialReq->material ?? ($record->material ?? '')) == $mt->id ? 'selected' : '' }}>
                                                     {{ $mt->material_type }}
                                                 </option>
                                                 @endforeach
@@ -164,6 +166,7 @@
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
                                         </div>
+
 
 
 
@@ -445,11 +448,11 @@
 
             $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_rate, #cl")
                 .on("input change", function() {
-                 
+
                     if ($(this).is("#length, #width, #height, #dia")) {
                         $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
                             if ($(this).val().trim() === "") {
-                                $(this).data("manual", false);  
+                                $(this).data("manual", false);
                             }
                         });
                     }
@@ -461,16 +464,16 @@
                 $(this).data("manual", true);
 
                 if (val === "") {
-                    $(this).val(""); 
+                    $(this).val("");
                 }
 
-                calculate(false); 
+                calculate(false);
             });
 
             $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
                 let val = $(this).val().trim();
                 if (val === "" || val === "0" || isNaN(parseFloat(val))) {
-                    $(this).data("manual", true); 
+                    $(this).data("manual", true);
                 }
             });
 

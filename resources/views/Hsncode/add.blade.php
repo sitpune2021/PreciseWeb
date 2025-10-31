@@ -89,7 +89,7 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">HSN Code List</h5>
-                      <a href="{{ route('trashhsn') }}" class="btn btn-warning btn-sm">
+                    <a href="{{ route('trashhsn') }}" class="btn btn-warning btn-sm">
                         View Trash
                     </a>
                 </div>
@@ -152,21 +152,38 @@
     </div>
 </div>
 <script>
-    // Select all inputs with class "only-positive"
     document.querySelectorAll('.only-positive').forEach(function(input) {
         input.addEventListener('input', function() {
-            // Agar negative value asel tar 0 kar
             if (this.value < 0) {
                 this.value = '';
             }
         });
 
-        // Optional: prevent typing "-" character
         input.addEventListener('keydown', function(e) {
             if (e.key === '-' || e.key === 'e') {
                 e.preventDefault();
             }
         });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const sgstInput = document.querySelector('input[name="sgst"]');
+        const cgstInput = document.querySelector('input[name="cgst"]');
+        const igstInput = document.querySelector('input[name="igst"]');
+
+        function updateIGST() {
+            const sgst = parseFloat(sgstInput.value) || 0;
+            const cgst = parseFloat(cgstInput.value) || 0;
+            const total = sgst + cgst;
+
+
+            igstInput.value = Number.isInteger(total) ? total : total.toFixed(2);
+        }
+
+        sgstInput.addEventListener("input", updateIGST);
+        cgstInput.addEventListener("input", updateIGST);
     });
 </script>
 @endsection

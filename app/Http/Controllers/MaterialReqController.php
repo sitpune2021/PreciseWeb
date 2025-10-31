@@ -24,7 +24,7 @@ class MaterialReqController extends Controller
         ->where('admin_id', $adminId)
         ->orderBy('name')
         ->get();
- $materialtype = MaterialType::where('admin_id', $adminId)
+     $materialtype = MaterialType::where('admin_id', $adminId)
         ->orderBy('id', 'desc')
         ->get();
 

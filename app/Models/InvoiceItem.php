@@ -12,6 +12,7 @@ class InvoiceItem extends Model
     protected $fillable = [
         'invoice_id',
         'work_order_id',
+        'project_id',
         'part_name',
         'hsn_code',
         'qty',
@@ -29,5 +30,10 @@ class InvoiceItem extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class, 'invoice_id');
+    }
+
+    public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'project_id');
     }
 }

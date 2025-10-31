@@ -25,9 +25,7 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
  
 Route::get('/'                         , [HomeController::class, 'index'])->name('home');
-// Route::get('/superAdmin'               , [HomeController::class, 'superAdmin'])->name('superAdmin');
-// Route::get('logout'                    , [HomeController::class, 'logout'])->name('logout');
-
+ 
 });
  
 // Client Routes
@@ -193,41 +191,37 @@ Route::get('/trashMachineRecord'              , [MachinerecordController::class,
 Route::get('/restoreMachineRecord/{id}'       , [MachinerecordController::class, 'restore'])->name('restoreMachineRecord');
 
 // MaterialReq Routes
-Route::get('/AddMaterialReq'                   , [MaterialReqController::class, 'AddMaterialReq'])->name('AddMaterialReq');
-Route::get('/ViewMaterialReq'                  , [MaterialReqController::class, 'ViewMaterialReq'])->name('ViewMaterialReq');
-Route::post('/storeMaterialReq'                , [MaterialReqController::class, 'storeMaterialReq'])->name('storeMaterialReq');
-Route::get('/editMaterialReq/{id}'             , [MaterialReqController::class, 'editMaterialReq'])->name('editMaterialReq');
-Route::get('/deleteMaterialReq/{id}'           , [MaterialReqController::class, 'destroy'])->name('deleteMaterialReq');
-Route::put('/updateMaterialReq/{id}'           , [MaterialReqController::class, 'updateMaterialReq'])->name('updateMaterialReq');
-Route::get('/trashMaterialReq'                 , [MaterialReqController::class, 'trash'])->name('trashMaterialReq');
-Route::get('/restoreMaterialReq/{id}'          , [MaterialReqController::class, 'restore'])->name('restoreMaterialReq');
+Route::get('/AddMaterialReq'                  , [MaterialReqController::class, 'AddMaterialReq'])->name('AddMaterialReq');
+Route::get('/ViewMaterialReq'                 , [MaterialReqController::class, 'ViewMaterialReq'])->name('ViewMaterialReq');
+Route::post('/storeMaterialReq'               , [MaterialReqController::class, 'storeMaterialReq'])->name('storeMaterialReq');
+Route::get('/editMaterialReq/{id}'            , [MaterialReqController::class, 'editMaterialReq'])->name('editMaterialReq');
+Route::get('/deleteMaterialReq/{id}'          , [MaterialReqController::class, 'destroy'])->name('deleteMaterialReq');
+Route::put('/updateMaterialReq/{id}'          , [MaterialReqController::class, 'updateMaterialReq'])->name('updateMaterialReq');
+Route::get('/trashMaterialReq'                , [MaterialReqController::class, 'trash'])->name('trashMaterialReq');
+Route::get('/restoreMaterialReq/{id}'         , [MaterialReqController::class, 'restore'])->name('restoreMaterialReq');
  
 
-Route::get('/get-material/{id}'                , [MaterialReqController::class, 'getMaterial']);
+Route::get('/get-material/{id}'               , [MaterialReqController::class, 'getMaterial']);
 
 // Materialorder Routes
-Route::get('/AddMaterialorder'                 , [MaterialorderController::class, 'AddMaterialorder'])->name('AddMaterialorder');
-Route::get('/ViewMaterialorder'                , [MaterialorderController::class, 'ViewMaterialorder'])->name('ViewMaterialorder');
-Route::post('/storeMaterialorder'              , [MaterialorderController::class, 'storeMaterialorder'])->name('storeMaterialorder');
-Route::get('/editMaterialorder/{id}'           , [MaterialorderController::class, 'editMaterialorder'])->name('editMaterialorder');
-Route::get('/deleteMaterialorder/{id}'         , [MaterialorderController::class, 'destroy'])->name('deleteMaterialorder');
-Route::put('/updateMaterialorder/{id}'         , [MaterialorderController::class, 'update'])->name('updateMaterialorder');
+Route::get('/AddMaterialorder'                , [MaterialorderController::class, 'AddMaterialorder'])->name('AddMaterialorder');
+Route::get('/ViewMaterialorder'               , [MaterialorderController::class, 'ViewMaterialorder'])->name('ViewMaterialorder');
+Route::post('/storeMaterialorder'             , [MaterialorderController::class, 'storeMaterialorder'])->name('storeMaterialorder');
+Route::get('/editMaterialorder/{id}'          , [MaterialorderController::class, 'editMaterialorder'])->name('editMaterialorder');
+Route::get('/deleteMaterialorder/{id}'        , [MaterialorderController::class, 'destroy'])->name('deleteMaterialorder');
+Route::put('/updateMaterialorder/{id}'        , [MaterialorderController::class, 'update'])->name('updateMaterialorder');
 
-Route::get('materialorder/trash'               , [MaterialorderController::class, 'trash'])->name('trashMaterialorder');
-Route::get('materialorder/restore/{id}'        , [MaterialorderController::class, 'restore'])->name('restoreMaterialorder');
-
-// Route::get('/material-reqs/{customer_id}'     , [MaterialReqController::class, 'getMaterialReqByCustomer']);
-Route::get('/get-customer-data/{id}'           , [MaterialorderController::class, 'getCustomerData'])->name('getCustomerData');
+Route::get('materialorder/trash'              , [MaterialorderController::class, 'trash'])->name('trashMaterialorder');
+Route::get('materialorder/restore/{id}'       , [MaterialorderController::class, 'restore'])->name('restoreMaterialorder');
+Route::get('/get-customer-data/{id}'          , [MaterialorderController::class, 'getCustomerData'])->name('getCustomerData');
 
 
-Route::get('invoice'                            , [InvoiceController::class, 'index'])->name('invoice.index');
-Route::get('invoice/add'                        , [InvoiceController::class, 'create'])->name('invoice.add');
-Route::post('invoice/store'                     , [InvoiceController::class, 'store'])->name('invoice.store');
-
-Route::get('invoice/{id}/download'              , [InvoiceController::class, 'download'])->name('invoice.download');
-Route::get('invoice/print/{id}'                 , [InvoiceController::class, 'printInvoice'])->name('invoice.print');
-
-Route::get('get-hsn-details/{id}'               , [InvoiceController::class, 'getHsnDetails'])->name('get.hsn.details');
+Route::get('invoice'                           , [InvoiceController::class, 'index'])->name('invoice.index');
+Route::get('invoice/add'                       , [InvoiceController::class, 'create'])->name('invoice.add');
+Route::post('invoice/store'                    , [InvoiceController::class, 'store'])->name('invoice.store');
+Route::get('invoice/{id}/download'             , [InvoiceController::class, 'download'])->name('invoice.download');
+Route::get('invoice/print/{id}'                , [InvoiceController::class, 'printInvoice'])->name('invoice.print');
+Route::get('get-hsn-details/{id}'              , [InvoiceController::class, 'getHsnDetails'])->name('get.hsn.details');
 Route::get('/invoice/fetch-machine-records/{customer_id}', [InvoiceController::class, 'getMachineRecords']);
 
 

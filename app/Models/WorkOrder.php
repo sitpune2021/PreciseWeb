@@ -40,6 +40,11 @@ public function project()
         return $this->belongsTo(WorkOrder::class, 'work_order'); 
     }
 
+    public function invoices()
+{
+    return $this->hasMany(Invoice::class, 'id');
+}
+
 
  public function machineRecords()
     {

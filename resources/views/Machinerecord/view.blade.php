@@ -12,11 +12,12 @@
                             <h5 class="card-title mb-0">View Machine Records</h5>
 
                             <div class="ms-auto d-flex gap-2">
-                                <a href="{{ route('trashMachineRecord') }}" class="btn btn-warning btn-sm">
-                                    View Trash
-                                </a>
+
                                 <a href="{{ route('AddMachinerecord') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Machine Records
+                                </a>
+                                <a href="{{ route('trashMachineRecord') }}" class="btn btn-warning btn-sm">
+                                    View Trash
                                 </a>
                             </div>
                         </div>
@@ -69,7 +70,7 @@
                                                     data-invoice_no="{{ $rec->invoice_no }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-                                                
+
                                                 <a href="{{ route('DeleteMachinerecord', base64_encode($rec->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-sm">

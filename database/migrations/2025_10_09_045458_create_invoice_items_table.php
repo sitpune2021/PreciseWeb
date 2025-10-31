@@ -11,6 +11,8 @@ class CreateInvoiceItemsTable extends Migration
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('invoice_id')->index();
+            //  $table->unsignedBigInteger('project_id');
+            $table->integer('project_id')->nullable();
             $table->string('part_name')->nullable();
             $table->string('hsn_code')->nullable();
             $table->decimal('qty', 12, 3)->default(0);

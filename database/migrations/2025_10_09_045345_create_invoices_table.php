@@ -13,7 +13,8 @@ class CreateInvoicesTable extends Migration
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
-            $table->string('invoice_no')->nullable()->unique();
+            
+            $table->string('invoice_no')->nullable();
             $table->dateTime('invoice_date')->nullable();
             $table->decimal('sub_total', 15, 2)->default(0);
             $table->decimal('total_tax', 15, 2)->default(0);
@@ -32,6 +33,8 @@ class CreateInvoicesTable extends Migration
             // Indexes if needed:
             $table->index(['admin_id']);
             $table->index(['customer_id']);
+
+             $table->unique(['admin_id', 'invoice_no'], 'unique_admin');
         });
     }
 

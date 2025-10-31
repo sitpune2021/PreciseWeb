@@ -108,10 +108,23 @@ for ($m = 1; $m <= 12; $m++) {
     $totals[] = $workOrdersMonthly[$m] ?? 0;
     }
 
-    $newWorkOrders = WorkOrder::where('admin_id', Auth::id())->where('status', 'new')->count();
-    $inProgress = WorkOrder::where('admin_id', Auth::id())->where('status', 'in_progress')->count();
-    $completed = WorkOrder::where('admin_id', Auth::id())->where('status', 'completed')->count();
+    // ✅ 1. Total Work Orders
     $totalWorkOrders = WorkOrder::where('admin_id', Auth::id())->count();
+
+    // ✅ 2. Work Orders that are linked to Invoices (Completed)
+    $completed = WorkOrder::where('admin_id', Auth::id())
+    ->whereHas('invoices') // only those having invoice
+    ->count();
+
+    $inProgress = WorkOrder::where('admin_id', Auth::id())
+    ->whereDoesntHave('invoices')
+    ->count();
+
+    $newWorkOrders = WorkOrder::where('admin_id', Auth::id())
+    ->whereMonth('created_at', Carbon::now()->month)
+    ->whereYear('created_at', Carbon::now()->year)
+    ->count();
+
 
     // ---------------- Setup Sheets ----------------
     $totalSheets = SetupSheet::where('admin_id', Auth::id())->count();
@@ -383,54 +396,82 @@ for ($m = 1; $m <= 12; $m++) {
 
                             </div>
 
-                            <!-- Counters Row -->
-                            <div class="card-header p-0 border-0 bg-light-subtle">
-                                <div class="row g-0 text-center">
-                                    <div class="col-6 col-sm-3 border border-dashed border-start-0">
-                                        <div class="p-3">
-                                            <h5 class="mb-1">
+                            <!-- 🔹 Work Order Summary Cards -->
+                            <div class="card-header p-0 border-0 bg-transparent">
+                                <div class="row g-3 text-center p-3">
+
+                                    <!-- 🆕 New Work Orders -->
+                                    <div class="col-6 col-sm-3">
+                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
+                                            style="background: linear-gradient(135deg, #e0f7ff, #f2fcff); border: 1px solid #d1ecf1;">
+                                            <div class="mb-2">
+                                                <i class="ri-add-circle-line fs-2 text-info"></i>
+                                            </div>
+                                            <h4 class="fw-bold text-info mb-1">
                                                 <span class="counter-value" data-target="{{ $newWorkOrders }}">0</span>
-                                            </h5>
-                                            <p class="text-muted mb-0">New Work Orders</p>
+                                            </h4>
+                                            <p class="text-muted mb-0 fw-semibold">New Work Orders</p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-sm-3 border border-dashed border-start-0">
-                                        <div class="p-3">
-                                            <h5 class="mb-1">
+
+                                    <!-- ⚙️ In Progress -->
+                                    <div class="col-6 col-sm-3">
+                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
+                                            style="background: linear-gradient(135deg, #fff8e1, #fffbea); border: 1px solid #ffecb3;">
+                                            <div class="mb-2">
+                                                <i class="ri-progress-3-line fs-2 text-warning"></i>
+                                            </div>
+                                            <h4 class="fw-bold text-warning mb-1">
                                                 <span class="counter-value" data-target="{{ $inProgress }}">0</span>
-                                            </h5>
-                                            <p class="text-muted mb-0">In Progress</p>
+                                            </h4>
+                                            <p class="text-muted mb-0 fw-semibold">In Progress</p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-sm-3 border border-dashed border-start-0">
-                                        <div class="p-3">
-                                            <h5 class="mb-1">
+
+                                    <!-- ✅ Completed (Invoiced) -->
+                                    <div class="col-6 col-sm-3">
+                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
+                                            style="background: linear-gradient(135deg, #e8f9ee, #f4fff8); border: 1px solid #b6f0c3;">
+                                            <div class="mb-2">
+                                                <i class="ri-check-double-line fs-2 text-success"></i>
+                                            </div>
+                                            <h4 class="fw-bold text-success mb-1">
                                                 <span class="counter-value" data-target="{{ $completed }}">0</span>
-                                            </h5>
-                                            <p class="text-muted mb-0">Completed</p>
+                                            </h4>
+                                            <p class="text-muted mb-0 fw-semibold">Completed (Invoiced)</p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-sm-3 border border-dashed border-start-0 border-end-0">
-                                        <div class="p-3">
-                                            <h5 class="mb-1 text-success">
+
+                                    <!-- 📋 Total Work Orders -->
+                                    <div class="col-6 col-sm-3">
+                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
+                                            style="background: linear-gradient(135deg, #eef2ff, #f7f9ff); border: 1px solid #cfd8ff;">
+                                            <div class="mb-2">
+                                                <i class="ri-file-list-3-line fs-2 text-primary"></i>
+                                            </div>
+                                            <h4 class="fw-bold text-primary mb-1">
                                                 <span class="counter-value" data-target="{{ $totalWorkOrders }}">0</span>
-                                            </h5>
-                                            <p class="text-muted mb-0">Total Work Orders</p>
+                                            </h4>
+                                            <p class="text-muted mb-0 fw-semibold">Total Work Orders</p>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
 
-
-                            <!-- Chart -->
-                            <!-- <div class="card-body p-0 pb-2">
-                                <div class="w-100">
-                                    <div id="workOrderChart" class="apex-charts" style="height: 350px;" dir="ltr"></div>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
+           
+                            <style>
+                                .card-hover {
+                                    transition: all 0.3s ease;
+                                }
 
+                                .card-hover:hover {
+                                    transform: translateY(-5px);
+                                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                                }
+                            </style>
                     <!-------------- Right Side: Setup Sheets ------------->
 
                     <div class="col-xxl-4 col-lg-5 mt-3 mt-lg-0">
