@@ -76,7 +76,7 @@
                             <!-- Submit Button -->
                             <div class="col-md-2 d-flex">
                                 <button type="submit" class="btn btn-primary mt-2 w-100 align-self-center">
-                                    <i class="fas fa-save me-1"></i> {{ isset($hsn) ? 'Update' : 'Add' }}
+                                      {{ isset($hsn) ? 'Update' : 'Add' }}
                                 </button>
                             </div>
                         </div>

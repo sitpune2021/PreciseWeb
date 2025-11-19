@@ -66,21 +66,27 @@
 
                             <div class="col-md-3">
                                 <label>Role<span class="text-red">*</span></label>
-                                                    <select name="role" class="form-select" required>
-                            <option value="">Select Role</option>
+                                <select name="role" class="form-select" required>
+                                    <option value="">Select Role</option>
 
-                            @foreach ($roles as $role)
-                                <option value="{{ $role->id }}"
-                                    {{ $role->id == 1 ? 'disabled' : '' }}   {{-- SuperAdmin disable --}}
-                                    {{ old('role') == $role->id ? 'selected' : '' }}>
-                                    {{ $role->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                                    @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}"
+                                        {{ $role->id == 1 ? 'disabled' : '' }} {{-- SuperAdmin disable --}}
+
+                                        {{-- Selected for Add OR Edit --}}
+                                        {{ old('role', $user->role ?? '') == $role->id ? 'selected' : '' }}>
+
+                                        {{ $role->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+
                                 @error('role')
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            @if(!isset($user))
                             <!-- Password -->
                             <div class="col-md-3">
                                 <label for="password" class="form-label">Password <span class="text-red">*</span></label>
@@ -89,8 +95,7 @@
                                         class="form-control"
                                         id="password"
                                         name="password"
-                                        placeholder="Enter password"
-                                        value="{{ old('password') }}">
+                                        placeholder="Enter password">
 
                                     <span class="input-group-text" onclick="togglePassword('password', this)">
                                         <i class="fa fa-eye"></i>
@@ -109,14 +114,15 @@
                                         class="form-control"
                                         id="password_confirmation"
                                         name="password_confirmation"
-                                        placeholder="Confirm password"
-                                        value="{{ old('password_confirmation') }}">
+                                        placeholder="Confirm password">
 
                                     <span class="input-group-text" onclick="togglePassword('password_confirmation', this)">
-                                        <i class="fa fa-eye" bg-light></i>
+                                        <i class="fa fa-eye"></i>
                                     </span>
                                 </div>
                             </div>
+                            @endif
+
 
                         </div>
 

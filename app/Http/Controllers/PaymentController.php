@@ -17,10 +17,8 @@ class PaymentController extends Controller
     public function Payment()
     {
         $client = Client::where('login_id', Auth::id())->first();
-
         $plans = PaymentPlan::all();
-
-        return view('payment.renew', compact('plans', 'client'));
+        return view('Payment.renew', compact('plans', 'client'));
     }
 
     public function order(Request $request)
@@ -55,7 +53,6 @@ class PaymentController extends Controller
 
     public function success(Request $request)
     {
-
         $client = Auth::user()->client;
         $planType = $request->planId;
 
@@ -78,7 +75,6 @@ class PaymentController extends Controller
             ]);
 
             $client_id = Auth::id();
-
             $plan_id =  $order->plan_id;
 
             Client::where('id', $client_id)->update([
@@ -87,7 +83,6 @@ class PaymentController extends Controller
                 'status'      => 1
             ]);
         }
-
         return view('payment.success', [
             'razorpay_payment_id' => $request->razorpay_payment_id,
             'razorpay_signature' => $request->razorpay_signature,
@@ -96,14 +91,10 @@ class PaymentController extends Controller
             'payment_status' => "completed"
         ]);
     }
-
-    // List Payment
     public function PaymentList()
     {
-
         $payments = Order::all();
         $orders = Client::all();
-
         return view('Payment.view', compact('payments', 'orders'));
     }
 }

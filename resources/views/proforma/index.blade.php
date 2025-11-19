@@ -19,7 +19,7 @@
                                     @endforeach
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-search me-1"></i> Search
+                                    </i> Search
                                 </button>
                             </form>
                             <a href="{{ route('proforma.add') }}" class="btn   btn-success shadow-sm">

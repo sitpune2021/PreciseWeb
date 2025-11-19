@@ -77,8 +77,8 @@ class UserAdminController extends Controller
 
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:useradmin,email,' . $id,
-            'user_name' => 'required|string|unique:useradmin,user_name,' . $id,
+            'email' => 'required|email|unique:email,' . $id . ',id',
+            'user_name' => 'required|string|unique:user_name,' . $id . ',id',
             'mobile' => ['nullable', 'digits:10'],
             'role' => 'required|in:Admin,Programmer,Supervisor,Finance',
             'password' => 'nullable|string|min:6|confirmed',

@@ -235,7 +235,6 @@ Route::post('/UpdateAdminSetting'             , [AdminSettingController::class, 
 Route::get('/Payment', [PaymentController::class, 'Payment'])->name('Payment');
 Route::post('/razorpay.order', [PaymentController::class, 'order'])->name('razorpay.order');
 Route::post('/payment-success', [PaymentController::class, 'success'])->name('razorpay.success');
-
 Route::get('/PaymentList', [PaymentController::class, 'PaymentList'])->name('PaymentList');
 Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
 
