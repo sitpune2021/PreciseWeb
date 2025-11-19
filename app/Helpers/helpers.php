@@ -2,37 +2,31 @@
 
 use Illuminate\Support\Facades\Auth;
 
-function hasPermission($module, $action = null)
-{
-    $user = Auth::user();
-    if (!$user) {
-        return false; // No authenticated user
+if (!function_exists('hasPermission')) {
+
+    function hasPermission($module, $action = null)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return false;
+        }
+
+        $permissionsJson = $user->rolePermission->permissions ?? '{}';
+
+        $permissions = json_decode($permissionsJson, true);
+
+        if (!is_array($permissions) || empty($permissions)) {
+            return false;
+        }
+
+        if (!isset($permissions[$module])) {
+            return false;
+        }
+
+        if ($action === null) {
+            return true;
+        }
+
+        return in_array($action, $permissions[$module]);
     }
-
-    // Get permissions JSON from DB
-    $permissionsJson = $user->rolePermission->permissions ?? '{}';
-
-    // Decode JSON to array
-    $permissions = json_decode($permissionsJson, true);
-
-    if (!is_array($permissions) || empty($permissions)) {
-        return false; // No permissions
-    }
-
-    // Check if module exists
-    if (!isset($permissions[$module])) {
-        return false; // Module not allowed
-    }
-
-    // If no action specified, module access is enough
-    if ($action === null) {
-        return true;
-    }
-
-    // Check if action exists in module permissions
-    return is_array($permissions[$module]) && in_array($action, $permissions[$module]);
 }
-
-
-
-

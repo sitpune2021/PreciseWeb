@@ -25,6 +25,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\ProformaInvoiceController;
 use App\Http\Controllers\RolePermissionController;
+use Illuminate\Support\Facades\Artisan;
 
 Auth::routes();
 Route::middleware(['auth','check.subscription'])->group(function () {
@@ -250,7 +251,15 @@ Route::get('/proforma/fetch-material-rate/{material}', [ProformaInvoiceControlle
 
 
 });
-
+Route::get('/clear-app-cache', function () {
+ 
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+ 
+    return "Cleared config, cache, route, and view.";
+});
 
  
  
