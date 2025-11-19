@@ -6,34 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-     public function up(): void
+    public function up(): void
     {
         Schema::create('machine_records', function (Blueprint $table) {
             $table->id();
             $table->integer('admin_id');
-            $table->string('part_no');  
+            $table->string('part_no');
             $table->string('work_order')->nullable();
-             $table->string('code', 100)->nullable();  // WO
-            $table->string('first_set')->nullable();   // 1ST SET
-            $table->integer('qty')->default(1);    // QTY
-            $table->string('machine');             // M/C
-            $table->string('operator');            // OP
-            $table->string('setting_no')->nullable(); 
-            $table->string('material')->nullable();  
+
+            $table->string('code', 100)->nullable();
+            $table->string('first_set')->nullable();
+            $table->integer('qty')->default(1);
+            $table->string('machine');
+            $table->string('operator');
+            $table->string('setting_no')->nullable();
+            $table->string('material')->nullable();
             $table->string('est_time')->nullable();
-            $table->dateTime('start_time')->nullable();   // START
-            $table->dateTime('end_time')->nullable(); 
-            $table->integer('minute')->nullable();        
-            $table->decimal('hrs', 5, 2)->nullable();     // HRS
-            $table->decimal('time_taken', 5, 2)->nullable(); // TIME
-            $table->decimal('actual_hrs', 5, 2)->nullable(); // HRS (Actual)
-            $table->string('invoice_no')->nullable(); // INVOICE NO
-            // $table->boolean('is_active')->default(1);
-            
-            $table->softDeletes(); 
+            $table->dateTime('start_time')->nullable();
+            $table->dateTime('end_time')->nullable();
+            $table->string('adjustment')->nullable();
+
+            // $table->integer('minute')->nullable();
+            $table->decimal('hrs', 5, 2)->nullable();
+            // $table->decimal('time_taken', 5, 2)->nullable();
+            // $table->decimal('actual_hrs', 5, 2)->nullable();
+            $table->string('invoice_no')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -1,27 +1,25 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
- 
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
- 
+
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Projects</h5>
- 
+
                             <div class="d-flex align-items-center gap-2">
                                 <!-- Add Project Button -->
                                 <a href="{{ route('AddProject') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Project
                                 </a>
- 
                             </div>
- 
                         </div>
- 
+
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -45,7 +43,7 @@
                                             <td>{{ $project->customer_code }}</td>
                                             <td>{{ $project->project_name }}</td>
                                             <td>{{ $project->quantity }}</td>
- 
+
                                             <td>
                                                 <!-- Edit -->
                                                 <a href="{{ route('editProject', base64_encode($project->id)) }}">
@@ -53,7 +51,7 @@
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </button>
                                                 </a>
- 
+
                                                 <!-- View -->
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewBtn"
@@ -65,7 +63,7 @@
                                                     data-date="{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
- 
+
                                                 <!-- Delete -->
                                                 <a href="{{ route('deleteProject', base64_encode($project->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
@@ -78,13 +76,13 @@
                                         @endforeach
                                     </tbody>
                                 </table>
- 
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
- 
+
             <!-- View Modal -->
             <div class="modal fade" id="viewProjectModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -99,38 +97,38 @@
                                     <th>Date</th>
                                     <td id="view_date"></td>
                                 </tr>
- 
+
                                 <tr>
                                     <th>Project No.</th>
                                     <td id="view_workorder"></td>
                                 </tr>
- 
+
                                 <tr>
                                     <th>Customer Code</th>
                                     <td id="view_code"></td>
                                 </tr>
- 
+
                                 <tr>
                                     <th>Project Name</th>
                                     <td id="view_name"></td>
                                 </tr>
- 
+
                                 <tr>
                                     <th>Quantity</th>
                                     <td id="view_qty"></td>
                                 </tr>
- 
+
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- End Modal -->
- 
+
         </div>
     </div>
 </div>
- 
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".viewBtn").forEach(btn => {
@@ -140,13 +138,12 @@
                 document.getElementById("view_code").textContent = this.dataset.code;
                 document.getElementById("view_qty").textContent = this.dataset.qty;
                 document.getElementById("view_date").textContent = this.dataset.date;
- 
+
                 let modal = new bootstrap.Modal(document.getElementById("viewProjectModal"));
                 modal.show();
             });
         });
     });
 </script>
- 
+
 @endsection
- 

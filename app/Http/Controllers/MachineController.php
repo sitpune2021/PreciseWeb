@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class MachineController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function AddMachine()
     {
         $machines = Machine::where('is_active', 1)
@@ -21,7 +19,6 @@ class MachineController extends Controller
 
         return view('Machine.add', compact('machines'));
     }
-
 
     public function storeMachine(Request $request)
     {
@@ -55,11 +52,11 @@ class MachineController extends Controller
     {
         $id = base64_decode($encryptedId);
         $machine = Machine::where('id', $id)
-            ->where('admin_id', Auth::id())                 //admin_id
+            ->where('admin_id', Auth::id())
             ->firstOrFail();
 
         $machines = Machine::where('is_active', 1)
-            ->where('admin_id', Auth::id())                 //admin_id
+            ->where('admin_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
         return view('Machine.add', compact('machine', 'machines'));
@@ -73,13 +70,13 @@ class MachineController extends Controller
             'machine_name' => ['required', 'unique:machines,machine_name,' . $id, 'regex:/^[A-Za-z\s]+$/', 'max:255',],
         ]);
         $machine = Machine::where('id', $id)
-            ->where('admin_id', Auth::id())                 //admin_id
+            ->where('admin_id', Auth::id())
             ->firstOrFail();
 
         $machine->machine_name = $request->machine_name;
         $machine->is_active = 1;
         $machine->restore();
-        $machine->created_at = now(); // Make it appear on top
+        $machine->created_at = now();
         $machine->save();
         $machine->save();
 
@@ -90,7 +87,7 @@ class MachineController extends Controller
     {
         $id = base64_decode($encryptedId);
         $machine = Machine::where('id', $id)
-            ->where('admin_id', Auth::id())                 //admin_id
+            ->where('admin_id', Auth::id())
             ->firstOrFail();
 
         $machine->delete();
@@ -101,7 +98,7 @@ class MachineController extends Controller
     {
 
         $machine = Machine::where('id', $request->id)
-            ->where('admin_id', Auth::id())         //admin_id
+            ->where('admin_id', Auth::id())
             ->firstOrFail();
 
         $machine->status = $request->has('status') ? 1 : 0;
@@ -110,12 +107,11 @@ class MachineController extends Controller
         return back()->with('success', 'Status updated!');
     }
 
-
     public function trash()
     {
         // Get soft deleted operators
         $trashedmachine = Machine::onlyTrashed()
-            ->where('admin_id', Auth::id())         //admin_id
+            ->where('admin_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
 
@@ -124,7 +120,6 @@ class MachineController extends Controller
 
         return view('Machine.trash', compact('trashedmachine', 'Machine'));
     }
-
 
     // Restore machine
     public function restore($encryptedId)
@@ -141,15 +136,19 @@ class MachineController extends Controller
             ->where('is_active', 1)
             ->exists();
 
+        if ($exists) {
+            $machine->is_active = 0;
+            $machine->restore();
+            $machine->touch();
+            $machine->save();
+
+            return redirect()->route('editMachine', base64_encode($machine->id))->with('success', "Machine '{$machine->machine_name}' already exists. Redirected to Edit Page.");
+        }
+
         $machine->is_active = 1;
         $machine->restore();
         $machine->touch();
         $machine->save();
-
-        if ($exists) {
-            return redirect()->route('editMachine', base64_encode($machine->id))
-                ->with('success', "Machine '{$machine->machine_name}' already exists. Redirected to Edit Page.");
-        }
 
         return redirect()->route('AddMachine')
             ->with('success', "Machine '{$machine->machine_name}' restored successfully.");

@@ -5,11 +5,6 @@
     <meta charset="utf-8">
     <title>Invoice {{ $invoice->invoice_no ?? 'XXXX' }}</title>
     <style>
-        @page {
-            size: A4;
-            margin: 10mm;
-        }
-
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
@@ -88,18 +83,105 @@
         }
 
         .invoice-subtitle {
+            border-left: 1px solid #686666ff;
+            border-right: 1px solid #525151ff;
+            margin: 0;
+            padding: 6px 0;
             text-align: center;
             font-weight: bold;
-            font-size: 13px;
-            margin: 8px 0;
+            font-size: 12.5px;
             line-height: 1.4;
         }
 
         .declaration-box {
-            border: 1px solid #000;
+            border: 1px solid #c1c1c1ff;
             padding: 8px;
             font-size: 12px;
             line-height: 1.4;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+
+        .header-table td {
+            background-color: #cfceceff;
+            color: #232323ff;
+            font-weight: bold;
+            font-size: 15px;
+            text-align: center;
+            padding: 6px 8px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .invoice-table td {
+            vertical-align: top;
+            border: 1px solid #000;
+            padding: 8px 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .section-header {
+            font-size: 12px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 4px;
+            padding-bottom: 2px;
+        }
+
+        .grey-row {
+            border-top: 1px solid #000;
+            margin-top: 6px;
+            padding-top: 4px;
+        }
+
+        .gst-row {
+            background-color: #cfceceff;
+            padding: 3px 0;
+        }
+
+        .w-50 {
+            width: 50%;
+        }
+
+        .invoice-wrapper {
+            border: 2px solid #000;
+            /* ✅ full outer border */
+            width: 100%;
+            margin: 0 auto;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .invoice-table,
+        .invoice-table td,
+        .invoice-table th {
+            border: 1px solid #000;
+            /* ✅ ensures internal table lines align */
+            border-collapse: collapse;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+
+
+        .grey-row {
+            border-top: 1px solid #000;
+            /* ✅ line above “Kind Attn” section */
+            /* background-color: #f0f0f0; */
+            margin-top: 4px;
+            padding: 4px;
         }
 
         @media print {
@@ -122,7 +204,8 @@
 </head>
 
 <body>
-    <div class="invoice-title">
+
+    <div class="invoice-title gst-row">
         <h2>GST TAX INVOICE</h2>
         <p class="small">(U/s 31 of CGST ACT & SGST ACT R.W. Sec 20 of IGST Act)</p>
     </div>
@@ -184,18 +267,48 @@
         </tr>
     </table>
     <p class="invoice-subtitle"> Manufacturing of Press Components Tools, Dies, Moulds, Patterns & All Types of VMC Machining Works. </p>
-    <table>
+    <table class="header-table">
         <tr>
-            <td width="50%" class="center bold" style="font-size:15px;"> GST No: 27AAMFP5025G1Z6 | Date: 26-03-2017 </td>
-            <td width="50%" class="center bold" style="font-size:15px;"> MSME No: UDYAM-MH-26-0589771 </td>
+            <td width="50%">
+                GST No: {{ $adminSetting->gst_no ?? 'N/A' }} |
+                Date: {{ $adminSetting->date ? \Carbon\Carbon::parse($adminSetting->date)->format('d-m-Y') : 'N/A' }}
+            </td>
+            <td width="50%">
+                MSME No: {{ $adminSetting->udyam_no ?? 'N/A' }}
+            </td>
         </tr>
     </table>
-    <table>
+
+    <table class="invoice-table">
         <tr>
-            <td width="50%"> <strong>Consignee:</strong><br> {{ $invoice->buyer_name ?? 'N/A' }}<br> {{ $invoice->buyer_address ?? '' }}<br> Customer Name: {{ $invoice->customer->name ?? 'N/A' }}<br> Contact: {{ $invoice->customer->phone_no ?? 'N/A' }}<br> GST: {{ $invoice->customer->gst_no ?? 'N/A' }} </td>
-            <td width="50%"> <strong>Buyer (if other than Consignee):</strong><br> {{ $invoice->buyer2_name ?? '-' }}<br> {{ $invoice->buyer2_address ?? '' }}<br> Customer Name: {{ $invoice->customer->name ?? 'N/A' }}<br> Contact: {{ $invoice->customer->phone_no ?? 'N/A' }}<br> GST: {{ $invoice->customer->gst_no ?? 'N/A' }} </td>
+
+            <td class="w-50">
+                <div class="section-header">Consignee</div>
+                <div><strong>{{ $invoice->customer->name ?? 'N/A' }}</strong></div>
+                <div>{{ $invoice->customer->address ?? '' }}</div>
+
+                <div class="grey-row">
+                    <div><span class="label">Kind Attn: </span> <span class=" "><strong>{{ $invoice->customer->contact_person ?? 'N/A' }}</strong></span></div>
+                    <div><span class="label">Contact No.: </span> <span class="value">{{ $invoice->customer->phone_no ?? 'N/A' }}</span></div>
+                    <div class="gst-row"><span class="label">GST:</span> <span class="value"><strong>{{ $invoice->customer->gst_no ?? 'N/A' }}</strong></span></div>
+                </div>
+            </td>
+
+
+            <td class="w-50">
+                <div class="section-header">Buyer (If other than Consignee)</div>
+                <div><strong>{{ $invoice->customer->name ?? 'N/A' }}</strong></div>
+                <div>{{ $invoice->customer->address ?? '' }}</div>
+
+                <div class="grey-row">
+                    <div><span class="label">Kind Attn: </span> <span class="value"><strong>{{ $invoice->customer->contact_person ?? 'N/A' }}</strong></span></div>
+                    <div><span class="label">Contact No.: </span> <span class="value">{{ $invoice->customer->phone_no ?? 'N/A' }}</span></div>
+                    <div class="gst-row"><span class="label">GST:</span> <span class="value"><strong>{{ $invoice->customer->gst_no ?? 'N/A' }}</strong></span></div>
+                </div>
+            </td>
         </tr>
     </table>
+
     <table style="margin-top:5px;">
         <thead>
             <tr class="center bold">
@@ -217,14 +330,55 @@
                 <td class="right">{{ number_format($item->rate ?? 0, 2) }}</td>
                 <td class="right">{{ number_format($item->amount ?? 0, 2) }}</td>
             </tr> @endforeach </tbody>
-    </table> @php use App\Models\Hsncode; $firstItem = $invoice->items->first(); $hsnCode = $firstItem->hsn_code ?? null; $hsnMaster = $hsnCode ? Hsncode::where('hsn_code', $hsnCode)->first() : null; $cgst_rate = $hsnMaster->cgst ?? 0; $sgst_rate = $hsnMaster->sgst ?? 0; $igst_rate = $cgst_rate + $sgst_rate; $cgst_total = ($invoice->sub_total * $cgst_rate) / 100; $sgst_total = ($invoice->sub_total * $sgst_rate) / 100; $igst_total = $cgst_total + $sgst_total; @endphp <table style="margin-top:10px; width:100%; border-collapse: collapse;">
+    </table>@php
+    use App\Models\Hsncode;
+
+    $firstItem = $invoice->items->first();
+    $hsnCode = $firstItem->hsn_code ?? null;
+    $hsnMaster = $hsnCode ? Hsncode::where('hsn_code', $hsnCode)->first() : null;
+
+    // Default rates
+    $cgst_rate = $hsnMaster->cgst ?? 0;
+    $sgst_rate = $hsnMaster->sgst ?? 0;
+    $igst_rate = $hsnMaster->igst ?? 0;
+
+    if (($cgst_rate > 0 || $sgst_rate > 0) && $igst_rate > 0) {
+    $igst_rate = 0;
+    }
+
+    if ($igst_rate > 0) {
+
+    $cgst_rate = 0;
+    $sgst_rate = 0;
+    $cgst_total = 0;
+    $sgst_total = 0;
+
+    $igst_total = ($invoice->sub_total * $igst_rate) / 100;
+    $total_tax_percent = $igst_rate;
+    $total_tax_amount = $igst_total;
+    } else {
+    // CGST + SGST mode
+    $igst_rate = 0;
+    $cgst_total = ($invoice->sub_total * $cgst_rate) / 100;
+    $sgst_total = ($invoice->sub_total * $sgst_rate) / 100;
+    $igst_total = 0;
+
+    $total_tax_percent = $cgst_rate + $sgst_rate;
+    $total_tax_amount = $cgst_total + $sgst_total;
+    }
+
+    $grand_total = $invoice->sub_total + $total_tax_amount;
+    @endphp
+
+
+    <table style="margin-top:10px; width:100%; border-collapse: collapse;">
         <tr>
             <td width="68%" rowspan="6" class="declaration-box" style="padding:12px; font-size:13px; line-height:1.4; vertical-align:top; border:1px solid #000;">
                 <p><strong>Declaration:</strong> {{ $invoice->declaration ?? '' }}</p>
                 <hr>
-                <p><strong>Note:</strong> {{ $invoice->note ?? '' }}</p>
+                <p class="gst-row"><strong>Note:</strong> {{ $invoice->note ?? '' }}</p>
                 <hr>
-                <p><strong>Bank Details:</strong><br>{!! nl2br($invoice->bank_details ?? '') !!}</p>
+                <p class="gst-row"><strong>Bank Details:</strong><br>{!! nl2br($invoice->bank_details ?? '') !!}</p>
                 <hr>
                 <p style="margin:2px 0;"><strong>Amount in Words:</strong> {{ $invoice->amount_in_words ?? '' }}</p>
             </td>
@@ -247,21 +401,35 @@
             <td class="right">{{ number_format($sgst_total, 2) }}</td>
         </tr>
         <tr>
-            <td class="right">IGST</td>
-            <td class="right">{{ $igst_rate }}%</td>
-            <td class="right">{{ number_format($igst_total, 2) }}</td>
+            <td class="right gst-row">Total Tax Payable</td>
+            <td class="right gst-row">{{ $igst_rate }}%</td>
+            <td class="right gst-row">{{ number_format($igst_total, 2) }}</td>
         </tr>
         <tr class="bold">
             <td class="right bold">Grand Total</td>
-            <td colspan="2" class="right bold">{{ number_format($invoice->grand_total ?? 0, 2) }}</td>
+            <td colspan="2" class="right bold">{{ number_format($grand_total, 2) }}</td>
         </tr>
+
     </table>
-    <table style="margin-top:20px;">
-        <tr>
-            <td width="50%" class="center">Receiver’s Signature</td>
-            <td width="50%" class="center"> For <strong>Precise Engineering</strong><br>Authorised Signatory </td>
-        </tr>
-    </table>
+    @if(!empty($adminSetting->footer_note))
+    <div style="margin-top:30px; text-align:center; font-size:13px;padding-top:10px;">
+        <strong>Note:</strong> {{ $adminSetting->footer_note }}
+    </div>
+    @else
+    <div style="margin-top:30px; text-align:center; font-size:13px; border-top:1px solid #000; padding-top:10px;">
+        <strong>Note:</strong>
+    </div>
+
+
+    @endif
+
+    <div class="company-stamp" style="text-align:right; margin-top:10px;">
+        @if(isset($adminSetting) && $adminSetting->stamp)
+        <img src="{{ asset('uploads/settings/' . $adminSetting->stamp) }}" width="100" height="100" alt="Company Stamp">
+        @else
+        <img src="{{ asset('uploads/default-stamp.png') }}" width="100" height="100" alt="Stamp">
+        @endif
+    </div>
     <script>
         window.onload = function() {
             window.print();

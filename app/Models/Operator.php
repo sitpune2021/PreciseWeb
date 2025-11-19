@@ -1,14 +1,14 @@
 <?php
- 
+
 namespace App\Models;
- 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
- 
+
 class Operator extends Model
 {
     use SoftDeletes;
-    protected $fillable=[
+    protected $fillable = [
         'operator_name',
         'admin_id',
         'phone_no',
@@ -16,7 +16,7 @@ class Operator extends Model
         'is_active',
     ];
 
-     protected $casts = [
+    protected $casts = [
         'is_active' => 'boolean',
     ];
 }

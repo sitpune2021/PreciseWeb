@@ -11,17 +11,11 @@ use Illuminate\Validation\Rule;
 
 class CustomerContoller extends Controller
 {
-    /**
-     * Show Add Customer Form
-     */
     public function AddCustomer()
     {
         return view('Customer.add');
     }
 
-    /**
-     * Store a newly created Customer
-     */
     public function storeCustomer(Request $request)
     {
         $request->merge([
@@ -118,9 +112,6 @@ class CustomerContoller extends Controller
         return view('Customer.view', compact('customer'));
     }
 
-    /**
-     * Edit Customer
-     */
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -128,9 +119,6 @@ class CustomerContoller extends Controller
         return view('Customer.add', compact('customer'));
     }
 
-    /**
-     * Update Customer
-     */
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -189,9 +177,6 @@ class CustomerContoller extends Controller
         return redirect()->route('ViewCustomer')->with('success', 'Customer updated successfully.');
     }
 
-    /**
-     * Delete Customer (soft delete)
-     */
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -203,9 +188,6 @@ class CustomerContoller extends Controller
         return redirect()->route('ViewCustomer')->with('success', 'Customer deleted successfully.');
     }
 
-    /**
-     * Update Status (Active/Inactive)
-     */
     public function updateCustomerStatus(Request $request)
     {
         $customer = Customer::where('admin_id', Auth::id())->findOrFail($request->id);
@@ -215,9 +197,6 @@ class CustomerContoller extends Controller
         return back()->with('success', 'Status updated!');
     }
 
-    /**
-     * Import Customers from Excel/CSV
-     */
     public function importCustomers(Request $request)
     {
         $request->validate([
@@ -261,7 +240,6 @@ class CustomerContoller extends Controller
                 continue;
             }
 
-            // Generate code if not provided
             if (!$code) {
                 $nameWords = explode(' ', $name);
                 if (count($nameWords) == 1) {
@@ -301,9 +279,6 @@ class CustomerContoller extends Controller
         return redirect()->back()->with('success', $message);
     }
 
-    /**
-     * Download Sample Excel
-     */
     public function exportSample()
     {
         $filePath = public_path('assets/excel/PRECISE_ENGINEERING.xlsx');

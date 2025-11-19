@@ -15,7 +15,7 @@ class MaterialReq extends Model
     protected $table = 'material_reqs';
 
     protected $fillable = [
-         'admin_id',
+        'admin_id',
         'customer_id',
         'code',
         'date',
@@ -46,9 +46,7 @@ class MaterialReq extends Model
         'total_cost'
     ];
 
-    /**
-     * Customer relation
-     */
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');

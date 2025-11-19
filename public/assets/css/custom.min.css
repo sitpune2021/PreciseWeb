@@ -25,7 +25,7 @@ span.mandatory {
     display: none;
 }
 
- 
+
 .dropdown-list li {
     padding: 5px 10px;
     cursor: pointer;
@@ -40,4 +40,71 @@ span.mandatory {
 .dropdown-list li:hover:not(.active) {
     background-color: #ddd;
     color: #000;
+}
+* PLAN PAGE GLOBAL STYLING */
+.plan-section {
+    padding: 30px;
+}
+
+.plan-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* PLAN CARD */
+.plan-card {
+    border-radius: 20px;
+    padding: 25px 20px;
+    transition: 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: #ffffff;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    border-color: #7b1fa2;
+    box-shadow: 0px 6px 15px rgb(0 0 0 / 12%);
+}
+
+/* SELECT BUTTON */
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; /* CENTER BUTTON */
+    width: fit-content;
+    padding: 0.8em 1.1em;
+    gap: 0.4rem;
+    border: none;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    color: #fff;
+    text-shadow: 2px 2px 3px rgb(136 0 136 / 50%);
+    background: linear-gradient(15deg, #880088, #aa2068, #cc3f47, #de6f3d, #f09f33) no-repeat;
+    background-size: 300%;
+    background-position: left center;
+    transition: 0.3s ease;
+}
+
+.button:hover {
+    background-size: 340%;
+    background-position: right center;
+}
+
+.button svg {
+    width: 22px;
+    fill: #f09f33;
+    transition: 0.3s ease;
+}
+
+.button:hover svg {
+    fill: #fff;
+}
+
+
+input::placeholder {
+    font-size: 0.775rem;  
 }

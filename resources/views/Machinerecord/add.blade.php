@@ -23,6 +23,7 @@
                                 @method('PUT')
                                 @endif
 
+
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
@@ -32,15 +33,19 @@
                                             @php
                                             $partNo = ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '');
                                             @endphp
+
                                             <option value="{{ $partNo }}"
                                                 data-code="{{ $wo->customer?->code ?? '' }}"
-                                                data-workorder="{{ $wo->project?->project_no ?? '' }}"
+                                                data-workorder="{{ $wo->id }}"
                                                 data-partdesc="{{ $wo->part_description ?? '' }}"
                                                 data-qty="{{ $wo->quantity ?? '' }}"
                                                 data-e_time="{{ $wo->exp_time ?? '' }}"
+                                                data-customer="{{ $wo->customer_id ?? '' }}"
+
                                                 {{ old('part_no', $record->part_no ?? '') == $partNo ? 'selected' : '' }}>
                                                 {{ $partNo }}
                                             </option>
+
                                             @endforeach
                                         </select>
                                         @error('part_no') <span class="text-red small">{{ $message }}</span> @enderror
@@ -78,11 +83,10 @@
                                         @error('qty') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <!-- Machine -->
                                     <div class="col-md-3">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
                                         <select name="machine" class="form-control form-select">
-                                            <option value=""> Select Machine </option>           
+                                            <option value=""> Select Machine </option>
                                             @foreach($machines->where('status', 1) as $machine)
                                             <option value="{{ $machine->machine_name }}"
                                                 {{ old('machine', $record->machine ?? '') == $machine->machine_name ? 'selected' : '' }}>
@@ -93,7 +97,6 @@
                                         @error('machine') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <!-- Operator -->
                                     <div class="col-md-3">
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
                                         <select name="operator" class="form-control form-select">
@@ -108,8 +111,6 @@
                                         @error('operator') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-
-                                    <!-- Setting -->
                                     <div class="col-md-2">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
                                         <select name="setting_no" class="form-control form-select">
@@ -141,7 +142,6 @@
                                         @error('material') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <!-- Estimated Time -->
                                     <div class="col-md-2">
                                         <label class="form-label">Estimated Time (hrs) <span class="text-red">*</span></label>
                                         <input type="text" step="0.01" name="est_time" id="e_time" class="form-control"
@@ -150,7 +150,6 @@
                                         @error('est_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <!-- Start Time -->
                                     <div class="col-md-3">
                                         <label class="form-label">Start Time <span class="text-red">*</span></label>
                                         <input type="datetime-local" name="start_time" class="form-control"
@@ -167,6 +166,13 @@
                                     </div>
 
                                     <div class="col-md-2">
+                                        <label class="form-label">Adjustment</label>
+                                        <input type="text" name="adjustment" id="adjustment" class="form-control"
+                                            value="{{ old('adjustment', $record->adjustment ?? '') }}">
+                                        @error('adjustment') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <!-- <div class="col-md-2">
                                         <label class="form-label">Minute <span class="text-red">*</span></label>
                                         <input type="number" name="minute" class="form-control"
                                             value="{{ old('minute', $record->minute ?? '') }}">
@@ -174,7 +180,7 @@
                                         @error('minute')
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
-                                    </div>
+                                    </div> -->
 
 
                                     <!-- HRS -->
@@ -186,20 +192,20 @@
                                     </div>
 
                                     <!-- Time Taken -->
-                                    <div class="col-md-2">
+                                    <!-- <div class="col-md-2">
                                         <label class="form-label">Time Taken <span class="text-red">*</span></label>
                                         <input type="number" step="0.01" name="time_taken" class="form-control"
                                             value="{{ old('time_taken', $record->time_taken ?? '') }}">
                                         @error('time_taken') <span class="text-red small">{{ $message }}</span> @enderror
-                                    </div>
+                                    </div> -->
 
                                     <!-- Actual HRS -->
-                                    <div class="col-md-2">
+                                    <!-- <div class="col-md-2">
                                         <label class="form-label">Actual HRS <span class="text-red">*</span></label>
                                         <input type="number" step="0.01" name="actual_hrs" class="form-control"
                                             value="{{ old('actual_hrs', $record->actual_hrs ?? '') }}">
                                         @error('actual_hrs') <span class="text-red small">{{ $message }}</span> @enderror
-                                    </div>
+                                    </div> -->
 
                                     <!-- Invoice No -->
                                     <div class="col-md-3">
@@ -208,6 +214,7 @@
                                             value="{{ old('invoice_no', $record->invoice_no ?? '') }}">
                                         @error('invoice_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
+
 
                                     <!-- Buttons -->
                                     <div class="col-lg-12 text-end">
@@ -235,6 +242,8 @@
 </div> <!-- main-content -->
 <script>
     document.getElementById('part_no').addEventListener('change', function() {
+
+
         let selected = this.options[this.selectedIndex];
 
         document.getElementById('code').value = selected.getAttribute('data-code') || '';
@@ -254,16 +263,16 @@
             let endTime = new Date(end);
 
             if (endTime >= startTime) {
-                let diffMinutes = (endTime - startTime) / (1000 * 60);  
-                let actualHrs = diffMinutes / 60;  
-                let hrs = diffMinutes * 0.02;  
-                let timeTaken = hrs;  
-              
+                let diffMinutes = (endTime - startTime) / (1000 * 60);
+                let actualHrs = diffMinutes / 60;
+                let hrs = diffMinutes * 0.02;
+                let timeTaken = hrs;
+
                 document.querySelector('[name="hrs"]').value = hrs.toFixed(2);
                 document.querySelector('[name="time_taken"]').value = timeTaken.toFixed(2);
                 document.querySelector('[name="actual_hrs"]').value = actualHrs.toFixed(2);
 
-                 
+
                 if (document.querySelector('[name="minute"]')) {
                     document.querySelector('[name="minute"]').value = diffMinutes.toFixed(0);
                 }
@@ -302,7 +311,6 @@
         }
     });
 
-
     document.getElementById('part_no').addEventListener('change', function() {
         let selected = this.options[this.selectedIndex];
 
@@ -311,9 +319,36 @@
         document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
         document.getElementById('qty').value = selected.getAttribute('data-qty') || '';
         document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
+
     });
 </script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('select[name="part_no"]').change(function() {
+
+            let selected = $(this).find('option:selected');
+            let customerId = selected.data('customer');
+            if (customerId) {
+                $.ajax({
+                    url: '/get-invoice-by-customer/' + customerId,
+                    type: 'GET',
+                    success: function(data) {
+                        if (data.invoice_no) {
+                            $('input[name="invoice_no"]').val(data.invoice_no);
+                        } else {
+                            $('input[name="invoice_no"]').val('');
+                        }
+                    }
+                });
+            } else {
+                $('input[name="invoice_no"]').val('');
+            }
+        });
+    });
+</script>
 
 
 @endsection

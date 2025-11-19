@@ -37,20 +37,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Status Switch -->
-                            <!-- <div class="col-md-2 col-sm-6 mb-3">
-                                <div class="form-check form-switch mt-4 d-flex align-items-center">
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="status"
-                                        name="status"
-                                        value="1"
-                                        {{ (isset($year) && $year->status == 1) ? 'checked' : '' }}>
-                                    <label class="form-check-label ms-2" for="status">Active</label>
-                                </div>
-                            </div> -->
-
                             <!-- Submit Button -->
                             <div class="col-md-2 col-sm-6 mb-3">
                                 <button type="submit" class="btn btn-primary w-100 px-3 py-2">
@@ -65,10 +51,10 @@
 
             <!-- List Start -->
             <div class="card shadow-sm">
-               <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Financial Year List</h5>
- 
-                     <a href="{{ route('trashFinancial') }}" class="btn btn-warning btn-sm">
+
+                    <a href="{{ route('trashFinancial') }}" class="btn btn-warning btn-sm">
                         View Trash
                     </a>
                 </div>

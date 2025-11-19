@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('mobile');
             $table->string('email')->unique();
             $table->string('username');
-            $table->enum('user_type',['1','2','3','4','5'])->default(1)->comment('1:Super, 2:Admin, 3:Progrmer, 4:Superviser, 4:finance)');
+            $table->enum('user_type', ['1', '2', '3', '4', '5'])->default(1)->comment('1:Super, 2:Admin, 3:Progrmer, 4:Superviser, 5:finance)');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('org_pass');

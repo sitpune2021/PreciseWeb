@@ -76,8 +76,6 @@
                                             </div>
                                         </div>
 
-
-
                                         <div class="col-md-2">
                                             <div class="mb-2">
                                                 <label for="part" class="form-label">Part <span class="mandatory">*</span></label>
@@ -263,10 +261,7 @@
                                                 document.querySelectorAll(".text-red").forEach(el => {
                                                     if (!el.classList.contains("error")) el.textContent = "";
                                                 });
-                                            }
-                                            // document.addEventListener("DOMContentLoaded", function() {
-                                            //     document.getElementById("customer_id").selectedIndex = 0; // always selects "Select Customer"
-                                            // });
+                                            }                                    
 
                                             document.addEventListener("DOMContentLoaded", function() {
                                                 let customerDropdown = document.getElementById("customer_id");
@@ -274,7 +269,6 @@
                                                     customerDropdown.selectedIndex = 0;
                                                 }
                                             });
-
 
                                             function validateFields() {
                                                 clearErrors();
@@ -317,11 +311,7 @@
                                                     $(".material").text("The Material field is required");
                                                     hasError = true;
                                                 }
-                                                // if (!description) {
-                                                //     $(".part_description_error").text("The Part description field is required");
-                                                //     hasError = true;
-                                                // }
-
+                                         
                                                 return !hasError;
                                             }
 
@@ -395,7 +385,6 @@
                                                 newRow.querySelector(".editRow").addEventListener("click", function() {
                                                     let row = this.closest('tr');
 
-                                                    // Get all values from row
                                                     let customerVal = row.querySelector('input[name*="[customer_id]"]').value;
                                                     let projectId = row.querySelector('input[name*="[project_id]"]').value;
                                                     let part = row.querySelector('input[name*="[part]"]').value;
@@ -412,7 +401,6 @@
                                                     // Set customer first
                                                     $('#customer_id').val(customerVal).trigger('change');
 
-                                                    // Wait until AJAX finishes loading projects
                                                     let interval = setInterval(function() {
                                                         if ($('#project_id option').length > 1) {
                                                             $('#project_id').val(projectId).trigger('change');
@@ -420,7 +408,6 @@
                                                         }
                                                     }, 100);
 
-                                                    // Set other fields
                                                     $('#part').val(part);
                                                     $('#material').val(material).trigger('change');
                                                     $('#date').val(date);
@@ -436,7 +423,6 @@
                                                     row.remove();
                                                     updateSrNo();
                                                 });
-
 
                                                 document.querySelectorAll("input, textarea").forEach(el => {
                                                     if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
@@ -467,7 +453,6 @@
                                                 }
                                             });
 
-                                            // call on load
                                             attachValidationEvents();
                                         </script>
 
@@ -514,10 +499,9 @@
                                                 length.addEventListener("input", toggleFields);
                                                 width.addEventListener("input", toggleFields);
 
-                                                toggleFields(); // initial check
+                                                toggleFields(); 
                                             });
                                         </script>
-
 
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                         <script>
@@ -554,7 +538,6 @@
                                                     }
                                                 }
 
-                                                // Load parts based on project
                                                 function loadParts(projectId) {
                                                     if (projectId) {
                                                         $.ajax({

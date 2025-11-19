@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Customer extends Model
 {
     use HasFactory;
- use SoftDeletes;
+    use SoftDeletes;
 
     // Define which fields are mass assignable
     protected $fillable = [
@@ -26,21 +26,21 @@ class Customer extends Model
         'status',
     ];
     public function projects()
-{
-    return $this->hasMany(Project::class,'customer_id');
-}
-
-public function materialOrders()
-{
-    return $this->hasMany(MaterialOrder::class);
-}
-    public function materialreq()
-{
-    return $this->hasOne(MaterialReq::class);
-}
-
-public function invoices() {
-        return $this->hasMany(Invoice::class);
+    {
+        return $this->hasMany(Project::class, 'customer_id');
     }
 
+    public function materialOrders()
+    {
+        return $this->hasMany(MaterialOrder::class);
+    }
+    public function materialreq()
+    {
+        return $this->hasOne(MaterialReq::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

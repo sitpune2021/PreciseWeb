@@ -63,7 +63,6 @@ class VendorContoller extends Controller
             'address' => 'required|string|max:500',
         ]);
 
-        // Generate vendor code
         $vendor_name_words = explode(' ', trim($request->input('vendor_name')));
         $vendor_code = '';
 
@@ -109,7 +108,7 @@ class VendorContoller extends Controller
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $vendor = Vendor::where('admin_id', Auth::id())->findOrFail($id); // ✅ filter by admin
+        $vendor = Vendor::where('admin_id', Auth::id())->findOrFail($id); 
         $method = "PUT";
         return view('Vendor.add', compact('vendor', 'method'));
     }
@@ -167,7 +166,7 @@ class VendorContoller extends Controller
             'address' => 'required|string|max:500',
         ]);
 
-        $validated['admin_id'] = Auth::id(); // ✅ ensure admin_id stays
+        $validated['admin_id'] = Auth::id(); 
 
         $vendor->update($validated);
 

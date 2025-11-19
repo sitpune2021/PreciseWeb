@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ClientContoller extends Controller
 {
@@ -47,18 +48,29 @@ class ClientContoller extends Controller
             'user_type' => 2,
         ]);
 
+
+        $today = now();
+        $expiry = now()->addDays(7);
+
+
         Client::create([
-            'name'      => $request->input('name'),
-            'email_id'  => $request->input('email_id'),
-            'phone_no'  => $request->input('phone_no'),
-            'gst_no'    => $request->input('gst_no'),
-            'logo'      => $logoPath,
-            'address'   => $request->input('address'),
-            'login_id'  => $users->id,
+            'name'         => $request->input('name'),
+            'email_id'     => $request->input('email_id'),
+            'phone_no'     => $request->input('phone_no'),
+            'gst_no'       => $request->input('gst_no'),
+            'logo'         => $logoPath ?? null,
+            'address'      => $request->input('address'),
+            'login_id'     => $users->id,
+             'plan_type' => 1,
+            'plan_expiry'  => $expiry,
+            'trial_start'  => $today,
+            'trial_end'    => $expiry,
+            'status'       => 1,
         ]);
 
-        return redirect()->route('ViewClient')->with('success', 'Client created successfully.');
+       return redirect()->route('ViewClient')->with('success','Client created with 7-day trial.');
     }
+
 
     public function ViewClient()
     {
@@ -137,4 +149,49 @@ class ClientContoller extends Controller
         $client->save();
         return back()->with('success', 'Status updated!');
     }
+
+    public function updateClientPlan(Request $request)
+{
+    $client = Client::findOrFail($request->id);
+    $plan = $request->plan_type;
+
+    $expiry = match ($plan) {
+        '1month' => now()->addMonth(),
+        '3month' => now()->addMonths(3),
+        '1year' => now()->addYear(),
+        default => now()->addDays(7),
+    };
+
+    $client->plan_type = $plan;
+    $client->plan_expiry = $expiry;
+    $client->trial_start = null;
+    $client->trial_end = null;
+    $client->save();
+
+    return back()->with('success', 'Plan updated successfully!');
+}
+
+public function renewPlan(Request $request)
+{
+    $request->validate([
+        'client_id' => 'required|exists:clients,id',
+        'plan_type' => 'required|string',
+        'trial_start' => 'required|date',
+        'trial_end' => 'required|date|after_or_equal:trial_start',
+    ]);
+
+    $client = Client::find($request->client_id);
+
+    // Update plan details
+    $client->update([
+        'plan_type' => $request->plan_type,
+        'trial_start' => $request->trial_start,
+        'trial_end' => $request->trial_end,
+        'plan_expiry' => $request->trial_end,
+    ]);
+
+    return redirect()->back()->with('success', 'Client plan renewed successfully!');
+}
+
+
 }

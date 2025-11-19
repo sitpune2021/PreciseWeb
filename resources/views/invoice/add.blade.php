@@ -8,25 +8,37 @@
 
             <form action="{{ route('invoice.store') }}" method="POST" id="invoiceForm">
                 @csrf
+                <div class="row align-items-end">
+                    <!-- Customer Select -->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Select Customer <span class="text-danger">*</span></label>
+                            <select name="customer_id"
+                                class="form-select js-example-basic-single @error('customer_id') is-invalid @enderror"
+                                id="customerSelect">
+                                <option value="">Select Customer</option>
+                                @foreach($customers as $cust)
+                                <option value="{{ $cust->id }}" {{ old('customer_id') == $cust->id ? 'selected' : '' }}>
+                                    {{ $cust->name }} ({{ $cust->code ?? '' }})
+                                </option>
+                                @endforeach
+                            </select>
 
-                <!-- Customer -->
-                <div class="col-5">
-                    <div class="mb-4">
-                        <label class="form-label">Select Customer <span class="text-danger">*</span></label>
-                        <select name="customer_id"
-                            class="form-select w-50 js-example-basic-single @error('customer_id') is-invalid @enderror"
-                            id="customerSelect">
-                            <option value="">Select Customer</option>
-                            @foreach($customers as $cust)
-                            <option value="{{ $cust->id }}" {{ old('customer_id') == $cust->id ? 'selected' : '' }}>
-                                {{ $cust->name }} ({{ $cust->code ?? '' }})
-                            </option>
-                            @endforeach
-                        </select>
+                            @error('customer_id')
+                            <div class="text-danger mt-1 small">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
-                        @error('customer_id')
-                        <div class="text-danger mt-1 small">{{ $message }}</div>
-                        @enderror
+                    <!-- Date Input -->
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control"
+                                name="invoice_date"
+                                value="{{ old('invoice_date', $data->invoice_date ?? '') }}">
+                            @error('invoice_date') <span class="text-red">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                 </div>
 
@@ -58,13 +70,15 @@
 
                 <!-- GST Summary -->
                 <div class="card p-3 shadow-sm mb-4">
+
                     <div class="row g-3">
+
                         <div class="col-md-3">
                             <label class="form-label fw-bold">HSN Code</label>
                             <select name="hsn_code" id="hsnSelect" class="form-select">
                                 <option value="">Select HSN</option>
                                 @foreach($hsncodes as $h)
-                                <option value="{{ $h->hsn_code }}" data-sgst="{{ $h->sgst }}" data-cgst="{{ $h->cgst }}">
+                                <option value="{{ $h->hsn_code }}" data-sgst="{{ $h->sgst }}" data-cgst="{{ $h->cgst }}" data-igst="{{ $h->igst }}">
                                     {{ $h->hsn_code }}
                                 </option>
                                 @endforeach
@@ -109,21 +123,20 @@
                 <input type="hidden" id="sgst_amt" name="sgst_amt">
                 <input type="hidden" id="cgst_amt" name="cgst_amt">
 
-                <!-- Declaration, Note & Amount in Words -->
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Declaration</label>
-                        <textarea name="declaration" class="form-control" rows="2">All particulars are true.</textarea>
+                        <textarea name="declaration" class="form-control" rows="2">{{ old('declaration', $adminSetting->declaration ?? 'All particulars are true.') }}</textarea>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Note</label>
-                        <textarea name="note" class="form-control" rows="2"></textarea>
+                        <textarea name="note" class="form-control" rows="2">{{ old('note', $adminSetting->note ?? '') }}</textarea>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Bank Details</label>
-                        <textarea name="bank_details" class="form-control" rows="2"></textarea>
+                        <textarea name="bank_details" class="form-control" rows="2">{{ old('bank_details', $adminSetting->bank_details ?? '') }}</textarea>
                     </div>
 
                     <div class="col-md-4 mt-3">
@@ -132,21 +145,18 @@
                     </div>
                 </div>
 
+
                 <div class="text-end">
                     <button type="submit" class="btn btn-primary px-4 me-2">Save Invoice</button>
-                    <a href="{{ route('invoice.index') }}" class="btn btn-secondary px-4">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Hidden Template -->
 <select id="machineSelectTemplate" class="d-none"></select>
 
-{{-- ========================== --}}
 {{-- JS SCRIPTS SECTION BELOW --}}
-{{-- ========================== --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -163,6 +173,7 @@
                     options += `
                     <option value="${item.part_description}"
                         data-project-id="${item.project_id}"
+                        data-workorder-id="${item.workorder_id}"
                         data-hsn="${item.hsn_code}"
                         data-qty="${item.quantity}"
                         data-exp="${item.exp_time}"
@@ -181,19 +192,23 @@
         $('#addItemBtn').on('click', function() {
             const options = $('#machineSelectTemplate').html();
             const row = `
-            <tr>
-                <td><select name="desc[]" class="form-select machineSelect" required>${options}</select></td>
-                <td><input type="number" name="qty[]" class="form-control qty" min="1"></td>
-                <td><input type="number" name="rate[]" class="form-control rate" step="0.01" readonly></td>
-                <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
-                <td><input type="number" name="material_rate[]" class="form-control material_rate" step="0.01" readonly></td>
-                <td><input type="text" name="hrs[]" class="form-control hrs" readonly></td>
-                <td><input type="number" name="adj[]" class="form-control adj" value="0"></td>
-                <td><input type="text" name="vmc_hr[]" class="form-control vmc_hr" readonly></td>
-                <td><button type="button" class="btn btn-danger btn-sm removeItem">X</button></td>
-            </tr>`;
+    <tr>
+        <td>
+            <select name="desc[]" class="form-select machineSelect" required>${options}</select>
+            <input type="hidden" name="work_order_id[]" class="work_order_id"> <!-- 👈 हे जोडलं -->
+        </td>
+        <td><input type="number" name="qty[]" class="form-control qty" step="1" min="1" readonly></td>
+        <td><input type="number" name="rate[]" class="form-control rate" step="0.01" readonly></td>
+        <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
+        <td><input type="number" name="material_rate[]" class="form-control material_rate" step="0.01" readonly></td>
+        <td><input type="text" name="hrs[]" class="form-control hrs" readonly></td>
+        <td><input type="number" name="adj[]" class="form-control adj" value="0"></td>
+        <td><input type="text" name="vmc_hr[]" class="form-control vmc_hr" readonly></td>
+        <td><button type="button" class="btn btn-danger btn-sm removeItem">X</button></td>
+    </tr>`;
             $('#itemsTable tbody').append(row);
         });
+
 
         $(document).on('click', '.removeItem', function() {
             $(this).closest('tr').remove();
@@ -211,6 +226,7 @@
                 .addClass('btn-secondary');
             globalSGST = 0;
             globalCGST = 0;
+            globalIGST = 0;
             $('#sgst_percent, #cgst_percent, #total_tax_percent').val('');
             if (customerId) fetchMachineRecords(customerId);
         });
@@ -218,26 +234,37 @@
         $(document).on('change', '.machineSelect', function() {
             const selected = $(this).find('option:selected');
             const row = $(this).closest('tr');
+
             row.find('.qty').val(selected.data('qty') || 1);
             row.find('.hrs').val(selected.data('exp') || 0);
             row.find('.material_rate').val(selected.data('material_rate') || 0);
             row.find('.vmc_hr').val(selected.data('vmc') || 0);
 
+            // 🔹 project_id hidden input
             if (!row.find('input[name="project_id[]"]').length) {
                 row.append(`<input type="hidden" name="project_id[]" value="${selected.data('project-id') || ''}">`);
             } else {
                 row.find('input[name="project_id[]"]').val(selected.data('project-id') || '');
             }
+
+            // 🔹 work_order_id hidden input 
+            if (!row.find('input[name="work_order_id[]"]').length) {
+                row.append(`<input type="hidden" name="work_order_id[]" value="${selected.data('workorder-id') || ''}">`);
+            } else {
+                row.find('input[name="work_order_id[]"]').val(selected.data('workorder-id') || '');
+            }
+
             calculateTotals();
         });
-
+        
         $('#hsnSelect').on('change', function() {
             const selected = $(this).find('option:selected');
             globalSGST = parseFloat(selected.data('sgst')) || 0;
             globalCGST = parseFloat(selected.data('cgst')) || 0;
+            globalIGST = parseFloat(selected.data('igst')) || 0;
             $('#sgst_percent').val(globalSGST);
             $('#cgst_percent').val(globalCGST);
-            $('#total_tax_percent').val(globalSGST + globalCGST);
+            $('#total_tax_percent').val(globalIGST);
             calculateTotals();
         });
 

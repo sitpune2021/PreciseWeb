@@ -21,7 +21,6 @@
                             </div>
                         </div>
 
-
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered table-striped" style="width:100%">

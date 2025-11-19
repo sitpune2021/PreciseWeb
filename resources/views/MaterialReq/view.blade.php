@@ -10,7 +10,6 @@
                     <div class="card">
 
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <!-- Heading -->
                             <h5 class="mb-0">View Material Requirements</h5>
 
                             <!-- Buttons on right -->
@@ -23,7 +22,6 @@
                                 </a>
                             </div>
                         </div>
-
 
                         <div class="card-body">
                             <div class="table-responsive">
@@ -227,7 +225,6 @@
                 </div>
             </div>
 
-            <!-- 🔹 Script for Modal -->
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
                     document.querySelectorAll(".viewMaterialReqBtn").forEach(btn => {

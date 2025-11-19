@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminSetting;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Customer;
@@ -21,7 +22,7 @@ class InvoiceController extends Controller
 
         $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
-            ->orderBy('id', 'desc') 
+            ->orderBy('id', 'desc')
             ->get();
 
         $workOrders = WorkOrder::where('admin_id', $adminId)
@@ -35,7 +36,7 @@ class InvoiceController extends Controller
             ->where('admin_id', $adminId);
 
         if (!empty($customerId)) {
-            $invoices->where('customer_id', $customerId); 
+            $invoices->where('customer_id', $customerId);
         }
 
         $invoices = $invoices->latest()->get();
@@ -43,13 +44,14 @@ class InvoiceController extends Controller
         return view('invoice.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
 
-
     public function create()
     {
         $adminId = Auth::id();
+        $adminSetting = AdminSetting::first();
 
         $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
+            ->orderBy('id', 'desc')
             ->get();
 
         $hsncodes = Hsncode::where('is_active', 1)
@@ -61,82 +63,8 @@ class InvoiceController extends Controller
             ->with('customer')
             ->get(['id', 'customer_id', 'part_description', 'exp_time', 'quantity', 'material', 'date']);
 
-        return view('invoice.add', compact('customers', 'hsncodes', 'workOrders'));
+        return view('invoice.add', compact('customers', 'hsncodes', 'workOrders', 'adminSetting'));
     }
-
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'customer_id' => 'required',
-    //         'desc.*'      => 'required|string',
-    //         'hsn_code.*'  => 'required|string',
-    //         'qty.*'       => 'required|numeric|min:1',
-    //         'rate.*'      => 'required|numeric|min:0',
-    //         'amount.*'    => 'required|numeric|min:0',
-    //         'hrs.*'       => 'nullable|string',
-    //         'vmc_hr.*'    => 'nullable|numeric|min:0',
-    //         'adj.*'       => 'nullable|numeric|min:0',
-    //         'sub_total'   => 'required|numeric|min:0',
-    //         'total_tax'   => 'required|numeric|min:0',
-    //         'adjustment'  => 'nullable|numeric',
-    //         'round_off'   => 'nullable|numeric',
-    //         'grand_total' => 'required|numeric|min:0',
-    //     ]);
-
-    //     $adminId = auth()->id();
-
-    //     $invoice = Invoice::create([
-    //         'customer_id'     => $request->customer_id,
-    //         'sub_total'       => $request->sub_total,
-    //         'total_tax'       => $request->total_tax,
-    //         'adjustment'      => $request->adj_total ?? 0,
-    //         'round_off'       => $request->round_off ?? 0,
-    //         'grand_total'     => $request->grand_total,
-    //         'total_hrs'       => array_sum($request->hrs ?? []),
-    //         'total_vmc'       => array_sum($request->vmc ?? []),
-    //         'declaration'     => $request->declaration,
-    //         'note'            => $request->note,
-    //         'bank_details'     => $request->bank_details,
-    //         'amount_in_words' => $request->amount_in_words,
-    //         'admin_id'        => $adminId,
-    //         'invoice_no'      => 'INV-' . time(),
-    //         'invoice_date'    => now(),
-    //     ]);
-
-    //     foreach ($request->desc as $i => $desc) {
-    //         $invoice->items()->create([
-    //             'part_name' => $desc ?? '',
-    //             'project_id'  => $request->project_id[$i] ?? null,
-    //             'hsn_code'  => $request->hsn_code ?? null,
-    //             'qty'       => $request->qty[$i] ?? 0,
-    //             'rate'      => $request->rate[$i] ?? 0,
-    //             'amount'    => $request->amount[$i] ?? 0,
-    //             'hrs'       => isset($request->hrs[$i])
-    //                 ? floatval(preg_replace(
-    //                     '/[^0-9.\-]/',
-    //                     '',
-    //                     $request->hrs[$i]
-    //                 )) : 0,
-    //             'vmc'       => $request->vmc_hr[$i] ?? 0,
-    //             'adj'       => $request->adj[$i] ?? 0,
-    //             'sgst'      => $request->sgst_amt ?? 0,
-    //             'cgst'      => $request->cgst_amt ?? 0,
-    //             'igst'      => $request->igst ?? 0,
-    //             'invoice_id' => $invoice->id,
-    //         ]);
-    //         if (!empty($request->work_order_id[$i])) {
-    //             // dd($request->work_order_id);
-    //             $workOrder = WorkOrder::find($request->work_order_id[$i]);
-    //             if ($workOrder) {
-
-    //                 $workOrder->update(['status' => 2]);
-    //             }
-    //         }
-    //     }
-
-    //     return redirect()->route('invoice.index')->with('success', 'Invoice created successfully!');
-    // }
-
 
     public function store(Request $request)
     {
@@ -156,15 +84,12 @@ class InvoiceController extends Controller
         ]);
 
         $adminId = auth()->id();
-
-
         $customer = Customer::find($request->customer_id);
         $words = explode(' ', $customer->customer_name);
         $prefix = '';
         foreach ($words as $w) {
             $prefix .= strtoupper(substr($w, 0, 1));
         }
-
 
         $year = date('y');
         $financialYear = $year . ($year + 1);
@@ -197,14 +122,15 @@ class InvoiceController extends Controller
             'bank_details'    => $request->bank_details,
             'amount_in_words' => $request->amount_in_words,
             'admin_id'        => $adminId,
-            'invoice_no'      => $invoiceNo, 
-            'invoice_date'    => now(),
+            'invoice_no'      => $invoiceNo,
+            'invoice_date'    => $request->invoice_date,
         ]);
 
         foreach ($request->desc as $i => $desc) {
             $invoice->items()->create([
                 'part_name' => $desc ?? '',
                 'project_id'  => $request->project_id[$i] ?? null,
+                'work_order_id' => $request->work_order_id[$i] ?? null,
                 'hsn_code'  => $request->hsn_code ?? null,
                 'qty'       => $request->qty[$i] ?? 0,
                 'rate'      => $request->rate[$i] ?? 0,
@@ -229,9 +155,6 @@ class InvoiceController extends Controller
         return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
 
-
-
-
     public function download($id)
     {
         $invoice = Invoice::with(['customer', 'items'])->findOrFail($id);
@@ -243,6 +166,7 @@ class InvoiceController extends Controller
     public function printInvoice($id)
     {
         $invoice = Invoice::with('items')->findOrFail($id);
+        $adminSetting = AdminSetting::first();
         $adminId = Auth::id();
         $c = Client::where('login_id', $adminId)->first([
             'name',
@@ -253,7 +177,7 @@ class InvoiceController extends Controller
             'address'
         ]);
 
-        return view('invoice.print', compact('invoice', 'c'));
+        return view('invoice.print', compact('invoice', 'c', 'adminSetting'));
     }
 
     public function getHsnDetails($id)
@@ -274,23 +198,22 @@ class InvoiceController extends Controller
         return response()->json(['error' => 'Not Found'], 404);
     }
 
-
     public function getMachineRecords($customer_id)
     {
         $adminId = Auth::id();
-
 
         $usedWorkOrders = \DB::table('invoice_items')
             ->join('invoices', 'invoice_items.invoice_id', '=', 'invoices.id')
             ->where('invoices.customer_id', $customer_id)
             ->where('invoices.admin_id', $adminId)
-            ->pluck('invoice_items.part_name')
+            ->pluck('invoice_items.work_order_id')
             ->toArray();
+
 
         $records = WorkOrder::where('admin_id', $adminId)
             ->where('customer_id', $customer_id)
             ->where('status', 1)
-            ->whereNotIn('part_description', $usedWorkOrders)
+            ->whereNotIn('id', $usedWorkOrders)
             ->orderBy('id', 'asc')
             ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
 
@@ -298,15 +221,23 @@ class InvoiceController extends Controller
             return response()->json([]);
         }
 
+
         $machineRecords = MachineRecord::where('admin_id', $adminId)
-            ->get(['id', 'work_order', 'hrs']);
+            ->get(['id', 'work_order_id', 'hrs']);
+
 
         $materials = MaterialType::where('admin_id', $adminId)
             ->get(['material_type', 'material_rate']);
 
+
         $data = $records->map(function ($r) use ($materials, $machineRecords) {
 
             $machine = $machineRecords->first(function ($m) use ($r) {
+
+                if (!empty($m->work_order_id) && $m->work_order_id == $r->id) {
+                    return true;
+                }
+
                 return trim(strtolower($m->work_order)) === trim(strtolower($r->project_id));
             });
 
@@ -321,6 +252,8 @@ class InvoiceController extends Controller
                 'vmc_hr'           => $machine->hrs ?? 0,
                 'material_type'    => $r->material,
                 'material_rate'    => $mat->material_rate ?? 0,
+                'workorder_id'     => $r->id,
+                'machine_id'       => $machine->id ?? null,
             ];
         });
 

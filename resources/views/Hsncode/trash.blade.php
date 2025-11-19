@@ -5,17 +5,16 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            {{-- Success/Error Message --}}
             @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
             @endif
 
             <div class="card shadow-sm">
@@ -40,32 +39,32 @@
                             </thead>
                             <tbody>
                                 @forelse($trashedhsn as $o)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $o->hsn_code }}</td>
-                                        <td>{{ $o->sgst }}%</td>
-                                        <td>{{ $o->cgst }}%</td>
-                                        <td>{{ $o->igst }}%</td>
-                                        <td>{{ $o->invoice_desc }}</td>
-                                        <td class="text-center">
-                                            @if($o->deleted_at)
-                                                {{ $o->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
-                                            @else
-                                                —
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="{{ route('restorehsn', base64_encode($o->id)) }}"
-                                               class="btn btn-success btn-sm"
-                                               onclick="return confirmRestore('{{ $o->hsn_code }}', '{{ route('restorehsn', base64_encode($o->id)) }}')">
-                                                Restore
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $o->hsn_code }}</td>
+                                    <td>{{ $o->sgst }}%</td>
+                                    <td>{{ $o->cgst }}%</td>
+                                    <td>{{ $o->igst }}%</td>
+                                    <td>{{ $o->invoice_desc }}</td>
+                                    <td class="text-center">
+                                        @if($o->deleted_at)
+                                        {{ $o->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
+                                        @else
+                                        —
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ route('restorehsn', base64_encode($o->id)) }}"
+                                            class="btn btn-success btn-sm"
+                                            onclick="return confirmRestore('{{ $o->hsn_code }}', '{{ route('restorehsn', base64_encode($o->id)) }}')">
+                                            Restore
+                                        </a>
+                                    </td>
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center text-muted">No trashed HSN found.</td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">No trashed HSN found.</td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -77,7 +76,6 @@
     </div>
 </div>
 
-{{-- Custom JS --}}
 <script>
     let HsnList = @json($hsncodes ?? []);
 

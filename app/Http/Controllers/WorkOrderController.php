@@ -15,9 +15,9 @@ class WorkOrderController extends Controller
 {
     public function addWorkOrder()
     {
-        $adminId = auth()->id(); // ✅ IDE-friendly
+        $adminId = auth()->id();
 
-         $codes = Customer::where('status', 1)
+        $codes = Customer::where('status', 1)
             ->where('admin_id', $adminId)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
@@ -89,7 +89,7 @@ class WorkOrderController extends Controller
                 'part_description' => $row['part_description'],
                 'material'         => $row['material'],
                 'admin_id'         => $adminId,
-                'status'           => 1, // 🔥 auto Pending status
+                'status'           => 1, 
             ]);
         }
 
@@ -114,10 +114,10 @@ class WorkOrderController extends Controller
             ->select('id', 'project_name')
             ->get();
 
-         $materialtype = MaterialType::where('status', 1)
-                ->where('admin_id', $adminId)
-                ->orderBy('id', 'desc')
-                ->get();
+        $materialtype = MaterialType::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->orderBy('id', 'desc')
+            ->get();
 
         return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype'));
     }
@@ -162,7 +162,7 @@ class WorkOrderController extends Controller
     {
         $adminId = auth()->id();
 
-      $projects = Project::where('customer_id', $customerId)
+        $projects = Project::where('customer_id', $customerId)
             ->where('admin_id', $adminId)
             ->select('id', 'project_name', 'quantity')
             ->orderBy('id', 'desc')

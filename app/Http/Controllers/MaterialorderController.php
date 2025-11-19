@@ -6,27 +6,27 @@ use Illuminate\Http\Request;
 use App\Models\MaterialOrder;
 use App\Models\Customer;
 use App\Models\MaterialReq;
-use Illuminate\Support\Facades\Auth; // ✅ Import Auth
+use Illuminate\Support\Facades\Auth;
 
 class MaterialorderController extends Controller
 {
-   public function AddMaterialorder()
-{
-    $adminId = Auth::id();  
+    public function AddMaterialorder()
+    {
+        $adminId = Auth::id();
 
-    $codes = Customer::where('status', 1)
-        ->where('admin_id', $adminId)
-        ->with('materialreq')
-        ->orderBy('id', 'desc')
-        ->get();
+        $codes = Customer::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->with('materialreq')
+            ->orderBy('id', 'desc')
+            ->get();
 
-    $customers = Customer::where('status', 1)
-        ->where('admin_id', $adminId)
-        ->orderBy('name')
-        ->get();
+        $customers = Customer::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->orderBy('name')
+            ->get();
 
-    return view('Materialorder.add', compact('codes', 'customers'));
-}
+        return view('Materialorder.add', compact('codes', 'customers'));
+    }
 
     public function ViewMaterialorder()
     {
@@ -38,9 +38,8 @@ class MaterialorderController extends Controller
         return view('Materialorder.view', compact('orders'));
     }
 
- public function storeMaterialorder(Request $request)
+    public function storeMaterialorder(Request $request)
     {
-        // ✅ Server-side validation
         $validatedData = $request->validate([
             'customer_id'     => 'required|exists:customers,id',
             'work_order_no'   => 'required|string|max:255',
@@ -57,11 +56,8 @@ class MaterialorderController extends Controller
             'material'        => 'required|string|max:255',
             'quantity'        => 'required|integer|min:1',
         ]);
-
-        // Add admin_id for tracking
         $validatedData['admin_id'] = Auth::id();
 
-        // Save to database
         MaterialOrder::create($validatedData);
 
         return redirect()->route('ViewMaterialorder')
@@ -81,8 +77,6 @@ class MaterialorderController extends Controller
 
         return view('Materialorder.add', compact('record', 'codes', 'customers'));
     }
-
-
 
     public function update(Request $request, $id)
     {
@@ -164,7 +158,6 @@ class MaterialorderController extends Controller
             ->with('success', "Material Order '{$order->work_order_desc}' restored successfully.");
     }
 
-
     public function getCustomerData($id)
     {
         $materialReq = MaterialReq::where('customer_id', $id)
@@ -190,5 +183,48 @@ class MaterialorderController extends Controller
         }
 
         return response()->json([]);
+    }
+
+    public function getMaterialRequests($customer_id)
+    {
+        try {
+            $adminId = Auth::id();
+
+            $requests = MaterialReq::where('customer_id', $customer_id)
+                ->where('admin_id', $adminId)
+                ->select('id', 'description', 'work_order_no')
+                ->orderBy('id', 'desc')
+                ->get();
+
+            if ($requests->isEmpty()) {
+                return response()->json(['status' => 'empty']);
+            }
+
+            return response()->json(['status' => 'success', 'data' => $requests]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function getMaterialRequestDetails($id)
+    {
+        try {
+            $adminId = Auth::id();
+
+            $material = MaterialReq::where('id', $id)
+                ->where('admin_id', $adminId)
+                ->first();
+
+            if (!$material) {
+                return response()->json(['status' => 'not_found']);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $material
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 }

@@ -154,7 +154,7 @@
                                         <!-- E Time -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <label for="e_time" class="form-label">E Time <span class="mandatory">*</span></label>
+                                                <label for="e_time" class="form-label">Expected Time<span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="e_time" name="e_time" value="{{ old('e_time', $setupSheet->e_time ?? '') }}">
                                                 @error('e_time')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -166,7 +166,7 @@
                                         <!-- X Refer -->
                                         <div class="col-md-2" style="position: relative;">
                                             <div class="mb-3">
-                                                <label for="x_refer" class="form-label">X Refer <span class="mandatory">*</span></label>
+                                                <label for="x_refer" class="form-label">X Axis Reference <span class="mandatory">*</span></label>
                                                 <input type="text" id="x_refer" name="x_refer" class=" form-select"
                                                     placeholder="Select or type" autocomplete="off"
                                                     value="{{ old('x_refer', $setupSheet->x_refer ?? '') }}">
@@ -185,7 +185,7 @@
                                         <!-- Y Refer -->
                                         <div class="col-md-2" style="position: relative;">
                                             <div class="mb-3">
-                                                <label for="y_refer" class="form-label">Y Refer <span class="mandatory">*</span></label>
+                                                <label for="y_refer" class="form-label">Y Axis Reference <span class="mandatory">*</span></label>
                                                 <input type="text" id="y_refer" name="y_refer" class="form-control form-select"
                                                     placeholder="Select or type" autocomplete="off"
                                                     value="{{ old('y_refer', $setupSheet->y_refer ?? '') }}">
@@ -204,7 +204,7 @@
                                         <!-- Z Refer -->
                                         <div class="col-md-2" style="position: relative;">
                                             <div class="mb-3">
-                                                <label for="z_refer" class="form-label">Z Refer <span class="mandatory">*</span></label>
+                                                <label for="z_refer" class="form-label">Z Axis Reference<span class="mandatory">*</span></label>
                                                 <input type="text" id="z_refer" name="z_refer" class="form-control form-select"
                                                     placeholder="Select or type" autocomplete="off"
                                                     value="{{ old('z_refer', $setupSheet->z_refer ?? '') }}">
@@ -295,14 +295,7 @@
 
                                         <div id="dowel-holes-wrapper">
                                             @for($i = 0; $i < $count; $i++)
-                                                <div class="row dowel-group mb-2">
-                                                <!-- <div class="col-md-2">
-                                                        <input type="text" class="form-control" name="holes[]" placeholder="No. of Holes"
-                                                            value="{{ old('holes.' . $i, $holesData[$i] ?? '') }}">
-                                                        @error('holes.' . $i)
-                                                        <span class="text-red small">{{ $message }}</span>
-                                                        @enderror
-                                                    </div> -->
+                                                <div class="row dowel-group mb-2">                                
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
                                                         value="{{ old('hole_x.' . $i, $holeXData[$i] ?? '') }}">
@@ -465,7 +458,7 @@
 
         function showList() {
             list.style.display = 'block';
-            // highlight already selected
+
             items.forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.value === input.value) {
@@ -474,7 +467,6 @@
             });
         }
 
-        // Show on focus OR click
         input.addEventListener('focus', showList);
         input.addEventListener('click', showList);
 
@@ -495,7 +487,6 @@
         });
     }
 
-    // Initialize all dropdowns
     setupCustomDropdown('x_refer', 'xOptions');
     setupCustomDropdown('y_refer', 'yOptions');
     setupCustomDropdown('z_refer', 'zOptions');

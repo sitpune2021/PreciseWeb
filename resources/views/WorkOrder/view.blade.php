@@ -19,7 +19,7 @@
                                     <i class="ri-add-line align-middle"></i> Add WorkOrder
                                 </a>
 
-                                 <!-- View Trash Button -->
+                                <!-- View Trash Button -->
                                 <a href="{{ route('trashWorkOrder') }}" class="btn btn-warning btn-sm">
                                     View Trash
                                 </a>
@@ -27,46 +27,46 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                <table id="buttons-datatables" class="display table table-bordered table-sm" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>Sr.<br>No</th>
-                                            <!-- <th>Work <br>Order No.</th> -->
-                                            <!-- <th>Customer <br>Code</th> -->
-                                            <!-- <th>Part<br>No.</th> -->
+                                            <th>Wo<br>Order<br>No.</th>
+                                            <th>Customer <br>Code</th>
+                                            <th>Part<br>No.</th>
                                             <th>Date</th>
                                             <th>Part Code</th>
-
-                                            <!-- <th>Project name</th> -->
-                                            <!-- <th>Entry Code</th> -->
-                                            <!-- <th>Quantity</th> -->
                                             <th>Part Description</th>
+                                            <th>Dia</th>
+                                            <th>Length</th>
+                                            <th>Width</th>
+                                            <th>Height</th>
+                                            <th>Exp Time</th>
+                                            <th>Qty</th>
                                             <th width="12%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($workorders as $wo)
-                                            @php
-                                                $project = \App\Models\Project::where('id', $wo->project_id)->first();
-                                            @endphp
-
-
+                                        @php
+                                        $project = \App\Models\Project::where('id', $wo->project_id)->first();
+                                        @endphp
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                           <!-- <td>{{ $project?->project_no ?? '' }}</td> -->
-
-                                            <!-- <td>{{ $wo->customer?->code ?? '' }}</td> -->
-                                            <!-- <td>{{ $wo->part }}</td> -->
+                                            <td>{{ $project?->project_no ?? '' }}</td>
+                                            <td>{{ $wo->customer?->code ?? '' }}</td>
+                                            <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
                                             <td>
-                                               {{ ($wo->customer?->code ?? '') . '_' . ($project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
-
+                                                {{ ($wo->customer?->code ?? '') . '_' . ($project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
                                             </td>
-                                            <!-- <td>{{ $wo->project->project_name ?? '' }}</td>                                           -->
-
-
-                                            <!-- <td>{{ $wo->quantity }}</td> -->
                                             <td>{{ $wo->part_description }}</td>
+                                            <td>{{ $wo->dimeter }}</td>
+                                            <td>{{ $wo->length }}</td>
+                                            <td>{{ $wo->width }}</td>
+                                            <td>{{ $wo->height }}</td>
+                                            <td>{{ $wo->exp_time }}</td>
+                                            <td>{{ $wo->quantity }}</td>
                                             <td>
                                                 <a href="{{ route('editWorkOrder', base64_encode($wo->id)) }}">
                                                     <button type="button" class="btn btn-success btn-icon">
@@ -221,7 +221,7 @@
                 document.getElementById('wo_mtype').textContent = data.material ?? '';
                 document.getElementById('wo_date').textContent = data.date ?? '';
                 document.getElementById('wo_part_code').textContent =
-                (data.customer?.code ?? '') + '_' + (data.customer_id ?? '') + '_' + (data.part ?? '') + '_' + (data.quantity ?? '');
+                    (data.customer?.code ?? '') + '_' + (data.customer_id ?? '') + '_' + (data.part ?? '') + '_' + (data.quantity ?? '');
                 document.getElementById('wo_diameter').textContent = data.dimeter ?? '';;
                 document.getElementById('wo_length').textContent = data.length ?? '';
                 document.getElementById('wo_width').textContent = data.width ?? '';

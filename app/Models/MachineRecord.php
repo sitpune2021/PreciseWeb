@@ -13,6 +13,7 @@ class MachineRecord extends Model
 
     protected $fillable = [
         'admin_id',
+        'work_order_id',
         'part_no',
         'code',
         'work_order',
@@ -25,12 +26,13 @@ class MachineRecord extends Model
         'est_time',
         'start_time',
         'end_time',
-        'minute',
+        'adjustment',
+        // 'minute',
         'hrs',
-        'time_taken',
-        'actual_hrs',
+        // 'time_taken',
+        // 'actual_hrs',
         'invoice_no'
-        
+
     ];
 
     public function customer()
@@ -38,9 +40,19 @@ class MachineRecord extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
- public function workOrder()
+    public function workOrder()
     {
         // foreign key in machine_records = work_order
         return $this->belongsTo(WorkOrder::class, 'work_order', 'id');
+    }
+
+    public function invoiceItems()
+    {
+        return $this->hasMany(InvoiceItem::class, 'machine_record_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id', 'id');
     }
 }

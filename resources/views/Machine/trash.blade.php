@@ -70,7 +70,6 @@
     </div>
 </div>
 
-{{-- Custom JS --}}
 <script>
     let Machine = @json($Machine);
 </script>

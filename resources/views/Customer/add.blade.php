@@ -14,7 +14,7 @@
                                 {{ isset($customer) ? 'Edit Customer' : 'Add Customer' }}
                             </h4>
 
-                        </div><!-- end card header -->
+                        </div>
 
                         <div class="card-body">
 
@@ -23,7 +23,6 @@
                                     @csrf
                                     @if(isset($customer))
                                     @method('PUT')
-                                    <!-- //@method('DELETE') -->
                                     @endif
                                     <div class="row">
                                         <div class="col-md-4">
@@ -51,8 +50,6 @@
                                             </div>
                                         </div>
                                         @endif
-
-                                        <!--end col-->
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
@@ -107,9 +104,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
-
-                                        <!--end col-->
 
                                         <div class="col-lg-12">
                                             <div class="text-end">

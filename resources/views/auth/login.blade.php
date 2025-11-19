@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
 @section('content')
- 
+
 <div class="auth-page-content">
     <div class="container">
 
@@ -12,14 +12,34 @@
                 <div class="card mt-4 card-bg-fill">
 
                     <div class="card-body p-4">
-                             <div class="text-center mt-2 mb-4">
+                        <div class="text-center mt-2 mb-4">
                             <a href="login" class="d-inline-block mb-3">
-                                <img src="{{ asset('assets/images/precise.png')}}" alt="Logo" height="50">
+                                <!-- <img src="{{ asset('assets/images/precise.png')}}" alt="Logo" height="50"> -->
                             </a>
                             <h5 class="fw-bold text-dark">Welcome Back</h5>
                             <p class="text-muted small">Sign in to continue to Precise Eng.</p>
                         </div>
                         <div class="p-2 mt-4">
+
+                            @if(session('error'))
+                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: "{{ session('error') }}",
+                                    width: 350,
+                                    padding: '1rem',
+                                    timer: 8000,
+                                    timerProgressBar: true,
+                                    showConfirmButton: true,
+                                    customClass: {
+                                        popup: 'swal2-popup-small'
+                                    }
+                                });
+                            </script>
+                            @endif
+
                             <form method="POST" action="{{ route('login') }}">
                                 @csrf
 
@@ -37,7 +57,10 @@
 
                                 <div class="mb-3">
                                     <div class="float-end">
-                                        <a href="auth-pass-reset-basic.html" class="text-muted">Forgot password?</a>
+                                        @if (Route::has('password.request'))
+                                        <a class="text-muted" href="{{ route('password.request') }}">Forgot
+                                            Password ?</a>
+                                        @endif
                                     </div>
                                     <label class="form-label" for="password-input">Password<span class="mandatory">*</span></label>
                                     <div class="position-relative auth-pass-inputgroup mb-3">

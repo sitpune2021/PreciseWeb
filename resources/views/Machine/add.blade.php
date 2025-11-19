@@ -18,7 +18,7 @@
                         @endif
 
                         <div class="row align-items-end">
-                           <div class="col-md-4 col-sm-6 mb-3 position-relative">
+                            <div class="col-md-4 col-sm-6 mb-3 position-relative">
                                 <label for="machine_name" class="form-label">
                                     Machine Name <span class="mandatory"> *</span>
                                 </label>
@@ -30,14 +30,14 @@
                                     placeholder="Enter Machine Name"
                                     style="background-image: none !important;"
                                     onkeypress="return /[a-zA-Z\s]/.test(event.key)">
-                                   
+
                                 @error('machine_name')
                                 <small class="text-red position-absolute" style="bottom:-18px; left:2px; font-size:12px; margin-left:10px;">
                                     {{ $message }}
                                 </small>
                                 @enderror
                             </div>
- 
+
                             <div class="col-md-2 col-sm-6 mb-3">
                                 <button type="submit" class="btn btn-primary w-100 px-3 py-2">
                                     {{ isset($machine) ? 'Update ' : 'Add ' }}
@@ -53,7 +53,7 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Machine List</h5>
-                     <a href="{{ route('trashmachine') }}" class="btn btn-warning btn-sm">
+                    <a href="{{ route('trashmachine') }}" class="btn btn-warning btn-sm">
                         View Trash
                     </a>
                 </div>

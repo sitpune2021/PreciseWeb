@@ -49,8 +49,8 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number" 
-                                                value="{{ old('phone_no', isset($client) ? $client->phone_no : '') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+                                                <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="Phone Number"
+                                                    value="{{ old('phone_no', isset($client) ? $client->phone_no : '') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
                                                 @error('phone_no')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -73,7 +73,7 @@
                                                 @if(isset($client) && $client->logo)
                                                 <a href="{{ asset($client->logo) }}" target="_blank"
                                                     style="width: 50px; height: 40px; overflow: hidden;">
-                                                    <img src="{{ asset($client->logo) }}"alt="Logo"style="width: 100%; height: auto;">
+                                                    <img src="{{ asset($client->logo) }}" alt="Logo" style="width: 100%; height: auto;">
                                                 </a>
                                                 @endif
                                             </div>
@@ -81,17 +81,15 @@
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
                                         </div>
-                                        <!-- Modal for centered logo preview -->
+
                                         @if(isset($client) && $client->logo)
                                         <div class="modal fade" id="logoModal" tabindex="-1" aria-labelledby="logoModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered modal-sm">
                                                 <div class="modal-content position-relative text-center p-3">
-                                                    <!-- Close Icon -->
                                                     <button type="button"
                                                         class="btn-close position-absolute top-0 end-0 m-2"
                                                         data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
-                                                    <!-- Image inside modal -->
                                                     <img src="{{ asset($client->logo) }}" alt="Full Logo" style="max-width: 100%; height: auto;">
                                                 </div>
                                             </div>

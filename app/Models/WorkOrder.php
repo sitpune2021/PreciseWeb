@@ -14,7 +14,7 @@ class WorkOrder extends Model
         'part',
         //  'part_code',
         'project_id',
-        'date',         
+        'date',
         'part_description',
         'dimeter',
         'length',
@@ -26,36 +26,32 @@ class WorkOrder extends Model
     ];
 
     public function customer()
-{
-    return $this->belongsTo(Customer::class, 'customer_id', 'id');
-}
-
-public function project()
-{
-    return $this->belongsTo(Project::class, 'project_id');
-}
-
-  public function workOrder()
     {
-        return $this->belongsTo(WorkOrder::class, 'work_order'); 
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order');
     }
 
     public function invoices()
-{
-    return $this->hasMany(Invoice::class, 'id');
-}
+    {
+        return $this->hasMany(Invoice::class, 'id');
+    }
 
-
- public function machineRecords()
+    public function machineRecords()
     {
         return $this->hasMany(MachineRecord::class, 'work_order', 'id');
     }
 
     public function hsn()
-{
-    return $this->belongsTo(Hsncode::class, 'material', 'material_type');
-}
-
-
-    
+    {
+        return $this->belongsTo(Hsncode::class, 'material', 'material_type');
+    }
 }

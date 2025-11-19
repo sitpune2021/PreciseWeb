@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Vendor extends Model
 {
     use SoftDeletes;
-     protected $fillable = [
+    protected $fillable = [
         'admin_id',
         'vendor_name',
         'vendor_code',

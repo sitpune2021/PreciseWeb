@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 // ---------------- Clients ----------------
 
 $totalClients = Client::count();
-$totalClientsPercentage = $totalClients; // count = percentage
+$totalClientsPercentage = $totalClients; 
 
 // Active Clients
 $activeClients = Client::where('status', 1)->count();
@@ -108,10 +108,10 @@ for ($m = 1; $m <= 12; $m++) {
     $totals[] = $workOrdersMonthly[$m] ?? 0;
     }
 
-    // ✅ 1. Total Work Orders
+    // 1. Total Work Orders
     $totalWorkOrders = WorkOrder::where('admin_id', Auth::id())->count();
 
-    // ✅ 2. Work Orders that are linked to Invoices (Completed)
+    // 2. Work Orders that are linked to Invoices (Completed)
     $completed = WorkOrder::where('admin_id', Auth::id())
     ->whereHas('invoices') // only those having invoice
     ->count();
@@ -189,11 +189,7 @@ for ($m = 1; $m <= 12; $m++) {
     ->take(5)
     ->get();
 
-
-
     @endphp
-
-
 
     @extends('layouts.header')
     @section('content')
@@ -223,7 +219,7 @@ for ($m = 1; $m <= 12; $m++) {
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
                             <h4 class="mb-sm-0"> Dashboard</h4>
-
+        
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
@@ -370,10 +366,7 @@ for ($m = 1; $m <= 12; $m++) {
                         </div>
                     </div>
                 </div>
-
                 <!-- project end -->
-
-
 
                 <!-- --------------Work Orders --------------->
 
@@ -400,7 +393,7 @@ for ($m = 1; $m <= 12; $m++) {
                             <div class="card-header p-0 border-0 bg-transparent">
                                 <div class="row g-3 text-center p-3">
 
-                                    <!-- 🆕 New Work Orders -->
+                                    <!--  New Work Orders -->
                                     <div class="col-6 col-sm-3">
                                         <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
                                             style="background: linear-gradient(135deg, #e0f7ff, #f2fcff); border: 1px solid #d1ecf1;">
@@ -414,7 +407,7 @@ for ($m = 1; $m <= 12; $m++) {
                                         </div>
                                     </div>
 
-                                    <!-- ⚙️ In Progress -->
+                                    <!--  In Progress -->
                                     <div class="col-6 col-sm-3">
                                         <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
                                             style="background: linear-gradient(135deg, #fff8e1, #fffbea); border: 1px solid #ffecb3;">
@@ -428,7 +421,7 @@ for ($m = 1; $m <= 12; $m++) {
                                         </div>
                                     </div>
 
-                                    <!-- ✅ Completed (Invoiced) -->
+                                    <!--  Completed (Invoiced) -->
                                     <div class="col-6 col-sm-3">
                                         <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
                                             style="background: linear-gradient(135deg, #e8f9ee, #f4fff8); border: 1px solid #b6f0c3;">
@@ -442,7 +435,7 @@ for ($m = 1; $m <= 12; $m++) {
                                         </div>
                                     </div>
 
-                                    <!-- 📋 Total Work Orders -->
+                                    <!--  Total Work Orders -->
                                     <div class="col-6 col-sm-3">
                                         <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
                                             style="background: linear-gradient(135deg, #eef2ff, #f7f9ff); border: 1px solid #cfd8ff;">
@@ -461,17 +454,17 @@ for ($m = 1; $m <= 12; $m++) {
 
                         </div>
                     </div>
-           
-                            <style>
-                                .card-hover {
-                                    transition: all 0.3s ease;
-                                }
 
-                                .card-hover:hover {
-                                    transform: translateY(-5px);
-                                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-                                }
-                            </style>
+                    <style>
+                        .card-hover {
+                            transition: all 0.3s ease;
+                        }
+
+                        .card-hover:hover {
+                            transform: translateY(-5px);
+                            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                        }
+                    </style>
                     <!-------------- Right Side: Setup Sheets ------------->
 
                     <div class="col-xxl-4 col-lg-5 mt-3 mt-lg-0">
@@ -584,22 +577,18 @@ for ($m = 1; $m <= 12; $m++) {
                                                 <td class="fw-bold">{{ $rec->part_no }}</td>
                                                 <td>{{ $rec->work_order }}</td>
 
-                                                {{-- ✅ Date from start_time --}}
                                                 <td>
                                                     {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
                                                 </td>
 
-                                                {{-- ✅ Start Time --}}
                                                 <td>
                                                     {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('h:i A') : '-' }}
                                                 </td>
 
-                                                {{-- ✅ End Time --}}
                                                 <td>
                                                     {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('h:i A') : '-' }}
                                                 </td>
 
-                                                {{-- ✅ Total Run (Hrs) --}}
                                                 <td>
                                                     @if($rec->start_time && $rec->end_time)
                                                     @php

@@ -18,7 +18,7 @@
                                 @csrf
                                 @if(isset($project))
                                 @method('PUT')
-                                <!-- Hidden field to send customer_id when dropdown is disabled -->
+
                                 <input type="hidden" name="customer_id" value="{{ $project->customer_id }}">
                                 @endif
  

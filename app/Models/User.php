@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+
      *
      * @var list<string>
      */
@@ -51,7 +51,13 @@ class User extends Authenticatable
     }
 
     public function client()
-{
-    return $this->hasOne(Client::class, 'login_id', 'id'); // assume login_id matches user id
-}
+    {
+        return $this->hasOne(Client::class, 'login_id', 'id'); // assume login_id matches user id
+    }
+
+    public function rolePermission()
+    {
+        return $this->hasOne(RolePermission::class, 'role_id', 'user_type');
+    }
+
 }

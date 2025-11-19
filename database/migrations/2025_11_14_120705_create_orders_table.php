@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+      Schema::create('orders', function (Blueprint $table) {
+    $table->id();
+
+    // User & Plan
+    $table->unsignedBigInteger('user_id')->index();
+    $table->unsignedBigInteger('plan_id')->nullable()->index();
+    $table->string('razorpay_order_id')->nullable();
+    $table->string('razorpay_payment_id')->nullable();
+    $table->string('razorpay_signature')->nullable();
+    $table->integer('amount')->default(0);
+    $table->enum('payment_status', ['pending', 'completed', 'failed']);
+    $table->enum('plan_status', ['0', '1'])->default('0');
+
+
+    $table->timestamps();
+});
+
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('orders');
+    }
+};

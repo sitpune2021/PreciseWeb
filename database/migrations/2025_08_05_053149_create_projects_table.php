@@ -6,15 +6,12 @@
 
     return new class extends Migration
     {
-        /**
-         * Run the migrations.
-         */
         public function up(): void
         {
             Schema::create('projects', function (Blueprint $table) {
                 $table->id();
                 $table->integer('project_no')->default(0)->comment('project number');
-                $table->integer('admin_id'); 
+                $table->integer('admin_id');
                 $table->unsignedBigInteger('customer_id')->nullable();
                 $table->string('project_name');
                 // $table->string('customer_name');
@@ -27,10 +24,6 @@
                 $table->timestamps();
             });
         }
-
-        /**
-         * Reverse the migrations.
-         */
         public function down(): void
         {
             Schema::dropIfExists('projects');

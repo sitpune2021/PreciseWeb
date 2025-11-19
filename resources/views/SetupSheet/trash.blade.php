@@ -41,22 +41,22 @@
                                 @forelse($trashedSheets as $sheet)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                   <td>
-                                                @if($sheet->setup_image)
-                                                <img src="{{ asset('setup_images/'.$sheet->setup_image) }}"
-                                                    alt="Setup Image" style="max-width:60px; height:auto;" class="img-thumbnail">
-                                                @else
-                                                <span class="text-muted">No Image</span>
-                                                @endif
-                                            </td>
+                                    <td>
+                                        @if($sheet->setup_image)
+                                        <img src="{{ asset('setup_images/'.$sheet->setup_image) }}"
+                                            alt="Setup Image" style="max-width:60px; height:auto;" class="img-thumbnail">
+                                        @else
+                                        <span class="text-muted">No Image</span>
+                                        @endif
+                                    </td>
 
-                                            <td>{{ $sheet->part_code }}</td>
-                                            <td>{{ $sheet->work_order_no }}</td>
-                                            <td>{{ $sheet->date }}</td>
-                                            <td>{{ $sheet->size_in_x }}</td>
-                                            <td>{{ $sheet->size_in_y }}</td>
-                                            <td>{{ $sheet->size_in_z }}</td>
-                                            <td>{{ $sheet->setting }}</td>
+                                    <td>{{ $sheet->part_code }}</td>
+                                    <td>{{ $sheet->work_order_no }}</td>
+                                    <td>{{ $sheet->date }}</td>
+                                    <td>{{ $sheet->size_in_x }}</td>
+                                    <td>{{ $sheet->size_in_y }}</td>
+                                    <td>{{ $sheet->size_in_z }}</td>
+                                    <td>{{ $sheet->setting }}</td>
                                     <td class="text-center">
                                         @if($sheet->deleted_at)
                                         {{ $sheet->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
@@ -67,8 +67,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('restoreSetupSheet', base64_encode($sheet->id)) }}"
                                             class="btn btn-success btn-sm"
-                                           onclick="return confirmRestore('{{ $sheet->part_code }}', '{{ route('restoreSetupSheet', base64_encode($sheet->id)) }}')"
->
+                                            onclick="return confirmRestore('{{ $sheet->part_code }}', '{{ route('restoreSetupSheet', base64_encode($sheet->id)) }}')">
                                             Restore
                                         </a>
                                     </td>
@@ -93,8 +92,7 @@
     let Sheets = @json($sheets);
 
     function confirmRestore(name, url) {
-       let exists = Sheets.some(sheet => sheet.part_code === name && sheet.deleted_at === null);
-
+        let exists = Sheets.some(sheet => sheet.part_code === name && sheet.deleted_at === null);
 
         let message;
         if (exists) {

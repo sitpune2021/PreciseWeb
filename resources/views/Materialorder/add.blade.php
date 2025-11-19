@@ -5,7 +5,6 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            <!-- Material Order Add / Edit Form -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card shadow-sm">
@@ -24,7 +23,7 @@
                                 <div class="row g-3">
                                     <div class="col-md-3">
                                         <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
-                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id" >
+                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
                                             <option value="">Select Customer Code</option>
                                             @foreach($codes as $c)
                                             <option value="{{ $c->id }}"
@@ -32,7 +31,7 @@
                                                 data-details="{{ $c->materialreq }}"
                                                 data-id="{{ $c->id }}"
                                                 {{ old('customer_id', $record->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                 {{ $c->code }}
+                                                {{ $c->code }}
                                             </option>
 
                                             @endforeach
@@ -42,14 +41,6 @@
                                         @enderror
                                     </div>
 
-
-                                    <!-- Customer Code -->
-                                    <div class="col-md-2">
-                                        <label for="code" class="form-label">Customer Code</label>
-                                        <input type="text" class="form-control" id="code" name="code"
-                                            value="{{ old('code', $record->customer->code ?? '') }}" readonly>
-                                    </div>
-                                   
                                     <!-- Work Order No -->
                                     <div class="col-md-3">
                                         <div class="mb-3">
@@ -63,6 +54,13 @@
                                         </div>
                                     </div>
 
+                                    <!-- Material Requests Dropdown -->
+                                    <div class="col-md-4">
+                                        <label>Select Material Req</label>
+                                        <select id="material_data_dropdown" class="form-control">
+                                            <option value="">Select Material Req ID</option>
+                                        </select>
+                                    </div>
                                     <!-- DATE -->
                                     <div class="col-md-3">
                                         <label class="form-label">Date <span class="text-red">*</span></label>
@@ -75,7 +73,7 @@
 
                                     <!-- WORK ORDER -->
                                     <div class="col-md-7">
-                                        <label class="form-label">Work Order Description  </label>
+                                        <label class="form-label">Work Order Description </label>
                                         <input type="text" name="work_order_desc" id="description" class="form-control"
                                             value="{{ old('work_order_desc', $record->work_order_desc ?? '') }}">
                                         @error('work_order_desc')
@@ -110,7 +108,6 @@
                                     </div>
 
                                     <!-- MATERIAL -->
-
 
                                     <!-- RAW SIZE SECTION -->
                                     <div class="col-12 mt-3">
@@ -182,21 +179,98 @@
         </div> ,
     </div> <!-- page-content -->
 </div> <!-- main-content -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     $(document).ready(function() {
-        // On customer dropdown change
         $('#customer_id').on('change', function() {
-            let selected = $(this).find(':selected'); // Selected option
-            let code = selected.data('code') || ''; // Get data-code
-            $('#code').val(code); // Fill the code input
-        });
+            var customerId = $(this).val();
+            var dropdown = $('#material_data_dropdown');
+            dropdown.html('<option>Loading...</option>');
 
-        // If editing, auto-fill code for pre-selected customer
-        let selected = $('#customer_id').find(':selected');
-        if (selected.val()) {
-            $('#code').val(selected.data('code'));
-        }
+            if (customerId) {
+                $.ajax({
+                    url: '/get-material-requests/' + customerId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        dropdown.empty();
+
+                        if (response.status === 'success') {
+                            dropdown.append('<option value="">Select Material Req ID</option>');
+                            $.each(response.data, function(index, item) {
+                                dropdown.append('<option value="' + item.id + '">' + item.id + ' - ' + item.description + '</option>');
+                            });
+                        } else if (response.status === 'empty') {
+                            dropdown.append('<option>No Material Requests Found</option>');
+                        } else {
+                            dropdown.append('<option>Error Loading Data</option>');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        dropdown.html('<option>Error fetching data</option>');
+                    }
+                });
+            } else {
+                dropdown.html('<option value="">Select Material Req ID</option>');
+            }
+        });
     });
 </script>
+
+
+<script>
+    $(document).ready(function() {
+
+        $('#material_data_dropdown').on('change', function() {
+            var reqId = $(this).val();
+
+            if (reqId) {
+                $.ajax({
+                    url: '/get-material-request-details/' + reqId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var data = response.data;
+
+                            $('#work_order_no').val(data.work_order_no);
+                            $('#date').val(data.date);
+                            $('#description').val(data.description);
+
+                            if (data.material) {
+                                $('#material').val(data.material);
+                            } else if (data.material_type) {
+                                $('#material').val(data.material_type);
+                            } else {
+                                $('#material').val('');
+                            }
+
+                            $('#f_diameter').val(data.dia);
+                            $('#f_length').val(data.length);
+                            $('#f_width').val(data.width);
+                            $('#f_height').val(data.height);
+                            $('#quantity').val(data.qty);
+                        } else if (response.status === 'not_found') {
+                            alert('No data found for this material request.');
+                        } else {
+                            alert('Error fetching material data.');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        alert('AJAX error occurred.');
+                    }
+                });
+            } else {
+
+                $('#work_order_no, #date, #description, #material, #f_diameter, #f_length, #f_width, #f_height, #quantity').val('');
+            }
+        });
+
+    });
+</script>
+
 
 @endsection

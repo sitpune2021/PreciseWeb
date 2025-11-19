@@ -12,10 +12,11 @@ class CreateInvoiceItemsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('invoice_id')->index();
             //  $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('work_order_id');
             $table->integer('project_id')->nullable();
             $table->string('part_name')->nullable();
             $table->string('hsn_code')->nullable();
-            $table->decimal('qty', 12, 3)->default(0);
+            $table->integer('qty')->default(0);
             $table->decimal('rate', 15, 2)->default(0);
             $table->decimal('amount', 15, 2)->default(0);
             $table->decimal('hrs', 12, 2)->default(0);

@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
-    /**
-     * Show Add Project Form
-     */
     public function AddProject()
     {
         $adminId = Auth::id();
@@ -33,9 +30,6 @@ class ProjectController extends Controller
         return view('Project.add', compact('customers', 'codes'));
     }
 
-    /**
-     * Store Project
-     */
     public function storeProject(Request $request)
     {
         $adminId = Auth::id();
@@ -78,9 +72,6 @@ class ProjectController extends Controller
         return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
     }
 
-    /**
-     * View Projects
-     */
     public function ViewProject()
     {
         $adminId = Auth::id();
@@ -93,9 +84,6 @@ class ProjectController extends Controller
         return view('Project.view', compact('projects'));
     }
 
-    /**
-     * Edit Project
-     */
     public function edit(string $encryptedId)
     {
         $adminId = Auth::id();
@@ -111,9 +99,7 @@ class ProjectController extends Controller
 
         return view('Project.add', compact('project', 'customers'));
     }
-    /**
-     * Update Project
-     */
+
     public function update(Request $request, string $encryptedId)
     {
         $adminId = Auth::id();
@@ -139,13 +125,11 @@ class ProjectController extends Controller
             'code'          => 'nullable|string|max:255', // 👈 add this for textbox value
         ]);
 
-
         $customer_code = $request->filled('code')
             ? $request->code
             : (Customer::where('id', $request->customer_id)
                 ->where('admin_id', $adminId)
                 ->value('code'));
-
 
         $project->update([
             'customer_id'   => $request->customer_id,
@@ -158,9 +142,6 @@ class ProjectController extends Controller
         return redirect()->route('ViewProject')->with('success', 'Project updated successfully.');
     }
 
-    /**
-     * Delete Project
-     */
     public function destroy(string $encryptedId)
     {
         $adminId = Auth::id();

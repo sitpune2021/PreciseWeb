@@ -45,9 +45,9 @@
                                     <td>{{ $req->description }}</td>
                                     <td class="text-center">
                                         @if($req->deleted_at)
-                                            {{ $req->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
+                                        {{ $req->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}
                                         @else
-                                            —
+                                        —
                                         @endif
                                     </td>
                                     <td class="text-center">
@@ -73,7 +73,6 @@
     </div>
 </div>
 
-{{-- JS --}}
 <script>
     let MaterialReq = @json($materialReq);
 

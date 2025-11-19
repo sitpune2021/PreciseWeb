@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
+
 <head>
 
     <meta charset="utf-8" />
@@ -59,7 +60,7 @@
                         <div class="card mt-4 card-bg-fill">
 
                             <div class="card-body p-4">
-                             
+
                                 <div class="p-2 mt-4">
                                     <form action="">
 
@@ -125,7 +126,9 @@
                     <div class="col-lg-12">
                         <div class="text-center">
                             <p class="mb-0 text-muted">&copy;
-                                <script>document.write(new Date().getFullYear())</script> Velzon. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script> Velzon. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand
                             </p>
                         </div>
                     </div>
@@ -134,7 +137,6 @@
         </footer>
         <!-- end Footer -->
     </div>
-    <!-- end auth-page-wrapper -->
 
     <!-- JAVASCRIPT -->
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -151,4 +153,5 @@
     <!-- password-addon init -->
     <script src="assets/js/pages/password-addon.init.js"></script>
 </body>
+
 </html>

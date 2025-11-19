@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,8 +35,7 @@ class MaterialOrder extends Model
     }
 
     public function materialreq()
-{
-    return $this->belongsTo(MaterialReq::class, 'MaterialReq');
-}
-
+    {
+        return $this->belongsTo(MaterialReq::class, 'MaterialReq');
+    }
 }
