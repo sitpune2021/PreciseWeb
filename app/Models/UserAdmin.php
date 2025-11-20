@@ -10,16 +10,17 @@ class UserAdmin extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = 'useradmin';
+    protected $table = 'useradmins';
     protected $fillable = [
-        'full_name',
-        'email',
-        'user_name',
-        'mobile',
-        'role',
-        'password',
-        'status'
-    ];
+    'admin_id',
+    'full_name',
+    'email',
+    'user_name',
+    'mobile',
+    'role',
+    'password',
+    'status',
+];
     protected $hidden = ['password', 'remember_token'];
 
     // Optionally: check if user is active
@@ -31,7 +32,7 @@ class UserAdmin extends Authenticatable
 
     public function roles()
 {
-    return $this->belongsToMany(Role::class, 'user_role');
+    return $this->belongsTo(Role::class, 'role');
 }
 
 public function hasRole($role)

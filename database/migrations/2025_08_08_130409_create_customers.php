@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->integer('admin_id');
             $table->integer('login_id')->default(0);
+            $table->integer('customer_srno')->nullable();
             $table->string('name'); 
             $table->string('code', 50)->nullable();
             $table->string('contact_person')->nullable();

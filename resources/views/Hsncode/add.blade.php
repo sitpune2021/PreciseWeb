@@ -29,10 +29,10 @@
                                 </small>
                             </div>
 
-                            <!-- SGST -->
+                           
                             <!-- SGST -->
                             <div class="col-md-3">
-                                <label for="sgst" class="form-label">SGST % <span class="text-red">*</span></label>
+                                <label for="sgst" class="form-label">SGST % </label>
                                 <input type="number" step="0.01" min="0" class="form-control only-positive"
                                     name="sgst" value="{{ old('sgst', $hsn->sgst ?? '') }}"
                                     placeholder="SGST %">
@@ -43,7 +43,7 @@
 
                             <!-- CGST -->
                             <div class="col-md-3">
-                                <label for="cgst" class="form-label">CGST % <span class="text-red">*</span></label>
+                                <label for="cgst" class="form-label">CGST % </label>
                                 <input type="number" step="0.01" min="0" class="form-control only-positive"
                                     name="cgst" value="{{ old('cgst', $hsn->cgst ?? '') }}"
                                     placeholder="CGST %">
@@ -54,7 +54,7 @@
 
                             <!-- IGST -->
                             <div class="col-md-3">
-                                <label for="igst" class="form-label">IGST % <span class="text-red">*</span></label>
+                                <label for="igst" class="form-label">IGST % </label>
                                 <input type="number" step="0.01" min="0" class="form-control only-positive"
                                     name="igst" value="{{ old('igst', $hsn->igst ?? '') }}"
                                     placeholder="IGST %">
@@ -168,6 +168,44 @@
             }
         });
     });
+
+     
+document.addEventListener("DOMContentLoaded", function () {
+    const sgst = document.querySelector("input[name='sgst']");
+    const cgst = document.querySelector("input[name='cgst']");
+    const igst = document.querySelector("input[name='igst']");
+
+    function toggleFields() {
+        let sgstVal = parseFloat(sgst.value) || 0;
+        let cgstVal = parseFloat(cgst.value) || 0;
+        let igstVal = parseFloat(igst.value) || 0;
+
+        // If SGST or CGST entered → disable IGST
+        if (sgstVal > 0 || cgstVal > 0) {
+            igst.disabled = true;
+            igst.value = '';
+        } else {
+            igst.disabled = false;
+        }
+
+        // If IGST entered → disable SGST & CGST
+        if (igstVal > 0) {
+            sgst.disabled = true;
+            cgst.disabled = true;
+            sgst.value = '';
+            cgst.value = '';
+        } else {
+            sgst.disabled = false;
+            cgst.disabled = false;
+        }
+    }
+
+    sgst.addEventListener("input", toggleFields);
+    cgst.addEventListener("input", toggleFields);
+    igst.addEventListener("input", toggleFields);
+});
+ 
+
 </script>
 
 

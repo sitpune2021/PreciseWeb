@@ -107,7 +107,8 @@ Route::post('/storeMachine'                   , [MachineController::class, 'stor
 Route::get('/editMachine/{id}'                , [MachineController::class, 'edit'])->name('editMachine');
 Route::put('/updateMachine/{id}'              , [MachineController::class, 'update'])->name('updateMachine');
 Route::get('/deleteMachine/{id}'              , [MachineController::class, 'destroy'])->name('deleteMachine');
-Route::post('/updateStatus'                   , [MachineController::class, 'updateStatus'])->name('updateStatus');
+Route::post('/machine/status/update'          , [MachineController::class, 'updateStatus'])->name('machine.updateStatus');
+
 Route::get('/trashmachine'                    , [MachineController::class, 'trash'])->name('trashmachine');
 Route::get('/restoremachine/{id}'             , [MachineController::class, 'restore'])->name('restoremachine');
 
@@ -219,8 +220,8 @@ Route::get('/useradmin'                       , [UserAdminController::class, 'in
 Route::get('/useradmin/add'                   , [UserAdminController::class, 'AddUserAdmin'])->name('AddUserAdmin');
 Route::post('/useradmin/store'                , [UserAdminController::class, 'StoreUser'])->name('StoreUser');
 Route::get('/useradmin/edit/{id}'             , [UserAdminController::class, 'edit'])->name('EditUserAdmin');
-Route::post('/useradmin/update/{id}'          , [UserAdminController::class, 'update'])->name('UpdateUserAdmin');
-Route::post('/useradmin/update-status'        , [UserAdminController::class, 'updateStatus'])->name('updateStatus');
+Route::put('/useradmin/update/{id}', [UserAdminController::class, 'update'])->name('UpdateUserAdmin');
+Route::post('/useradmin/updatestatus'         , [UserAdminController::class, 'userupdateStatus'])->name('updateStatus');
 
 Route::get('/RolePermission'                  , [RolePermissionController::class, 'RolePermission'])->name('RolePermission');
 Route::post('/RolePermission/store'            , [RolePermissionController::class, 'Store'])->name('Store');
@@ -237,6 +238,7 @@ Route::post('/razorpay.order', [PaymentController::class, 'order'])->name('razor
 Route::post('/payment-success', [PaymentController::class, 'success'])->name('razorpay.success');
 Route::get('/PaymentList', [PaymentController::class, 'PaymentList'])->name('PaymentList');
 Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
+
 
 Route::get('proforma'                          ,[ProformaInvoiceController::class, 'index'])->name('proforma.index');
 Route::get('proforma/add'                      , [ProformaInvoiceController::class, 'create'])->name('proforma.add');

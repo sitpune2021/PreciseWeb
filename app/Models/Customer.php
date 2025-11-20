@@ -15,6 +15,7 @@ class Customer extends Model
     protected $fillable = [
         'login_id',
         'admin_id',
+        'customer_srno',
         'name',
         'code',
         'per_hour_rate',

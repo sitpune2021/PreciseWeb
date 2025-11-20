@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Razorpay\Api\Plan;
 
 class Order extends Model
 {
+
   protected $fillable = [
     'user_id',
     'plan_id',
@@ -17,6 +19,8 @@ class Order extends Model
     'payment_status',
     'plan_status'
 ];
+
+
 
 public function user()
 {

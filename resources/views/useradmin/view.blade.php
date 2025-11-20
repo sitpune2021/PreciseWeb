@@ -30,7 +30,7 @@
                                             <th>Mobile</th>
                                             <th>Role</th>
                                             <th>Status</th>
-                                            <th>Action</    th>
+                                            <th>Action</ th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -41,33 +41,34 @@
                                             <td>{{ $user->user_name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->mobile }}</td>
-                                            <td>{{ $user->role }}</td>
+                                            <td>{{ $user->roles->name }}</td>
 
                                             <!-- Status Switch -->
                                             <td>
                                                 <form action="{{ route('updateStatus') }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{ $user->id }}">
+
                                                     <div class="form-check form-switch d-flex justify-content-center">
                                                         <input class="form-check-input"
                                                             type="checkbox"
                                                             role="switch"
                                                             id="statusSwitch{{ $user->id }}"
                                                             name="status"
-                                                            value="Active"
                                                             onchange="this.form.submit()"
                                                             {{ $user->status == 'Active' ? 'checked' : '' }}>
                                                     </div>
                                                 </form>
                                             </td>
+
                                             <!-- Action Buttons -->
                                             <td class="d-flex justify-content-center gap-2">
-                                              
+
                                                 <a href="{{ route('EditUserAdmin', base64_encode($user->id)) }}" class="btn btn-success btn-sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </a>
 
-                                           
+
                                                 <button type="button" class="btn btn-primary btn-sm viewCustomerBtn">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>

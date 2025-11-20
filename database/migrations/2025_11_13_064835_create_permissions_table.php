@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
+             $table->unsignedBigInteger('admin_id')->nullable();
              $table->string('name');
              $table->string('description')->nullable();
              $table->string('guard_name')->nullable();

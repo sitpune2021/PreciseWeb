@@ -25,49 +25,48 @@ class UserAdminController extends Controller
     // Store user
     public function StoreUser(Request $request)
     {
-        
-            $request->validate([
-                'full_name' => 'required|string|max:255',
-                'email' => 'required|email|unique:useradmin,email',
-                'user_name' => 'required|string|unique:useradmin,user_name',
-                'mobile' => ['required', 'digits:10'],
-                'role' => 'required|exists:roles,id',
-                'password' => 'required|string|min:6|confirmed',
-        
-            ]);
 
-            // 1️⃣ Create UserAdmin
-            $admin = UserAdmin::create([
-                'full_name' => $request->full_name,
-                'email' => $request->email,
-                'user_name' => $request->user_name,
-                'mobile' => $request->mobile,
-                'role' => $request->role,
-                'password' => Hash::make($request->password),
-                'status' => 'Active'
-            ]);
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:useradmins,email',
+            'user_name' => 'required|string|unique:useradmins,user_name',
+            'mobile' => ['required', 'digits:10'],
+            'role' => 'required|exists:roles,id',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
 
-            // Create user in users table
-            User::create([
-                'name' => $request->full_name,
-                'email' => $request->email,
-                'mobile' => $request->mobile,
-                'username' => $request->user_name,
-                'user_type' => $request->role,
-                'org_pass' => $request->password,
-                'password' => Hash::make($request->password),
-            ]);
+        // 1️⃣ Create UserAdmin
+        $admin = UserAdmin::create([
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'user_name' => $request->user_name,
+            'mobile' => $request->mobile,
+            'role' => $request->role,
+            'password' => Hash::make($request->password),
+            'status' => 'Active'
+        ]);
 
-           return redirect()->route('ListUserAdmin')->with('success', 'User created successfully in both tables.');
+        // Create user in users table
+        User::create([
+            'name' => $request->full_name,
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+            'username' => $request->user_name,
+            'user_type' => $request->role,
+            'org_pass' => $request->password,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('ListUserAdmin')->with('success', 'User created successfully in both tables.');
     }
 
     // Show edit form
     public function edit($id)
     {
         $id = base64_decode($id);
-        $roles = Role::all();
         $user = UserAdmin::findOrFail($id);
-        return view('useradmin.create', compact('user','roles'));
+        $roles = Role::all();
+        return view('useradmin.create', compact('user', 'roles'));
     }
 
     // Update user
@@ -77,15 +76,11 @@ class UserAdminController extends Controller
 
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:email,' . $id . ',id',
-            'user_name' => 'required|string|unique:user_name,' . $id . ',id',
+            'email' => 'email|unique:useradmins,email,' . $id,
+            'user_name' => 'required|string|unique:useradmins,user_name,' . $id,
             'mobile' => ['nullable', 'digits:10'],
-            'role' => 'required|in:Admin,Programmer,Supervisor,Finance',
+            'role' => 'required|integer|exists:roles,id',
             'password' => 'nullable|string|min:6|confirmed',
-        ], [
-            'mobile.digits' => 'Mobile number must be exactly 10 digits.',
-            'role.in' => 'Selected role is invalid.',
-            'password.confirmed' => 'Password and Confirm Password must match.'
         ]);
 
         $user->full_name = $request->full_name;
@@ -103,6 +98,7 @@ class UserAdminController extends Controller
         return redirect()->route('ListUserAdmin')->with('success', 'User updated successfully.');
     }
 
+
     // List users
     public function index()
     {
@@ -116,7 +112,7 @@ class UserAdminController extends Controller
         return view('useradmin.rolepermission', compact('roles'));
     }
 
-    public function updateStatus(Request $request)
+    public function userupdateStatus(Request $request)
     {
         $user = UserAdmin::findOrFail($request->id);
         $user->status = $request->has('status') ? 'Active' : 'Inactive';
@@ -124,6 +120,7 @@ class UserAdminController extends Controller
 
         return back()->with('success', 'Status updated!');
     }
+
 
     public function getRolePermissions($role_id)
     {

@@ -74,12 +74,11 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="text-center">{{ $m->machine_name }}</td>
-
                                     <td>
-                                        <form action="{{ route('updateStatus') }}" method="POST">
+                                        <form action="{{ route('machine.updateStatus') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $m->id }}">
-                                            <div class="form-check form-switch d-flex justify-content-center">
+                                            <div class="form-check form-switch">
                                                 <input
                                                     class="form-check-input"
                                                     type="checkbox"

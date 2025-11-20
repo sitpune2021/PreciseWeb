@@ -65,18 +65,25 @@ class CustomerContoller extends Controller
                 Str::substr($customer_name_words[1], 0, 1) .
                 Str::substr($customer_name_words[2], 0, 1));
         }
+        $adminId = Auth::id();
 
+        // last serial get करा
+        $lastSerial = Customer::where('admin_id', $adminId)
+            ->max('customer_srno');
+
+        $nextSerial = $lastSerial ? $lastSerial + 1 : 1;
         Customer::create([
-            'admin_id'       => Auth::id(),
-            'login_id'       => 0,
-            'name'           => $request->input('name'),
-            'code'           => $code,
-            'email_id'       => $request->input('email_id'),
-            'contact_person' => $request->input('contact_person'),
-            'phone_no'       => $request->input('phone_no'),
-            'gst_no'         => $request->input('gst_no'),
-            'address'        => $request->input('address'),
-            'status'         => 1,
+            'admin_id'        => $adminId,
+            'login_id'        => 0,
+            'name'            => $request->name,
+            'code'            => $code,
+            'email_id'        => $request->email_id,
+            'contact_person'  => $request->contact_person,
+            'phone_no'        => $request->phone_no,
+            'gst_no'          => $request->gst_no,
+            'address'         => $request->address,
+            'status'          => 1,
+            'customer_srno' => $nextSerial,   // 👈 important
         ]);
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer created successfully.');

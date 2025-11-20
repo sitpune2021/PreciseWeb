@@ -16,8 +16,13 @@
                     <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
 
-                    <form method="POST" action="{{ route('StoreUser') }}">
+
+                    <form action="{{ isset($user) ? route('UpdateUserAdmin', $user->id) : route('StoreUser') }}" method="POST">
                         @csrf
+
+                        @if(isset($user))
+                        @method('PUT')
+                        @endif
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label for="full_name" class="form-label">Full Name <span class="text-red">*</span></label>
@@ -30,25 +35,24 @@
                             </div>
 
                             <!-- Email -->
-                            <div class="col-md-4">
-                                <label for="email" class="form-label">Email <span class="text-red">*</span></label>
+                            <div class="col-md-3">
+                                <label class="form-label">Email<span class="text-red">*</span></label>
                                 <input type="email" class="form-control" id="email" name="email"
-                                    placeholder="Enter email"
-                                    value="{{ old('email', $user->email ?? '') }}">
+                                    value="{{ old('email', $user->email ?? '') }}"
+                                    placeholder="Enter email">
                                 @error('email')
-                                <div class="text-red small mt-1">{{ $message }}</div>
+                                <div class="text-red small">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Username -->
+                            <!-- Username (Auto from Email) -->
                             <div class="col-md-4">
-                                <label for="user_name" class="form-label">Username<span class="text-red">*</span></label>
+                                <label class="form-label">Username<span class="text-red">*</span></label>
                                 <input type="text" class="form-control" id="user_name" name="user_name"
-                                    placeholder="Enter username"
                                     value="{{ old('user_name', $user->user_name ?? '') }}"
-                                    oninput="this.value = this.value.replace(/[^A-Za-z.\s]/g, '');">
+                                    placeholder="Username auto">
                                 @error('user_name')
-                                <div class="text-red small mt-1">{{ $message }}</div>
+                                <div class="text-red small">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -66,18 +70,16 @@
 
                             <div class="col-md-3">
                                 <label>Role<span class="text-red">*</span></label>
-                                <select name="role" class="form-select" required>
+                                <select name="role" class="form-select">
                                     <option value="">Select Role</option>
 
                                     @foreach ($roles as $role)
                                     <option value="{{ $role->id }}"
-                                        {{ $role->id == 1 ? 'disabled' : '' }} {{-- SuperAdmin disable --}}
-
-                                        {{-- Selected for Add OR Edit --}}
-                                        {{ old('role', $user->role ?? '') == $role->id ? 'selected' : '' }}>
-
+                                        {{ (int) old('role', $user->role ?? 0) === (int) $role->id ? 'selected' : '' }}
+                                        {{ $role->id == 1 ? 'disabled' : '' }}>
                                         {{ $role->name }}
                                     </option>
+
                                     @endforeach
                                 </select>
 
@@ -85,6 +87,7 @@
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
+
 
                             @if(!isset($user))
                             <!-- Password -->
@@ -122,12 +125,7 @@
                                 </div>
                             </div>
                             @endif
-
-
                         </div>
-
-
-
                         <div class="text-end mt-3">
                             <button type="submit" class="btn btn-success">Save User</button>
                             <a href="{{ route('ListUserAdmin') }}" class="btn btn-secondary">Cancel</a>
@@ -154,6 +152,20 @@
             iconSpan.querySelector('i').classList.add('fa-eye');
         }
     }
+
+    // 1️⃣ AUTO USERNAME FROM EMAIL
+    document.getElementById('email').addEventListener('input', function() {
+        let email = this.value;
+        if (email.includes('@')) {
+            let username = email.split('@')[0];
+            document.getElementById('user_name').value = username;
+        }
+    });
+
+    // 2️⃣ AUTO FILL CONFIRM PASSWORD
+    document.getElementById('password').addEventListener('input', function() {
+        document.getElementById('password_confirmation').value = this.value;
+    });
 </script>
 
 @endsection

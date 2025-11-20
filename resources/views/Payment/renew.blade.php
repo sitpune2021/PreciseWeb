@@ -14,9 +14,7 @@
 
                     <form id="renewPlanForm" method="POST" action="{{ route('razorpay.order') }}">
                         @csrf
-
                         <h5 class="plan-title">Choose a Plan</h5>
-
                         <div class="row g-4">
                             @foreach($plans as $plan)
                             <div class="col-md-3">
@@ -44,15 +42,12 @@
 
                                     @if ($client->plan_type == $plan->id)
 
-
-                                    <button type="submit"class="button" disabled style=" background:#ffffff;color:#880088; border:2px solid #15ec11ff; text-shadow:none;cursor:default;">
+                                    <button type="submit" class="button" disabled style=" background:#ffffff;color:#880088; border:2px solid #15ec11ff; text-shadow:none;cursor:default;">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24" style="fill:#880088; width:22px;">
                                             <path d="m18 0 8 12 10-8-4 20H4L0 4l10 8 8-12z"></path>
                                         </svg>
                                         Active
                                     </button>
-
-
                                     @else
                                     <button type="button" class="button openModalBtn">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
@@ -66,12 +61,8 @@
                                 </div>
                             </div>
                             @endforeach
-
-
                         </div>
-
                     </form>
-
                 </div>
             </div>
             <!-- Select Plan Modal -->
@@ -99,8 +90,6 @@
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" id="payBtn" class="btn btn-primary">Proceed to Payment</button>
                             </div>
-
-
 
                         </div>
                     </div>

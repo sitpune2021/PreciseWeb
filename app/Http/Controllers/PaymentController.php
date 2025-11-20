@@ -51,50 +51,66 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function success(Request $request)
-    {
-        $client = Auth::user()->client;
-        $planType = $request->planId;
+public function success(Request $request)
+{
+    $client = Client::where('login_id', Auth::id())->first();
 
-        $expiry = match ($planType) {
-            '1month' => Carbon::now()->addMonth(),
-            '3month' => Carbon::now()->addMonths(3),
-            '1year' => Carbon::now()->addYear(),
-            default => Carbon::now()->addDays(7)
-        };
+    $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->first();
 
-        $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->first();
+    if ($order) {
+    $plan = PaymentPlan::find($order->plan_id);
 
-        if ($order) {
-            // Update the order table
-            $order->update([
-                'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_signature'  => $request->razorpay_signature,
-                'amount'              => $order->amount,
-                'payment_status'      => 'completed',
-            ]);
+    
+    $planDays = match ($plan->short_text) {
+        '1month' => 30,
+        '3month' => 90,
+        '1year'  => 365,
+        default  => 7
+    };
 
-            $client_id = Auth::id();
-            $plan_id =  $order->plan_id;
-
-            Client::where('id', $client_id)->update([
-                'plan_type'   => $plan_id,
-                'plan_expiry' => $expiry,
-                'status'      => 1
-            ]);
-        }
-        return view('payment.success', [
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_signature' => $request->razorpay_signature,
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'amount' => $order->amount,
-            'payment_status' => "completed"
-        ]);
+    if ($client->plan_expiry && Carbon::parse($client->plan_expiry)->isFuture()) {
+        $expiry = Carbon::parse($client->plan_expiry)->addDays($planDays);
+    } else {
+        $expiry = Carbon::now()->addDays($planDays);
     }
+    $order->update([
+        'razorpay_payment_id' => $request->razorpay_payment_id,
+        'razorpay_signature'  => $request->razorpay_signature,
+        'payment_status'      => 'completed',
+    ]);
+
+    if ($plan->short_text === 'trial') {
+    if ($client->is_trial_used == 1) {
+        return back()->with('error', 'Trial plan can be used only once.');
+    }
+
+    // Mark trial as used
+    $client->update(['is_trial_used' => 1]);
+}
+
+    // update client plan
+    $client->update([
+        'plan_type'   => $order->plan_id,
+        'plan_expiry' => $expiry,
+        'status'      => 1
+    ]);
+}
+
+    return view('Payment.success', [
+        'razorpay_payment_id' => $request->razorpay_payment_id,
+        'razorpay_signature' => $request->razorpay_signature,
+        'razorpay_order_id' => $request->razorpay_order_id,
+        'amount' => $order->amount,
+        'payment_status' => "completed"
+    ]);
+}
+
     public function PaymentList()
     {
         $payments = Order::all();
         $orders = Client::all();
         return view('Payment.view', compact('payments', 'orders'));
     }
+
+    
 }

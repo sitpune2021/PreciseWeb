@@ -29,7 +29,7 @@
                                             <option value="{{ $c->id }}"
                                                 data-code="{{ $c->code }}"
                                                 data-details="{{ $c->materialreq }}"
-                                                data-id="{{ $c->id }}"
+                                                data-id="{{ $c->customer_srno }}"
                                                 {{ old('customer_id', $record->customer_id ?? '') == $c->id ? 'selected' : '' }}>
                                                 {{ $c->code }}
                                             </option>

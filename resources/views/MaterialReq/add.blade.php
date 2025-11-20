@@ -32,7 +32,7 @@
                                                 @foreach($codes as $c)
                                                 <option value="{{ $c->id }}"
                                                     data-code="{{ $c->code }}"
-                                                    data-id="{{ $c->id }}"
+                                                    data-id="{{ $c->customer_srno }}"
                                                     {{ old('customer_id', $materialReq->customer_id ?? '') == $c->id ? 'selected' : '' }}>
                                                     {{ $c->code }}
                                                 </option>
@@ -242,7 +242,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="rg2" class="form-label">RG2 (hrs) </label>
-                                                <input type="number" step="0.01" name="rg2" id="rg2"placeholder="Rotary Granding (2 Sides)" class="form-control" value="{{ old('rg2', $materialReq->rg2 ?? '') }}">
+                                                <input type="number" step="0.01" name="rg2" id="rg2" placeholder="Rotary Granding (2 Sides)" class="form-control" value="{{ old('rg2', $materialReq->rg2 ?? '') }}">
                                                 @error('rg2') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -250,7 +250,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="sg4" class="form-label">SG4 (hrs) </label>
-                                                <input type="number" step="0.01" name="sg4" id="sg4" placeholder="Surface Granding (4 Sides)"class="form-control" value="{{ old('sg4', $materialReq->sg4 ?? '') }}">
+                                                <input type="number" step="0.01" name="sg4" id="sg4" placeholder="Surface Granding (4 Sides)" class="form-control" value="{{ old('sg4', $materialReq->sg4 ?? '') }}">
                                                 @error('sg4') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -258,7 +258,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="sg2" class="form-label">SG2 (hrs) </label>
-                                                <input type="number" step="0.01" name="sg2" id="sg2"placeholder="Surface Granding (2 Sides)" class="form-control" value="{{ old('sg2', $materialReq->sg2 ?? '') }}">
+                                                <input type="number" step="0.01" name="sg2" id="sg2" placeholder="Surface Granding (2 Sides)" class="form-control" value="{{ old('sg2', $materialReq->sg2 ?? '') }}">
                                                 @error('sg2') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
