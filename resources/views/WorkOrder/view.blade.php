@@ -68,12 +68,13 @@
                                             <td>{{ $wo->exp_time }}</td>
                                             <td>{{ $wo->quantity }}</td>
                                             <td>
+                                                @if(hasPermission('WorkOrders', 'edit'))
                                                 <a href="{{ route('editWorkOrder', base64_encode($wo->id)) }}">
                                                     <button type="button" class="btn btn-success btn-icon">
                                                         <i class="ri-pencil-fill"></i>
                                                     </button>
                                                 </a>
-
+                                                @endif
                                                 <!-- View Button to open Modal -->
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon viewWorkOrder"
@@ -82,13 +83,14 @@
                                                     data-wo='@json($wo)'>
                                                     <i class="ri-eye-fill"></i>
                                                 </button>
-
+                                               @if(hasPermission('WorkOrders', 'delete'))
                                                 <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon">
                                                         <i class="ri-delete-bin-fill"></i>
                                                     </button>
                                                 </a>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach

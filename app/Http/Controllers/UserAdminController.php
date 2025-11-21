@@ -101,11 +101,12 @@ class UserAdminController extends Controller
 
     // List users
     public function index()
-    {
-        $users = UserAdmin::all();
-        return view('useradmin.view', compact('users'));
-    }
+{
+    $adminId = Auth::id();
+    $users = UserAdmin::where('admin_id', $adminId)->get();
 
+    return view('useradmin.view', compact('users'));
+}
     public function RolePermission()
     {
         $roles = Role::all();

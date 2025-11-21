@@ -15,19 +15,17 @@
                             </h5>
                         </div>
                         <div class="card-body">
-
-
                             <form action="{{ isset($record) ? route('UpdateMachinerecord', base64_encode($record->id)) : route('StoreMachinerecord') }}" method="POST">
                                 @csrf
                                 @if(isset($record))
                                 @method('PUT')
                                 @endif
-
-
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
-                                        <select name="part_no" id="part_no" class="form-control form-select ">
+
+                                        <select name="part_no" id="part_no" class="form-control form-select"
+                                            {{ isset($record) ? 'disabled' : '' }}>
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
                                             @php
@@ -36,19 +34,25 @@
 
                                             <option value="{{ $partNo }}"
                                                 data-code="{{ $wo->customer?->code ?? '' }}"
-                                                data-workorder="{{ $wo->id }}"
+                                                data-workorder="{{ $wo->project_id }}"
                                                 data-partdesc="{{ $wo->part_description ?? '' }}"
                                                 data-qty="{{ $wo->quantity ?? '' }}"
                                                 data-e_time="{{ $wo->exp_time ?? '' }}"
                                                 data-customer="{{ $wo->customer_id ?? '' }}"
-
                                                 {{ old('part_no', $record->part_no ?? '') == $partNo ? 'selected' : '' }}>
                                                 {{ $partNo }}
                                             </option>
 
                                             @endforeach
                                         </select>
-                                        @error('part_no') <span class="text-red small">{{ $message }}</span> @enderror
+                                        {{-- Hidden input for Edit --}}
+                                        @if(isset($record))
+                                        <input type="hidden" name="part_no" value="{{ $record->part_no }}">
+                                        @endif
+
+                                        @error('part_no')
+                                        <span class="text-red small">{{ $message }}</span>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-2">

@@ -9,7 +9,6 @@
                 <div class="card-header">
                     <h4 class="card-title mb-0">Renew Plan</h4>
                 </div>
-
                 <div class="card-body plan-section">
 
                     <form id="renewPlanForm" method="POST" action="{{ route('razorpay.order') }}">
@@ -20,9 +19,10 @@
                             <div class="col-md-3">
                                 <div class="plan-card text-center"
                                     data-id="{{ $plan->id }}"
-                                    data-plan="{{ $plan->title }}"
+                                    data-plan="{{ $plan->name }}"
                                     data-price="{{ $plan->price }}"
-                                    data-period="{{ $plan->short_text }}">
+                                    data-period="{{ $plan->period }}"
+                                    data-short="{{ $plan->short_text }}">
 
                                     <h6 class="fw-bold mb-1">{{ $plan->title }}</h6>
 
@@ -65,8 +65,9 @@
                     </form>
                 </div>
             </div>
-            <!-- Select Plan Modal -->
-            <form id="renewPlanForm" method="POST" action="{{ route('razorpay.order') }}">
+            
+            <form id="planConfirmForm" method="POST" action="{{ route('razorpay.order') }}">
+
                 @csrf
                 <div class="modal fade" id="planModal" tabindex="-1">
                     <div class="modal-dialog">
@@ -78,22 +79,45 @@
                             </div>
 
                             <div class="modal-body">
-                                <h5 id="modalPlanName"></h5>
-                                <input type="hidden" name="price" id="planPrice">
-                                <input type="hidden" name="planId" id="planId">
 
-                                <p class="mb-1"><strong>Price:</strong> ₹<span id="modalPlanPrice"></span></p>
-                                <p class="mb-1"><strong>Period:</strong> <span id="modalPlanPeriod"></span></p>
+                                <h5 id="modalPlanName" class="fw-bold text-center mb-4 animate__animated animate__zoomIn" style="color: #fff;"></h5>
+
+                                <div class="card payment-card shadow-lg animate__animated animate__fadeInUp">
+                                    <div class="card__border"></div>
+                                    <div class="card-body p-4">
+                                        <table class="table table-borderless mb-0">
+                                            <tbody>
+                                                <tr class="card__list_item">
+                                                    <th class="text-start">Price</th>
+                                                    <td class="text-end">₹<span id="modalPlanPrice"></span></td>
+                                                </tr>
+                                                <tr class="card__list_item">
+                                                    <th class="text-start">GST</th>
+                                                    <td class="text-end">₹<span id="modalPlanGST"></span></td>
+                                                </tr>
+                                                <tr class="card__list_item">
+                                                    <th class="text-start">Total Amount</th>
+                                                    <td class="text-end fw-bold text-success">₹<span id="modalPlanTotal"></span></td>
+                                                </tr>
+                                                <tr class="card__list_item">
+                                                    <th class="text-start">Period</th>
+                                                    <td class="text-end"><span id="modalPlanPeriod"></span></td>
+                                                </tr>
+                                                <tr class="card__list_item">
+                                                    <th class="text-start">Expiry Date</th>
+                                                    <td class="text-end"><span id="modalPlanExpiry"></span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <button class="button mt-3 w-100">Proceed to Payment</button>
+                                    </div>
+                                    <input type="hidden" name="price" id="planPrice">
+                                    <input type="hidden" name="planId" id="planId">
+                                </div>
                             </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" id="payBtn" class="btn btn-primary">Proceed to Payment</button>
-                            </div>
-
                         </div>
                     </div>
-                </div>
             </form>
         </div>
 
@@ -102,93 +126,66 @@
 </div>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
 
-        // All "Select Plan" buttons
-        document.querySelectorAll('.openModalBtn').forEach(btn => {
-            btn.addEventListener('click', function() {
+    document.querySelectorAll('.openModalBtn').forEach(btn => {
+        btn.addEventListener('click', function() {
 
-                let card = this.closest('.plan-card');
-                let planId = card.getAttribute('data-id');
-                let planName = card.getAttribute('data-plan');
-                let planPrice = card.getAttribute('data-price');
-                let planPeriod = card.getAttribute('data-period');
+            let card = this.closest('.plan-card');
+            let planId = card.getAttribute('data-id');
+            let planName = card.getAttribute('data-plan');
+            let planPrice = parseFloat(card.getAttribute('data-price'));
+            let planShort = card.getAttribute('data-short');
 
-                // Set modal values
-                document.getElementById('modalPlanName').innerText = planName;
-                document.getElementById('modalPlanPrice').innerText = planPrice;
-                document.getElementById('planPrice').value = planPrice;
-                document.getElementById('planId').value = planId;
+            let gst = Math.round(planPrice * 0.18);
+            let total = planPrice + gst;
 
-                document.getElementById('modalPlanPeriod').innerText = planPeriod;
+            let planStartDate = new Date();
 
-                // Set form hidden fields
-                card.querySelector('.priceInput').value = planPrice;
-                card.querySelector('.planInput').value = planName;
+            let expiryDate = new Date(planStartDate);
 
-                // Open Modal
-                var modal = new bootstrap.Modal(document.getElementById('planModal'));
-                modal.show();
-            });
-        });
+            let period = planShort.toLowerCase().replace(/\s+/g, '');
 
-    });
-
-
-    $("#payBtnss").click(function() {
-
-
-        let plan_name = $("#modalPlanName").text();
-        let plan_price = $("#modalPlanPrice").text();
-        let plan_id = $(".planInput").val();
-
-        $.ajax({
-            url: "{{ route('razorpay.order') }}",
-            method: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                plan_id: plan_id,
-                price: plan_price
-            },
-            success: function(response) {
-
-                if (response.status === "success") {
-
-                    var options = {
-                        "key": response.razorpayKey,
-                        "amount": response.amount,
-                        "currency": "INR",
-                        "name": "Plan Purchase",
-                        "description": plan_name,
-                        "order_id": response.orderId,
-
-                        "handler": function(paymentResponse) {
-
-                            // Submit to success route
-                            var form = $('<form>', {
-                                'method': 'POST',
-                                'action': "{{ route('razorpay.success') }}"
-                            });
-
-                            form.append('@csrf');
-                            form.append(`<input type="hidden" name="razorpay_payment_id" value="${paymentResponse.razorpay_payment_id}">`);
-                            form.append(`<input type="hidden" name="razorpay_order_id" value="${paymentResponse.razorpay_order_id}">`);
-                            form.append(`<input type="hidden" name="razorpay_signature" value="${paymentResponse.razorpay_signature}">`);
-
-                            $('body').append(form);
-                            form.submit();
-                        }
-                    };
-
-                    var rzp1 = new Razorpay(options);
-                    rzp1.open();
-                }
+            if (period.includes('1month') || period.includes('monthly')) {
+                expiryDate.setMonth(expiryDate.getMonth() + 1);
             }
-        });
+            else if (period.includes('3month') || period.includes('quarter')) {
+                expiryDate.setMonth(expiryDate.getMonth() + 3);
+            }
+            else if (period.includes('6month') || period.includes('halfyear')) {
+                expiryDate.setMonth(expiryDate.getMonth() + 6);
+            }
+            else if (period.includes('1year') || period.includes('yearly') || period.includes('12month')) {
+                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+            }
+            else {
+                expiryDate.setDate(expiryDate.getDate() + 7);
+            }
 
+            let day = String(expiryDate.getDate()).padStart(2, '0');
+            let month = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            let year = expiryDate.getFullYear();
+            let expiryStr = `${day}-${month}-${year}`;
+
+            document.getElementById('modalPlanName').innerText = planName;
+            document.getElementById('modalPlanPrice').innerText = planPrice.toFixed(2);
+            document.getElementById('modalPlanGST').innerText = gst.toFixed(2);
+            document.getElementById('modalPlanTotal').innerText = total.toFixed(2);
+
+            document.getElementById('modalPlanPeriod').innerText = planShort;
+            document.getElementById('modalPlanExpiry').innerText = expiryStr;
+
+            document.getElementById('planPrice').value = total;
+            document.getElementById('planId').value = planId;
+
+            var modal = new bootstrap.Modal(document.getElementById('planModal'));
+            modal.show();
+        });
     });
+
+});
 </script>
+
 
 @endsection

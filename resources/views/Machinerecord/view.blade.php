@@ -63,10 +63,11 @@
                                             <td>{{ $rec->adjustment }}</td>
                                             <td>{{ $rec->invoice_no }}</td>
                                             <td>
+                                                @if(hasPermission('MachineRecord', 'edit'))
                                                 <a href="{{ route('EditMachinerecord', base64_encode($rec->id)) }}" class="btn btn-success btn-sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </a>
-
+                                                @endif
                                                 <button type="button" class="btn btn-primary btn-sm viewBtn"
                                                     data-id="{{ $rec->id }}"
                                                     data-part="{{ $rec->part_no }}"
@@ -85,12 +86,14 @@
                                                     data-invoice_no="{{ $rec->invoice_no }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-
+                                                
+                                                 @if(hasPermission('MachineRecord', 'delete'))
                                                 <a href="{{ route('DeleteMachinerecord', base64_encode($rec->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')"
                                                     class="btn btn-danger btn-sm">
                                                     <i class="ri-delete-bin-fill align-bottom"></i>
                                                 </a>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach

@@ -32,7 +32,7 @@ class HsncodeController extends Controller
             'sgst'         => 'nullable|numeric',
             'cgst'         => 'nullable|numeric',
             'igst'         => 'nullable|numeric',
-            'invoice_desc' => 'nullable|string|max:255',
+            'invoice_desc' => 'required|string|max:255',
         ]);
 
         Hsncode::create([

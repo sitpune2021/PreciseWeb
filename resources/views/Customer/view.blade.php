@@ -82,6 +82,7 @@
                                                 </form>
                                             </td>
                                             <td>
+                                                
                                                 <a href="{{route('editCustomer', base64_encode($c->id))}}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>

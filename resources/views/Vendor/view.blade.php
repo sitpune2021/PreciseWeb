@@ -58,14 +58,14 @@
                                             </td>
 
                                             <td>
-
+                                                @if(hasPermission('Vendors', 'edit'))
                                                 <a href="{{route('editVendor', base64_encode($vendor->id))}}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </button>
                                                 </a>
-
-
+                                                @endif
+                                            @if(hasPermission('Vendors', 'delete'))
                                                 <a href="{{route('deleteVendor', base64_encode($vendor->id))}}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
@@ -73,7 +73,7 @@
                                                     </button>
                                                 </a>
                                             </td>
-
+                                            @endif
 
                                         </tr>
                                         @endforeach

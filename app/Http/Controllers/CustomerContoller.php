@@ -83,7 +83,7 @@ class CustomerContoller extends Controller
             'gst_no'          => $request->gst_no,
             'address'         => $request->address,
             'status'          => 1,
-            'customer_srno' => $nextSerial,   // 👈 important
+            'customer_srno' => $nextSerial,   
         ]);
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer created successfully.');

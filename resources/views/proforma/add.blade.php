@@ -4,42 +4,53 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-            <h4 class="mb-3">Add New Proforma</h4>
+            <h5 class="mb-3">Add New Proforma</h5>
 
             <form action="{{ route('proforma.store') }}" method="POST" id="invoiceForm">
                 @csrf
                 <div class="row align-items-end">
-                    <!-- Customer Select -->
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label class="form-label">Select Customer <span class="text-danger">*</span></label>
+                    <div class="row g-3">
+
+                        <!-- Customer Select -->
+                        <div class="col-md-4 mb-4">
+                            <label class="form-label">Select Customer <span class="text-red">*</span></label>
                             <select name="customer_id"
-                                class="form-select js-example-basic-single @error('customer_id') is-invalid @enderror"
-                                id="customerSelect">
+                                class="form-select js-example-basic-single"
+                                id="customerSelect"
+                                {{ isset($data) ? 'disabled' : '' }}>
                                 <option value="">Select Customer</option>
                                 @foreach($customers as $cust)
-                                <option value="{{ $cust->id }}" {{ old('customer_id') == $cust->id ? 'selected' : '' }}>
+                                <option value="{{ $cust->id }}"
+                                    {{ old('customer_id', $data->customer_id ?? '') == $cust->id ? 'selected' : '' }}>
                                     {{ $cust->name }} ({{ $cust->code ?? '' }})
                                 </option>
                                 @endforeach
                             </select>
 
+                            {{-- Hidden input for Edit mode --}}
+                            @if(isset($data))
+                            <input type="hidden" name="customer_id" value="{{ $data->customer_id }}">
+                            @endif
+
                             @error('customer_id')
-                            <div class="text-danger mt-1 small">{{ $message }}</div>
+                            <div class="text-red mt-1 small">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
 
-                    <!-- Date Input -->
-                    <div class="col-md-3">
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
+                        <!-- Invoice Date -->
+                        <div class="col-md-3 mb-4">
+                            <label class="form-label">Invoice Date</label>
                             <input type="date" class="form-control"
                                 name="invoice_date"
                                 value="{{ old('invoice_date', $data->invoice_date ?? '') }}">
-                            @error('invoice_date') <span class="text-red">{{ $message }}</span> @enderror
+                            @error('invoice_date')
+                            <span class="text-red small">{{ $message }}</span>
+                            @enderror
                         </div>
+
                     </div>
+
+
                 </div>
 
                 <!-- Items -->
@@ -256,7 +267,7 @@
 
             calculateTotals();
         });
-        
+
         $('#hsnSelect').on('change', function() {
             const selected = $(this).find('option:selected');
             globalSGST = parseFloat(selected.data('sgst')) || 0;

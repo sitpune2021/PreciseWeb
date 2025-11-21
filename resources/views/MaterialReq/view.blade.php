@@ -52,10 +52,13 @@
 
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2 align-items-center">
+
+                                                    @if(hasPermission('MaterialReq', 'edit'))
                                                     <a href="{{ route('editMaterialReq', base64_encode($req->id)) }}"
                                                         class="btn btn-success btn-sm" title="Edit">
                                                         <i class="ri-pencil-fill"></i>
                                                     </a>
+                                                    @endif
                                                     <button type="button" class="btn btn-primary btn-sm viewMaterialReqBtn"
                                                         data-customer="{{ $req->customer->code ?? 'N/A' }}"
                                                         data-code="{{ $req->code }}"
@@ -86,11 +89,13 @@
                                                         data-total_cost="{{ $req->total_cost }}">
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
+                                                    @if(hasPermission('MaterialReq', 'delete'))
                                                     <a href="{{ route('deleteMaterialReq', base64_encode($req->id)) }}"
                                                         onclick="return confirm('Are you sure you want to delete this record?')"
                                                         class="btn btn-danger btn-sm" title="Delete">
                                                         <i class="ri-delete-bin-fill"></i>
                                                     </a>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>

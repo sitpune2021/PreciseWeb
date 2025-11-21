@@ -26,7 +26,7 @@ class PaymentController extends Controller
 
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
         $price = $request->price ?? 1;
-        $priceWithGST = round($price * 1.18); // 18% GST
+        $priceWithGST = round($price); // 18% GST
 
         $razorpayOrder = $api->order->create([
             'receipt' => 'order_' . time(),
@@ -51,59 +51,58 @@ class PaymentController extends Controller
         ]);
     }
 
-public function success(Request $request)
-{
-    $client = Client::where('login_id', Auth::id())->first();
+    public function success(Request $request)
+    {
+        $client = Client::where('login_id', Auth::id())->first();
 
-    $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->first();
+        $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
+        $plan  = PaymentPlan::findOrFail($order->plan_id);
 
-    if ($order) {
-    $plan = PaymentPlan::find($order->plan_id);
+        $planDays = match ($plan->short_text) {
+            '1month' => 30,
+            '3month' => 90,
+            '6month' => 180,
+            '1year'  => 365,
+            default  => 7
+        };
 
-    
-    $planDays = match ($plan->short_text) {
-        '1month' => 30,
-        '3month' => 90,
-        '1year'  => 365,
-        default  => 7
-    };
+        if (!empty($client->plan_expiry) && Carbon::parse($client->plan_expiry)->isFuture()) {
 
-    if ($client->plan_expiry && Carbon::parse($client->plan_expiry)->isFuture()) {
-        $expiry = Carbon::parse($client->plan_expiry)->addDays($planDays);
-    } else {
-        $expiry = Carbon::now()->addDays($planDays);
+            $expiry = Carbon::parse($client->plan_expiry)->addDays($planDays);
+        } else {
+
+            $expiry = Carbon::now()->addDays($planDays);
+        }
+        Order::where('user_id', Auth::id())->update(['plan_status' => '0']);
+
+        $order->update([
+            'razorpay_payment_id' => $request->razorpay_payment_id,
+            'razorpay_signature'  => $request->razorpay_signature,
+            'payment_status'      => 'completed',
+            'plan_status'         => '1'
+        ]);
+
+        if ($plan->short_text === 'trial') {
+            if ($client->is_trial_used == 1) {
+                return back()->with('error', 'Trial plan can be used only once.');
+            }
+            $client->update(['is_trial_used' => 1]);
+        }
+        $client->update([
+            'plan_type'   => $order->plan_id,
+            'plan_expiry' => $expiry,
+            'status'      => 1
+        ]);
+
+        return view('Payment.success', [
+            'razorpay_payment_id' => $request->razorpay_payment_id,
+            'razorpay_signature' => $request->razorpay_signature,
+            'razorpay_order_id' => $request->razorpay_order_id,
+            'amount' => $order->amount,
+            'payment_status' => "completed"
+        ]);
     }
-    $order->update([
-        'razorpay_payment_id' => $request->razorpay_payment_id,
-        'razorpay_signature'  => $request->razorpay_signature,
-        'payment_status'      => 'completed',
-    ]);
 
-    if ($plan->short_text === 'trial') {
-    if ($client->is_trial_used == 1) {
-        return back()->with('error', 'Trial plan can be used only once.');
-    }
-
-    // Mark trial as used
-    $client->update(['is_trial_used' => 1]);
-}
-
-    // update client plan
-    $client->update([
-        'plan_type'   => $order->plan_id,
-        'plan_expiry' => $expiry,
-        'status'      => 1
-    ]);
-}
-
-    return view('Payment.success', [
-        'razorpay_payment_id' => $request->razorpay_payment_id,
-        'razorpay_signature' => $request->razorpay_signature,
-        'razorpay_order_id' => $request->razorpay_order_id,
-        'amount' => $order->amount,
-        'payment_status' => "completed"
-    ]);
-}
 
     public function PaymentList()
     {
@@ -111,6 +110,4 @@ public function success(Request $request)
         $orders = Client::all();
         return view('Payment.view', compact('payments', 'orders'));
     }
-
-    
 }

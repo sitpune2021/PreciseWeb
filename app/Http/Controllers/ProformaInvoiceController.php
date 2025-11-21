@@ -156,7 +156,7 @@ class ProformaInvoiceController extends Controller
         return redirect()->route('proforma.index')->with('success', 'Proforma created successfully! ' . $invoiceNo);
     }
 
-    
+
 
     public function printInvoice($id)
     {

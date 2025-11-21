@@ -45,12 +45,14 @@
                                             <td>{{ $project->quantity }}</td>
 
                                             <td>
+                                                @if(hasPermission('Projects', 'edit'))
                                                 <!-- Edit -->
                                                 <a href="{{ route('editProject', base64_encode($project->id)) }}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </button>
                                                 </a>
+                                                @endif
 
                                                 <!-- View -->
                                                 <button type="button"
@@ -63,7 +65,7 @@
                                                     data-date="{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-
+                                                @if(hasPermission('Projects', 'delete'))
                                                 <!-- Delete -->
                                                 <a href="{{ route('deleteProject', base64_encode($project->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
@@ -71,6 +73,7 @@
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </button>
                                                 </a>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach

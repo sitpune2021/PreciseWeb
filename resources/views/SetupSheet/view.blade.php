@@ -64,20 +64,23 @@
                                             <td>{{ $sheet->setting }}</td>
                                             <td>
                                                 <div class="d-flex gap-2">
+                                                    @if(hasPermission('SetupSheet', 'edit'))
                                                     <a href="{{ route('editSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </a>
+                                                    @endif
                                                     <!-- <button type="button" class="btn btn-primary btn-icon viewSetupSheet"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#viewSetupSheetModal"
                                                         data-sheet='@json($sheet)'>
                                                         <i class="ri-eye-fill align-bottom"></i>
                                                     </button> -->
+                                                    @if(hasPermission('SetupSheet', 'delete'))
                                                     <a href="{{ route('deleteSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-danger btn-icon waves-effect waves-light"
                                                         onclick="return confirm('Are you sure you want to delete this record?')">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </a>
-
+                                                    @endif
                                                     <button type="button" class="btn btn-warning btn-icon printSetupSheet"
                                                         data-sheet='@json($sheet)'>
                                                         <i class="fas fa-print"></i>

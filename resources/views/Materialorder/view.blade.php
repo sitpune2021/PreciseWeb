@@ -54,10 +54,11 @@
                                             <td class="text-end">{{ $order->quantity }}</td>
 
                                             <td class="text-center">
+                                                @if(hasPermission('MaterialOrder', 'edit'))
                                                 <a href="{{ route('editMaterialorder', base64_encode($order->id)) }}" class="btn btn-success btn-sm">
                                                     <i class="ri-pencil-fill"></i>
                                                 </a>
-
+                                            @endif
                                                 <!-- View Button -->
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm viewBtn"
@@ -78,12 +79,13 @@
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
 
-
+                                                @if(hasPermission('MaterialOrder', 'delete'))
                                                 <a href="{{ route('deleteMaterialorder', base64_encode($order->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')"
                                                     class="btn btn-danger btn-sm">
                                                     <i class="ri-delete-bin-fill"></i>
                                                 </a>
+                                                @endif
                                             </td>
                                         </tr>
                                         @empty

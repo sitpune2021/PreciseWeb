@@ -67,11 +67,9 @@
                                                 <a href="{{ route('EditUserAdmin', base64_encode($user->id)) }}" class="btn btn-success btn-sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </a>
-
-
-                                                <button type="button" class="btn btn-primary btn-sm viewCustomerBtn">
+                                                <!-- <button type="button" class="btn btn-primary btn-sm viewCustomerBtn">
                                                     <i class="ri-eye-fill align-bottom"></i>
-                                                </button>
+                                                </button> -->
                                             </td>
                                         </tr>
                                         @endforeach

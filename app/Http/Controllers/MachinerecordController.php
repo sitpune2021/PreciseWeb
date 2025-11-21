@@ -19,40 +19,26 @@ class MachinerecordController extends Controller
 {
     public function AddMachinerecord()
     {
-        $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id())
-            ->select('id', 'code', 'name')
-            ->orderBy('id', 'desc')
-            ->get();
+        $codes = Customer::where('status', 1) ->where('admin_id', Auth::id())
+        ->select('id', 'code', 'name')->orderBy('id', 'desc')->get();
 
-        $materialtype = MaterialType::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
-
+       $materialtype = MaterialType::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $workorders = WorkOrder::with(['customer', 'project'])
-            ->where('admin_id', Auth::id())
-            ->whereHas('customer', function ($q) {
-                $q->where('status', 1)
-                    ->where('admin_id', Auth::id());
-            })
-            ->latest()
-            ->get();
+        ->where('admin_id', Auth::id())
+        ->whereHas('customer', function ($q) {
+        $q->where('status', 1)
+        ->where('admin_id', Auth::id());})->latest()->get();
 
-        $machines = Machine::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
 
-        $operators = Operator::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
+        $machines = Machine::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
-        $settings = Setting::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
+        $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc') ->get();
+
+        $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $projects = Project::where('admin_id', Auth::id())
-            ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
+        ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
             ->orderBy('project_no', 'asc')
             ->get();
 
@@ -147,27 +133,15 @@ class MachinerecordController extends Controller
             ->get();
 
 
-        $machines = Machine::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
+        $machines = Machine::where('admin_id', Auth::id()) ->orderBy('id', 'desc') ->get();
 
+        $operators = Operator::where('admin_id', Auth::id()) ->orderBy('id', 'desc') ->get();
 
-        $operators = Operator::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
-
-        $settings = Setting::where('admin_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
+        $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc') ->get();
 
         return view('Machinerecord.add', compact(
             'record',
-            'workorders',
-            'machines',
-            'operators',
-            'settings',
-            'materialtype',
-            'codes'
+            'workorders', 'machines', 'operators','settings', 'materialtype','codes'
         ));
     }
 
@@ -190,7 +164,7 @@ class MachinerecordController extends Controller
             'est_time'    => 'required|string|max:100',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
-             'adjustment'  => 'nullable|string|max:100',
+            'adjustment'  => 'nullable|string|max:100',
             // 'minute'      => 'required|numeric|min:0',
             'hrs'         => 'required|numeric|min:0',
             // 'time_taken'  => 'required|numeric|min:0',
@@ -216,6 +190,11 @@ class MachinerecordController extends Controller
     public function fetchData($part_code)
     {
         $data = SetupSheet::where('part_code', $part_code)
+            ->where('admin_id', Auth::id())
+            ->with(['project:id,project_no'])
+            ->first();
+
+        $data = WorkOrder::where('part_code', $part_code)
             ->where('admin_id', Auth::id())
             ->with(['project:id,project_no'])
             ->first();
@@ -255,28 +234,21 @@ class MachinerecordController extends Controller
         }
     }
 
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
         $machine = MachineRecord::withTrashed()->findOrFail($id);
 
-        // Duplicate check using part_no + work_order
         $exists = MachineRecord::where('part_no', $machine->part_no)
             ->where('work_order', $machine->work_order)
             ->whereNull('deleted_at')
             ->exists();
-
-        // Restore the record
         $machine->restore();
 
         if ($exists) {
-            // Duplicate exists → redirect to edit page
             return redirect()->route('EditMachinerecord', base64_encode($machine->id))
                 ->with('success', "Machine record with Part No '{$machine->part_no}' and Work Order '{$machine->work_order}' already exists. You will be redirected to the Edit Page.");
         }
-
-        // No duplicate → redirect to main list
         return redirect()->route('ViewMachinerecord')
             ->with('success', "Machine record with Part No '{$machine->part_no}' restored successfully.");
     }
