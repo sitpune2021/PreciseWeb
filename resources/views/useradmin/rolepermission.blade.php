@@ -59,7 +59,6 @@
                                 <tr>
                                     <td>{{ $module }}</td>
 
-                                    <!-- Required so unselect works -->
                                     <input type="hidden" name="permissions[{{ $module }}][]" value="">
 
                                     <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="add"></td>
@@ -93,7 +92,6 @@
         function loadPermissions() {
             let role_id = $("#role_id").val();
 
-            // Reset all
             $(".perm").prop("checked", false);
 
             if (!role_id) return;
@@ -103,7 +101,6 @@
                 type: "GET",
                 success: function(response) {
 
-                    // Admin role: always full access
                     if (role_id == 2) {
                         $(".perm").prop("checked", true);
                     }
@@ -119,7 +116,6 @@
                         });
                     }
 
-                    // Ensure admin always full permissions
                     if (role_id == 2) {
                         $(".perm").prop("checked", true);
                     }
@@ -127,10 +123,8 @@
             });
         }
 
-        // Load on page load
         loadPermissions();
 
-        // Update on change
         $("#role_id").change(function() {
             loadPermissions();
         });

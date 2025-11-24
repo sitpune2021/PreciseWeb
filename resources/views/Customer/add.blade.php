@@ -17,7 +17,9 @@
                         </div>
 
                         <div class="card-body">
-
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
                             <div class="live-preview">
                                 <form action="{{ isset($customer) ? route('updateCustomer', base64_encode($customer->id)) : route('storeCustomer') }}" method="POST">
                                     @csrf
@@ -59,7 +61,6 @@
                                             </div>
                                         </div>
 
-                                        <!--end col-->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="contact_person" class="form-label">Contact Person </label>
@@ -73,7 +74,6 @@
                                             </div>
                                         </div>
 
-                                        <!--end col-->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone Number </label>
@@ -83,7 +83,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <!--end col-->
+
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="gst_no" class="form-label">GST Number </label>
@@ -93,7 +93,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <!--end col-->
 
                                         <div class="col-md-12">
                                             <div class="mb-3">
@@ -120,20 +119,14 @@
 
                                             </div>
                                         </div>
-                                        <!--end col-->
                                     </div>
-                                    <!--end row-->
                                 </form>
                             </div>
 
                         </div>
                     </div>
-                </div> <!-- end col -->
-
-
+                </div>
             </div>
-            <!--end row-->
-
         </div>
     </div>
 </div>

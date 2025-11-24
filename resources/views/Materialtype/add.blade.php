@@ -11,6 +11,9 @@
                     <h5 class="mb-0">{{ isset($materialtype) ? 'Edit Material Type ' : 'Add Material Type ' }}</h5>
                 </div>
                 <div class="card-body">
+                     @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <form action="{{ isset($materialtype) ? route('updateMaterialType', base64_encode($materialtype->id)) : route('storeMaterialType') }}" method="POST">
                         @csrf
                         @if(isset($materialtype))

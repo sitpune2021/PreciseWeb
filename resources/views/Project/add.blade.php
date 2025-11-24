@@ -1,6 +1,6 @@
 @extends('layouts.header')
 @section('content')
- 
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
@@ -12,8 +12,11 @@
                                 {{ isset($project) ? 'Edit Project' : 'Add Project' }}
                             </h4>
                         </div>
- 
+
                         <div class="card-body">
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
                             <form action="{{ isset($project) ? route('updateProject', base64_encode($project->id)) : route('storeProject') }}" method="POST">
                                 @csrf
                                 @if(isset($project))
@@ -21,7 +24,7 @@
 
                                 <input type="hidden" name="customer_id" value="{{ $project->customer_id }}">
                                 @endif
- 
+
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label for="customer_id" class="form-label">Customer Code <span class="text-red">*</span></label>
@@ -39,15 +42,13 @@
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div>
- 
-                                    <!-- Customer Code -->
-                                   <div class="col-md-4">
-                                    <label for="code" class="form-label">Customer Code</label>
-                                    <input type="text" class="form-control" id="code" name="code"
-                                        value="{{ old('code', $project->customer_code ?? '') }}" readonly>
-                                </div>
- 
-                                    <!-- Project Name -->
+
+                                    <div class="col-md-4">
+                                        <label for="code" class="form-label">Customer Code</label>
+                                        <input type="text" class="form-control" id="code" name="code"
+                                            value="{{ old('code', $project->customer_code ?? '') }}" readonly>
+                                    </div>
+
                                     <div class="col-md-4">
                                         <label for="project_name" class="form-label">Project Name <span class="text-red">*</span></label>
                                         <input type="text" class="form-control" id="project_name" name="project_name"
@@ -57,8 +58,7 @@
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div>
- 
-                                    <!-- Quantity -->
+
                                     <div class="col-md-4">
                                         <label for="quantity" class="form-label">Quantity <span class="text-red">*</span></label>
                                         <input type="number" class="form-control" id="quantity" name="quantity" min="1"
@@ -68,8 +68,7 @@
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div>
- 
-                                    <!-- Date -->
+
                                     <div class="col-md-4">
                                         <label for="date" class="form-label">Date</label>
                                         <input type="date" class="form-control" id="date" name="date"
@@ -78,8 +77,7 @@
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div>
- 
-                                    <!-- Submit Buttons -->
+
                                     <div class="col-12 text-end mt-3">
                                         <button type="submit" class="btn btn-primary px-4">
                                             {{ isset($project) ? 'Update' : 'Submit' }}
@@ -99,29 +97,31 @@
         </div>
     </div>
 </div>
- 
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const customerSelect = document.getElementById("customer_id");
-    const codeInput = document.getElementById("code");
-    const quantityInput = document.getElementById("quantity");
-    const dateInput = document.getElementById("date");
- 
-    // Proper boolean for edit mode
-    const isEditMode = {{ isset($project) ? 'true' : 'false' }};
- 
-    customerSelect.addEventListener("change", function () {
-        const selectedOption = this.options[this.selectedIndex];
-        const code = selectedOption.dataset.code || "";
-        codeInput.value = code;
- 
-        // Only reset quantity & date in Add mode
-        if (!isEditMode) {
-            quantityInput.value = "";
-            dateInput.value = "";
-        }
+    document.addEventListener("DOMContentLoaded", function() {
+        const customerSelect = document.getElementById("customer_id");
+        const codeInput = document.getElementById("code");
+        const quantityInput = document.getElementById("quantity");
+        const dateInput = document.getElementById("date");
+
+        const isEditMode = {
+            {
+                isset($project) ? 'true' : 'false'
+            }
+        };
+
+        customerSelect.addEventListener("change", function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const code = selectedOption.dataset.code || "";
+            codeInput.value = code;
+
+            if (!isEditMode) {
+                quantityInput.value = "";
+                dateInput.value = "";
+            }
+        });
     });
-});
 </script>
- 
+
 @endsection

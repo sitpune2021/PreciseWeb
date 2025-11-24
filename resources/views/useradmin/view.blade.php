@@ -9,7 +9,6 @@
                 <div class="col-12">
                     <div class="card">
 
-                        <!-- Card Header -->
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Users</h5>
                             <a href="{{ route('AddUserAdmin') }}" class="btn btn-success btn-sm">
@@ -17,10 +16,9 @@
                             </a>
                         </div>
 
-                        <!-- Card Body -->
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="users-datatable" class="table table-bordered table-striped align-middle text-center" style="width:100%">
+                               <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead class="table-light">
                                         <tr>
                                             <th>ID</th>
@@ -43,7 +41,6 @@
                                             <td>{{ $user->mobile }}</td>
                                             <td>{{ $user->roles->name }}</td>
 
-                                            <!-- Status Switch -->
                                             <td>
                                                 <form action="{{ route('updateStatus') }}" method="POST">
                                                     @csrf
@@ -61,7 +58,6 @@
                                                 </form>
                                             </td>
 
-                                            <!-- Action Buttons -->
                                             <td class="d-flex justify-content-center gap-2">
 
                                                 <a href="{{ route('EditUserAdmin', base64_encode($user->id)) }}" class="btn btn-success btn-sm">
@@ -75,14 +71,14 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div> <!-- table-responsive -->
-                        </div> <!-- card-body -->
-                    </div> <!-- card -->
-                </div> <!-- col-12 -->
-            </div> <!-- row -->
+                            </div>  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>  
 
-        </div> <!-- container-fluid -->
-    </div> <!-- page-content -->
-</div> <!-- main-content -->
+        </div>  
+    </div>  
+</div>  
 
 @endsection

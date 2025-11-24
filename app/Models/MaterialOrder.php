@@ -34,8 +34,8 @@ class MaterialOrder extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function materialreq()
+    public function materialType()
     {
-        return $this->belongsTo(MaterialReq::class, 'MaterialReq');
+        return $this->belongsTo(MaterialType::class, 'material');
     }
 }

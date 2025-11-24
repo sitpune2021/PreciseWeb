@@ -15,6 +15,9 @@
                             </h5>
                         </div>
                         <div class="card-body">
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
                             <form action="{{ isset($record) ? route('UpdateMachinerecord', base64_encode($record->id)) : route('StoreMachinerecord') }}" method="POST">
                                 @csrf
                                 @if(isset($record))
@@ -241,9 +244,9 @@
                 </div>
             </div>
 
-        </div> <!-- container-fluid -->
-    </div> <!-- page-content -->
-</div> <!-- main-content -->
+        </div>  
+    </div>  
+</div>  
 <script>
     document.getElementById('part_no').addEventListener('change', function() {
 

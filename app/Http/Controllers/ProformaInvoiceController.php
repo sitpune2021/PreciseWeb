@@ -13,7 +13,6 @@ use App\Models\MaterialType;
 use App\Models\ProformaInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PDF;
 
 class ProformaInvoiceController extends Controller
 {
@@ -155,8 +154,6 @@ class ProformaInvoiceController extends Controller
 
         return redirect()->route('proforma.index')->with('success', 'Proforma created successfully! ' . $invoiceNo);
     }
-
-
 
     public function printInvoice($id)
     {

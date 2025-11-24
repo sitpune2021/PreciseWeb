@@ -14,6 +14,9 @@
                         </div>
 
                         <div class="card-body">
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
                             <div class="live-preview">
                                 <form action="{{ isset($setupSheet) ? route('updateSetupSheet', base64_encode($setupSheet->id)) : route('storeSetupSheet') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
@@ -249,13 +252,13 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                          <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="part_description" class="form-label">Part Description</label>
-                                                    <input type="text" class="form-control" id="part_description"
-                                                        name="description">
-                                                </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="part_description" class="form-label">Part Description</label>
+                                                <input type="text" class="form-control" id="part_description"
+                                                    name="description">
                                             </div>
+                                        </div>
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
@@ -295,7 +298,7 @@
 
                                         <div id="dowel-holes-wrapper">
                                             @for($i = 0; $i < $count; $i++)
-                                                <div class="row dowel-group mb-2">                                
+                                                <div class="row dowel-group mb-2">
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control" name="hole_x[]" placeholder="Hole X"
                                                         value="{{ old('hole_x.' . $i, $holeXData[$i] ?? '') }}">

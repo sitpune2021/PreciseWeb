@@ -154,7 +154,6 @@
 
         .invoice-wrapper {
             border: 2px solid #000;
-            /* ✅ full outer border */
             width: 100%;
             margin: 0 auto;
             padding: 8px;
@@ -165,7 +164,6 @@
         .invoice-table td,
         .invoice-table th {
             border: 1px solid #000;
-            /* ✅ ensures internal table lines align */
             border-collapse: collapse;
         }
 
@@ -174,12 +172,8 @@
             border-collapse: collapse;
         }
 
-
-
         .grey-row {
             border-top: 1px solid #000;
-            /* ✅ line above “Kind Attn” section */
-            /* background-color: #f0f0f0; */
             margin-top: 4px;
             padding: 4px;
         }

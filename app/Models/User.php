@@ -59,5 +59,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(RolePermission::class, 'role_id', 'user_type');
     }
-
 }

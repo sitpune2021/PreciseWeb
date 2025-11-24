@@ -28,9 +28,10 @@
                                         <tr class="table-white text-center">
                                             <th rowspan="2">#</th>
                                             <th rowspan="2">Sr.No</th>
+                                            <th rowspan="2">Date</th>
+
                                             <th rowspan="2">Customer Code</th>
 
-                                            <th rowspan="2">Date</th>
                                             <th rowspan="2">Work Order desc</th>
 
                                             <th rowspan="2">Material</th>
@@ -45,9 +46,10 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">{{ $order->work_order_no }}</td>
+                                            <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
+
                                             <td class="text-center">{{ $order->customer->code ?? 'N/A' }}</td>
 
-                                            <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
                                             <td class="text-start">{{ $order->work_order_desc }}</td>
 
                                             <td class="text-end">{{ $order->material }}</td>
@@ -75,6 +77,7 @@
                                                     data-rwid="{{ $order->r_width }}"
                                                     data-rhei="{{ $order->r_height }}"
                                                     data-mat="{{ $order->material }}"
+                                                    
                                                     data-qty="{{ $order->quantity }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>

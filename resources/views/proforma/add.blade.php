@@ -5,7 +5,10 @@
     <div class="page-content">
         <div class="container-fluid">
             <h5 class="mb-3">Add New Proforma</h5>
-
+              <div class="card-body">
+                 @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
             <form action="{{ route('proforma.store') }}" method="POST" id="invoiceForm">
                 @csrf
                 <div class="row align-items-end">
@@ -161,6 +164,7 @@
                     <button type="submit" class="btn btn-primary px-4 me-2">Save Invoice</button>
                 </div>
             </form>
+            </div>
         </div>
     </div>
 </div>

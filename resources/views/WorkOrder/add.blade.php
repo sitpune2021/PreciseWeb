@@ -13,6 +13,9 @@
                         </div>
 
                         <div class="card-body">
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
                             <div class="live-preview">
                                 <form id="workOrderForm" action="{{ isset($workorder) ? route('updateWorkEntry', base64_encode($workorder->id)) : route('storeWorkEntry') }}" method="POST">
 
@@ -212,7 +215,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Buttons (Above Form) -->
                                         <div class="text-end mt-3" id="topButtons">
                                             @if(isset($workorder))
                                             <button type="submit" class="btn btn-primary">Update</button>
@@ -261,7 +263,7 @@
                                                 document.querySelectorAll(".text-red").forEach(el => {
                                                     if (!el.classList.contains("error")) el.textContent = "";
                                                 });
-                                            }                                    
+                                            }
 
                                             document.addEventListener("DOMContentLoaded", function() {
                                                 let customerDropdown = document.getElementById("customer_id");
@@ -311,11 +313,10 @@
                                                     $(".material").text("The Material field is required");
                                                     hasError = true;
                                                 }
-                                         
+
                                                 return !hasError;
                                             }
 
-                                            // 🔹 Remove error when user types
                                             function attachValidationEvents() {
                                                 document.querySelectorAll("#workOrderForm input, #workOrderForm textarea, #workOrderForm select").forEach(el => {
                                                     el.addEventListener("input", function() {
@@ -398,7 +399,6 @@
                                                     let quantity = row.querySelector('input[name*="[quantity]"]').value;
                                                     let description = row.querySelector('input[name*="[part_description]"]').value;
 
-                                                    // Set customer first
                                                     $('#customer_id').val(customerVal).trigger('change');
 
                                                     let interval = setInterval(function() {
@@ -419,7 +419,6 @@
                                                     $('#quantity').val(quantity);
                                                     $('#part_description').val(description);
 
-                                                    // Remove row from table
                                                     row.remove();
                                                     updateSrNo();
                                                 });
@@ -499,7 +498,7 @@
                                                 length.addEventListener("input", toggleFields);
                                                 width.addEventListener("input", toggleFields);
 
-                                                toggleFields(); 
+                                                toggleFields();
                                             });
                                         </script>
 
@@ -507,7 +506,6 @@
                                         <script>
                                             $(document).ready(function() {
 
-                                                // Load projects based on customer
                                                 function loadProjects(customerId, selectedProjectId = null) {
                                                     if (customerId) {
                                                         $.ajax({
@@ -566,7 +564,6 @@
                                                     loadProjects(customerId);
                                                 });
 
-                                                // 🔹 Fixed project change handler
                                                 $('#project_id').off('change').on('change', function() {
                                                     let selectedOption = $(this).find(':selected');
                                                     let projectId = selectedOption.val();
@@ -575,14 +572,12 @@
 
                                                     loadParts(projectId);
 
-                                                    // Auto-fill part description
                                                     if (selectedText && selectedText !== "Select Project") {
                                                         $('#part_description').val(selectedText).prop('readonly', true);
                                                     } else {
                                                         $('#part_description').val('').prop('readonly', false);
                                                     }
 
-                                                    // Only set quantity if adding new row, not editing existing row
                                                     if ($('#workOrderTableWrapper').is(':hidden')) {
                                                         $('#quantity').val(qty || '');
                                                     }

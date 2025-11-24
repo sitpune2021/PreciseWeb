@@ -15,11 +15,11 @@ class SetupSheetController extends Controller
     public function AddSetupSheet()
     {
         $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id()) 
+            ->where('admin_id', Auth::id())
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-        $settings = Setting::where('admin_id', Auth::id())->get(); 
+        $settings = Setting::where('admin_id', Auth::id())->get();
         return view('SetupSheet.add', compact('codes', 'settings'));
     }
 
@@ -43,10 +43,8 @@ class SetupSheetController extends Controller
             'y_refer'  => 'required|string|max:255',
             'z_refer'  => 'required|string|max:255',
             'clamping' => 'required|string|max:255',
-
             'qty' => ['required', 'integer', 'min:1'],
 
-            // Hole Details
             'holes'        => 'nullable|array',
             'holes.*'      => 'required|numeric|min:0',
             'hole_x'       => 'required|array',
@@ -58,12 +56,11 @@ class SetupSheetController extends Controller
             'hole_depth'   => 'required|array',
             'hole_depth.*' => 'required|numeric|min:0',
 
-            // Image
             'setup_image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
         $setupSheet = new SetupSheet($validated);
-        $setupSheet->admin_id = Auth::id(); 
+        $setupSheet->admin_id = Auth::id();
 
         if ($request->hasFile('setup_image')) {
             $image = $request->file('setup_image');
@@ -79,12 +76,11 @@ class SetupSheetController extends Controller
 
     public function ViewSetupSheet()
     {
-       $sheets = SetupSheet::where('admin_id', Auth::id())
-             ->orderBy('updated_at', 'desc')
-             ->orderBy('id', 'desc')          
-              ->get();
+        $sheets = SetupSheet::where('admin_id', Auth::id())
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->get();
         return view('SetupSheet.view', compact('sheets'));
-    
     }
 
     public function editSetupSheet(string $encryptedId)
@@ -143,7 +139,6 @@ class SetupSheetController extends Controller
             'hole_depth'   => 'required|array',
             'hole_depth.*' => 'required|numeric|min:0',
 
-            // Image validation
             'setup_image'  => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
@@ -179,45 +174,45 @@ class SetupSheetController extends Controller
         return redirect()->route('ViewSetupSheet')->with('success', 'Setup Sheet deleted successfully.');
     }
 
-   public function getCustomerParts($customerId)
-{
-    $parts = WorkOrder::where('customer_id', $customerId)
-        ->where('admin_id', Auth::id())
-        ->select(
-            'id',
-            'project_id',
-            'part',
-            'part_description',
-            'customer_id',
-            'length',
-            'width',
-            'height',
-            'exp_time',
-            'quantity'
-        )
-        ->with([
-            'customer:id,code',
-            'project:id,project_no'   
-        ])
-        ->get();
+    public function getCustomerParts($customerId)
+    {
+        $parts = WorkOrder::where('customer_id', $customerId)
+            ->where('admin_id', Auth::id())
+            ->select(
+                'id',
+                'project_id',
+                'part',
+                'part_description',
+                'customer_id',
+                'length',
+                'width',
+                'height',
+                'exp_time',
+                'quantity'
+            )
+            ->with([
+                'customer:id,code',
+                'project:id,project_no'
+            ])
+            ->get();
 
-    $formatted = $parts->map(function ($wo) {
-        return [
-            'id' => $wo->id,
-            'part' => $wo->part,
-            'part_code' => ($wo->customer->code ?? '') . '_' . ($wo->project->project_no ?? '') . '_' . $wo->part,
-            'part_description' => $wo->part_description,
-            'size_in_x' => $wo->length,
-            'size_in_y' => $wo->width,
-            'size_in_z' => $wo->height,
-            'e_time' => $wo->exp_time,
-            'qty' => $wo->quantity,
-            'work_order_no' => $wo->project->project_no ?? '',  
-        ];
-    });
+        $formatted = $parts->map(function ($wo) {
+            return [
+                'id' => $wo->id,
+                'part' => $wo->part,
+                'part_code' => ($wo->customer->code ?? '') . '_' . ($wo->project->project_no ?? '') . '_' . $wo->part,
+                'part_description' => $wo->part_description,
+                'size_in_x' => $wo->length,
+                'size_in_y' => $wo->width,
+                'size_in_z' => $wo->height,
+                'e_time' => $wo->exp_time,
+                'qty' => $wo->quantity,
+                'work_order_no' => $wo->project->project_no ?? '',
+            ];
+        });
 
-    return response()->json($formatted);
-}
+        return response()->json($formatted);
+    }
 
     public function trash()
     {
@@ -243,8 +238,8 @@ class SetupSheetController extends Controller
             ->whereNull('deleted_at')
             ->exists();
 
-       $sheet->restore();  
-            $sheet->touch();
+        $sheet->restore();
+        $sheet->touch();
 
         if ($exists) {
             return redirect()->route('editSetupSheet', base64_encode($sheet->id))

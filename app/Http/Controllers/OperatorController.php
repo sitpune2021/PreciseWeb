@@ -55,7 +55,6 @@ class OperatorController extends Controller
 
         return redirect()->route('AddOperator')->with('success', 'Operator added successfully');
     }
-
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);

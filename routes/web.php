@@ -199,7 +199,8 @@ Route::get('materialorder/trash'              , [MaterialorderController::class,
 Route::get('materialorder/restore/{id}'       , [MaterialorderController::class, 'restore'])->name('restoreMaterialorder');
 Route::get('/get-customer-data/{id}'          , [MaterialorderController::class, 'getCustomerData'])->name('getCustomerData');
 Route::get('/get-material-requests/{customer_id}', [MaterialorderController::class, 'getMaterialRequests']);
-Route::get('/get-material-request-details/{id}'  , [MaterialOrderController::class, 'getMaterialRequestDetails']);
+Route::get('/get-material-request-details/{id}', [MaterialorderController::class, 'getMaterialRequestDetails']);
+
  Route::get('/material-req/by-customer/{customer_id}', [MaterialorderController::class, 'getByCustomer']);
 
 
@@ -224,7 +225,7 @@ Route::put('/useradmin/update/{id}', [UserAdminController::class, 'update'])->na
 Route::post('/useradmin/updatestatus'         , [UserAdminController::class, 'userupdateStatus'])->name('updateStatus');
 
 Route::get('/RolePermission'                  , [RolePermissionController::class, 'RolePermission'])->name('RolePermission');
-Route::post('/RolePermission/store'            , [RolePermissionController::class, 'Store'])->name('Store');
+Route::post('/RolePermission/store'           , [RolePermissionController::class, 'Store'])->name('Store');
 Route::get('/get-role-permissions/{id}'       , [RolePermissionController::class, 'getRolePermissions']);
 
 
@@ -233,18 +234,18 @@ Route::get('/Setting'                         , [AdminSettingController::class, 
 Route::post('/UpdateAdminSetting'             , [AdminSettingController::class, 'UpdateAdminSetting'])->name('UpdateAdminSetting');
 
 
-Route::get('/Payment', [PaymentController::class, 'Payment'])->name('Payment');
-Route::post('/razorpay.order', [PaymentController::class, 'order'])->name('razorpay.order');
-Route::post('/payment-success', [PaymentController::class, 'success'])->name('razorpay.success');
-Route::get('/PaymentList', [PaymentController::class, 'PaymentList'])->name('PaymentList');
-Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
+Route::get('/Payment'                         , [PaymentController::class, 'Payment'])->name('Payment');
+Route::post('/razorpay.order'                 , [PaymentController::class, 'order'])->name('razorpay.order');
+Route::post('/payment-success'                , [PaymentController::class, 'success'])->name('razorpay.success');
+Route::get('/PaymentList'                     , [PaymentController::class, 'PaymentList'])->name('PaymentList');
+Route::post('/payment/verify'                 , [PaymentController::class, 'verify'])->name('payment.verify');
 
 
 Route::get('proforma'                          ,[ProformaInvoiceController::class, 'index'])->name('proforma.index');
-Route::get('proforma/add'                      , [ProformaInvoiceController::class, 'create'])->name('proforma.add');
-Route::post('proforma/store'                   , [ProformaInvoiceController::class, 'store'])->name('proforma.store');
-Route::get('proforma/{id}/download'            , [ProformaInvoiceController::class, 'download'])->name('proforma.download');
-Route::get('proforma/print/{id}'               , [ProformaInvoiceController::class, 'printInvoice'])->name('proforma.print');
+Route::get('proforma/add'                     , [ProformaInvoiceController::class, 'create'])->name('proforma.add');
+Route::post('proforma/store'                  , [ProformaInvoiceController::class, 'store'])->name('proforma.store');
+Route::get('proforma/{id}/download'           , [ProformaInvoiceController::class, 'download'])->name('proforma.download');
+Route::get('proforma/print/{id}'              , [ProformaInvoiceController::class, 'printInvoice'])->name('proforma.print');
 Route::get('get-hsn-details/{id}'             , [ProformaInvoiceController::class, 'getHsnDetails'])->name('get.hsn.details');
 Route::get('/proforma/fetch-machine-records/{customer_id}', [ProformaInvoiceController::class, 'getMachineRecords']);
 Route::get('/proforma/get-machine-details/{id}', [ProformaInvoiceController::class, 'getMachineDetails']); 
@@ -254,10 +255,10 @@ Route::get('/proforma/fetch-material-rate/{material}', [ProformaInvoiceControlle
 });
 Route::get('/clear-app-cache', function () {
  
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('route:clear');
-    Artisan::call('view:clear');
+Artisan::call('config:clear');
+Artisan::call('cache:clear');
+Artisan::call('route:clear');
+Artisan::call('view:clear');
  
     return "Cleared config, cache, route, and view.";
 });

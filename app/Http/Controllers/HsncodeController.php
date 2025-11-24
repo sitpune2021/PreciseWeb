@@ -19,7 +19,6 @@ class HsncodeController extends Controller
         return view('Hsncode.add', compact('hsncodes'));
     }
 
-    // Store record
     public function store(Request $request)
     {
         $request->validate([
@@ -49,15 +48,13 @@ class HsncodeController extends Controller
         return redirect()->back()->with('success', 'HSN Code added successfully!');
     }
 
-
-    // Edit form
     public function edit($id)
     {
         $id  = base64_decode($id);
 
         $hsn = Hsncode::where('id', $id)
             ->where('admin_id', Auth::id())
-            ->firstOrFail(); // removed is_active filter
+            ->firstOrFail();
 
         $hsncodes = Hsncode::where('is_active', 1)
             ->where('admin_id', Auth::id())
@@ -67,8 +64,6 @@ class HsncodeController extends Controller
         return view('Hsncode.add', compact('hsn', 'hsncodes'));
     }
 
-
-    // Update record
     public function update(Request $request, $id)
     {
         $id  = base64_decode($id);
@@ -96,8 +91,6 @@ class HsncodeController extends Controller
         return redirect()->route('addHsn')->with('success', 'HSN Code updated successfully!');
     }
 
-
-    // Status change
     public function updateStatus(Request $request)
     {
         $hsn = Hsncode::where('id', $request->id)
@@ -110,7 +103,6 @@ class HsncodeController extends Controller
         return back();
     }
 
-    // Delete record
     public function destroy($id)
     {
         $id  = base64_decode($id);
@@ -127,19 +119,17 @@ class HsncodeController extends Controller
         return back()->with('success', 'HSN Code deleted successfully!');
     }
 
-    // Show Trash
     public function trash()
     {
 
         $trashedhsn = Hsncode::onlyTrashed()
             ->where('admin_id', Auth::id())
-            ->orderBy('deleted_at', 'desc') // latest deleted top
+            ->orderBy('deleted_at', 'desc')
             ->get();
 
-        // Active HSN list for duplicate check
         $hsncodes = Hsncode::where('is_active', 1)
             ->where('admin_id', Auth::id())
-            ->orderBy('id', 'desc') // newest top
+            ->orderBy('id', 'desc')
             ->get();
         return view('Hsncode.trash', compact('trashedhsn', 'hsncodes'));
     }

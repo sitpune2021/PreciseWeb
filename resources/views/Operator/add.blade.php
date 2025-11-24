@@ -11,7 +11,9 @@
                     <h5 class="mb-0">{{ isset($operator) ? 'Edit Operator' : 'Add Operator' }}</h5>
                 </div>
                 <div class="card-body">
-
+                    @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <form action="{{ isset($operator) ? route('updateOperator', base64_encode($operator->id)) : route('storeOperator') }}" method="POST">
                         @csrf
                         @if(isset($operator))
@@ -58,14 +60,14 @@
                             </div>
                             <script>
                                 function isNumberKey(evt) {
-                                    
+
                                     if (!/[0-9]/.test(evt.key)) {
                                         return false;
-                                    }                                    
+                                    }
                                     let input = evt.target.value;
 
                                     if (input.length >= 10) {
-                                        return false;  
+                                        return false;
                                     }
                                     return true;
                                 }

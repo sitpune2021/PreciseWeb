@@ -12,10 +12,10 @@
                     </h4>
                 </div>
                 <div class="card-body">
+                    
                     @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
-
 
                     <form action="{{ isset($user) ? route('UpdateUserAdmin', $user->id) : route('StoreUser') }}" method="POST">
                         @csrf
@@ -88,9 +88,7 @@
                                 @enderror
                             </div>
 
-
                             @if(!isset($user))
-                            <!-- Password -->
                             <div class="col-md-3">
                                 <label for="password" class="form-label">Password <span class="text-red">*</span></label>
                                 <div class="input-group">
@@ -109,7 +107,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Confirm Password -->
                             <div class="col-md-3">
                                 <label for="password_confirmation" class="form-label">Confirm Password</label>
                                 <div class="input-group">
@@ -153,16 +150,14 @@
         }
     }
 
-    // 1️⃣ AUTO USERNAME FROM EMAIL
     document.getElementById('email').addEventListener('input', function() {
         let email = this.value;
+
         if (email.includes('@')) {
-            let username = email.split('@')[0];
-            document.getElementById('user_name').value = username;
+            document.getElementById('user_name').value = email;
         }
     });
 
-    // 2️⃣ AUTO FILL CONFIRM PASSWORD
     document.getElementById('password').addEventListener('input', function() {
         document.getElementById('password_confirmation').value = this.value;
     });

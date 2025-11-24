@@ -19,26 +19,27 @@ class MachinerecordController extends Controller
 {
     public function AddMachinerecord()
     {
-        $codes = Customer::where('status', 1) ->where('admin_id', Auth::id())
-        ->select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+        $codes = Customer::where('status', 1)->where('admin_id', Auth::id())
+            ->select('id', 'code', 'name')->orderBy('id', 'desc')->get();
 
-       $materialtype = MaterialType::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        $materialtype = MaterialType::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $workorders = WorkOrder::with(['customer', 'project'])
-        ->where('admin_id', Auth::id())
-        ->whereHas('customer', function ($q) {
-        $q->where('status', 1)
-        ->where('admin_id', Auth::id());})->latest()->get();
+            ->where('admin_id', Auth::id())
+            ->whereHas('customer', function ($q) {
+                $q->where('status', 1)
+                    ->where('admin_id', Auth::id());
+            })->latest()->get();
 
 
         $machines = Machine::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
-        $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc') ->get();
+        $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $projects = Project::where('admin_id', Auth::id())
-        ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
+            ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
             ->orderBy('project_no', 'asc')
             ->get();
 
@@ -52,8 +53,6 @@ class MachinerecordController extends Controller
             'projects'
         ));
     }
-
-
     public function StoreMachinerecord(Request $request)
     {
         $validated = $request->validate([
@@ -116,11 +115,9 @@ class MachinerecordController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-
         $materialtype = MaterialType::where('admin_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
-
 
         $workorders = WorkOrder::with('customer')
             ->where('admin_id', Auth::id())
@@ -133,15 +130,20 @@ class MachinerecordController extends Controller
             ->get();
 
 
-        $machines = Machine::where('admin_id', Auth::id()) ->orderBy('id', 'desc') ->get();
+        $machines = Machine::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
-        $operators = Operator::where('admin_id', Auth::id()) ->orderBy('id', 'desc') ->get();
+        $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
-        $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc') ->get();
+        $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         return view('Machinerecord.add', compact(
             'record',
-            'workorders', 'machines', 'operators','settings', 'materialtype','codes'
+            'workorders',
+            'machines',
+            'operators',
+            'settings',
+            'materialtype',
+            'codes'
         ));
     }
 

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class MachineController extends Controller
 {
-
     public function AddMachine()
     {
         $machines = Machine::where('is_active', 1)
@@ -109,19 +108,16 @@ class MachineController extends Controller
 
     public function trash()
     {
-        // Get soft deleted operators
         $trashedmachine = Machine::onlyTrashed()
             ->where('admin_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
 
-        // Get active operators
         $Machine = Machine::where('admin_id', Auth::id())->get();
 
         return view('Machine.trash', compact('trashedmachine', 'Machine'));
     }
 
-    // Restore machine
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

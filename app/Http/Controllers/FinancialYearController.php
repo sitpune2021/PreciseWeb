@@ -55,7 +55,6 @@ class FinancialYearController extends Controller
 
         return view('FinancialYear.add', compact('year', 'years'));
     }
-
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -119,7 +118,6 @@ class FinancialYearController extends Controller
 
         return view('FinancialYear.trash', compact('trashedFinancialYears', 'financialYears'));
     }
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

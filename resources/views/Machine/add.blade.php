@@ -11,6 +11,9 @@
                     <h5 class="mb-0">{{ isset($machine) ? 'Edit Machine' : 'Add Machine' }}</h5>
                 </div>
                 <div class="card-body">
+                     @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <form action="{{ isset($machine) ? route('updateMachine', base64_encode($machine->id)) : route('storeMachine') }}" method="POST">
                         @csrf
                         @if(isset($machine))

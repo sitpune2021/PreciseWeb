@@ -122,7 +122,7 @@ class ProjectController extends Controller
             ],
             'quantity'      => 'required|integer|min:1',
             'date'          => 'nullable|date',
-            'code'          => 'nullable|string|max:255', // 👈 add this for textbox value
+            'code'          => 'nullable|string|max:255',
         ]);
 
         $customer_code = $request->filled('code')

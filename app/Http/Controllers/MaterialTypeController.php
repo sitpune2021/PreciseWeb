@@ -189,12 +189,12 @@ class MaterialTypeController extends Controller
                 ->with('success', "Material Type '{$MaterialType->material_type}' already exists. Redirected to Edit Page.");
         }
 
-            $MaterialType->restore();
-            $MaterialType->is_active = 1;
-            $MaterialType->touch();
-            $MaterialType->save();
+        $MaterialType->restore();
+        $MaterialType->is_active = 1;
+        $MaterialType->touch();
+        $MaterialType->save();
 
-          return redirect()->route('AddMaterialType')
+        return redirect()->route('AddMaterialType')
             ->with('success', "Material Type '{$MaterialType->material_type}' restored successfully.");
     }
 }

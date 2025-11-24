@@ -12,18 +12,17 @@ class UserAdmin extends Authenticatable
 
     protected $table = 'useradmins';
     protected $fillable = [
-    'admin_id',
-    'full_name',
-    'email',
-    'user_name',
-    'mobile',
-    'role',
-    'password',
-    'status',
-];
+        'admin_id',
+        'full_name',
+        'email',
+        'user_name',
+        'mobile',
+        'role',
+        'password',
+        'status',
+    ];
     protected $hidden = ['password', 'remember_token'];
 
-    // Optionally: check if user is active
     public function isActive()
     {
         return $this->status == 1;
@@ -31,27 +30,25 @@ class UserAdmin extends Authenticatable
 
 
     public function roles()
-{
-    return $this->belongsTo(Role::class, 'role');
-}
+    {
+        return $this->belongsTo(Role::class, 'role');
+    }
 
-public function hasRole($role)
-{
-    return $this->roles()->where('name', $role)->exists();
-}
+    public function hasRole($role)
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
 
-public function hasPermission($permission)
-{
-    return $this->roles()
-        ->whereHas('permissions', function($q) use ($permission) {
-            $q->where('name', $permission);
-        })->exists();
-}
+    public function hasPermission($permission)
+    {
+        return $this->roles()
+            ->whereHas('permissions', function ($q) use ($permission) {
+                $q->where('name', $permission);
+            })->exists();
+    }
 
-public function rolePermission()
-{
-    return $this->hasOne(RolePermission::class, 'role', 'role_id');
-}
-
-
+    public function rolePermission()
+    {
+        return $this->hasOne(RolePermission::class, 'role', 'role_id');
+    }
 }

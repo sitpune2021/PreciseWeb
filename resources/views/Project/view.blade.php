@@ -13,7 +13,6 @@
                             <h5 class="mb-0">View Projects</h5>
 
                             <div class="d-flex align-items-center gap-2">
-                                <!-- Add Project Button -->
                                 <a href="{{ route('AddProject') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Project
                                 </a>
@@ -46,7 +45,6 @@
 
                                             <td>
                                                 @if(hasPermission('Projects', 'edit'))
-                                                <!-- Edit -->
                                                 <a href="{{ route('editProject', base64_encode($project->id)) }}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
@@ -54,7 +52,6 @@
                                                 </a>
                                                 @endif
 
-                                                <!-- View -->
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewBtn"
                                                     data-id="{{ $project->id }}"
@@ -66,7 +63,6 @@
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
                                                 @if(hasPermission('Projects', 'delete'))
-                                                <!-- Delete -->
                                                 <a href="{{ route('deleteProject', base64_encode($project->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
@@ -86,7 +82,6 @@
                 </div>
             </div>
 
-            <!-- View Modal -->
             <div class="modal fade" id="viewProjectModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -126,8 +121,6 @@
                     </div>
                 </div>
             </div>
-            <!-- End Modal -->
-
         </div>
     </div>
 </div>

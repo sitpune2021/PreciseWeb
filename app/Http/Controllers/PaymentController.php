@@ -103,7 +103,6 @@ class PaymentController extends Controller
         ]);
     }
 
-
     public function PaymentList()
     {
         $payments = Order::all();

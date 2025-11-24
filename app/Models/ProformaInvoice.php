@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,4 +48,3 @@ class ProformaInvoice extends Model
         return $this->hasMany(ProformaItem::class, 'invoice_id');
     }
 }
-

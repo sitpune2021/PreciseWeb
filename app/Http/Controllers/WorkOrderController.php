@@ -89,7 +89,7 @@ class WorkOrderController extends Controller
                 'part_description' => $row['part_description'],
                 'material'         => $row['material'],
                 'admin_id'         => $adminId,
-                'status'           => 1, 
+                'status'           => 1,
             ]);
         }
 

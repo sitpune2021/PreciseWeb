@@ -46,19 +46,18 @@ class MaterialReq extends Model
         'total_cost'
     ];
 
-
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function materialtype()
+    public function materialType()
     {
-        return $this->belongsTo(MaterialType::class, 'material');
+        return $this->belongsTo(MaterialType::class, 'material', 'id');
     }
 
     public function materialOrders()
     {
-        return $this->hasMany(MaterialOrder::class); // optional
+        return $this->hasMany(MaterialOrder::class);
     }
 }

@@ -61,17 +61,15 @@ class ClientContoller extends Controller
             'logo'         => $logoPath ?? null,
             'address'      => $request->input('address'),
             'login_id'     => $users->id,
-             'plan_type' => 1,
+            'plan_type' => 1,
             'plan_expiry'  => $expiry,
             'trial_start'  => $today,
             'trial_end'    => $expiry,
             'status'       => 1,
         ]);
 
-       return redirect()->route('ViewClient')->with('success','Client created with 7-day trial.');
+        return redirect()->route('ViewClient')->with('success', 'Client created with 7-day trial.');
     }
-
-
     public function ViewClient()
     {
         $client = Client::orderBy('id', 'desc')->get();
@@ -88,7 +86,6 @@ class ClientContoller extends Controller
             abort(404);
         }
     }
-
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -151,47 +148,44 @@ class ClientContoller extends Controller
     }
 
     public function updateClientPlan(Request $request)
-{
-    $client = Client::findOrFail($request->id);
-    $plan = $request->plan_type;
+    {
+        $client = Client::findOrFail($request->id);
+        $plan = $request->plan_type;
 
-    $expiry = match ($plan) {
-        '1month' => now()->addMonth(),
-        '3month' => now()->addMonths(3),
-        '1year' => now()->addYear(),
-        default => now()->addDays(7),
-    };
+        $expiry = match ($plan) {
+            '1month' => now()->addMonth(),
+            '3month' => now()->addMonths(3),
+            '1year' => now()->addYear(),
+            default => now()->addDays(7),
+        };
 
-    $client->plan_type = $plan;
-    $client->plan_expiry = $expiry;
-    $client->trial_start = null;
-    $client->trial_end = null;
-    $client->save();
+        $client->plan_type = $plan;
+        $client->plan_expiry = $expiry;
+        $client->trial_start = null;
+        $client->trial_end = null;
+        $client->save();
 
-    return back()->with('success', 'Plan updated successfully!');
-}
+        return back()->with('success', 'Plan updated successfully!');
+    }
 
-public function renewPlan(Request $request)
-{
-    $request->validate([
-        'client_id' => 'required|exists:clients,id',
-        'plan_type' => 'required|string',
-        'trial_start' => 'required|date',
-        'trial_end' => 'required|date|after_or_equal:trial_start',
-    ]);
+    public function renewPlan(Request $request)
+    {
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'plan_type' => 'required|string',
+            'trial_start' => 'required|date',
+            'trial_end' => 'required|date|after_or_equal:trial_start',
+        ]);
 
-    $client = Client::find($request->client_id);
+        $client = Client::find($request->client_id);
 
-    // Update plan details
-    $client->update([
-        'plan_type' => $request->plan_type,
-        'trial_start' => $request->trial_start,
-        'trial_end' => $request->trial_end,
-        'plan_expiry' => $request->trial_end,
-    ]);
+        $client->update([
+            'plan_type' => $request->plan_type,
+            'trial_start' => $request->trial_start,
+            'trial_end' => $request->trial_end,
+            'plan_expiry' => $request->trial_end,
+        ]);
 
-    return redirect()->back()->with('success', 'Client plan renewed successfully!');
-}
-
-
+        return redirect()->back()->with('success', 'Client plan renewed successfully!');
+    }
 }

@@ -30,7 +30,6 @@ class MaterialorderController extends Controller
 
     public function ViewMaterialorder()
     {
-        // Show orders for current admin
         $orders = MaterialOrder::where('admin_id', Auth::id())
             ->latest()
             ->paginate(10);
@@ -157,32 +156,31 @@ class MaterialorderController extends Controller
         return redirect()->route('ViewMaterialorder')
             ->with('success', "Material Order '{$order->work_order_desc}' restored successfully.");
     }
-
     public function getCustomerData($id)
     {
-        $materialReq = MaterialReq::where('customer_id', $id)
-            ->latest()
+        $adminId = Auth::id();
+
+        $material = MaterialReq::with(['materialType', 'customer'])
+            ->where('id', $id)
+            ->where('admin_id', $adminId)
             ->first();
 
-        if ($materialReq) {
-            return response()->json([
-                'code'        => $materialReq->customer->code ?? '',
-                'work_order_no' => $materialReq->work_order_no ?? '',
-                'description' => $materialReq->description ?? '',
-                'material'    => $materialReq->material ?? '',
-                'qty'         => $materialReq->quantity ?? '',
-                'f_diameter'  => $materialReq->f_diameter ?? '',
-                'f_length'    => $materialReq->f_length ?? '',
-                'f_width'     => $materialReq->f_width ?? '',
-                'f_height'    => $materialReq->f_height ?? '',
-                'r_diameter'  => $materialReq->r_diameter ?? '',
-                'r_length'    => $materialReq->r_length ?? '',
-                'r_width'     => $materialReq->r_width ?? '',
-                'r_height'    => $materialReq->r_height ?? '',
-            ]);
+        if (!$material) {
+            return response()->json([]);
         }
 
-        return response()->json([]);
+        return response()->json([
+            'code'           => $material->customer->code ?? '',
+            'work_order_no'  => $material->work_order_no ?? '',
+            'description'    => $material->description ?? '',
+            'material_id'    => $material->material,
+            'material_name'  => $material->materialType->material_type ?? '',
+            'qty'            => $material->qty ?? '',
+            'f_diameter'     => $material->dia ?? '',
+            'f_length'       => $material->length ?? '',
+            'f_width'        => $material->width ?? '',
+            'f_height'       => $material->height ?? '',
+        ]);
     }
 
     public function getMaterialRequests($customer_id)
@@ -208,23 +206,27 @@ class MaterialorderController extends Controller
 
     public function getMaterialRequestDetails($id)
     {
-        try {
-            $adminId = Auth::id();
+        $data = MaterialReq::with('materialType')->find($id);
 
-            $material = MaterialReq::where('id', $id)
-                ->where('admin_id', $adminId)
-                ->first();
-
-            if (!$material) {
-                return response()->json(['status' => 'not_found']);
-            }
-
-            return response()->json([
-                'status' => 'success',
-                'data' => $material
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        if (!$data) {
+            return response()->json(['status' => 'not_found']);
         }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'work_order_no' => $data->work_order_no,
+                'date' => $data->date,
+                'description' => $data->description,
+
+                'material_name' => $data->materialType ? $data->materialType->material_type : '',
+
+                'dia' => $data->dia,
+                'length' => $data->length,
+                'width' => $data->width,
+                'height' => $data->height,
+                'qty' => $data->qty,
+            ]
+        ]);
     }
 }

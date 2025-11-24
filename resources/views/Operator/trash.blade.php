@@ -5,7 +5,6 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            {{-- Success/Error Message --}}
             @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}

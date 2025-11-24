@@ -14,6 +14,9 @@
                         </div>
 
                         <div class="card-body">
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
                             <div class="live-preview">
                                 <form action="{{ isset($vendor) ? route('updateVendor',  base64_encode($vendor->id)) : route('storeVendor') }}" method="POST">
                                     @csrf

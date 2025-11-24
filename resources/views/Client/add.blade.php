@@ -14,6 +14,10 @@
                         </div>
 
                         <div class="card-body">
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
+
                             <div class="live-preview">
                                 <form action="{{ isset($client) ? route('updateClient', base64_encode($client->id)) : route('storeClient') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
@@ -37,6 +41,7 @@
                                                 @enderror
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="email_id" class="form-label">Email ID<span class="mandatory">*</span></label>
@@ -46,6 +51,7 @@
                                                 @enderror
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
@@ -66,6 +72,7 @@
                                                 @enderror
                                             </div>
                                         </div>
+
                                         <div class="col-md-6 mb-3">
                                             <label for="logo" class="form-label">Client Logo <span class="mandatory">*</span></label>
                                             <div class="d-flex align-items-center gap-2">
@@ -94,6 +101,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                         @endif
                                         <div class="col-md-12">
                                             <div class="mb-3">
@@ -104,6 +112,7 @@
                                                 @enderror
                                             </div>
                                         </div>
+
                                         <div class="col-lg-12">
                                             <div class="text-end">
                                                 <button type="submit" class="btn btn-primary">{{ isset($client) ? 'Update' : 'Submit' }}</button>
@@ -115,13 +124,13 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </div><!-- end row -->
+                                    </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div><!-- end row -->
+            </div>
         </div>
     </div>
 </div>

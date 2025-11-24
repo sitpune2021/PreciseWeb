@@ -11,7 +11,6 @@ class Customer extends Model
     use HasFactory;
     use SoftDeletes;
 
-    // Define which fields are mass assignable
     protected $fillable = [
         'login_id',
         'admin_id',

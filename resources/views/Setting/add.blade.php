@@ -11,6 +11,9 @@
                     <h5 class="mb-0">{{ isset($setting) ? 'Edit Setting ' : 'Add Setting ' }}</h5>
                 </div>
                 <div class="card-body">
+                    @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <form action="{{ isset($setting) ? route('updateSetting', base64_encode($setting->id)) : route('storeSetting') }}" method="POST">
                         @csrf
                         @if(isset($setting))

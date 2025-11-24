@@ -14,15 +14,12 @@ use Illuminate\Support\Facades\Log;
 
 class UserAdminController extends Controller
 {
-    // Show create form
     public function AddUserAdmin()
     {
         $roles = Role::all();
         return view('useradmin.create', compact('roles'));
     }
 
-
-    // Store user
     public function StoreUser(Request $request)
     {
 
@@ -35,7 +32,6 @@ class UserAdminController extends Controller
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        // 1️⃣ Create UserAdmin
         $admin = UserAdmin::create([
             'full_name' => $request->full_name,
             'email' => $request->email,
@@ -43,10 +39,10 @@ class UserAdminController extends Controller
             'mobile' => $request->mobile,
             'role' => $request->role,
             'password' => Hash::make($request->password),
-            'status' => 'Active'
+            'status' => 'Active',
+            'admin_id' => Auth::id(),
         ]);
 
-        // Create user in users table
         User::create([
             'name' => $request->full_name,
             'email' => $request->email,
@@ -60,7 +56,6 @@ class UserAdminController extends Controller
         return redirect()->route('ListUserAdmin')->with('success', 'User created successfully in both tables.');
     }
 
-    // Show edit form
     public function edit($id)
     {
         $id = base64_decode($id);
@@ -69,7 +64,6 @@ class UserAdminController extends Controller
         return view('useradmin.create', compact('user', 'roles'));
     }
 
-    // Update user
     public function update(Request $request, $id)
     {
         $user = UserAdmin::findOrFail($id);
@@ -99,14 +93,13 @@ class UserAdminController extends Controller
     }
 
 
-    // List users
     public function index()
-{
-    $adminId = Auth::id();
-    $users = UserAdmin::where('admin_id', $adminId)->get();
+    {
+        $adminId = Auth::id();
+        $users = UserAdmin::where('admin_id', $adminId)->get();
 
-    return view('useradmin.view', compact('users'));
-}
+        return view('useradmin.view', compact('users'));
+    }
     public function RolePermission()
     {
         $roles = Role::all();
@@ -121,7 +114,6 @@ class UserAdminController extends Controller
 
         return back()->with('success', 'Status updated!');
     }
-
 
     public function getRolePermissions($role_id)
     {

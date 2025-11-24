@@ -11,6 +11,9 @@
                     <h5 class="mb-0">{{ isset($hsn) ? 'Edit HSN Code' : 'Add HSN/SAC Code' }}</h5>
                 </div>
                 <div class="card-body">
+                    @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <form action="{{ isset($hsn) ? route('updateHsn', base64_encode($hsn->id)) : route('storeHsn') }}" method="POST">
                         @csrf
                         @if(isset($hsn))
@@ -18,7 +21,6 @@
                         @endif
 
                         <div class="row g-3">
-                            <!-- HSN Code -->
                             <div class="col-md-3">
                                 <label for="hsn_code" class="form-label">HSN Code <span class="text-red">*</span></label>
                                 <input type="text" class="form-control"
@@ -29,8 +31,6 @@
                                 </small>
                             </div>
 
-                           
-                            <!-- SGST -->
                             <div class="col-md-3">
                                 <label for="sgst" class="form-label">SGST % </label>
                                 <input type="number" step="0.01" min="0" class="form-control only-positive"
@@ -41,7 +41,6 @@
                                 </small>
                             </div>
 
-                            <!-- CGST -->
                             <div class="col-md-3">
                                 <label for="cgst" class="form-label">CGST % </label>
                                 <input type="number" step="0.01" min="0" class="form-control only-positive"
@@ -52,7 +51,6 @@
                                 </small>
                             </div>
 
-                            <!-- IGST -->
                             <div class="col-md-3">
                                 <label for="igst" class="form-label">IGST % </label>
                                 <input type="number" step="0.01" min="0" class="form-control only-positive"
@@ -62,7 +60,7 @@
                                     @error('igst') {{ $message }} @enderror
                                 </small>
                             </div>
-                            <!-- Invoice Description -->
+
                             <div class="col-md-6">
                                 <label for="invoice_desc" class="form-label">Invoice Description<span class="text-red">*</span></label>
                                 <input type="text" class="form-control"
@@ -73,23 +71,20 @@
                                 </small>
                             </div>
 
-                            <!-- Submit Button -->
                             <div class="col-md-2 d-flex">
                                 <button type="submit" class="btn btn-primary mt-2 w-100 align-self-center">
-                                      {{ isset($hsn) ? 'Update' : 'Add' }}
+                                    {{ isset($hsn) ? 'Update' : 'Add' }}
                                 </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-            <!-- Form End -->
 
-            <!-- List Start -->
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">HSN Code List</h5>
-                      <a href="{{ route('trashhsn') }}" class="btn btn-warning btn-sm">
+                    <a href="{{ route('trashhsn') }}" class="btn btn-warning btn-sm">
                         View Trash
                     </a>
                 </div>
@@ -147,21 +142,17 @@
                     </div>
                 </div>
             </div>
-            <!-- List End -->
         </div>
     </div>
 </div>
 <script>
-    // Select all inputs with class "only-positive"
     document.querySelectorAll('.only-positive').forEach(function(input) {
         input.addEventListener('input', function() {
-            // Agar negative value asel tar 0 kar
             if (this.value < 0) {
                 this.value = '';
             }
         });
 
-        // Optional: prevent typing "-" character
         input.addEventListener('keydown', function(e) {
             if (e.key === '-' || e.key === 'e') {
                 e.preventDefault();
@@ -169,44 +160,39 @@
         });
     });
 
-     
-document.addEventListener("DOMContentLoaded", function () {
-    const sgst = document.querySelector("input[name='sgst']");
-    const cgst = document.querySelector("input[name='cgst']");
-    const igst = document.querySelector("input[name='igst']");
 
-    function toggleFields() {
-        let sgstVal = parseFloat(sgst.value) || 0;
-        let cgstVal = parseFloat(cgst.value) || 0;
-        let igstVal = parseFloat(igst.value) || 0;
+    document.addEventListener("DOMContentLoaded", function() {
+        const sgst = document.querySelector("input[name='sgst']");
+        const cgst = document.querySelector("input[name='cgst']");
+        const igst = document.querySelector("input[name='igst']");
 
-        // If SGST or CGST entered → disable IGST
-        if (sgstVal > 0 || cgstVal > 0) {
-            igst.disabled = true;
-            igst.value = '';
-        } else {
-            igst.disabled = false;
+        function toggleFields() {
+            let sgstVal = parseFloat(sgst.value) || 0;
+            let cgstVal = parseFloat(cgst.value) || 0;
+            let igstVal = parseFloat(igst.value) || 0;
+
+            if (sgstVal > 0 || cgstVal > 0) {
+                igst.disabled = true;
+                igst.value = '';
+            } else {
+                igst.disabled = false;
+            }
+
+            if (igstVal > 0) {
+                sgst.disabled = true;
+                cgst.disabled = true;
+                sgst.value = '';
+                cgst.value = '';
+            } else {
+                sgst.disabled = false;
+                cgst.disabled = false;
+            }
         }
 
-        // If IGST entered → disable SGST & CGST
-        if (igstVal > 0) {
-            sgst.disabled = true;
-            cgst.disabled = true;
-            sgst.value = '';
-            cgst.value = '';
-        } else {
-            sgst.disabled = false;
-            cgst.disabled = false;
-        }
-    }
-
-    sgst.addEventListener("input", toggleFields);
-    cgst.addEventListener("input", toggleFields);
-    igst.addEventListener("input", toggleFields);
-});
- 
-
+        sgst.addEventListener("input", toggleFields);
+        cgst.addEventListener("input", toggleFields);
+        igst.addEventListener("input", toggleFields);
+    });
 </script>
-
 
 @endsection

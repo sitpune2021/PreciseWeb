@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class VendorContoller extends Controller
 {
-
     public function AddVendor()
     {
         return view('Vendor.add');
@@ -82,7 +81,7 @@ class VendorContoller extends Controller
         }
 
         Vendor::create([
-            'admin_id'       => Auth::id(),   
+            'admin_id'       => Auth::id(),
             'vendor_name'    => $request->vendor_name,
             'vendor_code'    => $vendor_code,
             'contact_person' => $request->contact_person,
@@ -98,7 +97,7 @@ class VendorContoller extends Controller
 
     public function ViewVendor()
     {
-        $vendors = Vendor::where('admin_id', Auth::id())  
+        $vendors = Vendor::where('admin_id', Auth::id())
             ->orderBy('updated_at', 'desc')
             ->get();
 
@@ -108,7 +107,7 @@ class VendorContoller extends Controller
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-        $vendor = Vendor::where('admin_id', Auth::id())->findOrFail($id); 
+        $vendor = Vendor::where('admin_id', Auth::id())->findOrFail($id);
         $method = "PUT";
         return view('Vendor.add', compact('vendor', 'method'));
     }
@@ -166,7 +165,7 @@ class VendorContoller extends Controller
             'address' => 'required|string|max:500',
         ]);
 
-        $validated['admin_id'] = Auth::id(); 
+        $validated['admin_id'] = Auth::id();
 
         $vendor->update($validated);
 

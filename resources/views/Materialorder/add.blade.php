@@ -23,8 +23,15 @@
                                 <div class="row g-3">
                                     <div class="col-md-3">
                                         <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
-                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
+
+                                        <select class="form-select js-example-basic-single"
+                                            id="customer_id"
+                                            name="customer_id"
+                                            data-selected="{{ old('customer_id', $record->customer_id ?? '') }}"
+                                            {{ isset($record) ? 'disabled' : '' }}>
+
                                             <option value="">Select Customer Code</option>
+
                                             @foreach($codes as $c)
                                             <option value="{{ $c->id }}"
                                                 data-code="{{ $c->code }}"
@@ -33,15 +40,18 @@
                                                 {{ old('customer_id', $record->customer_id ?? '') == $c->id ? 'selected' : '' }}>
                                                 {{ $c->code }}
                                             </option>
-
                                             @endforeach
                                         </select>
+
                                         @error('customer_id')
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
+
+                                        @if(isset($record))
+                                        <input type="hidden" name="customer_id" value="{{ $record->customer_id }}">
+                                        @endif
                                     </div>
 
-                                    <!-- Work Order No -->
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="work_order_no" class="form-label">Sr No. <span class="mandatory">*</span></label>
@@ -54,24 +64,25 @@
                                         </div>
                                     </div>
 
-                                    <!-- Material Requests Dropdown -->
                                     <div class="col-md-4">
                                         <label>Select Material Req</label>
-                                        <select id="material_data_dropdown" class="form-control">
-                                            <option value="">Select Material Req ID</option>
+                                        <select id="material_data_dropdown"
+                                            class="form-control form-select"
+                                            data-selected="{{ old('material_req_id', $record->material_req_id ?? '') }}">
+                                            <option value="">Select Material Req</option>
                                         </select>
+
                                     </div>
-                                    <!-- DATE -->
+
                                     <div class="col-md-3">
                                         <label class="form-label">Date <span class="text-red">*</span></label>
-                                        <input type="date" name="date" id="date" class="form-control"
+                                        <input type="date" name="date" id="date" class="form-control "
                                             value="{{ old('date', isset($record->date) ? \Carbon\Carbon::parse($record->date)->format('Y-m-d') : '') }}">
                                         @error('date')
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div>
 
-                                    <!-- WORK ORDER -->
                                     <div class="col-md-7">
                                         <label class="form-label">Work Order Description </label>
                                         <input type="text" name="work_order_desc" id="description" class="form-control"
@@ -81,7 +92,6 @@
                                         @enderror
                                     </div>
 
-                                    <!-- FINISH SIZE SECTION -->
                                     <div class="col-12 mt-3">
                                         <h5 class="fw-bold">Finish Size</h5>
                                     </div>
@@ -107,9 +117,6 @@
                                             value="{{ old('f_height', $materialReq->height ?? $record->f_height ?? '') }}">
                                     </div>
 
-                                    <!-- MATERIAL -->
-
-                                    <!-- RAW SIZE SECTION -->
                                     <div class="col-12 mt-3">
                                         <h5 class="fw-bold">Raw Size</h5>
                                     </div>
@@ -144,7 +151,6 @@
                                         @enderror
                                     </div>
 
-                                    <!-- QTY -->
                                     <div class="col-md-2">
                                         <label class="form-label">Quantity <span class="text-red">*</span></label>
                                         <input type="number" name="quantity" id="quantity" class="form-control"
@@ -156,7 +162,6 @@
 
                                 </div>
 
-                                <!-- Buttons -->
                                 <div class="col-lg-12 text-end">
                                     <button type="submit" class="btn btn-primary">
                                         {{ isset($record) ? 'Update' : 'Submit' }}
@@ -177,8 +182,8 @@
             </div>
 
         </div> ,
-    </div> <!-- page-content -->
-</div> <!-- main-content -->
+    </div>  
+</div> 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
@@ -239,13 +244,7 @@
                             $('#date').val(data.date);
                             $('#description').val(data.description);
 
-                            if (data.material) {
-                                $('#material').val(data.material);
-                            } else if (data.material_type) {
-                                $('#material').val(data.material_type);
-                            } else {
-                                $('#material').val('');
-                            }
+                            $('#material').val(data.material_name);
 
                             $('#f_diameter').val(data.dia);
                             $('#f_length').val(data.length);

@@ -5,12 +5,14 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            <!-- Form Start -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ isset($year) ? 'Edit Financial Year' : 'Add Financial Year' }}</h5>
                 </div>
                 <div class="card-body">
+                     @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <form action="{{ isset($year) ? route('UpdateFinancialYear', base64_encode($year->id)) : route('StoreFinancialYear') }}" method="POST">
                         @csrf
                         @if(isset($year))
@@ -18,7 +20,6 @@
                         @endif
 
                         <div class="row align-items-end">
-                            <!-- Year Field -->
                             <div class="col-md-4 col-sm-6 mb-3 position-relative">
                                 <label for="year" class="form-label">
                                     Financial Year <span class="mandatory">*</span>
@@ -37,7 +38,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Submit Button -->
                             <div class="col-md-2 col-sm-6 mb-3">
                                 <button type="submit" class="btn btn-primary w-100 px-3 py-2">
                                     {{ isset($year) ? 'Update' : 'Add' }}
@@ -47,9 +47,7 @@
                     </form>
                 </div>
             </div>
-            <!-- Form End -->
 
-            <!-- List Start -->
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Financial Year List</h5>
@@ -113,8 +111,6 @@
                     </div>
                 </div>
             </div>
-            <!-- List End -->
-
         </div>
     </div>
 </div>

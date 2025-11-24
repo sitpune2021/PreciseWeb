@@ -13,13 +13,16 @@
                         </div>
 
                         <div class="card-body">
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
+
                             <div class="live-preview">
 
                                 <form action="{{ route('UpdateAdminSetting') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
 
-                                        <!-- GST -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">GST No<span class="mandatory"> *</span></label>
@@ -31,7 +34,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Date -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">Date</label>
@@ -45,7 +47,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Udyam No -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">MSME NO<span class="mandatory"> *</span></label>
@@ -58,7 +59,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Bank details -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Bank Account Details</label>
@@ -68,7 +68,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Declaration -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Declaration</label>
@@ -78,7 +77,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Note -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Note</label>
@@ -88,7 +86,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Footer Note -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Footer Note</label>
@@ -98,7 +95,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Logo Upload -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Upload Logo</label>
@@ -116,7 +112,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Stamp Upload -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Upload Stamp PNG</label>
@@ -134,7 +129,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Submit -->
                                         <div class="col-lg-12">
                                             <div class="text-end">
                                                 <a href="{{ route('invoice.index') }}" class="btn btn-secondary px-4">Cancel</a>
@@ -142,15 +136,15 @@
                                             </div>
                                         </div>
 
-                                    </div><!-- row end -->
+                                    </div>
                                 </form>
 
                             </div>
                         </div>
 
                     </div>
-                </div><!-- col -->
-            </div><!-- row -->
+                </div>
+            </div>
 
         </div>
     </div>

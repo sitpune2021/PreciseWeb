@@ -165,7 +165,6 @@
         .invoice-table td,
         .invoice-table th {
             border: 1px solid #000;
-            /* ✅ ensures internal table lines align */
             border-collapse: collapse;
         }
 
@@ -178,8 +177,6 @@
 
         .grey-row {
             border-top: 1px solid #000;
-            /* ✅ line above “Kind Attn” section */
-            /* background-color: #f0f0f0; */
             margin-top: 4px;
             padding: 4px;
         }

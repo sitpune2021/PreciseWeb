@@ -21,10 +21,7 @@
 
                          <div class="d-flex justify-content-between align-items-end">
 
-                             <!-- Customer Search Form -->
                              <form method="GET" action="{{ route('invoice.index') }}" class="d-flex gap-2 align-items-end">
-
-                                 <!-- Increased width for select -->
                                  <select name="customer_id"
                                      class="form-select form-select-sm border-primary js-example-basic-single">
                                      <option value="">All Customers List</option>
@@ -41,9 +38,8 @@
                                  </button>
                              </form>
 
-                             <!-- Add Invoice Button -->
                              <a href="{{ route('invoice.add') }}" class="btn btn-success shadow-sm">
-                                  </i> Add Invoice
+                                 </i> Add Invoice
                              </a>
 
                          </div>
@@ -54,7 +50,6 @@
 
              </div>
 
-             <!-- Table Section -->
              <div class="card shadow-sm border-0">
                  <div class="card-body">
                      <div class="table-responsive">
@@ -104,6 +99,6 @@
      </div>
  </div>
 
- 
+
 
  @endsection

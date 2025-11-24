@@ -154,7 +154,6 @@ class InvoiceController extends Controller
 
         return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
-
     public function download($id)
     {
         $invoice = Invoice::with(['customer', 'items'])->findOrFail($id);

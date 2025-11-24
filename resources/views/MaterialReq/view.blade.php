@@ -69,7 +69,7 @@
                                                         data-length="{{ $req->length }}"
                                                         data-width="{{ $req->width }}"
                                                         data-height="{{ $req->height }}"
-                                                       data-material="{{ $req->material ?? 'N/A' }}"
+                                                        data-material="{{ $req->materialType->material_type ?? 'N/A' }}"                                                       
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
                                                         data-cost="{{ $req->material_cost ?? 'N/A' }}"

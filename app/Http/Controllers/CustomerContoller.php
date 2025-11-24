@@ -54,7 +54,6 @@ class CustomerContoller extends Controller
             'address' => 'nullable|string',
         ]);
 
-        // Generate customer code
         $customer_name_words = explode(' ', trim($request->input('name')));
         if (count($customer_name_words) == 1) {
             $code = strtoupper(Str::substr($customer_name_words[0], 0, 3));
@@ -67,7 +66,6 @@ class CustomerContoller extends Controller
         }
         $adminId = Auth::id();
 
-        // last serial get करा
         $lastSerial = Customer::where('admin_id', $adminId)
             ->max('customer_srno');
 
@@ -83,7 +81,7 @@ class CustomerContoller extends Controller
             'gst_no'          => $request->gst_no,
             'address'         => $request->address,
             'status'          => 1,
-            'customer_srno' => $nextSerial,   
+            'customer_srno' => $nextSerial,
         ]);
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer created successfully.');
@@ -94,7 +92,6 @@ class CustomerContoller extends Controller
         $query = Customer::where('admin_id', Auth::id())
             ->orderBy('id', 'desc');
 
-        // Financial Year Filter
         if ($request->filled('financial_year')) {
             $years = explode('-', $request->financial_year);
             $startYear = $years[0];
@@ -106,7 +103,6 @@ class CustomerContoller extends Controller
             $query->whereBetween('created_at', [$startDateFY, $endDateFY]);
         }
 
-        // Custom Date Filter
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('created_at', [
                 $request->start_date . " 00:00:00",
@@ -222,6 +218,7 @@ class CustomerContoller extends Controller
         }
 
         $duplicates = [];
+        $adminId = Auth::id();
 
         foreach ($rows as $key => $row) {
             if ($key === 0) continue;
@@ -237,9 +234,8 @@ class CustomerContoller extends Controller
 
             if (!$name) continue;
 
-            // Check duplicate per admin
             $existing = Customer::where('name', $name)
-                ->where('admin_id', Auth::id())
+                ->where('admin_id', $adminId)
                 ->first();
 
             if ($existing) {
@@ -266,8 +262,12 @@ class CustomerContoller extends Controller
                 $gst_no = null;
             }
 
+            $nextSrNo = Customer::where('admin_id', $adminId)->max('customer_srno');
+            $nextSrNo = $nextSrNo ? $nextSrNo + 1 : 1;
+
+            // Insert
             Customer::create([
-                'admin_id'       => Auth::id(),
+                'admin_id'       => $adminId,
                 'name'           => $name,
                 'email_id'       => $email,
                 'code'           => $code,
@@ -275,7 +275,8 @@ class CustomerContoller extends Controller
                 'phone_no'       => $phone,
                 'contact_person' => $person,
                 'gst_no'         => $gst_no,
-                'status'         => 1
+                'status'         => 1,
+                'customer_srno'  => $nextSrNo,
             ]);
         }
 

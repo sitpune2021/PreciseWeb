@@ -16,45 +16,40 @@ class RolePermissionController extends Controller
         return view('useradmin.rolepermission', compact('roles'));
     }
 
-
-public function store(Request $request)
-{
-    $request->validate([
-        'role_id' => 'required|exists:roles,id',
-        'permissions' => 'required|array'
-    ]);
-
-    // Delete old permissions of this role for this admin
-    RolePermission::where('role_id', $request->role_id)
-        ->where('admin_id', Auth::id())
-        ->delete();
-
-    // Insert new
-    RolePermission::create([
-        'role_id'     => $request->role_id,
-        'permissions' => json_encode($request->permissions),
-        'admin_id'    => Auth::id(),
-    ]);
-
-    return redirect()->back()->with('success', 'Permissions saved successfully!');
-}
-
-
-    public function getRolePermissions($role_id)
-{
-    $rolePermission = RolePermission::where('role_id', $role_id)
-        ->where('admin_id', Auth::id())
-        ->first();
-
-    if ($rolePermission) {
-        $permissions = json_decode($rolePermission->permissions, true);
-        return response()->json([
-            'status' => true,
-            'permissions' => $permissions ?? []
+    public function store(Request $request)
+    {
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'permissions' => 'required|array'
         ]);
+
+        RolePermission::where('role_id', $request->role_id)
+            ->where('admin_id', Auth::id())
+            ->delete();
+
+        RolePermission::create([
+            'role_id'     => $request->role_id,
+            'permissions' => json_encode($request->permissions),
+            'admin_id'    => Auth::id(),
+        ]);
+
+        return redirect()->back()->with('success', 'Permissions saved successfully!');
     }
 
-    return response()->json(['status' => false, 'permissions' => []]);
-}
+    public function getRolePermissions($role_id)
+    {
+        $rolePermission = RolePermission::where('role_id', $role_id)
+            ->where('admin_id', Auth::id())
+            ->first();
 
+        if ($rolePermission) {
+            $permissions = json_decode($rolePermission->permissions, true);
+            return response()->json([
+                'status' => true,
+                'permissions' => $permissions ?? []
+            ]);
+        }
+
+        return response()->json(['status' => false, 'permissions' => []]);
+    }
 }

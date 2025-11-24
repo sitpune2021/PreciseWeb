@@ -16,6 +16,9 @@
                                 </h4>
                             </div>
                             <div class="card-body">
+                                @if(session('success'))
+                                <div class="alert alert-success">{{ session('success') }}</div>
+                                @endif
                                 <form action="{{ isset($materialReq) ? route('updateMaterialReq', base64_encode($materialReq->id)) : route('storeMaterialReq') }}" method="POST">
                                     @csrf
                                     @if(isset($materialReq))
@@ -27,8 +30,15 @@
                                         <!-- Customer -->
                                         <div class="col-md-3">
                                             <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
-                                            <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
+
+                                            <select class="form-select js-example-basic-single"
+                                                id="customer_id"
+                                                name="customer_id"
+                                                data-selected="{{ old('customer_id', $materialReq->customer_id ?? '') }}"
+                                                {{ isset($materialReq) ? 'disabled' : '' }}>
+
                                                 <option value="">Select Customer Code</option>
+
                                                 @foreach($codes as $c)
                                                 <option value="{{ $c->id }}"
                                                     data-code="{{ $c->code }}"
@@ -38,10 +48,16 @@
                                                 </option>
                                                 @endforeach
                                             </select>
+
                                             @error('customer_id')
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
+
+                                            @if(isset($materialReq))
+                                            <input type="hidden" name="customer_id" value="{{ $materialReq->customer_id }}">
+                                            @endif
                                         </div>
+
 
                                         <!-- Customer Code -->
                                         <div class="col-md-2">
@@ -142,17 +158,20 @@
                                         </div>
 
                                         <div class="col-md-3">
-                                            <label for="material_type" class="form-label">Material Type <span class="mandatory">*</span></label>
+                                            <label for="material_type" class="form-label">
+                                                Material Type <span class="mandatory">*</span>
+                                            </label>
+
                                             <select name="material" id="material_type" class="form-control form-select">
                                                 <option value="">Select Material</option>
-                                                @foreach($materialtype as $mt)
-                                                <option value="{{ $mt->id }}"
-                                                    data-gravity="{{ $mt->material_gravity }}"
-                                                    data-rate="{{ $mt->material_rate }}"
-                                                    {{ old('material', $materialReq->material ?? '') == $mt->material_type ? 'selected' : '' }}>
-                                                    {{ $mt->material_type }}
+                                                @foreach($materialtype as $m)
+                                                <option
+                                                    value="{{ $m->id }}"
+                                                    data-gravity="{{ $m->material_gravity }}"
+                                                    data-rate="{{ $m->material_rate }}"
+                                                    {{ old('material', $materialReq->material ?? '') == $m->id ? 'selected' : '' }}>
+                                                    {{ $m->material_type }}
                                                 </option>
-
                                                 @endforeach
                                             </select>
 
@@ -160,6 +179,7 @@
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
                                         </div>
+
 
                                         <div class="col-md-2">
                                             <label for="material_gravity" class="form-label">Material Gravity</label>
@@ -337,32 +357,38 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $('#material_type').change(function() {
-            var id = $(this).val();
-            if (id) {
-                $.ajax({
-                    url: '/get-material-details/' + id,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#material_gravity').val(data.gravity);
-                        $('#material_rate').val(data.rate);
-                    }
-                });
-            } else {
-                $('#material_gravity').val('');
-                $('#material_rate').val('');
-            }
-        });
-    </script>
-
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
 
+            $('#material_type').change(function() {
+                // alert("hi");
+                var id = $(this).val();
+
+                if (id) {
+                    $.ajax({
+                        url: '/get-material/' + id,
+                        type: 'GET',
+                        success: function(data) {
+                            console.log(data);
+                            $('#material_gravity').val(data.gravity);
+                            $('#material_rate').val(data.rate);
+                        }
+                    });
+                } else {
+                    $('#material_gravity').val('');
+                    $('#material_rate').val('');
+                }
+            });
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
             function calculate(auto = true) {
+
                 let dia = parseFloat($("#dia").val()) || 0;
                 let len = parseFloat($("#length").val()) || 0;
                 let withs = parseFloat($("#width").val()) || 0;
@@ -376,7 +402,6 @@
                 let edm = parseFloat($("#edm_rate").val()) || 0;
                 let cl = parseFloat($("#cl").val()) || 0;
 
-                // current user values (manual inputs)
                 let mg4 = parseFloat($("#mg4").val());
                 let mg2 = parseFloat($("#mg2").val());
                 let rg2 = parseFloat($("#rg2").val());
@@ -384,31 +409,41 @@
                 let sg2 = parseFloat($("#sg2").val());
                 let hrcVal = parseFloat($("#hrc").val());
 
-                // material weight
-                let material_wt = ((Math.PI * (dia / 2) * (dia / 2) * heigh / 1000000) * sg) +
+                let material_wt =
+                    ((Math.PI * (dia / 2) * (dia / 2) * heigh / 1000000) * sg) +
                     ((len * withs * heigh / 1000000) * sg);
+
                 let mt_cost = material_wt * rate;
 
-                // Auto calculate only if auto mode AND not manually edited
-                if (auto && !$("#mg4").data("manual")) mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
-                if (auto && !$("#mg2").data("manual")) mg2 = ((len * withs) * 2 * 0.5 / 100);
-                if (auto && !$("#rg2").data("manual")) rg2 = ((len * withs) * 2 * 0.3 / 100);
-                if (auto && !$("#sg4").data("manual")) sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
-                if (auto && !$("#sg2").data("manual")) sg2 = ((len * withs) * 2 * 0.6 / 100);
-                if (auto && !$("#hrc").data("manual")) hrcVal = Math.round((material_wt * 70) * 10) / 10;
+                if (auto && !$("#mg4").data("manual"))
+                    mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
 
-                // total calculation
-                let total_per_piece = (lathe +
+                if (auto && !$("#mg2").data("manual"))
+                    mg2 = ((len * withs) * 2 * 0.5 / 100);
+
+                if (auto && !$("#rg2").data("manual"))
+                    rg2 = ((len * withs) * 2 * 0.3 / 100);
+
+                if (auto && !$("#sg4").data("manual"))
+                    sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
+
+                if (auto && !$("#sg2").data("manual"))
+                    sg2 = ((len * withs) * 2 * 0.6 / 100);
+
+                if (auto && !$("#hrc").data("manual"))
+                    hrcVal = Math.round((material_wt * 70) * 10) / 10;
+
+                let total_per_piece =
+                    lathe +
                     (mg4 || 0) + (mg2 || 0) + (rg2 || 0) + (sg4 || 0) + (sg2 || 0) +
-                    vmc + edm + (hrcVal || 0) + cl + mt_cost);
+                    vmc + edm + (hrcVal || 0) + cl + mt_cost;
+
                 let total_cost = total_per_piece * qty;
 
-                // update display
                 $("#weight").val(material_wt.toFixed(3));
                 $("#material_cost").val(mt_cost.toFixed(2));
                 $("#total_cost").val(total_cost.toFixed(2));
 
-                // update auto fields only when auto-calculating & not manually edited
                 if (auto) {
                     if (!$("#mg4").data("manual")) $("#mg4").val((mg4 || 0).toFixed(2));
                     if (!$("#mg2").data("manual")) $("#mg2").val((mg2 || 0).toFixed(2));
@@ -419,15 +454,15 @@
                 }
             }
 
-            // Auto material rate & gravity
             $("#material_type").on("change", function() {
                 let sg = $(this).find(":selected").data("gravity") || 0;
                 let rate = $(this).find(":selected").data("rate") || 0;
+
                 $("#material_gravity").val(sg);
                 $("#material_rate").val(rate);
+
                 calculate(true);
             });
-
 
             $("#vmc_hrs").on("input", function() {
                 let hrs = parseFloat($(this).val()) || 0;
@@ -438,38 +473,35 @@
             $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_rate, #cl")
                 .on("input change", function() {
 
-                    if ($(this).is("#length, #width, #height, #dia")) {
-                        $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
-                            if ($(this).val().trim() === "") {
-                                $(this).data("manual", false);
-                            }
-                        });
-                    }
+                    $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
+                        if ($(this).val().trim() === "") {
+                            $(this).data("manual", false);
+                        }
+                    });
+
                     calculate(true);
                 });
 
             $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").on("input", function() {
-                let val = $(this).val().trim();
                 $(this).data("manual", true);
-
-                if (val === "") {
-                    $(this).val("");
-                }
-
                 calculate(false);
             });
 
             $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
                 let val = $(this).val().trim();
-                if (val === "" || val === "0" || isNaN(parseFloat(val))) {
+
+                if (val !== "" && !isNaN(parseFloat(val))) {
                     $(this).data("manual", true);
+                } else {
+                    $(this).data("manual", false);
                 }
             });
 
-            // Initial calculation
             calculate(true);
+
         });
     </script>
+
 
 
     @endsection
