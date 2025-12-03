@@ -9,47 +9,15 @@
                  <div class="col-lg-12">
                      <div class="d-flex justify-content-between align-items-center">
                          <h5 class="mb-0">
-                             <i class="me-2"></i>Proforma Invoice
+                             <i class="me-2"></i>Invoice List
                          </h5>
 
                      </div>
                  </div>
              </div>
-             <div class="card-body">
-                 <div class="card shadow-sm border-0">
-                     <div class="card-body">
-
-                         <div class="d-flex justify-content-between align-items-end">
-
-                             <form method="GET" action="{{ route('invoice.index') }}" class="d-flex gap-2 align-items-end">
-                                 <select name="customer_id"
-                                     class="form-select form-select-sm border-primary js-example-basic-single">
-                                     <option value="">All Customers List</option>
-                                     @foreach($customers as $cust)
-                                     <option value="{{ $cust->id }}"
-                                         {{ (isset($customerId) && $customerId == $cust->id) ? 'selected' : '' }}>
-                                         {{ $cust->name }} ({{ $cust->code ?? '' }})
-                                     </option>
-                                     @endforeach
-                                 </select>
-
-                                 <button type="submit" class="btn   btn-primary">
-                                     Search
-                                 </button>
-                             </form>
-
-                             <a href="{{ route('invoice.add') }}" class="btn btn-success shadow-sm">
-                                 </i> Add Invoice
-                             </a>
-
-                         </div>
 
 
-                     </div>
-                 </div>
-
-             </div>
-   <div class="card shadow-sm border-0">
+             <div class="card shadow-sm border-0">
                  <div class="card-body">
                      <div class="table-responsive">
                          <table id="buttons-datatables" class="table table-bordered table-striped table-hover align-middle">
@@ -72,17 +40,11 @@
                                      <td>{{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y') }}</td>
                                      <td>{{ $invoice->customer->name ?? '-' }}</td>
                                      <td class="fw-semibold text-success">₹{{ number_format($invoice->grand_total, 2) }}</td>
-                                     <td class="text-center">
-                                         <a href="{{ route('invoice.proprint', $invoice->id) }}"
-
-                                             class="btn btn-info btn-sm rounded-pill px-3">
-                                             <i class="fas fa-print"></i>
-                                         </a>
-                                         
+                                     <td class="text-center">                                                                   
                                          <a href="{{ route('invoice.print', $invoice->id) }}"
                                              onclick="return confirm('Are you sure you want to print TAX Invoice?');"
                                              class="btn btn-sm btn-info rounded-pill px-3">
-                                             <i class="fas fa-print"></i> Tax
+                                             <i class="fas fa-print"></i>
                                          </a>
                                      </td>
                                  </tr>
@@ -99,7 +61,6 @@
                      </div>
                  </div>
              </div>
-          
 
          </div>
      </div>

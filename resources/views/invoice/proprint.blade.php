@@ -318,7 +318,6 @@
                 <th width="10%">Amount (Rs.)</th>
             </tr>
         </thead>
-        
         <tbody> @foreach($invoice->items as $i => $item) <tr>
                 <td class="center">{{ $i + 1 }}</td>
                 <td class="center">{{ $item->project_id ?? '-' }}</td>
@@ -331,10 +330,11 @@
     </table>@php
     use App\Models\Hsncode;
 
-    $hsn_code = $invoice->items->value('hsn_code'); 
-    $hsnCode = $hsn_code ?? null;
+    $firstItem = $invoice->items->first();
+    $hsnCode = $firstItem->hsn_code ?? null;
     $hsnMaster = $hsnCode ? Hsncode::where('hsn_code', $hsnCode)->first() : null;
 
+    // Default rates
     $cgst_rate = $hsnMaster->cgst ?? 0;
     $sgst_rate = $hsnMaster->sgst ?? 0;
     $igst_rate = $hsnMaster->igst ?? 0;
@@ -344,6 +344,7 @@
     }
 
     if ($igst_rate > 0) {
+
     $cgst_rate = 0;
     $sgst_rate = 0;
     $cgst_total = 0;
@@ -353,6 +354,7 @@
     $total_tax_percent = $igst_rate;
     $total_tax_amount = $igst_total;
     } else {
+    // CGST + SGST mode
     $igst_rate = 0;
     $cgst_total = ($invoice->sub_total * $cgst_rate) / 100;
     $sgst_total = ($invoice->sub_total * $sgst_rate) / 100;
@@ -363,7 +365,6 @@
     }
 
     $grand_total = $invoice->sub_total + $total_tax_amount;
-
     @endphp
 
 
@@ -408,26 +409,29 @@
 
     </table>
     @if(!empty($adminSetting->footer_note))
-    <div style="margin-top:30px; font-size:13px; padding-top:10px; text-align:left;">
+    <div style="margin-top:30px; text-align:center; font-size:13px;padding-top:10px;">
         <strong>Note:</strong> {{ $adminSetting->footer_note }}
     </div>
     @else
-    <div style="margin-top:30px; font-size:13px; border-top:1px solid #000; padding-top:10px; text-align:left;">
+    <div style="margin-top:30px; text-align:center; font-size:13px; border-top:1px solid #000; padding-top:10px;">
         <strong>Note:</strong>
     </div>
+
+
     @endif
 
     <div class="company-stamp" style="text-align:right; margin-top:10px;">
         @if(isset($adminSetting) && $adminSetting->stamp)
         <img src="{{ asset('uploads/settings/' . $adminSetting->stamp) }}" width="100" height="100" alt="Company Stamp">
+        @else
+        <img src="{{ asset('uploads/default-stamp.png') }}" width="100" height="100" alt="Stamp">
         @endif
     </div>
-
     <script>
         window.onload = function() {
             window.print();
             window.onafterprint = function() {
-                window.location.href = "{{ route('proforma.index') }}";
+                window.location.href = "{{ route('invoice.index') }}";
             };
         };
     </script>

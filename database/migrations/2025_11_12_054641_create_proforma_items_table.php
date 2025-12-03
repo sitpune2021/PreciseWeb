@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('hsn_code')->nullable();
             $table->integer('qty')->default(0);
             $table->decimal('rate', 15, 2)->default(0);
+            $table->decimal('material_rate', 15, 2)->default(0);
             $table->decimal('amount', 15, 2)->default(0);
             $table->decimal('hrs', 12, 2)->default(0);
             $table->decimal('vmc', 15, 2)->default(0);

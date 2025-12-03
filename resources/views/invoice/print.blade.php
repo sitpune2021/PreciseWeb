@@ -406,29 +406,25 @@
 
     </table>
     @if(!empty($adminSetting->footer_note))
-    <div style="margin-top:30px; text-align:center; font-size:13px;padding-top:10px;">
+    <div style="margin-top:30px; font-size:13px; padding-top:10px; text-align:left;">
         <strong>Note:</strong> {{ $adminSetting->footer_note }}
     </div>
     @else
-    <div style="margin-top:30px; text-align:center; font-size:13px; border-top:1px solid #000; padding-top:10px;">
+    <div style="margin-top:30px; font-size:13px; border-top:1px solid #000; padding-top:10px; text-align:left;">
         <strong>Note:</strong>
     </div>
-
-
     @endif
 
     <div class="company-stamp" style="text-align:right; margin-top:10px;">
         @if(isset($adminSetting) && $adminSetting->stamp)
         <img src="{{ asset('uploads/settings/' . $adminSetting->stamp) }}" width="100" height="100" alt="Company Stamp">
-        @else
-        <img src="{{ asset('uploads/default-stamp.png') }}" width="100" height="100" alt="Stamp">
         @endif
     </div>
     <script>
         window.onload = function() {
             window.print();
             window.onafterprint = function() {
-                window.location.href = "{{ route('invoice.index') }}";
+                window.location.href = "{{ route('proforma.index') }}";
             };
         };
     </script>

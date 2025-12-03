@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 // ---------------- Clients ----------------
 
 $totalClients = Client::count();
-$totalClientsPercentage = $totalClients; 
+$totalClientsPercentage = $totalClients;
 
 // Active Clients
 $activeClients = Client::where('status', 1)->count();
@@ -111,31 +111,27 @@ for ($m = 1; $m <= 12; $m++) {
     // 1. Total Work Orders
     $totalWorkOrders = WorkOrder::where('admin_id', Auth::id())->count();
 
-    // 2. Work Orders that are linked to Invoices (Completed)
     $completed = WorkOrder::where('admin_id', Auth::id())
-    ->whereHas('invoices') // only those having invoice
+    ->withCount('invoiceItems')
+    ->having('invoice_items_count', '>', 0)
     ->count();
 
     $inProgress = WorkOrder::where('admin_id', Auth::id())
-    ->whereDoesntHave('invoices')
+    ->withCount('invoiceItems')
+    ->having('invoice_items_count', '=', 0)
     ->count();
+
 
     $newWorkOrders = WorkOrder::where('admin_id', Auth::id())
     ->whereMonth('created_at', Carbon::now()->month)
     ->whereYear('created_at', Carbon::now()->year)
     ->count();
-
-
-    // ---------------- Setup Sheets ----------------
-    $totalSheets = SetupSheet::where('admin_id', Auth::id())->count();
-    $newThisMonthSheets = SetupSheet::where('admin_id', Auth::id())
-    ->whereMonth('date', Carbon::now()->month)
-    ->whereYear('date', Carbon::now()->year)
-    ->count();
-    $latestSheets = SetupSheet::where('admin_id', Auth::id())
-    ->orderBy('date', 'desc')
+    // For Work Orders table (limit 5)
+    $latestWorkOrders = WorkOrder::where('admin_id', Auth::id())
+    ->latest()
     ->take(5)
     ->get();
+
 
     // ---------------- Machine Records ----------------
     $totalMachineRecords = MachineRecord::where('admin_id', Auth::id())->count();
@@ -158,36 +154,7 @@ for ($m = 1; $m <= 12; $m++) {
     ->take(5)
     ->get();
 
-    // ---------------- Material Requirements ----------------
-    $latestMaterialReq = MaterialReq::with('customer', 'materialtype')
-    ->where('admin_id', Auth::id())
-    ->orderBy('created_at', 'desc')
-    ->take(5)
-    ->get();
-    $totalMaterialReq = MaterialReq::where('admin_id', Auth::id())->count();
 
-
-    // ---------------- Invoices ----------------
-    $totalInvoices = Invoice::where('admin_id', Auth::id())->count();
-
-    $pendingInvoices = Invoice::where('admin_id', Auth::id())
-    ->where('status', 'pending')
-    ->count();
-
-    $completedInvoices = Invoice::where('admin_id', Auth::id())
-    ->where('status', 'completed')
-    ->count();
-
-    $currentMonthInvoices = Invoice::where('admin_id', Auth::id())
-    ->whereMonth('created_at', Carbon::now()->month)
-    ->whereYear('created_at', Carbon::now()->year)
-    ->count();
-
-    $latestInvoices = Invoice::where('admin_id', Auth::id())
-    ->with('customer')
-    ->orderBy('created_at', 'desc')
-    ->take(5)
-    ->get();
 
     @endphp
 
@@ -219,7 +186,7 @@ for ($m = 1; $m <= 12; $m++) {
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
                             <h4 class="mb-sm-0"> Dashboard</h4>
-        
+
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
@@ -370,399 +337,179 @@ for ($m = 1; $m <= 12; $m++) {
 
                 <!-- --------------Work Orders --------------->
 
-                <div class="row mb-4">
-                    <!-- Left Side: Chart -->
-                    <div class="col-xxl-8 col-lg-7">
-                        <div class="card card-height-100">
-                            <div class="card-header border-0 d-flex align-items-center">
-                                <h4 class="card-title mb-0 flex-grow-1">Work Orders </h4>
-                                <div class="flex-shrink-0">
-                                    <a href="{{ route('AddWorkOrder') }}"
-                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                                        <i class="ri-add-line"></i> Add New
-                                    </a>
-                                    <a href="{{ route('ViewWorkOrder') }}"
-                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                                        View All <i class="ri-arrow-right-line ms-1"></i>
-                                    </a>
-                                </div>
-
-                            </div>
-
-                            <!-- 🔹 Work Order Summary Cards -->
-                            <div class="card-header p-0 border-0 bg-transparent">
-                                <div class="row g-3 text-center p-3">
-
-                                    <!--  New Work Orders -->
-                                    <div class="col-6 col-sm-3">
-                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
-                                            style="background: linear-gradient(135deg, #e0f7ff, #f2fcff); border: 1px solid #d1ecf1;">
-                                            <div class="mb-2">
-                                                <i class="ri-add-circle-line fs-2 text-info"></i>
-                                            </div>
-                                            <h4 class="fw-bold text-info mb-1">
-                                                <span class="counter-value" data-target="{{ $newWorkOrders }}">0</span>
-                                            </h4>
-                                            <p class="text-muted mb-0 fw-semibold">New Work Orders</p>
-                                        </div>
-                                    </div>
-
-                                    <!--  In Progress -->
-                                    <div class="col-6 col-sm-3">
-                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
-                                            style="background: linear-gradient(135deg, #fff8e1, #fffbea); border: 1px solid #ffecb3;">
-                                            <div class="mb-2">
-                                                <i class="ri-progress-3-line fs-2 text-warning"></i>
-                                            </div>
-                                            <h4 class="fw-bold text-warning mb-1">
-                                                <span class="counter-value" data-target="{{ $inProgress }}">0</span>
-                                            </h4>
-                                            <p class="text-muted mb-0 fw-semibold">In Progress</p>
-                                        </div>
-                                    </div>
-
-                                    <!--  Completed (Invoiced) -->
-                                    <div class="col-6 col-sm-3">
-                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
-                                            style="background: linear-gradient(135deg, #e8f9ee, #f4fff8); border: 1px solid #b6f0c3;">
-                                            <div class="mb-2">
-                                                <i class="ri-check-double-line fs-2 text-success"></i>
-                                            </div>
-                                            <h4 class="fw-bold text-success mb-1">
-                                                <span class="counter-value" data-target="{{ $completed }}">0</span>
-                                            </h4>
-                                            <p class="text-muted mb-0 fw-semibold">Completed (Invoiced)</p>
-                                        </div>
-                                    </div>
-
-                                    <!--  Total Work Orders -->
-                                    <div class="col-6 col-sm-3">
-                                        <div class="rounded-4 shadow-sm p-4 h-100 card-hover"
-                                            style="background: linear-gradient(135deg, #eef2ff, #f7f9ff); border: 1px solid #cfd8ff;">
-                                            <div class="mb-2">
-                                                <i class="ri-file-list-3-line fs-2 text-primary"></i>
-                                            </div>
-                                            <h4 class="fw-bold text-primary mb-1">
-                                                <span class="counter-value" data-target="{{ $totalWorkOrders }}">0</span>
-                                            </h4>
-                                            <p class="text-muted mb-0 fw-semibold">Total Work Orders</p>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <style>
-                        .card-hover {
-                            transition: all 0.3s ease;
-                        }
-
-                        .card-hover:hover {
-                            transform: translateY(-5px);
-                            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-                        }
-                    </style>
-                    <!-------------- Right Side: Setup Sheets ------------->
-
-                    <div class="col-xxl-4 col-lg-5 mt-3 mt-lg-0">
-                        <div class="card shadow-lg border-0 rounded-4 h-100">
-                            <div class="card-header bg-light border-0 rounded-top-4 d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0 d-flex align-items-center">
-                                    <i class="ri-history-line me-2 text-warning"></i> Latest Setup Sheets
-                                </h5>
-
-                                <div class="flex-shrink-0">
-                                    <a href="{{ route('AddSetupSheet') }}"
-                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                                        <i class="ri-add-line"></i> Add New
-                                    </a>
-                                    <a href="{{ route('ViewSetupSheet') }}"
-                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                                        View All <i class="ri-arrow-right-line ms-1"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    @forelse($latestSheets as $sheet)
-                                    <div class="col-12">
-                                        <div class="border rounded-3 shadow-sm p-3 h-100 d-flex">
-                                            <div class="me-3">
-                                                @if($sheet->setup_image)
-                                                <img src="{{ asset('setup_images/'.$sheet->setup_image) }}"
-                                                    alt="Setup Image"
-                                                    class="rounded border shadow-sm"
-                                                    style="width:70px; height:70px; object-fit:cover;">
-                                                @else
-                                                <div class="d-flex align-items-center justify-content-center bg-light rounded border"
-                                                    style="width:70px; height:70px;">
-                                                    <i class="ri-image-line text-muted fs-3"></i>
-                                                </div>
-                                                @endif
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1 text-primary fw-bold">{{ $sheet->part_code }}</h6>
-                                                <p class="mb-1 small text-muted">
-                                                    <i class="ri-barcode-line me-1"></i> {{ $sheet->work_order_no }}
-                                                </p>
-                                                <p class="mb-1 small">
-                                                    <i class="ri-calendar-line me-1"></i>
-                                                    {{ \Carbon\Carbon::parse($sheet->date)->format('d M Y') }}
-                                                </p>
-                                                <p class="mb-0 small">
-                                                    <span class="badge bg-info text-dark">
-                                                        {{ $sheet->size_in_x }} × {{ $sheet->size_in_y }} × {{ $sheet->size_in_z }}
-                                                    </span>
-                                                    <span class="badge bg-success">{{ $sheet->setting }}</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @empty
-                                    <div class="col-12 text-center py-4">
-                                        <i class="ri-file-warning-line text-muted fs-3 d-block"></i>
-                                        <span class="text-muted">No Setup Sheets Found</span>
-                                    </div>
-                                    @endforelse
-                                </div>
+                <!-- ---------------- Work Orders Table (Similar to Projects Table) -------------- -->
+                <div class="col-xl-12 mt-4">
+                    <div class="card shadow-lg border-0 rounded-4 h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
+                            <h4 class="card-title mb-0">
+                                <i class="ri-file-list-3-line me-2 text-primary"></i> Latest Work Orders
+                            </h4>
+                            <div class="flex-shrink-0">
+                                <a href="{{ route('AddWorkOrder') }}"
+                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                    <i class="ri-add-line"></i> Add New
+                                </a>
+                                <a href="{{ route('ViewWorkOrder') }}"
+                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                    View All <i class="ri-arrow-right-line ms-1"></i>
+                                </a>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-
-                <div class="row">
-                    <!-- ====== Latest Machine Records (Big Table) ====== -->
-                    <div class="col-xxl-8">
-                        <div class="card">
-                            <div class="card-header align-items-center d-flex">
-                                <h4 class="card-title mb-0 flex-grow-1">Latest Machine Records</h4>
-                                <div class="flex-shrink-0">
-                                    <a href="{{ route('AddMachinerecord') }}"
-                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                                        <i class="ri-add-line"></i> Add New
-                                    </a>
-                                    <a href="{{ route('ViewMachinerecord') }}"
-                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                                        View All <i class="ri-arrow-right-line ms-1"></i>
-                                    </a>
-                                </div>
-
-                            </div>
-
-                            <div class="card-body">
-                                <div class="table-responsive table-card">
-                                    <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
-                                        <thead class="text-muted table-light">
-                                            <tr>
-                                                <th scope="col">SR NO.</th>
-                                                <th scope="col">Part No</th>
-                                                <th scope="col">Work Order</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Start Time</th>
-                                                <th scope="col">End Time</th>
-                                                <th scope="col">Total Run (Hrs)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse($latestMachineRecords as $rec)
-                                            <tr>
-                                                <td>
-                                                    <a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a>
-                                                </td>
-                                                <td class="fw-bold">{{ $rec->part_no }}</td>
-                                                <td>{{ $rec->work_order }}</td>
-
-                                                <td>
-                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
-                                                </td>
-
-                                                <td>
-                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('h:i A') : '-' }}
-                                                </td>
-
-                                                <td>
-                                                    {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('h:i A') : '-' }}
-                                                </td>
-
-                                                <td>
-                                                    @if($rec->start_time && $rec->end_time)
-                                                    @php
-                                                    $diffInMinutes = \Carbon\Carbon::parse($rec->start_time)
-                                                    ->diffInMinutes(\Carbon\Carbon::parse($rec->end_time));
-                                                    $hours = number_format($diffInMinutes / 60, 2);
-                                                    @endphp
-                                                    <span class="text-success">
-                                                        {{ $hours }} hr
-                                                    </span>
-                                                    @else
-                                                    <span class="text-muted">Running...</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @empty
-                                            <tr>
-                                                <td colspan="7" class="text-center text-muted">No Machine Records Found</td>
-                                            </tr>
-                                            @endforelse
-                                        </tbody>
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ========== Latest Material Requirements ========== -->
-                    <div class="row mt-4">
-                        <div class="col-xxl-6">
-                            <div class="card shadow-lg border-0 rounded-4 h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center 
-                         text-white border-0 rounded-top-4 py-3 px-4">
-                                    <h4 class="card-title mb-0 d-flex align-items-center">
-                                        <i class="ri-cube-line me-2"></i> Latest Material Requirements
-                                    </h4>
-                                    <div class="flex-shrink-0">
-                                        <a href="{{ route('AddMaterialReq') }}"
-                                            class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                                            <i class="ri-add-line"></i> Add New
-                                        </a>
-                                        <a href="{{ route('ViewMaterialReq') }}"
-                                            class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                                            View All <i class="ri-arrow-right-line ms-1"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table align-middle table-hover table-nowrap mb-0">
-                                            <thead class="table-light text-center">
-                                                <tr>
-                                                    <th>SR NO.</th>
-
-                                                    <th>Code</th>
-                                                    <th>Material</th>
-                                                    <th>Qty</th>
-                                                    <th>Total Cost</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($latestMaterialReq as $req)
-                                                <tr class="align-middle text-center">
-                                                    <td class="text-muted">{{ $loop->iteration }}</td>
-
-                                                    <td><span>{{ $req->code }}</span></td>
-                                                    <td>{{ $req->materialtype->material_type ?? '-' }}</td>
-                                                    <td><span>{{ $req->qty }}</span></td>
-                                                    <td class="fw-bold text-success">
-                                                        ₹ {{ number_format($req->total_cost,2) }}
-                                                    </td>
-                                                </tr>
-                                                @empty
-                                                <tr>
-                                                    <td colspan="6" class="text-center text-muted py-4">
-                                                        <i class="ri-file-warning-line fs-3 d-block mb-2"></i>
-                                                        No Material Requirements Found
-                                                    </td>
-                                                </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <small class="text-muted">
-                                            Showing <span class="fw-semibold">{{ $latestMaterialReq->count() }}</span> of
-                                            <span class="fw-semibold">{{ $totalMaterialReq }}</span> Material Requirements
-                                        </small>
-                                        <a href="{{ route('ViewMaterialReq') }}" class="btn btn-link btn-sm">View More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- ================= INVOICE SUMMARY ================= --}}
-                    <div class="card mt-4 shadow-sm border-0 rounded-3">
                         <div class="card-body">
-
-                            {{-- Header Row (Title + Stats) --}}
-                            <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-                                <div class="d-flex align-items-center flex-wrap">
-                                    <h5 class="fw-bold text-primary mb-3 me-4">📄 Invoice Summary</h5>
-                                    <div class="d-flex flex-wrap align-items-center">
-                                        <div class="px-3 py-2 bg-light border rounded shadow-sm text-center me-3 mb-2" style="min-width: 140px;">
-                                            <h6 class="text-primary fw-semibold mb-1" style="font-size: 0.85rem;">Total Invoices</h6>
-                                            <h5 class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">{{ $totalInvoices }}</h5>
-                                        </div>
-                                        <div class="px-3 py-2 bg-light border rounded shadow-sm text-center mb-2" style="min-width: 140px;">
-                                            <h6 class="text-info fw-semibold mb-1" style="font-size: 0.85rem;">This Month</h6>
-                                            <h5 class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">{{ $currentMonthInvoices }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Buttons --}}
-                                <div class="text-end">
-                                    <a href="{{ route('invoice.add') }}"
-                                        class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                                        <i class="ri-add-line"></i> Add Invoice
-                                    </a>
-                                    <a href="{{ route('invoice.index') }}"
-                                        class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                                        View All <i class="ri-arrow-right-line ms-1"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            {{-- Divider --}}
-                            <hr class="text-muted">
-
-                            {{-- Invoice List Table --}}
                             <div class="table-responsive">
-                                <table class="table align-middle table-hover table-nowrap mb-0 text-center">
-                                    <thead class="table-light">
+                                <table class="table align-middle table-hover table-nowrap mb-0">
+                                    <thead class="table-light text-center">
                                         <tr>
                                             <th>SR NO.</th>
                                             <th>Date</th>
-                                            <th>Invoice No.</th>
+                                            <th>WO No.</th>
                                             <th>Customer</th>
-                                            <th>Grand Total</th>
+                                            <th>Part Name</th>
+                                            <th>Qty</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
-                                        @forelse($latestInvoices as $invoice)
-                                        <tr>
+                                        @forelse($latestWorkOrders as $work)
+                                        <tr class="align-middle text-center">
                                             <td class="text-muted">{{ $loop->iteration }}</td>
+
                                             <td>
-                                                <span class="badge bg-light text-dark">
-                                                    {{ \Carbon\Carbon::parse($invoice->created_at)->format('d M, Y') }}
+                                                <span class="badge text-dark">
+                                                    {{ \Carbon\Carbon::parse($work->date)->format('d M, Y') }}
                                                 </span>
                                             </td>
-                                            <td class="fw-bold text-primary">{{ $invoice->invoice_no }}</td>
-                                            <td class="fw-semibold text-dark">{{ $invoice->customer->name ?? '—' }}</td>
-                                            <td class="fw-bold text-dark">{{ number_format($invoice->grand_total, 2) }}</td>
+
+                                            <td class="fw-bold text-primary">
+                                                {{ $work->id }}
+                                            </td>
+
+                                            <td>
+                                                {{ $work->customer?->code ?? '—' }}
+                                            </td>
+
+                                            <td class="text-start">
+                                                <h6 class="mb-0">{{ $work->part_name }}</h6>
+                                                <small class="text-muted">{{ $work->part_description ?? '' }}</small>
+                                            </td>
+
+                                            <td>
+                                                <span class="badge text-dark">{{ $work->quantity }}</span>
+                                            </td>
+
+                                            <td>
+                                                @if($work->invoices->count() > 0)
+                                                <span class="badge bg-success">Completed</span>
+                                                @else
+                                                <span class="badge bg-warning text-dark">In Progress</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted">No invoices found</td>
+                                            <td colspan="7" class="text-center text-muted">No work orders found</td>
                                         </tr>
                                         @endforelse
                                     </tbody>
+
                                 </table>
                             </div>
 
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">
+                                    Showing <span class="fw-semibold">{{ $latestWorkOrders->count() }}</span> of
+                                    <span class="fw-semibold">{{ $totalWorkOrders }}</span> Results
+                                </small>
+
+                                <a href="{{ route('ViewWorkOrder') }}" class="btn btn-link btn-sm">View More</a>
+                            </div>
                         </div>
                     </div>
-
-                    @endif
-
                 </div>
 
+                <!-- ====== Latest Machine Records (Big Table) ====== -->
+                <div class="col-xxl-8">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex">
+                            <h4 class="card-title mb-0 flex-grow-1">Latest Machine Records</h4>
+                            <div class="flex-shrink-0">
+                                <a href="{{ route('AddMachinerecord') }}"
+                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                    <i class="ri-add-line"></i> Add New
+                                </a>
+                                <a href="{{ route('ViewMachinerecord') }}"
+                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                    View All <i class="ri-arrow-right-line ms-1"></i>
+                                </a>
+                            </div>
+
+                        </div>
+
+                        <div class="card-body">
+                            <div class="table-responsive table-card">
+                                <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
+                                    <thead class="text-muted table-light">
+                                        <tr>
+                                            <th scope="col">SR NO.</th>
+                                            <th scope="col">Part No</th>
+                                            <th scope="col">Work Order</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Start Time</th>
+                                            <th scope="col">End Time</th>
+                                            <th scope="col">Total Run (Hrs)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($latestMachineRecords as $rec)
+                                        <tr>
+                                            <td>
+                                                <a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a>
+                                            </td>
+                                            <td class="fw-bold">{{ $rec->part_no }}</td>
+                                            <td>{{ $rec->work_order }}</td>
+
+                                            <td>
+                                                {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
+                                            </td>
+
+                                            <td>
+                                                {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('h:i A') : '-' }}
+                                            </td>
+
+                                            <td>
+                                                {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('h:i A') : '-' }}
+                                            </td>
+
+                                            <td>
+                                                @if($rec->start_time && $rec->end_time)
+                                                @php
+                                                $diffInMinutes = \Carbon\Carbon::parse($rec->start_time)
+                                                ->diffInMinutes(\Carbon\Carbon::parse($rec->end_time));
+                                                $hours = number_format($diffInMinutes / 60, 2);
+                                                @endphp
+                                                <span class="text-success">
+                                                    {{ $hours }} hr
+                                                </span>
+                                                @else
+                                                <span class="text-muted">Running...</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted">No Machine Records Found</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
             <br><br>
             <!-- End Page-content -->
@@ -784,8 +531,5 @@ for ($m = 1; $m <= 12; $m++) {
                 </div>
             </footer>
         </div>
-
-
-
 
         @endsection

@@ -24,7 +24,7 @@
 
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <div class="mb-3">
+                                            <div class="mb-2">
                                                 <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single"
                                                     id="customer_id"

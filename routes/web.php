@@ -206,14 +206,20 @@ Route::get('/get-material-request-details/{id}', [MaterialorderController::class
 
 //invoice Routes
 Route::get('invoice'                          , [InvoiceController::class, 'index'])->name('invoice.index');
+Route::get('invoice/view'                     , [InvoiceController::class, 'view'])->name('invoice.view');
 Route::get('invoice/add'                      , [InvoiceController::class, 'create'])->name('invoice.add');
 Route::post('invoice/store'                   , [InvoiceController::class, 'store'])->name('invoice.store');
 Route::get('invoice/{id}/download'            , [InvoiceController::class, 'download'])->name('invoice.download');
 Route::get('invoice/print/{id}'               , [InvoiceController::class, 'printInvoice'])->name('invoice.print');
+Route::get('invoice/profarma/{id}'            , [InvoiceController::class, 'proprint'])->name('invoice.proprint');
+
 Route::get('get-hsn-details/{id}'             , [InvoiceController::class, 'getHsnDetails'])->name('get.hsn.details');
 Route::get('/invoice/fetch-machine-records/{customer_id}', [InvoiceController::class, 'getMachineRecords']);
 Route::get('/invoice/get-machine-details/{id}', [InvoiceController::class, 'getMachineDetails']); 
 Route::get('/invoice/fetch-material-rate/{material}', [InvoiceController::class, 'getMaterialRate']);
+
+
+
 
  
 // User Admin CRUD
@@ -250,6 +256,11 @@ Route::get('get-hsn-details/{id}'             , [ProformaInvoiceController::clas
 Route::get('/proforma/fetch-machine-records/{customer_id}', [ProformaInvoiceController::class, 'getMachineRecords']);
 Route::get('/proforma/get-machine-details/{id}', [ProformaInvoiceController::class, 'getMachineDetails']); 
 Route::get('/proforma/fetch-material-rate/{material}', [ProformaInvoiceController::class, 'getMaterialRate']);
+Route::get('proforma/convert/{id}', [ProformaInvoiceController::class, 'convertToTax'])->name('proforma.convert');
+
+Route::get('proforma/edit/{id}', [ProformaInvoiceController::class, 'proformaEdit'])->name('proforma.edit');
+Route::post('proforma/update/{id}', [ProformaInvoiceController::class, 'proformaUpdate'])->name('proformaUpdate');
+
 
 
 });

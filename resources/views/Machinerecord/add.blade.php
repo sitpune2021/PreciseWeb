@@ -27,7 +27,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
-                                        <select name="part_no" id="part_no" class="form-control form-select"
+                                        <select name="part_no" id="part_no" class="form-control form-select "
                                             {{ isset($record) ? 'disabled' : '' }}>
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
@@ -77,7 +77,7 @@
 
                                     <!-- Part Description -->
                                     <div class="col-md-4">
-                                        <label class="form-label">First Set </label>
+                                        <label class="form-label">Part Description</label>
                                         <input type="text" name="first_set" id="first_set" class="form-control"
                                             value="{{ old('first_set', $record->first_set ?? '') }}">
                                         @error('first_set') <span class="text-red small">{{ $message }}</span> @enderror
@@ -174,10 +174,16 @@
 
                                     <div class="col-md-2">
                                         <label class="form-label">Adjustment</label>
-                                        <input type="text" name="adjustment" id="adjustment" class="form-control"
-                                            value="{{ old('adjustment', $record->adjustment ?? '') }}">
-                                        @error('adjustment') <span class="text-red small">{{ $message }}</span> @enderror
+                                        <input type="text"
+                                            name="adjustment"
+                                            id="adjustment"
+                                            class="form-control"
+                                            value="{{ old('adjustment', $record->adjustment ?? '20%') }}">
+                                        @error('adjustment')
+                                        <span class="text-red small">{{ $message }}</span>
+                                        @enderror
                                     </div>
+
 
                                     <!-- <div class="col-md-2">
                                         <label class="form-label">Minute <span class="text-red">*</span></label>
@@ -244,9 +250,9 @@
                 </div>
             </div>
 
-        </div>  
-    </div>  
-</div>  
+        </div>
+    </div>
+</div>
 <script>
     document.getElementById('part_no').addEventListener('change', function() {
 

@@ -16,6 +16,7 @@ class ProformaItem extends Model
         'work_order_id ',
         'part_name',
         'hsn_code',
+        'material_rate',
         'qty',
         'rate',
         'amount',

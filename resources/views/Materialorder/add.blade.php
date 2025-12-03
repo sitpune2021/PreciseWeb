@@ -14,7 +14,9 @@
                             </h5>
                         </div>
                         <div class="card-body">
-
+                          @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                             <form action="{{ isset($record) ? route('updateMaterialorder', base64_encode($record->id)) : route('storeMaterialorder') }}" method="POST">
                                 @csrf
                                 @if(isset($record))

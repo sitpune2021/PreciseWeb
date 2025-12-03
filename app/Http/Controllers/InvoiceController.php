@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\Hsncode;
+use App\Models\InvoiceItem;
 use App\Models\MachineRecord;
 use App\Models\WorkOrder;
 use App\Models\MaterialType;
@@ -43,6 +44,36 @@ class InvoiceController extends Controller
 
         return view('invoice.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
+
+    public function view(Request $request)
+    {
+        $adminId = Auth::id();
+
+        $customers = Customer::where('status', 1)
+            ->where('admin_id', $adminId)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $workOrders = WorkOrder::where('admin_id', $adminId)
+            ->where('status', 1)
+            ->with('customer')
+            ->get();
+
+        $customerId = $request->input('customer_id');
+
+        $invoices = Invoice::with(['customer', 'items'])
+            ->where('admin_id', $adminId);
+
+        if (!empty($customerId)) {
+            $invoices->where('customer_id', $customerId);
+        }
+
+        $invoices = $invoices->latest()->get();
+
+        return view('invoice.view', compact('customers', 'invoices', 'customerId', 'workOrders'));
+    }
+
+
 
     public function create()
     {
@@ -134,6 +165,7 @@ class InvoiceController extends Controller
                 'hsn_code'  => $request->hsn_code ?? null,
                 'qty'       => $request->qty[$i] ?? 0,
                 'rate'      => $request->rate[$i] ?? 0,
+                'material_rate'   => $request->material_rate[$i] ?? 0,
                 'amount'    => $request->amount[$i] ?? 0,
                 'hrs'       => isset($request->hrs[$i]) ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i])) : 0,
                 'vmc'       => $request->vmc_hr[$i] ?? 0,
@@ -154,13 +186,10 @@ class InvoiceController extends Controller
 
         return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
-    public function download($id)
-    {
-        $invoice = Invoice::with(['customer', 'items'])->findOrFail($id);
 
-        $pdf = PDF::loadView('invoice.pdf', compact('invoice'));
-        return $pdf->download('Invoice-' . $invoice->invoice_no . '.pdf');
-    }
+
+
+
 
     public function printInvoice($id)
     {
@@ -178,6 +207,26 @@ class InvoiceController extends Controller
 
         return view('invoice.print', compact('invoice', 'c', 'adminSetting'));
     }
+
+
+    public function proprint($id)
+    {
+        $invoice = Invoice::with('items')->findOrFail($id);
+        $adminSetting = AdminSetting::first();
+        $adminId = Auth::id();
+
+        $c = Client::where('login_id', $adminId)->first([
+            'name',
+            'phone_no',
+            'email_id',
+            'gst_no',
+            'logo',
+            'address'
+        ]);
+
+        return view('invoice.proprint', compact('invoice', 'c', 'adminSetting'));
+    }
+
 
     public function getHsnDetails($id)
     {

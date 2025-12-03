@@ -81,12 +81,31 @@
                                      <td class="fw-semibold text-success">₹{{ number_format($invoice->grand_total, 2) }}</td>
 
                                      <td class="text-center">
-                                         <a href="{{ route('proforma.print', $invoice->id) }}"
-                                             
-                                             class="btn btn-info btn-sm rounded-pill px-3">
-                                             <i class="fas fa-print"></i>
-                                         </a>
+                                         <div class="d-flex justify-content-center gap-2">
+
+                                             <!-- Print -->
+                                             <a href="{{ route('proforma.print', $invoice->id) }}"
+                                                 class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                                 <i class="fas fa-print me-1"></i>
+                                             </a>
+
+                                             <!-- Edit -->
+                                             <a href="{{ route('proforma.edit', base64_encode($invoice->id)) }}"
+                                                 class="btn btn-outline-warning btn-sm rounded-pill px-3">
+                                                 <i class="fas fa-edit me-1"></i>
+                                             </a>
+
+                                             <!-- Tax Convert -->
+                                             <a href="{{ route('proforma.convert', $invoice->id) }}"
+                                                 class="btn btn-outline-success btn-sm rounded-pill px-3"
+                                                 onclick="return confirm('Convert to Final TAX Invoice?');">
+                                                 <i class="fas fa-print me-1"></i>
+                                             </a>
+
+                                         </div>
                                      </td>
+
+
                                  </tr>
 
                                  @empty

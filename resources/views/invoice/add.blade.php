@@ -6,11 +6,14 @@
         <div class="container-fluid">
             <h4 class="mb-3">Add New Invoice</h4>
             <div class="card-body">
+                  
                 @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
-                <form action="{{ route('invoice.store') }}" method="POST" id="invoiceForm">
+                <form action="{{ isset($data) ? route('invoice.update', $data->id) : route('invoice.store') }}"
+                    method="POST" id="invoiceForm">
                     @csrf
+
                     <div class="row align-items-end">
                         <div class="row g-3">
 
@@ -151,7 +154,10 @@
 
 
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary px-4 me-2">Save Invoice</button>
+                            <button type="submit" class="btn btn-primary px-4 me-2">
+                                {{ isset($data) ? 'Update Invoice' : 'Save Invoice' }}
+                            </button>
+
                         </div>
                 </form>
             </div>

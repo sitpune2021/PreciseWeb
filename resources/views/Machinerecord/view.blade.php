@@ -28,18 +28,19 @@
                                         <tr>
                                             <th>Sr.No</th>
                                             <th>Part No</th>
-                                            <th>Customer Code</th>
-                                            <th>Wo.No</th>
+                                            <!-- <th>Customer Code</th> -->
+                                            <!-- <th>Wo.No</th> -->
                                             <th>First Set</th>
                                             <th>Qty</th>
-                                            <th>Machine</th>
-                                            <th>Operator</th>
-                                            <th>Setting No</th>
-                                            <th>Est. Time</th>
+                                            <th>M/C</th>
+                                            <th>Op</th>
+                                            <th>Set</th>
+                                            <th>Est.Time</th>
                                             <th>Start Time</th>
                                             <th>End Time</th>
+                                            <th>Total Hrs</th>
                                             <!-- <th>Time Taken</th> -->
-                                            <th>Adjustment</th>
+                                            <!-- <th>Adjustment</th> -->
                                             <th>Invoice No</th>
                                             <th width="10%">Action</th>
                                         </tr>
@@ -49,8 +50,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $rec->part_no }}</td>
-                                            <td>{{ $rec->code}}</td>
-                                            <td>{{ $rec->work_order }}</td>
+                                            <!-- <td>{{ $rec->code}}</td> -->
+                                            <!-- <td>{{ $rec->work_order }}</td> -->
                                             <td>{{ $rec->first_set }}</td>
                                             <td>{{ $rec->qty }}</td>
                                             <td>{{ $rec->machine }}</td>
@@ -60,7 +61,8 @@
                                             <td>{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}</td>
                                             <td>{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}</td>
                                             <!-- <td>{{ $rec->time_taken }}</td> -->
-                                            <td>{{ $rec->adjustment }}</td>
+                                            <!-- <td>{{ $rec->adjustment }}</td> -->
+                                            <td>{{ $rec->hrs }}</td>
                                             <td>{{ $rec->invoice_no }}</td>
                                             <td>
                                                 @if(hasPermission('MachineRecord', 'edit'))
@@ -71,8 +73,9 @@
                                                 <button type="button" class="btn btn-primary btn-sm viewBtn"
                                                     data-id="{{ $rec->id }}"
                                                     data-part="{{ $rec->part_no }}"
+                                                    data-first_set="{{ $rec->first_set }}"
                                                     data-code="{{ $rec->customer?->code ?? '' }}"
-                                                    data-project="{{ $rec->project?->project_no ?? '' }}"
+                                                    data-workorder="{{ $rec->work_order }}"
                                                     data-machine="{{ $rec->machine }}"
                                                     data-operator="{{ $rec->operator }}"
                                                     data-setting="{{ $rec->setting_no }}"
@@ -86,8 +89,8 @@
                                                     data-invoice_no="{{ $rec->invoice_no }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-                                                
-                                                 @if(hasPermission('MachineRecord', 'delete'))
+
+                                                @if(hasPermission('MachineRecord', 'delete'))
                                                 <a href="{{ route('DeleteMachinerecord', base64_encode($rec->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')"
                                                     class="btn btn-danger btn-sm">
@@ -123,7 +126,7 @@
                                     <td id="view_part"></td>
                                 </tr>
                                 <tr>
-                                    <th>First Set</th>
+                                    <th>Part Description</th>
                                     <td id="view_first_set"></td>
                                 </tr>
                                 <tr>

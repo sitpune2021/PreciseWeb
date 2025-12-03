@@ -131,7 +131,7 @@
 
                                         <div class="col-lg-12">
                                             <div class="text-end">
-                                                <a href="{{ route('invoice.index') }}" class="btn btn-secondary px-4">Cancel</a>
+                                                <a href="{{ route('proforma.index') }}" class="btn btn-secondary px-4">Cancel</a>
                                                 <button type="submit" class="btn btn-primary">Update</button>
                                             </div>
                                         </div>

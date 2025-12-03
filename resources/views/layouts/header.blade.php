@@ -599,7 +599,7 @@
                     <li class="nav-item">
                         <a class="nav-link menu-link 
                      {{ request()->routeIs(
-                'proforma.index','proforma.create','proforma.history','invoice.index','invoice.create','invoice.history' ) ? '' : 'collapsed' }}"
+                'proforma.index','proforma.create','proforma.history','invoice.history' ) ? '' : 'collapsed' }}"
                             href="#sidebarInvoice"
                             data-bs-toggle="collapse">
                             <i class="ri-file-list-3-line"></i>
@@ -607,9 +607,9 @@
                         </a>
 
                         <div class="collapse menu-dropdown 
-            {{ request()->routeIs(
-                'proforma.index','proforma.create', 'proforma.history','invoice.index','invoice.create','invoice.history'
-            ) ? 'show' : '' }}"
+                        {{ request()->routeIs(
+                            'proforma.index','proforma.create', 'proforma.history','invoice.history'
+                        ) ? 'show' : '' }}"
                             id="sidebarInvoice">
 
                             <ul class="nav nav-sm flex-column">
@@ -623,10 +623,16 @@
                                 </li>
 
                                 <!-- Tax Invoice -->
-                                <li class="nav-item">
-                                    <a href="{{ route('invoice.index') }}"
+                                <!-- <li class="nav-item">
+                                    <a href="{{ route('invoice.add') }}"
                                         class="nav-link {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
-                                        <i class="ri-file-list-3-line me-1"></i> Tax Invoice
+                                        <i class="ri-file-list-3-line me-1"></i>Proforma Invoice
+                                    </a>
+                                </li> -->
+                                     <li class="nav-item">
+                                    <a href="{{ route('invoice.view') }}"
+                                        class="nav-link {{ request()->routeIs('invoice.view') ? 'active' : '' }}">
+                                        <i class="ri-file-list-3-line me-1"></i>Invoice List
                                     </a>
                                 </li>
 
@@ -696,7 +702,7 @@
 
     @if(session('plan_alert'))
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
+    <!-- <script>
         Swal.fire({
             icon: 'warning', // warning icon for plan alerts
             title: 'Warning!',
@@ -712,7 +718,7 @@
         });
 
       
-    </script>
+    </script> -->
     @endif
 
 
