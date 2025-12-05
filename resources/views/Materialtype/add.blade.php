@@ -136,7 +136,8 @@
                                         <a href="{{ route('editMaterialType', base64_encode($m->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
-
+                                        @endif
+                                        
                                         @if(hasPermission('MaterialType', 'delete'))
                                         <a href="{{route('deleteMaterialType', base64_encode($m->id))}}"
                                             onclick="return confirm('Are you sure you want to delete this record?')">
