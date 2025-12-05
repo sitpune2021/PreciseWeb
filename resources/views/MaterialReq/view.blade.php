@@ -29,13 +29,12 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                             <th>Sr.No</th>
+                                            <th>Sr.No</th>
                                             <th>Customer Code</th>
-                                            <th>Code</th>
+                                            <!-- <th>Code</th> -->
                                             <th>Date</th>
-                                           
                                             <th>Description</th>
-
+                                            <th>Material Type</th>
                                             <th width="12%">Action</th>
                                         </tr>
                                     </thead>
@@ -45,11 +44,11 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $req->work_order_no }}</td>
                                             <td>{{ $req->customer->code ?? 'N/A' }}</td>
-                                            <td>{{ $req->code }}</td>
+                                            <!-- <td>{{ $req->code }}</td> -->
                                             <td>{{ $req->date }}</td>
-                                            
-                                            <td>{{ $req->description }}</td>
 
+                                            <td>{{ $req->description }}</td>
+                                            <td>{{ $req->materialType->material_type ?? 'N/A' }}</td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2 align-items-center">
 
@@ -69,7 +68,7 @@
                                                         data-length="{{ $req->length }}"
                                                         data-width="{{ $req->width }}"
                                                         data-height="{{ $req->height }}"
-                                                        data-material="{{ $req->materialType->material_type ?? 'N/A' }}"                                                       
+                                                        data-material="{{ $req->materialType->material_type ?? 'N/A' }}"
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
                                                         data-cost="{{ $req->material_cost ?? 'N/A' }}"

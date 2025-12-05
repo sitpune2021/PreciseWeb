@@ -123,13 +123,18 @@
                                         </form>
                                     </td>
                                     <td>
+                                        @if(hasPermission('Hsncode', 'edit'))
                                         <a href="{{ route('editHsn', base64_encode($h->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill"></i>
                                         </a>
+
+                                        @endif
+                                        @if(hasPermission('Hsncode', 'delete'))
                                         <a href="{{ route('deleteHsn', base64_encode($h->id)) }}"
                                             onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">
                                             <i class="ri-delete-bin-fill"></i>
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty

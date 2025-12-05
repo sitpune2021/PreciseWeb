@@ -11,7 +11,7 @@
                     <h5 class="mb-0">{{ isset($materialtype) ? 'Edit Material Type ' : 'Add Material Type ' }}</h5>
                 </div>
                 <div class="card-body">
-                     @if(session('success'))
+                    @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
                     <form action="{{ isset($materialtype) ? route('updateMaterialType', base64_encode($materialtype->id)) : route('storeMaterialType') }}" method="POST">
@@ -132,15 +132,19 @@
 
                                     </td>
                                     <td>
+                                        @if(hasPermission('MaterialType', 'edit'))
                                         <a href="{{ route('editMaterialType', base64_encode($m->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
+
+                                        @if(hasPermission('MaterialType', 'delete'))
                                         <a href="{{route('deleteMaterialType', base64_encode($m->id))}}"
                                             onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </button>
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty

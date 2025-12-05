@@ -47,8 +47,7 @@ class WorkOrderController extends Controller
 
         $workorders = WorkOrder::with(['customer', 'project'])
             ->where('admin_id', $adminId)
-            ->orderBy('updated_at', 'desc')
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'desc')  // Only ID desc → New items come on top
             ->get();
 
         return view('WorkOrder.view', compact('workorders'));

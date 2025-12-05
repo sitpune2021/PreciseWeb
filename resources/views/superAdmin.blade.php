@@ -193,7 +193,6 @@ for ($m = 1; $m <= 12; $m++) {
                                     <li class="breadcrumb-item active"> Dashboard</li>
                                 </ol>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -253,10 +252,11 @@ for ($m = 1; $m <= 12; $m++) {
 
                 </div>
                 @endif
-                @if(auth()->user()->user_type == 2)
-
-
+    
+                @if(auth()->user()->user_type == 2 || auth()->user()->user_type==3 || auth()->user()->user_type==4 || auth()->user()->user_type==5 )
+                
                 <!--------------------- project page ---------------------------------->
+                @if(hasPermission('Dashboard', 'view_project'))
                 <div class="col-xl-12">
                     <div class="card shadow-lg border-0 rounded-4 h-100">
                         <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
@@ -333,11 +333,13 @@ for ($m = 1; $m <= 12; $m++) {
                         </div>
                     </div>
                 </div>
+                @endif
                 <!-- project end -->
 
                 <!-- --------------Work Orders --------------->
 
                 <!-- ---------------- Work Orders Table (Similar to Projects Table) -------------- -->
+                @if(hasPermission('Dashboard', 'view_work_orders'))
                 <div class="col-xl-12 mt-4">
                     <div class="card shadow-lg border-0 rounded-4 h-100">
                         <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
@@ -428,8 +430,9 @@ for ($m = 1; $m <= 12; $m++) {
                         </div>
                     </div>
                 </div>
-
+                @endif
                 <!-- ====== Latest Machine Records (Big Table) ====== -->
+                @if(hasPermission('Dashboard', 'view_machinerecord'))
                 <div class="col-xxl-8">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
@@ -510,6 +513,7 @@ for ($m = 1; $m <= 12; $m++) {
                     </div>
                 </div>
                 @endif
+                @endif
             </div>
             <br><br>
             <!-- End Page-content -->
@@ -524,7 +528,7 @@ for ($m = 1; $m <= 12; $m++) {
                         </div>
                         <div class="col-sm-6">
                             <div class="text-sm-end d-none d-sm-block">
-                                Design & Develop by
+                                Design & Develop by Sit
                             </div>
                         </div>
                     </div>

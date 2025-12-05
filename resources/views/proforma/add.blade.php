@@ -130,8 +130,7 @@
                                         data-sgst="{{ $h->sgst }}"
                                         data-cgst="{{ $h->cgst }}"
                                         data-igst="{{ $h->igst }}"
-                                       {{ isset($invoice->items[0]) && $invoice->items[0]->hsn_code == $h->hsn_code ? 'selected' : '' }}
->
+                                       {{ isset($invoice->items[0]) && $invoice->items[0]->hsn_code == $h->hsn_code ? 'selected' : '' }}>
                                         {{ $h->hsn_code }}
                                     </option>
                                     @endforeach

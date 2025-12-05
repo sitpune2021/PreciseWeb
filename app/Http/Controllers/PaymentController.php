@@ -58,13 +58,7 @@ class PaymentController extends Controller
         $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
         $plan  = PaymentPlan::findOrFail($order->plan_id);
 
-        $planDays = match ($plan->short_text) {
-            '1month' => 30,
-            '3month' => 90,
-            '6month' => 180,
-            '1year'  => 365,
-            default  => 7
-        };
+         $planDays = $plan->days; 
 
         if (!empty($client->plan_expiry) && Carbon::parse($client->plan_expiry)->isFuture()) {
 

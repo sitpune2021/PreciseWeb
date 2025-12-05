@@ -53,46 +53,50 @@ class MachinerecordController extends Controller
             'projects'
         ));
     }
-    public function StoreMachinerecord(Request $request)
-    {
-        $validated = $request->validate([
-            'part_no'     => 'required|string|max:100',
-            'code'        => 'required|string|max:100',
-            'work_order'  => 'required',
-            'first_set'   => 'nullable|string|max:100',
-            'qty'         => 'required|integer|min:1',
-            'machine'     => 'required|string|max:100',
-            'operator'    => 'required|string|max:100',
-            'setting_no'  => 'required|string|max:100',
-            'est_time'    => 'required|string|max:100',
-            'material'    => 'required|string|max:200',
-            'start_time'  => 'required|date',
-            'end_time'    => 'required|date|after_or_equal:start_time',
-            'adjustment'  => 'nullable|string|max:100',
-            // 'minute'      => 'required|numeric|min:0',
-            'hrs'         => 'required|numeric|min:0',
-            // 'time_taken'  => 'required|numeric|min:0',
-            // 'actual_hrs'  => 'required|numeric|min:0',
-            'invoice_no'  => 'nullable|string|max:100',
-        ]);
+  public function StoreMachinerecord(Request $request)
+{
+    $validated = $request->validate([
+        'part_no'     => 'required|string|max:100',
+        'code'        => 'required|string|max:100',
+        'work_order'  => 'required',
+        'first_set'   => 'nullable|string|max:100',
+        'qty'         => 'required|integer|min:1',
+        'machine'     => 'required|string|max:100',
+        'operator'    => 'required|string|max:100',
+        'setting_no'  => 'required|string|max:100',
+        'est_time'    => 'required|string|max:100',
+        'material'    => 'required|string|max:200',
+        'start_time'  => 'required|date',
+        'end_time'    => 'required|date|after_or_equal:start_time',
+        'adjustment'  => 'nullable|string|max:100',
+        'hrs'         => 'required|numeric|min:0',
+        'invoice_no'  => 'nullable|string|max:100',
+    ]);
 
-        $validated['admin_id'] = Auth::id();
+    $validated['admin_id'] = Auth::id();
 
-        $workOrder = WorkOrder::where('id', $request->work_order)->first();
-        if ($workOrder) {
-            // $validated['work_order_id'] = $workOrder->id;
-            $validated['work_order_id'] = $request->work_order;
-        }
+    $workOrder = WorkOrder::where('id', $request->work_order)->first();
 
-        MachineRecord::create($validated);
+    if ($workOrder) {
 
-        return redirect()->route('ViewMachinerecord')
-            ->with('success', 'Machine Record Added Successfully');
+        // Save UI input (work order number)
+        $validated['work_order'] = $request->work_order;
+
+        // Save REAL WorkOrder ID
+        $validated['work_order_id'] = $workOrder->id;
     }
+
+    MachineRecord::create($validated);
+
+    return redirect()->route('ViewMachinerecord')
+        ->with('success', 'Machine Record Added Successfully');
+}
+
 
     public function ViewMachinerecord()
     {
         $record = MachineRecord::where('admin_id', Auth::id())->latest()->get();
+       
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 
         return view('Machinerecord.view', compact('record', 'workorders'));

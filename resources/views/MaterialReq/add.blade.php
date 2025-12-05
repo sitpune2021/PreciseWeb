@@ -61,7 +61,7 @@
 
                                         <!-- Customer Code -->
                                         <div class="col-md-2">
-                                            <label for="code" class="form-label">Customer Code</label>
+                                            <label for="code" class="form-label">Code</label>
                                             <input type="text" class="form-control" id="code" name="code"
                                                 value="{{ old('code', $materialReq->code ?? '') }}" readonly>
                                         </div>

@@ -55,7 +55,7 @@
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewBtn"
                                                     data-id="{{ $project->id }}"
-                                                    data-workorder="{{ $project->customer_id }}"
+                                                    data-workorder="{{ $project->project_no }}"
                                                     data-name="{{ $project->project_name }}"
                                                     data-code="{{ $project->customer_code }}"
                                                     data-qty="{{ $project->quantity }}"

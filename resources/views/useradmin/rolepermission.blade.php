@@ -49,24 +49,42 @@
                             </thead>
 
                             <tbody>
-                                @foreach([
-                                'Dashboard','Operator','Machine','Setting','Hsncode',
-                                'MaterialType','FinancialYear','UserAdmin','Customer',
-                                'Vendors','Projects','WorkOrders','SetupSheet',
-                                'MachineRecord','MaterialReq','MaterialOrder',
-                                'Invoice','Subscription'
+                                @php
+                                $dashboardCards = ['Work_Orders', 'project', 'MachineRecord'];
+                                @endphp
+
+                                @foreach([ 'Dashboard' ,'Operator','Machine','Setting','Hsncode', 'MaterialType' ,'FinancialYear' ,'Customer', 'Vendors' ,'Projects','WorkOrders','SetupSheet', 'MachineRecord' ,'MaterialReq','MaterialOrder', 'Invoice' ,'Subscription'
                                 ] as $module)
                                 <tr>
                                     <td>{{ $module }}</td>
 
                                     <input type="hidden" name="permissions[{{ $module }}][]" value="">
 
+                                    {{-- Dashboard → Only card-wise view permissions --}}
+                                    @if($module == 'Dashboard')
+                                    <td colspan="4" class="text-start">
+                                        @foreach($dashboardCards as $card)
+                                        <label class="me-4">
+                                            <input type="checkbox"
+                                                class="perm"
+                                                name="permissions[Dashboard][]"
+                                                value="view_{{ strtolower($card) }}">
+                                            View {{ $card }}
+                                        </label>
+                                        @endforeach
+                                    </td>
+
+                                    @else
                                     <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="add"></td>
                                     <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="view"></td>
                                     <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="edit"></td>
                                     <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="delete"></td>
+                                    @endif
+
                                 </tr>
                                 @endforeach
+
+
                             </tbody>
                         </table>
 

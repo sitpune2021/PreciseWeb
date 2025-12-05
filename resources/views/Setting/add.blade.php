@@ -96,16 +96,20 @@
                                     </form>
                                 </td>
                                 <td>
+                                    @if(hasPermission('Setting', 'edit'))
                                     <a href="{{ route('editSetting', base64_encode($s->id)) }}" class="btn btn-success btn-sm">
                                         <i class="ri-pencil-fill align-bottom"></i>
                                     </a>
+                                    @endif
 
+                                    @if(hasPermission('Setting', 'delete'))
                                     <a href="{{route('deleteSetting', base64_encode($s->id))}}"
                                         onclick="return confirm('Are you sure you want to delete this record?')">
                                         <button type="button" class="btn btn-danger btn-sm">
                                             <i class="ri-delete-bin-fill align-bottom"></i>
                                         </button>
                                     </a>
+                                    @endif
                                 </td>
                             </tr>
                             @empty

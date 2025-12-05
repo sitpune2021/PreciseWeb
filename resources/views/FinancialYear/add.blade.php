@@ -10,7 +10,7 @@
                     <h5 class="mb-0">{{ isset($year) ? 'Edit Financial Year' : 'Add Financial Year' }}</h5>
                 </div>
                 <div class="card-body">
-                     @if(session('success'))
+                    @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
                     <form action="{{ isset($year) ? route('UpdateFinancialYear', base64_encode($year->id)) : route('StoreFinancialYear') }}" method="POST">
@@ -90,15 +90,20 @@
                                         </form>
                                     </td>
                                     <td>
+                                        @if(hasPermission('FinancialYear', 'edit'))
                                         <a href="{{ route('EditFinancialYear', base64_encode($y->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
+                                        @endif
+
+                                        @if(hasPermission('FinancialYear', 'delete'))
                                         <a href="{{ route('DeleteFinancialYear', base64_encode($y->id)) }}"
                                             onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </button>
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty

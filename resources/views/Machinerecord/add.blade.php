@@ -24,6 +24,9 @@
                                 @method('PUT')
                                 @endif
                                 <div class="row g-3">
+
+
+
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
@@ -37,7 +40,8 @@
 
                                             <option value="{{ $partNo }}"
                                                 data-code="{{ $wo->customer?->code ?? '' }}"
-                                                data-workorder="{{ $wo->project_id }}"
+                                                data-workorder="{{ $wo->id }}"
+
                                                 data-partdesc="{{ $wo->part_description ?? '' }}"
                                                 data-qty="{{ $wo->quantity ?? '' }}"
                                                 data-e_time="{{ $wo->exp_time ?? '' }}"
@@ -336,7 +340,6 @@
     });
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
     $(document).ready(function() {

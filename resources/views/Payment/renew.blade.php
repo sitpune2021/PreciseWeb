@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 expiryDate.setMonth(expiryDate.getMonth() + 1);
             }
             else if (period.includes('3month') || period.includes('quarter')) {
-                expiryDate.setMonth(expiryDate.getMonth() + 3);
+                expiryDate.setMonth(expiryDate.getMonth() + 3); 
             }
             else if (period.includes('6month') || period.includes('halfyear')) {
                 expiryDate.setMonth(expiryDate.getMonth() + 6);

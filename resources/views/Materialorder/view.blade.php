@@ -26,17 +26,14 @@
                                 <table id="buttons-datatables" class="display table table-bordered table-striped" style="width:100%">
                                     <thead>
                                         <tr class="table-white text-center">
-                                            <th rowspan="2">#</th>
-                                            <th rowspan="2">Sr.No</th>
-                                            <th rowspan="2">Date</th>
-
-                                            <th rowspan="2">Customer Code</th>
-
-                                            <th rowspan="2">Work Order desc</th>
-
-                                            <th rowspan="2">Material</th>
-                                            <th rowspan="2">Qty</th>
-                                            <th rowspan="2">Action</th>
+                                            <th>#</th>
+                                            <th>Sr.No</th>
+                                            <th>Date</th>
+                                            <th>Customer Code</th>
+                                            <th>Work Order desc</th>
+                                            <th>Material</th>
+                                            <th>Qty</th>
+                                            <th>Action</th>
                                         </tr>
 
                                     </thead>
@@ -60,7 +57,7 @@
                                                 <a href="{{ route('editMaterialorder', base64_encode($order->id)) }}" class="btn btn-success btn-sm">
                                                     <i class="ri-pencil-fill"></i>
                                                 </a>
-                                            @endif
+                                                @endif
                                                 <!-- View Button -->
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm viewBtn"
@@ -77,7 +74,7 @@
                                                     data-rwid="{{ $order->r_width }}"
                                                     data-rhei="{{ $order->r_height }}"
                                                     data-mat="{{ $order->material }}"
-                                                    
+
                                                     data-qty="{{ $order->quantity }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>

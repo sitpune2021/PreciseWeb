@@ -27,6 +27,9 @@
 
     <!-- Layout config Js -->
     <script src="{{asset('assets/js/layout.js')}}"></script>
+    <!--machin record Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
     <!-- Bootstrap Css -->
     <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
@@ -260,6 +263,8 @@
                 </a>
             </div>
         </div>
+
+
         <div id="scrollbar">
             <div class="container-fluid">
                 <div id="two-column-menu"></div>
@@ -291,112 +296,90 @@
 
 
 
-                    @if(hasPermission('UserAdmin'))
-                    <!-- Masters -->
+                    {{-- Masters Menu (Only if ANY master permission exists) --}}
+                    @if(
+                    hasPermission('Operator','add') ||
+                    hasPermission('Machine','add') ||
+                    hasPermission('Setting','add') ||
+                    hasPermission('Hsncode','add') ||
+                    hasPermission('MaterialType','add') ||
+                    hasPermission('FinancialYear','add') ||
+                    hasPermission('UserAdmin','add') ||
+                    hasPermission('UserAdmin','view') ||
+                    hasPermission('UserAdmin','edit')
+                    )
                     <li class="menu-title"><i class="ri-settings-3-line me-2 text-warning"></i><span>Masters</span></li>
+
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn','AddMaterialType','AddFinancialYear','AddUserAdmin','ListUserAdmin') ? '' : 'collapsed' }}" href="#sidebarMaster" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn','AddMaterialType','AddFinancialYear','AddUserAdmin','ListUserAdmin','RolePermission') ? '' : 'collapsed' }}"
+                            href="#sidebarMaster" data-bs-toggle="collapse">
                             <i class="ri-database-2-line"></i> <span>Master</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn','AddMaterialType','AddFinancialYear','AddUserAdmin','ListUserAdmin') ? 'show' : '' }}" id="sidebarMaster">
+
+                        <div class="collapse menu-dropdown {{ request()->routeIs('AddOperator','AddMachine','AddSetting','addHsn','AddMaterialType','AddFinancialYear','AddUserAdmin','ListUserAdmin','RolePermission') ? 'show' : '' }}" id="sidebarMaster">
+
                             <ul class="nav nav-sm flex-column">
 
-                                @if(hasPermission('Operator', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('AddOperator') }}"
-                                        class="nav-link {{ request()->routeIs('AddOperator') ? 'active' : '' }}">
-                                        <i class="ri-user-2-line me-1"></i> Add Operator
-                                    </a>
-                                </li>
+                                @if(hasPermission('Operator','add'))
+                                <li><a href="{{ route('AddOperator') }}" class="nav-link {{ request()->routeIs('AddOperator') ? 'active':'' }}">Add Operator</a></li>
                                 @endif
 
-                                @if(hasPermission('Machine', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('AddMachine') }}"
-                                        class="nav-link {{ request()->routeIs('AddMachine') ? 'active' : '' }}">
-                                        <i class="ri-macbook-line me-1"></i> Add Machine
-                                    </a>
-                                </li>
+                                @if(hasPermission('Machine','add'))
+                                <li><a href="{{ route('AddMachine') }}" class="nav-link {{ request()->routeIs('AddMachine') ? 'active':'' }}">Add Machine</a></li>
                                 @endif
 
-                                @if(hasPermission('Setting', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('AddSetting') }}"
-                                        class="nav-link {{ request()->routeIs('AddSetting') ? 'active' : '' }}">
-                                        <i class="ri-tools-line me-1"></i> Add Setting
-                                    </a>
-                                </li>
+                                @if(hasPermission('Setting','add'))
+                                <li><a href="{{ route('AddSetting') }}" class="nav-link {{ request()->routeIs('AddSetting') ? 'active':'' }}">Add Setting</a></li>
                                 @endif
 
-                                @if(hasPermission('Hsncode', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('addHsn') }}"
-                                        class="nav-link {{ request()->routeIs('addHsn') ? 'active' : '' }}">
-                                        <i class="ri-barcode-line me-1"></i> Add Hsncode
-                                    </a>
-                                </li>
+                                @if(hasPermission('Hsncode','add'))
+                                <li><a href="{{ route('addHsn') }}" class="nav-link {{ request()->routeIs('addHsn') ? 'active':'' }}">Add Hsncode</a></li>
                                 @endif
 
-                                @if(hasPermission('MaterialType', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('AddMaterialType') }}"
-                                        class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active' : '' }}">
-                                        <i class="ri-drop-line me-1"></i> Add Material Type
-                                    </a>
-                                </li>
+                                @if(hasPermission('MaterialType','add'))
+                                <li><a href="{{ route('AddMaterialType') }}" class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active':'' }}">Add Material Type</a></li>
                                 @endif
 
-                                @if(hasPermission('FinancialYear', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('AddFinancialYear') }}"
-                                        class="nav-link {{ request()->routeIs('AddFinancialYear') ? 'active' : '' }}">
-                                        <i class="ri-calendar-line me-1"></i> Add Financial Year
-                                    </a>
-                                </li>
+                                @if(hasPermission('FinancialYear','add'))
+                                <li><a href="{{ route('AddFinancialYear') }}" class="nav-link {{ request()->routeIs('AddFinancialYear') ? 'active':'' }}">Add Financial Year</a></li>
                                 @endif
 
-                                {{-- Role & Permission menu --}}
-                                @if(hasPermission('UserAdmin'))
+
+                                {{-- Role & Permission Menu  --}}
+                                @if(hasPermission('UserAdmin','add') || hasPermission('UserAdmin','view') || hasPermission('UserAdmin','edit'))
                                 <li class="nav-item">
                                     <a class="nav-link menu-link {{ request()->routeIs('AddUserAdmin','ListUserAdmin','RolePermission') ? '' : 'collapsed' }}"
                                         href="#sidebarUserAdmin" data-bs-toggle="collapse">
                                         <i class="ri-user-add-line me-1"></i> Role & Permission
                                     </a>
-                                    <div class="collapse menu-dropdown {{ request()->routeIs('AddUserAdmin','ListUserAdmin','RolePermission') ? 'show' : '' }}" id="sidebarUserAdmin">
+
+                                    <div class="collapse menu-dropdown {{ request()->routeIs('AddUserAdmin','ListUserAdmin','RolePermission') ? 'show':'' }}" id="sidebarUserAdmin">
+
                                         <ul class="nav nav-sm flex-column">
-                                            @if(hasPermission('UserAdmin', 'add'))
-                                            <li class="nav-item">
-                                                <a href="{{ route('AddUserAdmin') }}" class="nav-link {{ request()->routeIs('AddUserAdmin') ? 'active' : '' }}">
-                                                    Create User
-                                                </a>
-                                            </li>
+
+                                            @if(hasPermission('UserAdmin','add'))
+                                            <li><a href="{{ route('AddUserAdmin') }}" class="nav-link {{ request()->routeIs('AddUserAdmin') ? 'active':'' }}">Create User</a></li>
                                             @endif
 
-                                            @if(hasPermission('UserAdmin', 'view'))
-                                            <li class="nav-item">
-                                                <a href="{{ route('ListUserAdmin') }}" class="nav-link {{ request()->routeIs('ListUserAdmin') ? 'active' : '' }}">
-                                                    View Users
-                                                </a>
-                                            </li>
+                                            @if(hasPermission('UserAdmin','view'))
+                                            <li><a href="{{ route('ListUserAdmin') }}" class="nav-link {{ request()->routeIs('ListUserAdmin') ? 'active':'' }}">View Users</a></li>
                                             @endif
 
-                                            @if(hasPermission('UserAdmin', 'edit'))
-                                            <li class="nav-item">
-                                                <a href="{{ route('RolePermission') }}" class="nav-link {{ request()->routeIs('RolePermission') ? 'active' : '' }}">
-                                                    Role & Permission
-                                                </a>
-                                            </li>
+                                            @if(hasPermission('UserAdmin','edit'))
+                                            <li><a href="{{ route('RolePermission') }}" class="nav-link {{ request()->routeIs('RolePermission') ? 'active':'' }}">Role & Permission</a></li>
                                             @endif
+
                                         </ul>
                                     </div>
                                 </li>
                                 @endif
 
                             </ul>
-
                         </div>
                     </li>
                     @endif
+
+
                     <!-- Customers -->
                     @if(hasPermission('Customer', 'view'))
                     <li class="menu-title">
@@ -629,7 +612,7 @@
                                         <i class="ri-file-list-3-line me-1"></i>Proforma Invoice
                                     </a>
                                 </li> -->
-                                     <li class="nav-item">
+                                <li class="nav-item">
                                     <a href="{{ route('invoice.view') }}"
                                         class="nav-link {{ request()->routeIs('invoice.view') ? 'active' : '' }}">
                                         <i class="ri-file-list-3-line me-1"></i>Invoice List
