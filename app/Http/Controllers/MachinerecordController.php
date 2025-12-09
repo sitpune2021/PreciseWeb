@@ -53,7 +53,7 @@ class MachinerecordController extends Controller
             'projects'
         ));
     }
-  public function StoreMachinerecord(Request $request)
+public function StoreMachinerecord(Request $request)
 {
     $validated = $request->validate([
         'part_no'     => 'required|string|max:100',
@@ -75,22 +75,19 @@ class MachinerecordController extends Controller
 
     $validated['admin_id'] = Auth::id();
 
-    $workOrder = WorkOrder::where('id', $request->work_order)->first();
+    // Keep work_order as-is (user-visible)
+    $validated['work_order'] = $request->work_order;
 
-    if ($workOrder) {
-
-        // Save UI input (work order number)
-        $validated['work_order'] = $request->work_order;
-
-        // Save REAL WorkOrder ID
-        $validated['work_order_id'] = $workOrder->id;
-    }
+    // **Generate serial for work_order_id**
+    $lastSerial = MachineRecord::max('work_order_id'); // get highest value in table
+    $validated['work_order_id'] = $lastSerial ? $lastSerial + 1 : 1;
 
     MachineRecord::create($validated);
 
     return redirect()->route('ViewMachinerecord')
         ->with('success', 'Machine Record Added Successfully');
 }
+
 
 
     public function ViewMachinerecord()

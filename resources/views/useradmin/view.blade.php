@@ -18,7 +18,7 @@
 
                         <div class="card-body">
                             <div class="table-responsive">
-                               <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead class="table-light">
                                         <tr>
                                             <th>ID</th>
@@ -34,7 +34,8 @@
                                     <tbody>
                                         @foreach($users as $user)
                                         <tr>
-                                            <td>{{ $user->id }}</td>
+                                            <td>{{ $loop->iteration }}</td> <!-- This is the auto-increment number -->
+
                                             <td>{{ $user->full_name }}</td>
                                             <td>{{ $user->user_name }}</td>
                                             <td>{{ $user->email }}</td>
@@ -45,7 +46,6 @@
                                                 <form action="{{ route('updateStatus') }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{ $user->id }}">
-
                                                     <div class="form-check form-switch d-flex justify-content-center">
                                                         <input class="form-check-input"
                                                             type="checkbox"
@@ -59,26 +59,23 @@
                                             </td>
 
                                             <td class="d-flex justify-content-center gap-2">
-
                                                 <a href="{{ route('EditUserAdmin', base64_encode($user->id)) }}" class="btn btn-success btn-sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </a>
-                                                <!-- <button type="button" class="btn btn-primary btn-sm viewCustomerBtn">
-                                                    <i class="ri-eye-fill align-bottom"></i>
-                                                </button> -->
                                             </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
-                                </table>
-                            </div>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
 
-        </div>  
-    </div>  
-</div>  
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @endsection

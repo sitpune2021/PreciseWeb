@@ -75,6 +75,7 @@ class ProformaInvoiceController extends Controller
 
         $validated = $request->validate([
             'customer_id' => 'required',
+            'invoice_date'        => 'required',
             'desc.*'      => 'required|string',
             'hsn_code.*'  => 'required|string',
             'qty.*'       => 'required|numeric|min:1',
@@ -317,8 +318,10 @@ class ProformaInvoiceController extends Controller
             ]);
         }
 
-        return redirect()->route('invoice.print', $invoice->id)
-            ->with('success', 'TAX Invoice created successfully!');
+        // return redirect()->route('invoice.print', $invoice->id)
+        //     ->with('success', 'TAX Invoice created successfully!');
+
+            return back()->with('success', 'Converted Successfully!');
     }
 
     public function proformaEdit($id)

@@ -43,7 +43,8 @@ class MaterialReq extends Model
         'edm_rate',
         'cl',
         'material_cost',
-        'total_cost'
+        'total_cost',
+        'sr_no'
     ];
 
     public function customer()

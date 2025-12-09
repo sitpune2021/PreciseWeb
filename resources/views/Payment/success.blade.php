@@ -3,59 +3,75 @@
 @section('content')
 
 <style>
-    .success-icon {
-        font-size: 90px;
-        color: #28a745;
-        animation: pop 0.5s ease-in-out;
-    }
-
+    /* Smooth Fade & Scale Animation */
     @keyframes pop {
-        0% { transform: scale(0.5); opacity: 0; }
+        0% { transform: scale(0.8); opacity: 0; }
         100% { transform: scale(1); opacity: 1; }
     }
 
-    .success-card {
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 0 15px #d5d5d5;
-        animation: fadeIn 0.7s ease-in-out;
+    @keyframes slideUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    .success-card {
+        max-width: 450px;
+        margin: auto;
+        padding: 30px;
+        border-radius: 15px;
+        background: #ffffff;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        animation: slideUp 0.5s ease-out;
+    }
+
+    .success-icon {
+        font-size: 65px;
+        color: #28a745;
+        animation: pop 0.4s ease-in-out;
     }
 
     .amount-box {
-        background: #f4f7ff;
+        background: #f0f3ff;
         padding: 15px;
-        border-radius: 10px;
-        margin-top: 10px;
-        font-size: 18px;
+        border-radius: 12px;
+        margin-top: 15px;
+        font-size: 16px;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    .amount-box p {
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    .btn-success {
+        animation: slideUp 0.7s ease-out;
+        border-radius: 30px;
+        padding: 8px 25px;
     }
 </style>
 
 <div class="main-content">
     <div class="page-content">
-        <div class="container" style="margin-top: 70px;">
-            
+        <div class="container d-flex justify-content-center" style="margin-top: 60px; margin-bottom: 60px;">
+
             <div class="success-card text-center">
 
                 <div class="success-icon">✓</div>
 
-                <h2 class="mt-3">Payment Successful!</h2>
-                <p class="text-muted">Your payment has been processed successfully.</p>
+                <h2 class="mt-3 mb-2">Payment Successful</h2>
+                <p class="text-muted">Your payment has been processed.</p>
 
-                <div class="amount-box text-start mx-auto" style="max-width: 350px;">
-                   <p>Payment ID: {{ $razorpay_payment_id }}</p>
-                  <p>Order ID: {{ $razorpay_order_id }}</p>
-                  <p>Amount: ₹{{ $amount }}</p>
-
+                <div class="amount-box text-start mx-auto">
+                    <p><strong>Payment ID:</strong> {{ $razorpay_payment_id }}</p>
+                    <p><strong>Order ID:</strong> {{ $razorpay_order_id }}</p>
+                    <p><strong>Amount:</strong> ₹{{ $amount }}</p>
                 </div>
 
-                <a href="{{ url('/') }}" class="btn btn-success mt-4 px-4 py-2">
+                <a href="{{ url('/') }}" class="btn btn-success mt-4">
                     Go to Dashboard
                 </a>
+
             </div>
 
         </div>

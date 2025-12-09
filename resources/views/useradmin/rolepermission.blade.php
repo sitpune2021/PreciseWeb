@@ -53,14 +53,23 @@
                                 $dashboardCards = ['Work_Orders', 'project', 'MachineRecord'];
                                 @endphp
 
-                                @foreach([ 'Dashboard' ,'Operator','Machine','Setting','Hsncode', 'MaterialType' ,'FinancialYear' ,'Customer', 'Vendors' ,'Projects','WorkOrders','SetupSheet', 'MachineRecord' ,'MaterialReq','MaterialOrder', 'Invoice' ,'Subscription'
+                                @foreach([
+                                'Dashboard','Operator','Machine','Setting','Hsncode','MaterialType',
+                                'FinancialYear','Customer','Vendors','Projects','WorkOrders',
+                                'SetupSheet','MachineRecord','MaterialReq','MaterialOrder','Invoice','Subscription'
                                 ] as $module)
+
+                                {{-- Hide Subscription for all roles except role 2 --}}
+                                @if($module == 'Subscription' && request()->get('role_id') != 2)
+                                @continue
+                                @endif
+
                                 <tr>
                                     <td>{{ $module }}</td>
 
                                     <input type="hidden" name="permissions[{{ $module }}][]" value="">
 
-                                    {{-- Dashboard → Only card-wise view permissions --}}
+                                    {{-- Dashboard → card-wise view permissions --}}
                                     @if($module == 'Dashboard')
                                     <td colspan="4" class="text-start">
                                         @foreach($dashboardCards as $card)
@@ -73,7 +82,6 @@
                                         </label>
                                         @endforeach
                                     </td>
-
                                     @else
                                     <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="add"></td>
                                     <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="view"></td>
@@ -82,10 +90,10 @@
                                     @endif
 
                                 </tr>
+
                                 @endforeach
-
-
                             </tbody>
+
                         </table>
 
 

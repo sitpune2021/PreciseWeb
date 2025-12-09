@@ -183,26 +183,28 @@ class MaterialorderController extends Controller
         ]);
     }
 
-    public function getMaterialRequests($customer_id)
-    {
-        try {
-            $adminId = Auth::id();
+public function getMaterialRequests($customer_id)
+{
+    try {
+        $adminId = Auth::id();
 
-            $requests = MaterialReq::where('customer_id', $customer_id)
-                ->where('admin_id', $adminId)
-                ->select('id', 'description', 'work_order_no')
-                ->orderBy('id', 'desc')
-                ->get();
+        $requests = MaterialReq::where('customer_id', $customer_id)
+            ->where('admin_id', $adminId)
+            ->select('id', 'sr_no', 'description', 'work_order_no') // make sure sr_no is selected
+            ->orderBy('id', 'desc')
+            ->get();
 
-            if ($requests->isEmpty()) {
-                return response()->json(['status' => 'empty']);
-            }
-
-            return response()->json(['status' => 'success', 'data' => $requests]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        if ($requests->isEmpty()) {
+            return response()->json(['status' => 'empty']);
         }
+
+        return response()->json(['status' => 'success', 'data' => $requests]);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
     }
+}
+
+
 
     public function getMaterialRequestDetails($id)
     {

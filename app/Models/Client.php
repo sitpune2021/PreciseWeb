@@ -34,4 +34,10 @@ class Client extends Model
     {
         return $this->belongsTo(User::class, 'login_id');
     }
+    public function plan()
+{
+    return $this->belongsTo(PaymentPlan::class, 'plan_type');
+}
+    
+
 }

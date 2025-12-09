@@ -66,15 +66,15 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <label>Select Material Req</label>
-                                        <select id="material_data_dropdown"
-                                            class="form-control form-select"
-                                            data-selected="{{ old('material_req_id', $record->material_req_id ?? '') }}">
-                                            <option value="">Select Material Req</option>
-                                        </select>
+                                   <div class="col-md-4">
+    <label>Select Material Req</label>
+    <select id="material_data_dropdown"
+            class="form-control form-select"
+            data-selected="{{ old('material_req_id', $record->material_req_id ?? '') }}">
+        <option value="">Select Material Req</option>
+    </select>
+</div>
 
-                                    </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label">Date <span class="text-red">*</span></label>
@@ -189,42 +189,45 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#customer_id').on('change', function() {
-            var customerId = $(this).val();
-            var dropdown = $('#material_data_dropdown');
-            dropdown.html('<option>Loading...</option>');
+$(document).ready(function() {
+    $('#customer_id').on('change', function() {
+        var customerId = $(this).val();
+        var dropdown = $('#material_data_dropdown');
+        dropdown.html('<option>Loading...</option>');
 
-            if (customerId) {
-                $.ajax({
-                    url: '/get-material-requests/' + customerId,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        dropdown.empty();
+        if (customerId) {
+            $.ajax({
+                url: '/get-material-requests/' + customerId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    dropdown.empty();
 
-                        if (response.status === 'success') {
-                            dropdown.append('<option value="">Select Material Req ID</option>');
-                            $.each(response.data, function(index, item) {
-                                dropdown.append('<option value="' + item.id + '">' + item.id + ' - ' + item.description + '</option>');
-                            });
-                        } else if (response.status === 'empty') {
-                            dropdown.append('<option>No Material Requests Found</option>');
-                        } else {
-                            dropdown.append('<option>Error Loading Data</option>');
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                        dropdown.html('<option>Error fetching data</option>');
+                    if (response.status === 'success') {
+                        dropdown.append('<option value="">Select Material Req</option>');
+                        $.each(response.data, function(index, item) {
+                            // Show SR number in dropdown
+                            dropdown.append('<option value="' + item.id + '">SR ' + item.sr_no + ' - ' + item.description + '</option>');
+                        });
+                    } else if (response.status === 'empty') {
+                        dropdown.append('<option>No Material Requests Found</option>');
+                    } else {
+                        dropdown.append('<option>Error Loading Data</option>');
                     }
-                });
-            } else {
-                dropdown.html('<option value="">Select Material Req ID</option>');
-            }
-        });
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    dropdown.html('<option>Error fetching data</option>');
+                }
+            });
+        } else {
+            dropdown.html('<option value="">Select Material Req</option>');
+        }
     });
+});
 </script>
+
+
 
 
 <script>

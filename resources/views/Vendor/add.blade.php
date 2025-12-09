@@ -39,7 +39,7 @@
                                                     value="{{ old('vendor_name', $vendor->vendor_name ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[0-9]/g, '');">
                                                 @error('vendor_name')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -48,7 +48,7 @@
                                                 <label for="vendor_code" class="form-label">Vendor Code <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="vendor_code" name="vendor_code" placeholder="Vendor Code" value="{{ old('vendor_code', $vendor->vendor_code ?? '') }}">
                                                 @error('vendor_code')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div> -->
@@ -59,7 +59,7 @@
                                                     value="{{ old('phone_no', $vendor->phone_no ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
                                                 @error('phone_no')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -70,7 +70,7 @@
                                                     placeholder="Contact Person"
                                                     value="{{ old('contact_person', $vendor->contact_person ?? '') }}">
                                                 @error('contact_person')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -80,7 +80,7 @@
                                                 <label for="gst_no" class="form-label">GST Number <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" placeholder="GST Number" id="gst_no" name="gst_no" value="{{ old('gst_no', $vendor->gst_no ?? '') }}" oninput="this.value = this.value.toUpperCase();">
                                                 @error('gst_no')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -92,7 +92,7 @@
                                                 <label for="email_id" class="form-label">Email ID</label>
                                                 <input type="email" class="form-control" id="email_id" name="email_id" placeholder="Email ID" value="{{ old('email_id', $vendor->email_id ?? '') }}">
                                                 @error('email_id')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@
                                                 <label for="address" class="form-label">Address <span class="mandatory">*</span></label>
                                                 <textarea class="form-control" id="address" name="address" placeholder="Address...">{{ old('address', $vendor->address ?? '') }}</textarea>
                                                 @error('address')
-                                                <span class="text-red">{{ $message }}</span>
+                                                <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>

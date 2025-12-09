@@ -60,6 +60,7 @@ class MaterialReqController extends Controller
 
         $material = MaterialType::findOrFail($request->material);
 
+        // Volume & weight calculation
         $volume = ($request->dia > 0)
             ? pi() * pow(($request->dia / 2), 2) * $request->height
             : $request->length * $request->width * $request->height;
@@ -82,7 +83,13 @@ class MaterialReqController extends Controller
 
         $total_cost = round($material_cost + $edm_cost + $machine_cost, 2);
 
+        
+         $lastSrNo = MaterialReq::where('admin_id', Auth::id())->max('sr_no');
+        
+        $sr_no = $lastSrNo ? $lastSrNo + 1 : 1;
+ 
         $data = $validated;
+        $data['sr_no'] = $sr_no; // assign serial number
         $data['material'] = $request->material;
         $data['material_gravity'] = $material->material_gravity;
         $data['material_rate'] = $material->material_rate;
@@ -92,9 +99,11 @@ class MaterialReqController extends Controller
         $data['admin_id'] = Auth::id();
 
         MaterialReq::create($data);
+
         return redirect()->route('ViewMaterialReq')
             ->with('success', 'Material Requirement Added Successfully!');
     }
+
     public function ViewMaterialReq()
     {
         $materialReq = MaterialReq::with(['materialType', 'customer'])

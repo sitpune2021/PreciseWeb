@@ -136,6 +136,7 @@
                                     <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
                                         {{ auth()->user()->name }}
                                     </span>
+
                                     <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">
                                         {{
                                         auth()->user()->user_type == 1 ? 'Super Admin' :
@@ -145,33 +146,51 @@
                                     }}
                                     </span>
 
+                                    {{-- RED plan indicator --}}
+                                    @php
+                                    $planColor = ( auth()->user()->plan_status == 1) ? 'text-success small' : 'text-red small';
+                                    $planName = $clientData->plan->title ?? 'No Plan';
+                                    @endphp
+                                    <span class="{{ $planColor }} fw-bold ms-1">{{ $clientData->plan->title ?? 'No Plan' }} (Active)</span>
+
                                 </span>
                             </span>
-
                         </button>
+
                         <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <h6 class="dropdown-header">Welcome {{auth()->user()->name}}</h6>
+                            <!-- User Info -->
+                            <h6 class="dropdown-header">Welcome {{ auth()->user()->name }}</h6>
+
+                            {{-- PLAN DETAILS --}}
+                            <div class="dropdown-item">
+                                <strong>Plan:</strong> {{ $planName }} <br>
+                                <strong>Expiry:</strong>
+                                {{ \Carbon\Carbon::parse($clientData?->plan_expiry)->format('d M Y') ?? 'N/A' }}
+
+                            </div>
+
+                            <hr class="dropdown-divider">
+
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>
+
                             <a class="dropdown-item" href="{{ route('Setting') }}">
                                 <i class="ri-settings-3-line text-muted fs-16 align-middle me-1"></i>
                                 <span class="align-middle">Settings</span>
                             </a>
-                            <!-- <a class="dropdown-item" href="{{ route('Payment') }}">
-                            <i class="ri-refresh-line text-muted fs-16 align-middle me-1"></i>
-                            <span class="align-middle">Renew Plan</span>
-                            </a> -->
 
-
+                            {{-- RENEW PLAN BUTTON IF EXPIRED --}}
+                            <a class="dropdown-item {{ auth()->user()->plan_status == 0 ? 'text-danger' : '' }}"
+                                href="{{ route('Payment') }}">
+                                <i class="ri-refresh-line fs-16 align-middle me-1"></i>
+                                <span class="align-middle">Renew Plan</span>
+                            </a>
 
                             <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
                                 <span class="align-middle" data-key="t-logout">Logout</span>
                             </a>
-
-
                         </div>
                     </div>
                 </div>
@@ -293,8 +312,6 @@
                         </div>
                     </li>
                     @endif
-
-
 
                     {{-- Masters Menu (Only if ANY master permission exists) --}}
                     @if(

@@ -58,7 +58,7 @@ class PaymentController extends Controller
         $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
         $plan  = PaymentPlan::findOrFail($order->plan_id);
 
-         $planDays = $plan->days; 
+        $planDays = $plan->days;
 
         if (!empty($client->plan_expiry) && Carbon::parse($client->plan_expiry)->isFuture()) {
 
@@ -99,8 +99,13 @@ class PaymentController extends Controller
 
     public function PaymentList()
     {
-        $payments = Order::all();
-        $orders = Client::all();
-        return view('Payment.view', compact('payments', 'orders'));
+        $adminId = Auth::id();
+
+        $payments = Order::with('user')
+            ->where('user_id', $adminId)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('Payment.view', compact('payments'));
     }
 }
