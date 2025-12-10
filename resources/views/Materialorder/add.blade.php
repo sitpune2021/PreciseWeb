@@ -14,9 +14,9 @@
                             </h5>
                         </div>
                         <div class="card-body">
-                          @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
+                            @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
                             <form action="{{ isset($record) ? route('updateMaterialorder', base64_encode($record->id)) : route('storeMaterialorder') }}" method="POST">
                                 @csrf
                                 @if(isset($record))
@@ -56,7 +56,7 @@
 
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label for="work_order_no" class="form-label">Sr No. <span class="mandatory">*</span></label>
+                                            <label for="work_order_no" class="form-label">WO No. <span class="mandatory">*</span></label>
                                             <input type="text" name="work_order_no" id="work_order_no"
                                                 class="form-control"
                                                 value="{{ old('work_order_no', $record->work_order_no ?? '') }}" readonly>
@@ -66,14 +66,14 @@
                                         </div>
                                     </div>
 
-                                   <div class="col-md-4">
-    <label>Select Material Req</label>
-    <select id="material_data_dropdown"
-            class="form-control form-select"
-            data-selected="{{ old('material_req_id', $record->material_req_id ?? '') }}">
-        <option value="">Select Material Req</option>
-    </select>
-</div>
+                                    <div class="col-md-4">
+                                        <label>Select Material Req</label>
+                                        <select id="material_data_dropdown"
+                                            class="form-control form-select"
+                                            data-selected="{{ old('material_req_id', $record->material_req_id ?? '') }}">
+                                            <option value="">Select Material Req</option>
+                                        </select>
+                                    </div>
 
 
                                     <div class="col-md-3">
@@ -184,47 +184,47 @@
             </div>
 
         </div> ,
-    </div>  
-</div> 
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#customer_id').on('change', function() {
-        var customerId = $(this).val();
-        var dropdown = $('#material_data_dropdown');
-        dropdown.html('<option>Loading...</option>');
+    $(document).ready(function() {
+        $('#customer_id').on('change', function() {
+            var customerId = $(this).val();
+            var dropdown = $('#material_data_dropdown');
+            dropdown.html('<option>Loading...</option>');
 
-        if (customerId) {
-            $.ajax({
-                url: '/get-material-requests/' + customerId,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    dropdown.empty();
+            if (customerId) {
+                $.ajax({
+                    url: '/get-material-requests/' + customerId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        dropdown.empty();
 
-                    if (response.status === 'success') {
-                        dropdown.append('<option value="">Select Material Req</option>');
-                        $.each(response.data, function(index, item) {
-                            // Show SR number in dropdown
-                            dropdown.append('<option value="' + item.id + '">SR ' + item.sr_no + ' - ' + item.description + '</option>');
-                        });
-                    } else if (response.status === 'empty') {
-                        dropdown.append('<option>No Material Requests Found</option>');
-                    } else {
-                        dropdown.append('<option>Error Loading Data</option>');
+                        if (response.status === 'success') {
+                            dropdown.append('<option value="">Select Material Req</option>');
+                            $.each(response.data, function(index, item) {
+                                // Show SR number in dropdown
+                                dropdown.append('<option value="' + item.id + '">SR ' + item.sr_no + ' - ' + item.description + '</option>');
+                            });
+                        } else if (response.status === 'empty') {
+                            dropdown.append('<option>No Material Requests Found</option>');
+                        } else {
+                            dropdown.append('<option>Error Loading Data</option>');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        dropdown.html('<option>Error fetching data</option>');
                     }
-                },
-                error: function(xhr) {
-                    console.error(xhr.responseText);
-                    dropdown.html('<option>Error fetching data</option>');
-                }
-            });
-        } else {
-            dropdown.html('<option value="">Select Material Req</option>');
-        }
+                });
+            } else {
+                dropdown.html('<option value="">Select Material Req</option>');
+            }
+        });
     });
-});
 </script>
 
 

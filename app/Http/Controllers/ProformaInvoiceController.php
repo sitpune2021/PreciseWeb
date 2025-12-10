@@ -15,7 +15,7 @@ use App\Models\ProformaInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ProformaItem;
-
+use App\Models\Project;
 
 class ProformaInvoiceController extends Controller
 {
@@ -164,9 +164,9 @@ class ProformaInvoiceController extends Controller
 
     public function printInvoice($id)
     {
-        $invoice = ProformaInvoice::with('items')->findOrFail($id);
-
+        $invoice = ProformaInvoice::with(['items.workOrder.project'])->findOrFail($id);
         $adminSetting = AdminSetting::first();
+
         $adminId = Auth::id();
         $c = Client::where('login_id', $adminId)->first([
             'name',
@@ -177,8 +177,14 @@ class ProformaInvoiceController extends Controller
             'address'
         ]);
 
-        return view('proforma.print', compact('invoice', 'c', 'adminSetting'));
+        $workOrders = $invoice->items
+            ->pluck('workOrder')
+            ->filter()          // remove null
+            ->unique('id');
+
+        return view('proforma.print', compact('invoice', 'c', 'adminSetting', 'workOrders'));
     }
+
 
     public function getHsnDetails($id)
     {
@@ -237,7 +243,7 @@ class ProformaInvoiceController extends Controller
                     return true;
                 }
 
-                return trim(strtolower($m->work_order)) === trim(strtolower($r->project_id));
+                return trim(strtolower($m->work_order_id)) === trim(strtolower($r->project_id));
             });
 
             $mat = $materials->firstWhere('material_type', $r->material);
@@ -321,7 +327,7 @@ class ProformaInvoiceController extends Controller
         // return redirect()->route('invoice.print', $invoice->id)
         //     ->with('success', 'TAX Invoice created successfully!');
 
-            return back()->with('success', 'Converted Successfully!');
+        return back()->with('success', 'Converted Successfully!');
     }
 
     public function proformaEdit($id)

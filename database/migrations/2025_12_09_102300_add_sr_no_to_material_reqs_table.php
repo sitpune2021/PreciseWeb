@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('material_reqs', function (Blueprint $table) {
-            $table->integer('sr_no')->default(1)->after('customer_id');
+            $table->integer('sr_no')->nullable()->after('customer_id');
         });
     }
 

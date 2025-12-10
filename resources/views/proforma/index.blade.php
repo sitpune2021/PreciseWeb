@@ -12,6 +12,7 @@
                              <i class="me-2"></i> Proforma Invoice List
                          </h5>
 
+
                      </div>
                  </div>
              </div>
@@ -51,6 +52,13 @@
 
              </div>
 
+             @if(session('success'))
+             <div class="alert alert-success alert-dismissible fade show" role="alert">
+                 <strong>{{ session('success') }}</strong>
+                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+             </div>
+             @endif
+             
              <!-- Table Section -->
              <div class="card shadow-sm border-0">
                  <div class="card-body">

@@ -61,7 +61,7 @@
                                                 <!-- View Button -->
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm viewBtn"
-                                                    data-no="{{ $order->work_order_no }}"
+                                                    data-no="{{ $order->sr_no }}"
                                                     data-name="{{ $order->customer->code ?? 'N/A' }}"
                                                     data-date="{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}"
                                                     data-desc="{{ $order->work_order_desc }}"

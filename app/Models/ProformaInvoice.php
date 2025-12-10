@@ -47,4 +47,10 @@ class ProformaInvoice extends Model
     {
         return $this->hasMany(ProformaItem::class, 'invoice_id');
     }
+ public function workOrder()
+{
+    return $this->belongsTo(WorkOrder::class, 'work_order_id');
+}
+
+
 }

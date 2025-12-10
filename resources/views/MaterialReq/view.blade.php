@@ -42,7 +42,7 @@
                                         @foreach($materialReq as $req)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $req->work_order_no }}</td>
+                                            <td>{{ $req->sr_no }}</td>
                                             <td>{{ $req->customer->code ?? 'N/A' }}</td>
                                             <!-- <td>{{ $req->code }}</td> -->
                                             <td>{{ $req->date }}</td>
@@ -62,7 +62,7 @@
                                                         data-customer="{{ $req->customer->code ?? 'N/A' }}"
                                                         data-code="{{ $req->code }}"
                                                         data-date="{{ $req->date }}"
-                                                        data-workorder="{{ $req->work_order_no }}"
+                                                        data-sr_no="{{ $req->sr_no }}"
                                                         data-description="{{ $req->description }}"
                                                         data-dia="{{ $req->dia }}"
                                                         data-length="{{ $req->length }}"
@@ -236,7 +236,7 @@
                             document.getElementById("mr_customer").textContent = this.dataset.customer;
                             document.getElementById("mr_code").textContent = this.dataset.code;
                             document.getElementById("mr_date").textContent = this.dataset.date;
-                            document.getElementById("mr_workorder").textContent = this.dataset.workorder;
+                            document.getElementById("mr_workorder").textContent = this.dataset.sr_no;
                             document.getElementById("mr_description").textContent = this.dataset.description;
                             document.getElementById("mr_dia").textContent = this.dataset.dia;
                             document.getElementById("mr_length").textContent = this.dataset.length;

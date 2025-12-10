@@ -51,7 +51,7 @@ class LoginController extends Controller
 
             if ($client && $client->status == 0) {
                 return back()->withErrors([
-                    'email' => 'Your account is deactivated. Please contact admin.',
+                    'email' => 'Your account is deactivated.',
                 ]);
             }
         }

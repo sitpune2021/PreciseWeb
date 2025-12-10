@@ -142,16 +142,20 @@
                                         auth()->user()->user_type == 1 ? 'Super Admin' :
                                         (auth()->user()->user_type == 2 ? 'Admin' :
                                         (auth()->user()->user_type == 3 ? 'Programmer' :
-                                        (auth()->user()->user_type == 4 ? 'Supervisor' : 'Unknown')))
-                                    }}
+                                        (auth()->user()->user_type == 4 ? 'Supervisor' :
+                                        (auth()->user()->user_type == 5 ? 'Finance' : 'Unknown'))))
+                                            }}
                                     </span>
 
+
                                     {{-- RED plan indicator --}}
+                                    @if (!in_array(auth()->user()->user_type, [1, 3, 4, 5]))
                                     @php
                                     $planColor = ( auth()->user()->plan_status == 1) ? 'text-success small' : 'text-red small';
                                     $planName = $clientData->plan->title ?? 'No Plan';
                                     @endphp
                                     <span class="{{ $planColor }} fw-bold ms-1">{{ $clientData->plan->title ?? 'No Plan' }} (Active)</span>
+                                    @endif
 
                                 </span>
                             </span>
@@ -162,12 +166,14 @@
                             <h6 class="dropdown-header">Welcome {{ auth()->user()->name }}</h6>
 
                             {{-- PLAN DETAILS --}}
+                            @if (!in_array(auth()->user()->user_type, [1, 3, 4, 5]))
                             <div class="dropdown-item">
                                 <strong>Plan:</strong> {{ $planName }} <br>
                                 <strong>Expiry:</strong>
                                 {{ \Carbon\Carbon::parse($clientData?->plan_expiry)->format('d M Y') ?? 'N/A' }}
 
                             </div>
+                            @endif
 
                             <hr class="dropdown-divider">
 
@@ -175,17 +181,22 @@
                                 @csrf
                             </form>
 
+                            @if (!in_array(auth()->user()->user_type, [1, 3, 4, 5]))
                             <a class="dropdown-item" href="{{ route('Setting') }}">
                                 <i class="ri-settings-3-line text-muted fs-16 align-middle me-1"></i>
                                 <span class="align-middle">Settings</span>
                             </a>
+                            @endif
+
 
                             {{-- RENEW PLAN BUTTON IF EXPIRED --}}
+                            @if (!in_array(auth()->user()->user_type, [1, 3, 4, 5]))
                             <a class="dropdown-item {{ auth()->user()->plan_status == 0 ? 'text-danger' : '' }}"
                                 href="{{ route('Payment') }}">
                                 <i class="ri-refresh-line fs-16 align-middle me-1"></i>
                                 <span class="align-middle">Renew Plan</span>
                             </a>
+                            @endif
 
                             <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
