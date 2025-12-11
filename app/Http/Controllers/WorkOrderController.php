@@ -132,10 +132,10 @@ class WorkOrderController extends Controller
 
         $validated = $request->validate([
             'part'             => 'required|string|max:100',
-            'project_id'       => 'required|string|max:250',
+            'project_id'       => 'required|exists:projects,id',
             'date'             => 'required|date',
             'part_description' => 'required|string|max:1000',
-            'dimeter'          => 'nullable|numeric',
+            'dimeter'          => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
             'length'           => 'nullable|numeric',
             'width'            => 'nullable|numeric',
             'height'           => 'nullable|numeric',
@@ -144,11 +144,29 @@ class WorkOrderController extends Controller
             'material'         => 'required|string|max:200',
         ]);
 
+        // Fetch project_no from Projects table
+        $projectNo = Project::where('id', $validated['project_id'])->value('project_no');
+
         $workOrder = WorkOrder::where('admin_id', $adminId)->findOrFail($id);
-        $workOrder->update($validated);
+
+        // Update work order including project_no
+        $workOrder->update([
+            'part'             => $validated['part'],
+            'project_id'       => $projectNo,
+            'date'             => $validated['date'],
+            'part_description' => $validated['part_description'],
+            'dimeter'          => $validated['dimeter'] ?? null,
+            'length'           => $validated['length'] ?? null,
+            'width'            => $validated['width'] ?? null,
+            'height'           => $validated['height'] ?? null,
+            'exp_time'         => $validated['exp_time'] ?? null,
+            'quantity'         => $validated['quantity'],
+            'material'         => $validated['material'],
+        ]);
 
         return redirect()->route('ViewWorkOrder')->with('success', 'Work Entry updated successfully.');
     }
+
 
     public function destroy(string $encryptedId)
     {
