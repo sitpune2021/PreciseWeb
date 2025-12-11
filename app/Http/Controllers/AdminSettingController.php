@@ -11,9 +11,11 @@ class AdminSettingController extends Controller
 {
     public function EditSetting()
     {
-        $data = AdminSetting::first();
+        $data = AdminSetting::where('admin_id', Auth::id())->first();
+
         if (!$data) {
             $data = AdminSetting::create([
+                'admin_id' => Auth::id(),
                 'gst_no' => null,
                 'date' => null,
                 'udyam_no' => null,
@@ -25,13 +27,21 @@ class AdminSettingController extends Controller
                 'stamp' => null,
             ]);
         }
+
         return view('Admin.setting', compact('data'));
     }
 
     public function UpdateAdminSetting(Request $request)
     {
-        $setting = AdminSetting::first();
-        $id = $setting ? $setting->id : null;
+        $setting = AdminSetting::where('admin_id', Auth::id())->first();
+
+        if (!$setting) {
+            $setting = AdminSetting::create([
+                'admin_id' => Auth::id()
+            ]);
+        }
+
+        // ---- Validation remains same ----
 
         $request->validate([
             'gst_no' => [
@@ -47,7 +57,7 @@ class AdminSettingController extends Controller
                 'string',
                 'regex:/^UDYAM-[A-Z]{2}-\d{2}-\d{7}$/',
                 Rule::unique('admin_settings', 'udyam_no')
-                    ->ignore($id)
+                    ->ignore(optional($setting)->id)
                     ->where(fn($query) => $query->where('admin_id', Auth::id())),
             ],
 
@@ -59,51 +69,12 @@ class AdminSettingController extends Controller
             'stamp' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
-        $setting = AdminSetting::first();
+        // ---- Same logic for updating fields ----
 
-        if (!$setting) {
-            $setting = AdminSetting::create([
-                'admin_id' => Auth::id()
-            ]);
-        }
+        $setting->fill($request->except(['logo', 'stamp', 'remove_logo', 'remove_stamp']));
 
-        if ($request->filled('gst_no')) {
-            $setting->gst_no = $request->gst_no;
-        }
-
-        if ($request->has('clear_date') && $request->clear_date == '1') {
-            $setting->date = null;
-        } elseif ($request->filled('date')) {
-            $setting->date = $request->date;
-        }
-
-        if ($request->filled('udyam_no')) {
-            $setting->udyam_no = $request->udyam_no;
-        }
-
-        if ($request->filled('bank_details')) {
-            $setting->bank_details = $request->bank_details;
-        }
-
-        if ($request->filled('declaration')) {
-            $setting->declaration = $request->declaration;
-        }
-
-        if ($request->filled('note')) {
-            $setting->note = $request->note;
-        }
-
-        if ($request->filled('footer_note')) {
-            $setting->footer_note = $request->footer_note;
-        }
-
-        if ($request->has('remove_logo') && $request->remove_logo == 'on') {
-            $setting->logo = null;
-        }
-
-        if ($request->has('remove_stamp') && $request->remove_stamp == 'on') {
-            $setting->stamp = null;
-        }
+        if ($request->has('remove_logo')) $setting->logo = null;
+        if ($request->has('remove_stamp')) $setting->stamp = null;
 
         if ($request->hasFile('logo')) {
             $logoName = time() . '_logo.' . $request->logo->extension();

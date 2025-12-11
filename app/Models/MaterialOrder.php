@@ -27,6 +27,7 @@ class MaterialOrder extends Model
         'quantity',
         'material',
         'qty',
+        'sr_no'
     ];
 
     public function customer()

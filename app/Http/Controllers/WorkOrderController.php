@@ -15,7 +15,7 @@ class WorkOrderController extends Controller
 {
     public function addWorkOrder()
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
 
         $codes = Customer::where('status', 1)
             ->where('admin_id', $adminId)
@@ -43,7 +43,7 @@ class WorkOrderController extends Controller
 
     public function ViewWorkOrder()
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
 
         $workorders = WorkOrder::with(['customer', 'project'])
             ->where('admin_id', $adminId)
@@ -59,7 +59,7 @@ class WorkOrderController extends Controller
             'rows'                    => 'required|array|min:1',
             'rows.*.customer_id'      => 'required|exists:customers,id',
             'rows.*.part'             => 'required|string|max:100',
-            'rows.*.project_id'       => 'required|string|max:250',
+            'rows.*.project_id'       => 'required|exists:projects,id',
             'rows.*.date'             => 'required|date',
             'rows.*.part_description' => 'required|string|max:1000',
             'rows.*.dimeter'          => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
@@ -71,12 +71,15 @@ class WorkOrderController extends Controller
             'rows.*.material'         => 'required|string|max:200',
         ]);
 
-        $adminId = auth()->id();
+        $adminId = Auth::id();
 
         foreach ($validatedData['rows'] as $row) {
+
+            $projectNo = Project::where('id', $row['project_id'])->value('project_no');
+
             WorkOrder::create([
                 'customer_id'      => $row['customer_id'],
-                'project_id'       => $row['project_id'],
+                'project_id'       => $projectNo,
                 'part'             => $row['part'],
                 'date'             => $row['date'],
                 'dimeter'          => $row['dimeter'],
@@ -95,9 +98,10 @@ class WorkOrderController extends Controller
         return redirect()->route('ViewWorkOrder')->with('success', 'Work Orders added successfully!');
     }
 
+
     public function edit(string $encryptedId)
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
         $id = base64_decode($encryptedId);
 
         $workorder = WorkOrder::with(['customer', 'project'])
@@ -123,7 +127,7 @@ class WorkOrderController extends Controller
 
     public function update(Request $request, string $encryptedId)
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
         $id = base64_decode($encryptedId);
 
         $validated = $request->validate([
@@ -148,7 +152,7 @@ class WorkOrderController extends Controller
 
     public function destroy(string $encryptedId)
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
         $id = base64_decode($encryptedId);
 
         $workOrder = WorkOrder::where('admin_id', $adminId)->findOrFail($id);
@@ -159,7 +163,7 @@ class WorkOrderController extends Controller
 
     public function getProjects($customerId)
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
 
         $projects = Project::where('customer_id', $customerId)
             ->where('admin_id', $adminId)
@@ -172,7 +176,7 @@ class WorkOrderController extends Controller
 
     public function getParts($projectId)
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
 
         $parts = WorkOrder::where('project_id', $projectId)
             ->where('admin_id', $adminId)
@@ -184,7 +188,7 @@ class WorkOrderController extends Controller
 
     public function trash()
     {
-        $adminId = auth()->id();
+        $adminId = Auth::id();
 
         $trashWorkOrders = WorkOrder::onlyTrashed()
             ->where('admin_id', $adminId)

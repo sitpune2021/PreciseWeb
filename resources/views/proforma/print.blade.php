@@ -327,7 +327,9 @@
                 <td class="center">{{ $item->qty ?? 1 }}</td>
                 <td class="right">{{ number_format($item->rate ?? 0, 2) }}</td>
                 <td class="right">{{ number_format($item->amount ?? 0, 2) }}</td>
-            </tr> @endforeach </tbody>
+            </tr> 
+            @endforeach 
+        </tbody>
     </table>@php
     use App\Models\Hsncode;
 
@@ -370,13 +372,13 @@
     <table style="margin-top:10px; width:100%; border-collapse: collapse;">
         <tr>
             <td width="68%" rowspan="6" class="declaration-box" style="padding:12px; font-size:13px; line-height:1.4; vertical-align:top; border:1px solid #000;">
-                <p><strong>Declaration:</strong> {{ $invoice->declaration ?? '' }}</p>
+                <p><strong>Declaration:</strong> {{ $invoice->declaration ?: 'N/A' }}</p>
                 <hr>
-                <p class="gst-row"><strong>Note:</strong> {{ $invoice->note ?? '' }}</p>
+                <p class="gst-row"><strong>Note:</strong> {{ $invoice->note ?: 'N/A' }}</p>
                 <hr>
-                <p class="gst-row"><strong>Bank Details:</strong><br>{!! nl2br($invoice->bank_details ?? '') !!}</p>
+                <p class="gst-row"><strong>Bank Details:</strong><br>{!! nl2br($invoice->bank_details ?: 'N/A') !!}</p>
                 <hr>
-                <p style="margin:2px 0;"><strong>Amount in Words:</strong> {{ $invoice->amount_in_words ?? '' }}</p>
+                <p style="margin:2px 0;"><strong>Amount in Words:</strong> {{ $invoice->amount_in_words ?: 'N/A' }}</p>
             </td>
             <td colspan="2" class="right bold">Sub Total</td>
             <td class="right bold">{{ number_format($invoice->sub_total ?? 0, 2) }}</td>

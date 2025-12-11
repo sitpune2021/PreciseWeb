@@ -132,7 +132,7 @@
                                     <td id="mr_date"></td>
                                 </tr>
                                 <tr>
-                                    <th>Work Order No</th>
+                                    <th>Sr.No</th>
                                     <td id="mr_workorder"></td>
                                 </tr>
                                 <tr>

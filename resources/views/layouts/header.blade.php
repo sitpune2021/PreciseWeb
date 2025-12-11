@@ -144,7 +144,7 @@
                                         (auth()->user()->user_type == 3 ? 'Programmer' :
                                         (auth()->user()->user_type == 4 ? 'Supervisor' :
                                         (auth()->user()->user_type == 5 ? 'Finance' : 'Unknown'))))
-                                            }}
+                                        }}
                                     </span>
 
 

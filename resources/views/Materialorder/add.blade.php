@@ -69,11 +69,13 @@
                                     <div class="col-md-4">
                                         <label>Select Material Req</label>
                                         <select id="material_data_dropdown"
+                                            name="material_req_id"
                                             class="form-control form-select"
                                             data-selected="{{ old('material_req_id', $record->material_req_id ?? '') }}">
                                             <option value="">Select Material Req</option>
                                         </select>
                                     </div>
+
 
 
                                     <div class="col-md-3">

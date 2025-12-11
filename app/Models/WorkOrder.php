@@ -23,6 +23,7 @@ class WorkOrder extends Model
         'exp_time',
         'quantity',
         'material',
+        'project_no',
     ];
 
     public function customer()

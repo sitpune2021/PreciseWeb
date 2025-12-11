@@ -64,19 +64,11 @@
                                             <label for="code" class="form-label">Code</label>
                                             <input type="text" class="form-control" id="code" name="code"
                                                 value="{{ old('code', $materialReq->code ?? '') }}" readonly>
-                                        </div>
+                                        </div>                                
 
-                                        <!-- Work Order No -->
-                                        <div class="col-md-3">
-                                            <div class="mb-3">
-                                                <label for="work_order_no" class="form-label">SR .No<span class="mandatory">*</span></label>
-                                                <input type="text" name="work_order_no" id="work_order_no"
-                                                    class="form-control"
-                                                    value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}" readonly>
-                                                @error('work_order_no') <span class="text-red small">{{ $message }}</span> @enderror
-                                            </div>
-                                        </div>
-
+                                        <input type="hidden" name="work_order_no" id="work_order_no"
+                                        value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}">
+                                    
                                         <!-- Date -->
                                         <div class="col-md-3">
                                             <div class="mb-3">

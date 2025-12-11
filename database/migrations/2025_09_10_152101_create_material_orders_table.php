@@ -13,6 +13,7 @@ return new class extends Migration
             $table->integer('admin_id');
             $table->unsignedBigInteger('customer_id');
             $table->string('work_order_no')->nullable();
+            $table->integer('sr_no')->nullable();
             $table->date('date');
             $table->string('work_order_desc')->nullable();
             // Finish size

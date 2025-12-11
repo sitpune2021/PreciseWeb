@@ -16,8 +16,10 @@ class PaymentController extends Controller
 {
     public function Payment()
     {
-        $client = Client::where('login_id', Auth::id())->first();
+        $client = Client::with('plan')->where('login_id', Auth::id())->first();
         $plans = PaymentPlan::all();
+
+        
         return view('Payment.renew', compact('plans', 'client'));
     }
 
