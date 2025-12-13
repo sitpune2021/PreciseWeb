@@ -239,7 +239,7 @@
 
                         <td>{{ $adminCode . $invoice->invoice_no }}</td>
                         <td><strong>Date :</strong></td>
-                        <td>{{ \Carbon\Carbon::parse($invoice->invoice_date ?? now())->format('d-M-Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($invoice->invoice_date ?? now())->format('d-M-Y') ??''}}</td>
                     </tr>
                     <tr>
                         <td><strong>Our Ch.No. :</strong></td>
@@ -268,12 +268,14 @@
         <tr>
             <td width="50%">
                 GST No: {{ $adminSetting->gst_no ?? 'N/A' }} |
-                Date: {{ $adminSetting->date ? \Carbon\Carbon::parse($adminSetting->date)->format('d-m-Y') : 'N/A' }}
+                Date: {{ $adminSetting && $adminSetting->date ? \Carbon\Carbon::parse($adminSetting->date)->format('d-m-Y') : 'N/A' }}
             </td>
+
             <td width="50%">
                 MSME No: {{ $adminSetting->udyam_no ?? 'N/A' }}
             </td>
         </tr>
+
     </table>
 
     <table class="invoice-table">
@@ -318,22 +320,27 @@
                 <th width="10%">Amount (Rs.)</th>
             </tr>
         </thead>
-        
+
         <tbody> @foreach($invoice->items as $i => $item) <tr>
+
+
                 <td class="center">{{ $i + 1 }}</td>
-                <td class="center">{{ $item->project_id ?? '-' }}</td>
+                <td class="center">
+                    {{ $item->workOrder->project->project_no }}
+                </td>
+
                 <td>{{ $item->part_name ?? '' }}</td>
                 <td class="center">{{ $item->hsn_code ?? '' }}</td>
                 <td class="center">{{ $item->qty ?? 1 }}</td>
                 <td class="right">{{ number_format($item->rate ?? 0, 2) }}</td>
                 <td class="right">{{ number_format($item->amount ?? 0, 2) }}</td>
-            </tr> 
-            @endforeach 
+            </tr>
+            @endforeach
         </tbody>
     </table>@php
     use App\Models\Hsncode;
 
-    $hsn_code = $invoice->items->value('hsn_code'); 
+    $hsn_code = $invoice->items->value('hsn_code');
     $hsnCode = $hsn_code ?? null;
     $hsnMaster = $hsnCode ? Hsncode::where('hsn_code', $hsnCode)->first() : null;
 
@@ -372,9 +379,9 @@
     <table style="margin-top:10px; width:100%; border-collapse: collapse;">
         <tr>
             <td width="68%" rowspan="6" class="declaration-box" style="padding:12px; font-size:13px; line-height:1.4; vertical-align:top; border:1px solid #000;">
-                <p><strong>Declaration:</strong> {{ $invoice->declaration ?: 'N/A' }}</p>
+                <p><strong>Declaration:</strong> {{ $invoice->declaration ?? 'N/A' }}</p>
                 <hr>
-                <p class="gst-row"><strong>Note:</strong> {{ $invoice->note ?: 'N/A' }}</p>
+                <p class="gst-row"><strong>Note:</strong> {{ $invoice->note ?? 'N/A' }}</p>
                 <hr>
                 <p class="gst-row"><strong>Bank Details:</strong><br>{!! nl2br($invoice->bank_details ?: 'N/A') !!}</p>
                 <hr>

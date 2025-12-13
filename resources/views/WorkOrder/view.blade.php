@@ -48,12 +48,10 @@
                                     </thead>
                                     <tbody>
                                         @foreach($workorders as $wo)
-                                        @php
-                                        $project = \App\Models\Project::where('id', $wo->project_id)->first();
-                                        @endphp
+
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $project?->project_no ?? '' }}</td>
+                                            <td>{{ $wo->project?->project_no ?? '' }}</td>
                                             <td>{{ $wo->customer?->code ?? '' }}</td>
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
@@ -83,7 +81,7 @@
                                                     data-wo='@json($wo)'>
                                                     <i class="ri-eye-fill"></i>
                                                 </button>
-                                               @if(hasPermission('WorkOrders', 'delete'))
+                                                @if(hasPermission('WorkOrders', 'delete'))
                                                 <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon">

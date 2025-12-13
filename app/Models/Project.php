@@ -26,4 +26,10 @@ class Project extends Model
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
+
+    public function workOrders()
+{
+    return $this->hasMany(WorkOrder::class);
+}
+
 }

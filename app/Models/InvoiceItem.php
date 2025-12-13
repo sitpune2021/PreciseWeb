@@ -33,15 +33,20 @@ class InvoiceItem extends Model
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
-    public function workOrder()
-    {
-        return $this->belongsTo(WorkOrder::class, 'project_id','work_order_id', 'id');
-    }
+ 
 
     public function machineRecord()
     {
         return $this->belongsTo(MachineRecord::class, 'machine_record_id');
     }
+
+
+        public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order_id');
+    }
+
+ 
 
  
 

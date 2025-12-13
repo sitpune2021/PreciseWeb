@@ -47,8 +47,9 @@ class WorkOrderController extends Controller
 
         $workorders = WorkOrder::with(['customer', 'project'])
             ->where('admin_id', $adminId)
-            ->orderBy('id', 'desc')  // Only ID desc → New items come on top
+            ->orderBy('id', 'desc')
             ->get();
+
 
         return view('WorkOrder.view', compact('workorders'));
     }
@@ -75,11 +76,10 @@ class WorkOrderController extends Controller
 
         foreach ($validatedData['rows'] as $row) {
 
-            $projectNo = Project::where('id', $row['project_id'])->value('project_no');
 
             WorkOrder::create([
                 'customer_id'      => $row['customer_id'],
-                'project_id'       => $projectNo,
+                'project_id'      => $row['project_id'],
                 'part'             => $row['part'],
                 'date'             => $row['date'],
                 'dimeter'          => $row['dimeter'],
@@ -132,10 +132,10 @@ class WorkOrderController extends Controller
 
         $validated = $request->validate([
             'part'             => 'required|string|max:100',
-            'project_id'       => 'required|exists:projects,id',
+            'project_id'       => 'required|string|max:250',
             'date'             => 'required|date',
             'part_description' => 'required|string|max:1000',
-            'dimeter'          => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'dimeter'          => 'nullable|numeric',
             'length'           => 'nullable|numeric',
             'width'            => 'nullable|numeric',
             'height'           => 'nullable|numeric',
@@ -144,29 +144,11 @@ class WorkOrderController extends Controller
             'material'         => 'required|string|max:200',
         ]);
 
-        // Fetch project_no from Projects table
-        $projectNo = Project::where('id', $validated['project_id'])->value('project_no');
-
         $workOrder = WorkOrder::where('admin_id', $adminId)->findOrFail($id);
-
-        // Update work order including project_no
-        $workOrder->update([
-            'part'             => $validated['part'],
-            'project_id'       => $projectNo,
-            'date'             => $validated['date'],
-            'part_description' => $validated['part_description'],
-            'dimeter'          => $validated['dimeter'] ?? null,
-            'length'           => $validated['length'] ?? null,
-            'width'            => $validated['width'] ?? null,
-            'height'           => $validated['height'] ?? null,
-            'exp_time'         => $validated['exp_time'] ?? null,
-            'quantity'         => $validated['quantity'],
-            'material'         => $validated['material'],
-        ]);
+        $workOrder->update($validated);
 
         return redirect()->route('ViewWorkOrder')->with('success', 'Work Entry updated successfully.');
     }
-
 
     public function destroy(string $encryptedId)
     {

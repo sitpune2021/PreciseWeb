@@ -61,12 +61,12 @@
 
                         </div>
                     </div>
-                <div class="card mb-4 shadow-sm">
+                    <div class="card mb-4 shadow-sm">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Item Details</h5>
                             <button type="button" class="btn btn-secondary btn-sm" id="addItemBtn" disabled>+ Add Item</button>
                         </div>
- 
+
                         <div class="card-body">
                             <table class="table table-bordered text-center align-middle" id="itemsTable">
                                 <thead class="table-light">
@@ -82,7 +82,7 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody id="itemsTableBody">
                                     @if(isset($invoice) && $invoice->items->count())
                                     @foreach($invoice->items as $item)
@@ -120,7 +120,7 @@
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">HSN Code</label>
-                                <select name="hsn_code[]" id="hsnSelect" class="form-select hsnSelect">                              
+                                <select name="hsn_code[]" id="hsnSelect" class="form-select hsnSelect">
                                     @if(!isset($data))
                                     <option value="">Select HSN</option>
                                     @endif
@@ -130,7 +130,7 @@
                                         data-sgst="{{ $h->sgst }}"
                                         data-cgst="{{ $h->cgst }}"
                                         data-igst="{{ $h->igst }}"
-                                       {{ isset($invoice->items[0]) && $invoice->items[0]->hsn_code == $h->hsn_code ? 'selected' : '' }}>
+                                        {{ isset($invoice->items[0]) && $invoice->items[0]->hsn_code == $h->hsn_code ? 'selected' : '' }}>
                                         {{ $h->hsn_code }}
                                     </option>
                                     @endforeach
@@ -178,17 +178,17 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Declaration</label>
-                            <textarea name="declaration" class="form-control" rows="2">{{ old('declaration', $data->declaration ?? $adminSetting->declaration) }}</textarea>
+                            <textarea name="declaration" class="form-control" rows="2">{{ old('declaration', $data->declaration ?? $adminSetting->declaration ??'') }}</textarea>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Note</label>
-                            <textarea name="note" class="form-control" rows="2">{{ old('note', $data->note ?? $adminSetting->note) }}</textarea>
+                            <textarea name="note" class="form-control" rows="2">{{ old('note', $data->note ?? $adminSetting->note ??'') }}</textarea>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Bank Details</label>
-                            <textarea name="bank_details" class="form-control" rows="2">{{ old('bank_details', $data->bank_details ?? $adminSetting->bank_details) }}</textarea>
+                            <textarea name="bank_details" class="form-control" rows="2">{{ old('bank_details', $data->bank_details ?? $adminSetting->bank_details ??'') }}</textarea>
                         </div>
 
                         <div class="col-md-4 mt-3">
@@ -335,7 +335,7 @@
         }
 
         function loadExistingInvoiceItems() {
-            let items = @json($data ->items ?? []);
+            let items = @json($data - > items ?? []);
             console.log(items);
 
             if (!items || !Array.isArray(items)) items = [];
@@ -443,10 +443,9 @@
             if (gstLoaded) calculateTotals();
         });
 
-        function calculateTotals() 
-        {
+        function calculateTotals() {
 
-          
+
 
             let sub = 0;
             $('#itemsTable tbody tr').each(function() {
@@ -463,7 +462,7 @@
 
                 sub += amount;
             });
-            
+
             const sgstAmt = (sub * (globalSGST || 0)) / 100;
             const cgstAmt = (sub * (globalCGST || 0)) / 100;
             const igstAmt = (sub * (globalIGST || 0)) / 100;

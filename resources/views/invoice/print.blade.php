@@ -265,7 +265,7 @@
         <tr>
             <td width="50%">
                 GST No: {{ $adminSetting->gst_no ?? 'N/A' }} |
-                Date: {{ $adminSetting->date ? \Carbon\Carbon::parse($adminSetting->date)->format('d-m-Y') : 'N/A' }}
+                Date: {{ $adminSetting && $adminSetting->date ? \Carbon\Carbon::parse($adminSetting->date)->format('d-m-Y') : 'N/A' }}
             </td>
             <td width="50%">
                 MSME No: {{ $adminSetting->udyam_no ?? 'N/A' }}
@@ -317,7 +317,9 @@
         </thead>
         <tbody> @foreach($invoice->items as $i => $item) <tr>
                 <td class="center">{{ $i + 1 }}</td>
-                <td class="center">{{ $item->project_id ?? '-' }}</td>
+                  <td class="center">
+                    {{ $item->workOrder->project->project_no }}
+                </td>
                 <td>{{ $item->part_name ?? '' }}</td>
                 <td class="center">{{ $item->hsn_code ?? '' }}</td>
                 <td class="center">{{ $item->qty ?? 1 }}</td>

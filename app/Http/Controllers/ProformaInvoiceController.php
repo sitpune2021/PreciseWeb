@@ -164,27 +164,16 @@ class ProformaInvoiceController extends Controller
 
     public function printInvoice($id)
     {
-        $invoice = ProformaInvoice::with(['items.workOrder.project'])->findOrFail($id);
+        $invoice = ProformaInvoice::with([
+            'items.workOrder.project'
+        ])->findOrFail($id);
+
         $adminSetting = AdminSetting::first();
 
-        $adminId = Auth::id();
-        $c = Client::where('login_id', $adminId)->first([
-            'name',
-            'phone_no',
-            'email_id',
-            'gst_no',
-            'logo',
-            'address'
-        ]);
+        $c = Client::where('login_id', Auth::id())->first();
 
-        $workOrders = $invoice->items
-            ->pluck('workOrder')
-            ->filter()          // remove null
-            ->unique('id');
-
-        return view('proforma.print', compact('invoice', 'c', 'adminSetting', 'workOrders'));
+        return view('proforma.print', compact('invoice', 'c', 'adminSetting'));
     }
-
 
     public function getHsnDetails($id)
     {
@@ -238,12 +227,7 @@ class ProformaInvoiceController extends Controller
         $data = $records->map(function ($r) use ($materials, $machineRecords) {
 
             $machine = $machineRecords->first(function ($m) use ($r) {
-
-                if (!empty($m->work_order_id) && $m->work_order_id == $r->id) {
-                    return true;
-                }
-
-                return trim(strtolower($m->work_order_id)) === trim(strtolower($r->project_id));
+                return !empty($m->work_order_id) && $m->work_order_id == $r->workorder_id;
             });
 
             $mat = $materials->firstWhere('material_type', $r->material);
@@ -257,10 +241,11 @@ class ProformaInvoiceController extends Controller
                 'vmc_hr'           => $machine->hrs ?? 0,
                 'material_type'    => $r->material,
                 'material_rate'    => $mat->material_rate ?? 0,
-                'workorder_id'     => $r->id,
+                'workorder_id'     => $r->workorder_id,
                 'machine_id'       => $machine->id ?? null,
             ];
         });
+
 
         return response()->json($data);
     }

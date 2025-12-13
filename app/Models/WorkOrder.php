@@ -61,6 +61,7 @@ class WorkOrder extends Model
     {
         return $this->belongsTo(Hsncode::class, 'material', 'material_type');
     }
+    
     public function materialType()
     {
         return $this->belongsTo(MaterialType::class, 'material');

@@ -13,7 +13,7 @@ class ProformaItem extends Model
         'invoice_id',
         'work_order_id',
         'project_id',
-        'work_order_id ',
+        'work_order_id',
         'part_name',
         'hsn_code',
         'material_rate',
@@ -36,11 +36,16 @@ class ProformaItem extends Model
 
     public function workOrder()
     {
-        return $this->belongsTo(WorkOrder::class, 'project_id');
+        return $this->belongsTo(WorkOrder::class, 'work_order_id');
     }
 
     public function machineRecord()
     {
         return $this->belongsTo(MachineRecord::class, 'machine_record_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
     }
 }

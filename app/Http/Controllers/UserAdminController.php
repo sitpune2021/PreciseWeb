@@ -27,7 +27,7 @@ class UserAdminController extends Controller
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:useradmins,email',
             'user_name' => 'required|string|unique:useradmins,user_name',
-            'mobile' => ['required', 'digits:10'],
+            'mobile' => 'required|digits:10|unique:useradmins,mobile',
             'role' => 'required|exists:roles,id',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -70,9 +70,9 @@ class UserAdminController extends Controller
 
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'email' => 'email|unique:useradmins,email,' . $id,
-            'user_name' => 'required|string|unique:useradmins,user_name,' . $id,
-            'mobile' => ['nullable', 'digits:10'],
+            'email' => 'nullable|email|unique:useradmins,email,' . $user->id,
+            'user_name' => 'required|string|unique:useradmins,user_name,' . $user->id,
+            'mobile' => 'nullable|digits:10|unique:useradmins,mobile,' . $user->id,
             'role' => 'required|integer|exists:roles,id',
             'password' => 'nullable|string|min:6|confirmed',
         ]);
@@ -91,6 +91,7 @@ class UserAdminController extends Controller
 
         return redirect()->route('ListUserAdmin')->with('success', 'User updated successfully.');
     }
+
 
 
     public function index()
