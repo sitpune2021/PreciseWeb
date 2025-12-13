@@ -335,7 +335,7 @@
         }
 
         function loadExistingInvoiceItems() {
-            let items = @json($data - > items ?? []);
+            let items = @json($data ->items ?? []);
             console.log(items);
 
             if (!items || !Array.isArray(items)) items = [];
