@@ -38,15 +38,13 @@ class ClientContoller extends Controller
             $logoPath = 'client_logo/' . $filename;
         }
 
-
-
         $users = User::create([
             'name'      => $request->input('name'),
             'mobile'    => $request->input('phone_no'),
             'email'     => $request->input('email_id'),
             'username'  => $request->input('phone_no'),
-            'password'  => Hash::make('123'),
-            // 'org_pass'  => $request->input('password'),
+            'password'  => Hash::make($request->input('password')),
+            'org_pass'  => $request->input('password'),
             'user_type' => 2,
         ]);
 

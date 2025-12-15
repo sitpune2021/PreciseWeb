@@ -39,8 +39,8 @@
 
                                 <div class="mb-3">
                                     <div class="float-end">
-                                        @if (Route::has('forgot.password.form'))
-                                        <a class="text-muted" href="{{ route('forgot.password.form') }}">Forgot
+                                        @if (Route::has('password.request'))
+                                        <a class="text-muted" href="{{ route('password.request') }}">Forgot
                                             Password ?</a>
                                         @endif
                                     </div>

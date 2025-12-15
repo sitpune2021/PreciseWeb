@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Client;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -81,14 +79,4 @@ class LoginController extends Controller
 
         return redirect($this->redirectTo);
     }
-
-    public function showForgotForm()
-    {
-         return view('auth.passwords.email');
-    }
-
-   public function updateForgotPassword(Request $request)
-{
-    dd('HIT');
-}
 }

@@ -24,7 +24,7 @@
                                     @if(isset($client))
                                     @method('PUT')
                                     @endif
-                                    <!-- <input type="hidden" name="password" value="123"> -->
+                                    <input type="hidden" name="password" value="123">
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="mb-3">
