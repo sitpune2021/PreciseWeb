@@ -298,7 +298,8 @@ for ($m = 1; $m <= 12; $m++) {
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="fw-bold text-primary">{{ $project->id }}</span>
+                                                <span class="fw-bold text-primary">{{ $project->project_no }}</span>
+
                                             </td>
                                             <td>
                                                 <span class="">

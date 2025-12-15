@@ -56,7 +56,7 @@
                                             <td>{{ $wo->part }}</td>
                                             <td>{{ $wo->date }}</td>
                                             <td>
-                                                {{ ($wo->customer?->code ?? '') . '_' . ($project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
+                                                {{ ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
                                             </td>
                                             <td>{{ $wo->part_description }}</td>
                                             <td>{{ $wo->dimeter }}</td>
