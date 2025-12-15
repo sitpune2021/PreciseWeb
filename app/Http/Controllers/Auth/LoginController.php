@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Client;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -41,7 +43,7 @@ class LoginController extends Controller
         return Auth::attempt($this->credentials($request), $request->filled('remember'));
     }
 
-    //  Show proper error
+    //  Show proper erroryt
     protected function sendFailedLoginResponse($request)
     {
         $user = User::where('email', $request->email)->first();
@@ -79,4 +81,14 @@ class LoginController extends Controller
 
         return redirect($this->redirectTo);
     }
+
+    public function showForgotForm()
+    {
+         return view('auth.passwords.email');
+    }
+
+   public function updateForgotPassword(Request $request)
+{
+    dd('HIT');
+}
 }

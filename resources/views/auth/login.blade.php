@@ -17,28 +17,10 @@
                                 <!-- <img src="{{ asset('assets/images/precise.png')}}" alt="Logo" height="50"> -->
                             </a>
                             <h5 class="fw-bold text-dark">Welcome Back</h5>
-                            <p class="text-muted small">Sign in to continue to Precise Eng.</p>
+                            <p class="text-muted small">Sign in to continue</p>
                         </div>
                         <div class="p-2 mt-4">
 
-                            @if(session('error'))
-                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                            <script>
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error!',
-                                    text: "{{ session('error') }}",
-                                    width: 350,
-                                    padding: '1rem',
-                                    timer: 8000,
-                                    timerProgressBar: true,
-                                    showConfirmButton: true,
-                                    customClass: {
-                                        popup: 'swal2-popup-small'
-                                    }
-                                });
-                            </script>
-                            @endif
 
                             <form method="POST" action="{{ route('login') }}">
                                 @csrf
@@ -57,8 +39,8 @@
 
                                 <div class="mb-3">
                                     <div class="float-end">
-                                        @if (Route::has('password.request'))
-                                        <a class="text-muted" href="{{ route('password.request') }}">Forgot
+                                        @if (Route::has('forgot.password.form'))
+                                        <a class="text-muted" href="{{ route('forgot.password.form') }}">Forgot
                                             Password ?</a>
                                         @endif
                                     </div>
@@ -102,5 +84,22 @@
 </div>
 <!-- end auth page content -->
 
-
+@if(session('error'))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: "{{ session('error') }}",
+        width: 350,
+        padding: '1rem',
+        timer: 8000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+            popup: 'swal2-popup-small'
+        }
+    });
+</script>
+@endif
 @endsection

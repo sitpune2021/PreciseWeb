@@ -317,7 +317,7 @@
         </thead>
         <tbody> @foreach($invoice->items as $i => $item) <tr>
                 <td class="center">{{ $i + 1 }}</td>
-                  <td class="center">
+                <td class="center">
                     {{ $item->workOrder->project->project_no }}
                 </td>
                 <td>{{ $item->part_name ?? '' }}</td>
@@ -426,7 +426,7 @@
         window.onload = function() {
             window.print();
             window.onafterprint = function() {
-                window.location.href = "{{ route('proforma.index') }}";
+                window.location.href = "{{ route('invoice.view') }}";
             };
         };
     </script>

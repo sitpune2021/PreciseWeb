@@ -252,9 +252,9 @@ for ($m = 1; $m <= 12; $m++) {
 
                 </div>
                 @endif
-    
+
                 @if(auth()->user()->user_type == 2 || auth()->user()->user_type==3 || auth()->user()->user_type==4 || auth()->user()->user_type==5 )
-                
+
                 <!--------------------- project page ---------------------------------->
                 @if(hasPermission('Dashboard', 'view_project'))
                 <div class="col-xl-12">
@@ -384,9 +384,8 @@ for ($m = 1; $m <= 12; $m++) {
                                                 </span>
                                             </td>
 
-                                            <td class="fw-bold text-primary">
-                                                {{ $work->id }}
-                                            </td>
+                                            <td>{{ $work->project?->project_no ?? 'N/A' }}</td>
+
 
                                             <td>
                                                 {{ $work->customer?->code ?? '—' }}
