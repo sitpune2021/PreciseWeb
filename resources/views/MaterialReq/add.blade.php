@@ -31,7 +31,7 @@
                                         <div class="col-md-3">
                                             <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
 
-                                            <select class="form-select js-example-basic-single"
+                                            <select class="form-select js-example-basic-single  mt-1"
                                                 id="customer_id"
                                                 name="customer_id"
                                                 data-selected="{{ old('customer_id', $materialReq->customer_id ?? '') }}"
@@ -62,18 +62,31 @@
                                         <!-- Customer Code -->
                                         <div class="col-md-2">
                                             <label for="code" class="form-label">Code</label>
-                                            <input type="text" class="form-control" id="code" name="code"
+                                            <input type="text" class="form-control mt-1 " id="code" name="code"
                                                 value="{{ old('code', $materialReq->code ?? '') }}" readonly>
-                                        </div>                                
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label">Part No </label>
+
+                                            <select name="part_no" id="part_no" class="form-control form-select mt-1 js-example-basic-single" {{ isset($materialReq) ? 'disabled' : '' }}>
+                                                <option value="">Select Part No</option>
+                                            </select>
+
+                                            @error('part_no')
+                                            <span class="text-red small">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
 
                                         <input type="hidden" name="work_order_no" id="work_order_no"
-                                        value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}">
-                                    
+                                            value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}">
+
                                         <!-- Date -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
-                                                <input type="date" name="date" id="date" class="form-control" value="{{ old('date', $materialReq->date ?? '') }}">
+                                                <input type="date" name="date" id="date" class="form-control " value="{{ old('date', $materialReq->date ?? '') }}">
                                                 @error('date') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -93,7 +106,7 @@
                                                 <label for="dia" class="form-label">Dia </label>
                                                 <input
                                                     type="text"
-                                                    class="form-control"
+                                                    class="form-control mt-1"
                                                     id="dia"
                                                     name="dia"
                                                     value="{{ old('dia', $materialReq->dia ?? '') }}"
@@ -108,7 +121,7 @@
                                                 <label for="length" class="form-label">Length</label>
                                                 <input autocomplete="off"
                                                     type="text"
-                                                    class="form-control"
+                                                    class="form-control mt-1"
                                                     id="length"
                                                     name="length"
 
@@ -124,7 +137,7 @@
                                                 <label for="width" class="form-label">Width </label>
                                                 <input autocomplete="off"
                                                     type="text"
-                                                    class="form-control"
+                                                    class="form-control mt-1"
                                                     id="width"
                                                     name="width"
 
@@ -176,14 +189,14 @@
                                         <div class="col-md-2">
                                             <label for="material_gravity" class="form-label">Material Gravity</label>
                                             <input type="text" name="material_gravity" id="material_gravity"
-                                                class="form-control"
+                                                class="form-control mt-1"
                                                 value="{{ old('material_gravity', $materialReq->material_gravity ?? '') }}" readonly>
                                         </div>
 
                                         <div class="col-md-2">
                                             <label for="material_rate" class="form-label">Material Rate</label>
                                             <input type="text" name="material_rate" id="material_rate"
-                                                class="form-control"
+                                                class="form-control mt-1"
                                                 value="{{ old('material_rate', $materialReq->material_rate ?? '') }}" readonly>
                                         </div>
 
@@ -209,7 +222,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="weight" class="form-label">Weight </label>
-                                                <input type="number" step="0.001" name="weight" id="weight" class="form-control" value="{{ old('weight', $materialReq->weight ?? '') }}">
+                                                <input type="number" step="0.001" name="weight" id="weight" class="form-control mt-1" value="{{ old('weight', $materialReq->weight ?? '') }}">
                                                 @error('weight') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -220,7 +233,7 @@
                                             <input type="text"
                                                 name="material_cost"
                                                 id="material_cost"
-                                                class="form-control"
+                                                class="form-control mt-1"
                                                 value="{{ old('material_cost', $materialReq->material_cost ?? '') }}"
 
                                                 readonly>
@@ -230,7 +243,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="lathe" class="form-label">Lathe (hrs) </label>
-                                                <input type="number" step="0.01" name="lathe" id="lathe" placeholder="Turning" class="form-control" value="{{ old('lathe', $materialReq->lathe ?? '') }}">
+                                                <input type="number" step="0.01" name="lathe" id="lathe" placeholder="Turning" class="form-control mt-1" value="{{ old('lathe', $materialReq->lathe ?? '') }}">
                                                 @error('lathe') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -494,6 +507,61 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+
+            $('#customer_id').change(function() {
+                let customerId = $(this).val();
+
+                $('#part_no').html('<option value="">Loading...</option>');
+
+                if (customerId) {
+                    $.ajax({
+                        url: '/get-workorders-by-customer/' + customerId,
+                        type: 'GET',
+                        success: function(data) {
+
+                            let options = '<option value="">Select Part No</option>';
+
+                            $.each(data, function(index, wo) {
+
+                                let partNo =
+                                    (wo.customer?.code ?? '') + '_' +
+                                    (wo.project?.project_no ?? '') + '_' +
+                                    (wo.part ?? '') + '_' +
+                                    (wo.quantity ?? '');
+
+
+                                options += `
+                        <option value="${partNo}"
+                            data-desc="${wo.part_description ?? ''}">
+                            ${partNo}
+                        </option>`;
+                            });
+
+                            $('#part_no').html(options);
+                        }
+                    });
+                } else {
+                    $('#part_no').html('<option value="">Select Part No</option>');
+                }
+            });
+
+
+        });
+
+        $(document).ready(function() {
+
+            $('#part_no').on('change', function() {
+
+                let desc = $(this).find(':selected').data('desc') || '';
+
+                $('#description').val(desc);
+
+            });
+
+        });
+    </script>
 
 
     @endsection

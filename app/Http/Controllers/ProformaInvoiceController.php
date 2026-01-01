@@ -73,6 +73,7 @@ class ProformaInvoiceController extends Controller
     public function store(Request $request)
     {
 
+
         $validated = $request->validate([
             'customer_id' => 'required',
             'invoice_date'        => 'required',
@@ -130,6 +131,8 @@ class ProformaInvoiceController extends Controller
             'admin_id'        => $adminId,
             'invoice_no'      => $invoiceNo,
             'invoice_date'    => $request->invoice_date,
+
+
         ]);
 
         foreach ($request->desc as $i => $desc) {
@@ -241,7 +244,7 @@ class ProformaInvoiceController extends Controller
                 'vmc_hr'           => $machine->hrs ?? 0,
                 'material_type'    => $r->material,
                 'material_rate'    => $mat->material_rate ?? 0,
-                'workorder_id'     => $r->workorder_id,
+                'workorder_id' => $r->id,
                 'machine_id'       => $machine->id ?? null,
             ];
         });

@@ -38,6 +38,8 @@ class Client extends Model
 {
     return $this->belongsTo(PaymentPlan::class, 'plan_type');
 }
+
+
     
 
 }

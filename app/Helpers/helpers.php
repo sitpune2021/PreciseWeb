@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('hasPermission')) {
-
     function hasPermission($module, $action = null)
     {
         $user = Auth::user();
@@ -11,9 +10,8 @@ if (!function_exists('hasPermission')) {
             return false;
         }
 
-        $permissionsJson = $user->rolePermission->permissions ?? '{}';
-
-        $permissions = json_decode($permissionsJson, true);
+        // ✅ Direct array access
+        $permissions = $user->rolePermission->permissions ?? [];
 
         if (!is_array($permissions) || empty($permissions)) {
             return false;

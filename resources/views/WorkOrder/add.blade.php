@@ -23,7 +23,7 @@
                                     @if(isset($workorder)) @method('PUT') @endif
 
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 ">
                                             <div class="mb-2">
                                                 <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single"
@@ -69,10 +69,10 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
+                                        <div class="col-md-2 ">
+                                            <div class="mb-2">
                                                 <label for="previous_part" class="form-label">Previous Part List</label>
-                                                <select class="form-control form-select" id="previous_part" name="previous_part">
+                                                <select class="form-control form-select mt-1" id="previous_part" name="previous_part">
                                                     <option value="">No Previous Part</option>
                                                 </select>
 
@@ -100,93 +100,95 @@
                                                 <span class="text-red date"></span>
                                             </div>
                                         </div>
+                                        <div class="row">
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="dimeter" class="form-label">Diameter</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="dimeter"
-                                                    name="dimeter"
-                                                    placeholder="Diameter"
-                                                    value="{{ old('dimeter', $workorder->dimeter ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="dimeter" class="form-label">Diameter</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control  mt-1"
+                                                        id="dimeter"
+                                                        name="dimeter"
+                                                        placeholder="Diameter"
+                                                        value="{{ old('dimeter', $workorder->dimeter ?? '') }}"
+                                                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="length" class="form-label">Length</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="length"
-                                                    name="length"
-                                                    placeholder="Length"
-                                                    value="{{ old('length', $workorder->length ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="length" class="form-label">Length</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control  mt-1"
+                                                        id="length"
+                                                        name="length"
+                                                        placeholder="Length"
+                                                        value="{{ old('length', $workorder->length ?? '') }}"
+                                                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="width" class="form-label">Width</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="width"
-                                                    name="width"
-                                                    placeholder="Width"
-                                                    value="{{ old('width', $workorder->width ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="width" class="form-label">Width</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control  mt-1"
+                                                        id="width"
+                                                        name="width"
+                                                        placeholder="Width"
+                                                        value="{{ old('width', $workorder->width ?? '') }}"
+                                                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="height" class="form-label">Height</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="height"
-                                                    name="height"
-                                                    placeholder="Height"
-                                                    value="{{ old('height', $workorder->height ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="height" class="form-label">Height</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control mt-1"
+                                                        id="height"
+                                                        name="height"
+                                                        placeholder="Height"
+                                                        value="{{ old('height', $workorder->height ?? '') }}"
+                                                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if((this.value.match(/\./g)||[]).length>1) this.value=this.value.slice(0,-1);">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="exp_time" class="form-label">Exp Time (HH:MM) <span class="mandatory">*</span></label>
-                                                <input type="text" name="exp_time" id="exp_time"
-                                                    value="{{ old('exp_time', $workorder->exp_time ?? '') }}"
-                                                    class="form-control" placeholder="3 min, 3.30 hr">
-                                                @error('exp_time')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-red small exp_time"></span>
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="exp_time" class="form-label">Exp Time (HH:MM) <span class="mandatory">*</span></label>
+                                                    <input type="text" name="exp_time" id="exp_time"
+                                                        value="{{ old('exp_time', $workorder->exp_time ?? '') }}"
+                                                        class="form-control" placeholder="3 min, 3.30 hr">
+                                                    @error('exp_time')
+                                                    <span class="text-red">{{ $message }}</span>
+                                                    @enderror
+                                                    <span class="text-red small exp_time"></span>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-md-2">
-                                            <div class="mb-3">
-                                                <label for="quantity" class="form-label">Quantity <span class="mandatory">*</span></label>
-                                                <input
-                                                    type="number"
-                                                    step="1"
-                                                    min="1"
-                                                    class="form-control"
-                                                    id="quantity"
-                                                    name="quantity"
-                                                    placeholder="Quantity"
-                                                    value="{{ old('quantity', $workorder->quantity ?? '') }}"
-                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
-                                                @error('quantity')
-                                                <span class="text-red">{{ $message }}</span>
-                                                @enderror
-                                                <span class="text-red small quantity"></span>
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label for="quantity" class="form-label">Quantity <span class="mandatory">*</span></label>
+                                                    <input
+                                                        type="number"
+                                                        step="1"
+                                                        min="1"
+                                                        class="form-control"
+                                                        id="quantity"
+                                                        name="quantity"
+                                                        placeholder="Quantity"
+                                                        value="{{ old('quantity', $workorder->quantity ?? '') }}"
+                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
+                                                    @error('quantity')
+                                                    <span class="text-red">{{ $message }}</span>
+                                                    @enderror
+                                                    <span class="text-red small quantity"></span>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -210,7 +212,7 @@
                                         <div class="col-md-9">
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">Part Description</label>
-                                                <input type="text" class="form-control" id="part_description" name="part_description"
+                                                <input type="text" class="form-control mt-1" id="part_description" name="part_description"
                                                     placeholder="Description"
                                                     value="{{ old('part_description', $workorder->part_description ?? '') }}">
                                             </div>

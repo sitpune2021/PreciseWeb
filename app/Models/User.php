@@ -18,13 +18,17 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'admin_id',
         'name',
+        'username',
         'email',
         'mobile',
-        'password',
         'user_type',
+        'password',
         'org_pass',
-        'username',
+        'profile_photo',
+        'status',
+        'last_login_at',
     ];
 
     /**
@@ -52,11 +56,21 @@ class User extends Authenticatable
 
     public function client()
     {
-        return $this->hasOne(Client::class, 'login_id', 'id'); // assume login_id matches user id
+        return $this->hasMany(Client::class, 'login_id', 'id'); // assume login_id matches user id
     }
 
     public function rolePermission()
     {
         return $this->hasOne(RolePermission::class, 'role_id', 'user_type');
+    }
+
+    public function createdUsers()
+    {
+        return $this->hasMany(User::class, 'admin_id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
     }
 }

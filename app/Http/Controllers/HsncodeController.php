@@ -21,18 +21,28 @@ class HsncodeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'hsn_code' => [
-                'required',
-                Rule::unique('hsncodes', 'hsn_code')
-                    ->where(fn($query) => $query->where('admin_id', Auth::id()))
-                    ->whereNull('deleted_at')
+        $request->validate(
+            [
+                'hsn_code' => [
+                    'required',
+                    Rule::unique('hsncodes', 'hsn_code')
+                        ->where(fn($query) => $query->where('admin_id', Auth::id()))
+                        ->whereNull('deleted_at'),
+                ],
+                'invoice_desc' => 'required|string|max:255',
+                'sgst'         => 'nullable|numeric',
+                'cgst'         => 'nullable|numeric',
+                'igst'         => 'nullable|numeric',
             ],
-            'sgst'         => 'nullable|numeric',
-            'cgst'         => 'nullable|numeric',
-            'igst'         => 'nullable|numeric',
-            'invoice_desc' => 'required|string|max:255',
-        ]);
+            [],
+            [
+                'invoice_desc' => 'HSN Description',    
+                'hsn_code'     => 'HSN Code',
+                'sgst'         => 'SGST',
+                'cgst'         => 'CGST',
+                'igst'         => 'IGST',
+            ]
+        );
 
         Hsncode::create([
             'hsn_code'     => $request->hsn_code,
@@ -71,13 +81,29 @@ class HsncodeController extends Controller
             ->where('admin_id', Auth::id())
             ->firstOrFail();
 
-        $request->validate([
-            'hsn_code'     => 'required|unique:hsncodes,hsn_code,' . $hsn->id,
-            'sgst'         => 'nullable|numeric',
-            'cgst'         => 'nullable|numeric',
-            'igst'         => 'nullable|numeric',
-            'invoice_desc' => 'required|string|max:255',
-        ]);
+        $request->validate(
+            [
+                'hsn_code' => [
+                    'required',
+                    Rule::unique('hsncodes', 'hsn_code')
+                        ->ignore($hsn->id)                
+                        ->where('admin_id', Auth::id())   
+                        ->whereNull('deleted_at'),         
+                ],
+                'invoice_desc' => 'required|string|max:255',
+                'sgst'         => 'nullable|numeric',
+                'cgst'         => 'nullable|numeric',
+                'igst'         => 'nullable|numeric',
+            ],
+            [],
+            [
+                'hsn_code'     => 'HSN Code',
+                'invoice_desc' => 'HSN Description',
+                'sgst'         => 'SGST',
+                'cgst'         => 'CGST',
+                'igst'         => 'IGST',
+            ]
+        );
 
         $hsn->update([
             'hsn_code'     => $request->hsn_code,

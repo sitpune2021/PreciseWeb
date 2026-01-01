@@ -90,7 +90,7 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="email_id" class="form-label">Email ID</label>
-                                                <input type="email" class="form-control" id="email_id" name="email_id" placeholder="Email ID" value="{{ old('email_id', $vendor->email_id ?? '') }}">
+                                                <input type="email" class="form-control mt-1" id="email_id" name="email_id" placeholder="Email ID" value="{{ old('email_id', $vendor->email_id ?? '') }}">
                                                 @error('email_id')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -98,10 +98,10 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="statusToggle" class="form-label">
+                                                <label for="statusToggle" class="form-label  mt-1">
                                                     Status <span class="mandatory">*</span>
                                                 </label><br>
-                                                <div class="form-check form-switch">
+                                                <div class="form-check form-switch  mt-1">
                                                     <!-- Fixed Active button -->
                                                     <input
                                                         class="form-check-input"

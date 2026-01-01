@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MaterialReq;
 use App\Models\Customer;
 use App\Models\MaterialType;
+use App\Models\WorkOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,6 +21,7 @@ class MaterialReqController extends Controller
             ->select('id', 'code', 'name', 'customer_srno')
             ->orderBy('id', 'desc')
             ->get();
+          
         $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
             ->orderBy('name')
@@ -83,11 +85,11 @@ class MaterialReqController extends Controller
 
         $total_cost = round($material_cost + $edm_cost + $machine_cost, 2);
 
-        
-         $lastSrNo = MaterialReq::where('admin_id', Auth::id())->max('sr_no');
-        
+
+        $lastSrNo = MaterialReq::where('admin_id', Auth::id())->max('sr_no');
+
         $sr_no = $lastSrNo ? $lastSrNo + 1 : 1;
- 
+
         $data = $validated;
         $data['sr_no'] = $sr_no; // assign serial number
         $data['material'] = $request->material;
@@ -104,15 +106,16 @@ class MaterialReqController extends Controller
             ->with('success', 'Material Requirement Added Successfully!');
     }
 
-    public function ViewMaterialReq()
-    {
-        $materialReq = MaterialReq::with(['materialType', 'customer'])
-            ->where('admin_id', Auth::id())
-            ->orderBy('updated_at', 'desc')
-            ->get();
+   public function ViewMaterialReq()
+{
+    $materialReq = MaterialReq::with(['materialType', 'customer'])
+        ->where('admin_id', Auth::id())
+        ->orderBy('created_at', 'desc')  
+        ->get();
 
-        return view('MaterialReq.view', compact('materialReq'));
-    }
+    return view('MaterialReq.view', compact('materialReq'));
+}
+
 
     public function editMaterialReq(string $encryptedId)
     {
@@ -137,7 +140,6 @@ class MaterialReqController extends Controller
 
         $request->validate([
             'customer_id' => 'required',
-            'code' => 'required',
             'date' => 'required|date',
             'work_order_no' => 'required',
             'description' => 'nullable',
@@ -145,7 +147,6 @@ class MaterialReqController extends Controller
 
         $materialReq->update([
             'customer_id' => $request->customer_id,
-            'code' => $request->code,
             'date' => $request->date,
             'work_order_no' => $request->work_order_no,
             'description' => $request->description,
@@ -225,5 +226,18 @@ class MaterialReqController extends Controller
             'gravity' => $material->material_gravity,
             'rate'    => $material->material_rate,
         ]);
+    }
+
+    public function getWorkOrdersByCustomer($Id)
+    {
+        $adminId = Auth::id();
+
+        $workorders = WorkOrder::with(['customer', 'project'])
+            ->where('admin_id', $adminId)
+            ->where('customer_id', $Id)
+            ->whereNull('deleted_at')
+            ->get();
+        // dd($workorders);
+        return response()->json($workorders);
     }
 }

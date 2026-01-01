@@ -89,14 +89,14 @@
                                     <!-- Qty -->
                                     <div class="col-md-2">
                                         <label class="form-label">Qty <span class="text-red">*</span></label>
-                                        <input type="number" name="qty" id="qty" class="form-control"
+                                        <input type="number" name="qty" id="qty" class="form-control mt-1"
                                             value="{{ old('qty', $record->qty ?? '') }}">
                                         @error('qty') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
-                                        <select name="machine" class="form-control form-select">
+                                        <select name="machine" class="form-control form-select mt-1">
                                             <option value=""> Select Machine </option>
                                             @foreach($machines->where('status', 1) as $machine)
                                             <option value="{{ $machine->machine_name }}"
@@ -110,7 +110,7 @@
 
                                     <div class="col-md-3">
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
-                                        <select name="operator" class="form-control form-select">
+                                        <select name="operator" class="form-control form-select mt-1">
                                             <option value="">Select Operator</option>
                                             @foreach($operators->where('status', 1) as $operator)
                                             <option value="{{ $operator->operator_name }}"
@@ -124,7 +124,7 @@
 
                                     <div class="col-md-2">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
-                                        <select name="setting_no" class="form-control form-select">
+                                        <select name="setting_no" class="form-control form-select mt-1">
                                             <option value="">Select Setting</option>
 
                                             @foreach($settings->where('status', 1) as $setting)

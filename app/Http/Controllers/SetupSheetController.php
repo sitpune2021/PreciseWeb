@@ -200,7 +200,11 @@ class SetupSheetController extends Controller
             return [
                 'id' => $wo->id,
                 'part' => $wo->part,
-                'part_code' => ($wo->customer->code ?? '') . '_' . ($wo->project->project_no ?? '') . '_' . $wo->part,
+                'part_code' => ($wo->customer->code ?? '')
+                    . '_' . ($wo->project->project_no ?? '')
+                    . '_' . ($wo->part ?? '')
+                    . '_' . ($wo->quantity ?? 0),
+
                 'part_description' => $wo->part_description,
                 'size_in_x' => $wo->length,
                 'size_in_y' => $wo->width,

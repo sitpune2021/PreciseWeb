@@ -13,7 +13,6 @@ use App\Models\WorkOrder;
 use App\Models\MaterialType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PDF;
 
 class InvoiceController extends Controller
 {
@@ -72,8 +71,6 @@ class InvoiceController extends Controller
 
         return view('invoice.view', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
-
-
 
     public function create()
     {
@@ -187,10 +184,6 @@ class InvoiceController extends Controller
         return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
 
-
-
-
-
     public function printInvoice($id)
     {
         $invoice = Invoice::with('items')->findOrFail($id);
@@ -204,10 +197,8 @@ class InvoiceController extends Controller
             'logo',
             'address'
         ]);
-
         return view('invoice.print', compact('invoice', 'c', 'adminSetting'));
     }
-
 
     public function proprint($id)
     {
@@ -227,7 +218,6 @@ class InvoiceController extends Controller
         return view('invoice.proprint', compact('invoice', 'c', 'adminSetting'));
     }
 
-
     public function getHsnDetails($id)
     {
         $hsn_code = Hsncode::where('id', $id)
@@ -242,7 +232,6 @@ class InvoiceController extends Controller
                 'igst'     => $hsn_code->igst,
             ]);
         }
-
         return response()->json(['error' => 'Not Found'], 404);
     }
 
@@ -256,7 +245,6 @@ class InvoiceController extends Controller
             ->where('invoices.admin_id', $adminId)
             ->pluck('invoice_items.work_order_id')
             ->toArray();
-
 
         $records = WorkOrder::where('admin_id', $adminId)
             ->where('customer_id', $customer_id)

@@ -6,101 +6,139 @@ use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\UserAdmin;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserAdminController extends Controller
 {
+    public function index()
+    {
+        if (auth()->user()->user_type == 1) {
+            $users = User::latest()->get(); // all users
+        } else {
+            $users = User::where('admin_id', auth()->id())->latest()->get();
+        }
+
+        return view('useradmin.view', compact('users'));
+    }
+
+
+
     public function AddUserAdmin()
     {
-        $roles = Role::all();
-        return view('useradmin.create', compact('roles'));
+        $mode = 'add';
+        $user = new User(); // empty model
+        return view('useradmin.create', compact('mode', 'user'));
     }
 
     public function StoreUser(Request $request)
     {
-
         $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:useradmins,email',
-            'user_name' => 'required|string|unique:useradmins,user_name',
-            'mobile' => 'required|digits:10|unique:useradmins,mobile',
-            'role' => 'required|exists:roles,id',
-            'password' => 'required|string|min:6|confirmed',
+            'name'          => 'required|string|max:255',
+            'username'      => 'required|string|max:255|unique:users,username',
+            'email'         => 'required|string|email|max:255|unique:users,email',
+            'mobile'        => 'required|digits:10|unique:users,mobile',
+            'user_type'     => 'required|in:1,2,3,4,5',
+            'status'        => 'required|in:0,1',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $admin = UserAdmin::create([
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'user_name' => $request->user_name,
-            'mobile' => $request->mobile,
-            'role' => $request->role,
-            'password' => Hash::make($request->password),
-            'status' => 'Active',
-            'admin_id' => Auth::id(),
-        ]);
+        $photoName = null;
+
+        if ($request->hasFile('profile_photo')) {
+            $photo = $request->file('profile_photo');
+            $photoName = time() . '_' . $photo->getClientOriginalName();
+
+            $photo->move(public_path('assets/profile_photos'), $photoName);
+        }
 
         User::create([
-            'name' => $request->full_name,
-            'email' => $request->email,
-            'mobile' => $request->mobile,
-            'username' => $request->user_name,
-            'user_type' => $request->role,
-            'org_pass' => $request->password,
-            'password' => Hash::make($request->password),
+            'admin_id' => Auth::id(), // logged-in admin
+            'name'      => $request->name,
+            'username'  => $request->username,
+            'email'     => $request->email,
+            'mobile'    => $request->mobile,
+            'user_type' => $request->user_type,
+            'status'    => $request->status,
+            'profile_photo' => $photoName,
+            'password'  => Hash::make('123'),
+            'org_pass'  => '123',
         ]);
 
-        return redirect()->route('ListUserAdmin')->with('success', 'User created successfully in both tables.');
+        return redirect()->route('ListUserAdmin')
+            ->with('success', 'User created successfully');
     }
 
     public function edit($id)
     {
-        $id = base64_decode($id);
-        $user = UserAdmin::findOrFail($id);
-        $roles = Role::all();
-        return view('useradmin.create', compact('user', 'roles'));
+        $mode = 'edit';
+        $user = User::findOrFail(base64_decode($id));
+        return view('useradmin.create', compact('mode', 'user'));
     }
 
     public function update(Request $request, $id)
     {
-        $user = UserAdmin::findOrFail($id);
+        $user = User::findOrFail($id);
 
-        $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:useradmins,email,' . $user->id,
-            'user_name' => 'required|string|unique:useradmins,user_name,' . $user->id,
-            'mobile' => 'nullable|digits:10|unique:useradmins,mobile,' . $user->id,
-            'role' => 'required|integer|exists:roles,id',
-            'password' => 'nullable|string|min:6|confirmed',
+        // ✅ Validation
+        $validated = $request->validate([
+            'name'      => ['required', 'string', 'max:255'],
+            'username'  => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'username')->ignore($user->id),
+            ],
+            'email'     => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'mobile'    => [
+                'required',
+                'digits:10',
+                Rule::unique('users', 'mobile')->ignore($user->id),
+            ],
+            'user_type' => ['required', Rule::in([1, 2, 3, 4, 5])],
+            'status'    => ['required', Rule::in([0, 1])],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        $user->full_name = $request->full_name;
-        $user->email = $request->email;
-        $user->user_name = $request->user_name;
-        $user->mobile = $request->mobile;
-        $user->role = $request->role;
+        // ✅ Profile Photo Update
+        if ($request->hasFile('profile_photo')) {
 
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
+            // delete old photo
+            if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+                Storage::disk('public')->delete($user->profile_photo);
+            }
+
+            // store new photo
+            $path = $request->file('profile_photo')
+                ->store('users/profile', 'public');
+
+            $validated['profile_photo'] = $path;
         }
 
-        $user->save();
+        // ✅ Update User
+        $user->update($validated);
 
-        return redirect()->route('ListUserAdmin')->with('success', 'User updated successfully.');
+        // ✅ Redirect
+        return redirect()
+            ->route('ListUserAdmin')
+            ->with('success', 'User updated successfully.');
     }
 
-
-
-    public function index()
+    public function destroy($id)
     {
-        $adminId = Auth::id();
-        $users = UserAdmin::where('admin_id', $adminId)->get();
+        User::findOrFail($id)->delete();
 
-        return view('useradmin.view', compact('users'));
+        return redirect()->route('ListUserAdmin')
+            ->with('success', 'User deleted successfully');
     }
+
     public function RolePermission()
     {
         $roles = Role::all();
@@ -109,8 +147,9 @@ class UserAdminController extends Controller
 
     public function userupdateStatus(Request $request)
     {
-        $user = UserAdmin::findOrFail($request->id);
-        $user->status = $request->has('status') ? 'Active' : 'Inactive';
+        $user = User::findOrFail($request->id);
+
+        $user->status = (int) $request->status;
         $user->save();
 
         return back()->with('success', 'Status updated!');
@@ -120,11 +159,9 @@ class UserAdminController extends Controller
     {
         $rolePermission = RolePermission::where('role_id', $role_id)->first();
 
-        if ($rolePermission) {
-            $permissions = json_decode($rolePermission->permissions, true);
-            return response()->json(['status' => true, 'permissions' => $permissions['permissions'] ?? []]);
-        }
-
-        return response()->json(['status' => false, 'permissions' => []]);
+        return response()->json([
+            'status' => (bool) $rolePermission,
+            'permissions' => $rolePermission ? $rolePermission->permissions : []
+        ]);
     }
 }

@@ -6,128 +6,118 @@
         <div class="container-fluid">
 
             <div class="card shadow-sm">
+
                 <div class="card-header d-flex align-items-center">
                     <h4 class="mb-0 flex-grow-1">
-                        {{ isset($user) ? 'Edit User' : 'Add User' }}
+                        {{ $mode === 'edit' ? 'Edit User' : 'Add User' }}
                     </h4>
                 </div>
+
                 <div class="card-body">
-                    
-                    @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
+                    <form method="POST"
+                        action="{{ $mode === 'edit' ? route('UpdateUserAdmin', $user->id) : route('StoreUser') }}"
+                        enctype="multipart/form-data">
 
-                    <form action="{{ isset($user) ? route('UpdateUserAdmin', $user->id) : route('StoreUser') }}" method="POST">
                         @csrf
-
-                        @if(isset($user))
+                        @if($mode === 'edit')
                         @method('PUT')
                         @endif
+
                         <div class="row g-3">
+
                             <div class="col-md-4">
-                                <label for="full_name" class="form-label">Full Name <span class="text-red">*</span></label>
-                                <input type="text" class="form-control" id="full_name" name="full_name"
-                                    placeholder="Enter full name"
-                                    value="{{ old('full_name', $user->full_name ?? '') }}">
-                                @error('full_name')
+                                <label>Name <span class="text-red">*</span></label>
+                                <input type="text" name="name" class="form-control"
+                                    value="{{ old('name', $user->name ?? '') }}">
+                                @error('name')
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Email -->
-                            <div class="col-md-3">
-                                <label class="form-label">Email<span class="text-red">*</span></label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    value="{{ old('email', $user->email ?? '') }}"
-                                    placeholder="Enter email">
+                            <div class="col-md-4">
+                                <label>Email <span class="text-red">*</span></label>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    value="{{ old('email', $user->email ?? '') }}">
                                 @error('email')
                                 <div class="text-red small">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Username (Auto from Email) -->
                             <div class="col-md-4">
-                                <label class="form-label">Username<span class="text-red">*</span></label>
-                                <input type="text" class="form-control" id="user_name" name="user_name"
-                                    value="{{ old('user_name', $user->user_name ?? '') }}"
-                                    placeholder="Username auto">
-                                @error('user_name')
+                                <label>Username <span class="text-red">*</span></label>
+                                <input type="text" name="username" id="username" class="form-control"
+                                    value="{{ old('username', $user->username ?? '') }}">
+                                @error('username')
                                 <div class="text-red small">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Mobile -->
-                            <div class="col-md-3">
-                                <label for="mobile" class="form-label">Phone No <span class="text-red">*</span></label>
-                                <input type="text" class="form-control" id="mobile" name="mobile"
-                                    placeholder="Enter phone number"
-                                    value="{{ old('mobile', $user->mobile ?? '') }}"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+                            <div class="col-md-4">
+                                <label>Mobile <span class="text-red">*</span></label>
+                                <input type="text" name="mobile" class="form-control"
+                                    maxlength="10" pattern="[0-9]{10}"
+                                    value="{{ old('mobile', $user->mobile ?? '') }}">
                                 @error('mobile')
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <div class="col-md-3">
-                                <label>Role<span class="text-red">*</span></label>
-                                <select name="role" class="form-select">
-                                    <option value="">Select Role</option>
-
-                                    @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}"
-                                        {{ (int) old('role', $user->role ?? 0) === (int) $role->id ? 'selected' : '' }}
-                                        {{ $role->id == 1 ? 'disabled' : '' }}>
-                                        {{ $role->name }}
+                            <div class="col-md-4">
+                                <label>Role <span class="text-red">*</span></label>
+                                <select name="user_type" class="form-select">
+                                    <option value="">Select</option>
+                                    @foreach([1=>'Super Admin',2=>'Admin',3=>'Programmer',4=>'Supervisor',5=>'Finance'] as $k=>$v)
+                                    <option value="{{ $k }}"
+                                        {{ old('user_type',$user->user_type ?? '')==$k?'selected':'' }}>
+                                        {{ $v }}
                                     </option>
-
                                     @endforeach
                                 </select>
-
-                                @error('role')
+                                @error('user_type')
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            @if(!isset($user))
-                            <div class="col-md-3">
-                                <label for="password" class="form-label">Password <span class="text-red">*</span></label>
-                                <div class="input-group">
-                                    <input type="password"
-                                        class="form-control"
-                                        id="password"
-                                        name="password"
-                                        placeholder="Enter password">
+                            <div class="col-md-4">
+                                <label>Status <span class="text-red">*</span></label>
 
-                                    <span class="input-group-text" onclick="togglePassword('password', this)">
-                                        <i class="fa fa-eye"></i>
-                                    </span>
-                                </div>
-                                @error('password')
+                                <select name="status" class="form-select">
+                                    <option value="">Select Status</option>
+                                    <option value="1" {{ old('status', $user->status ?? '') == 1 ? 'selected' : '' }}>
+                                        Active
+                                    </option>
+                                    <option value="0" {{ old('status', $user->status ?? '') == 0 ? 'selected' : '' }}>
+                                        Inactive
+                                    </option>
+                                </select>
+
+                                @error('status')
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <div class="col-md-3">
-                                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                <div class="input-group">
-                                    <input type="password"
-                                        class="form-control"
-                                        id="password_confirmation"
-                                        name="password_confirmation"
-                                        placeholder="Confirm password">
 
-                                    <span class="input-group-text" onclick="togglePassword('password_confirmation', this)">
-                                        <i class="fa fa-eye"></i>
-                                    </span>
-                                </div>
+                            <div class="col-md-6">
+                                <label>Profile Photo</label>
+                                <input type="file" name="profile_photo" class="form-control">
+
+                                @if($user->profile_photo)
+                                <img src="{{ asset('storage/'.$user->profile_photo) }}"
+                                    height="70"
+                                    class="mt-2 rounded">
+                                @endif
+
                             </div>
-                            @endif
+
+
+
                         </div>
-                        
+
                         <div class="text-end mt-3">
-                            <button type="submit" class="btn btn-success">Save User</button>
+                            <button class="btn btn-success">Save</button>
                             <a href="{{ route('ListUserAdmin') }}" class="btn btn-secondary">Cancel</a>
                         </div>
+
                     </form>
 
                 </div>

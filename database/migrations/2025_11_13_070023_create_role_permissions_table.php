@@ -13,12 +13,29 @@ return new class extends Migration
     {
         Schema::create('role_permissions', function (Blueprint $table) {
             $table->id();
-              $table->integer('admin_id')->nullable();
-              $table->string('role_id')->nullable();         
-             $table->longText('permissions')->nullable();
+
+            $table->unsignedBigInteger('admin_id');
+            $table->unsignedBigInteger('role_id');
+
+            $table->longText('permissions')->nullable();
             $table->timestamps();
+
+            // Foreign Keys
+            $table->foreign('admin_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
+            $table->foreign('role_id')
+                ->references('id')
+                ->on('roles')
+                ->onDelete('cascade');
+
+            // One role per admin (VERY IMPORTANT)
+            $table->unique(['admin_id', 'role_id']);
         });
     }
+
 
     /**
      * Reverse the migrations.

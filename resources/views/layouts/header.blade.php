@@ -61,10 +61,6 @@
     </style>
 </head>
 
-
-
-
-
 <body>
 
     <header id="page-topbar">
@@ -149,7 +145,7 @@
 
 
                                     {{-- RED plan indicator --}}
-                                    @if (!in_array(auth()->user()->user_type, [1, 3, 4, 5]))
+                                    @if (!in_array(auth()->user()->user_type, [1,3, 4,5]))
                                     @php
                                     $planColor = ( auth()->user()->plan_status == 1) ? 'text-success small' : 'text-red small';
                                     $planName = $clientData->plan->title ?? 'No Plan';
@@ -209,31 +205,7 @@
         </div>
     </header>
 
-
-    <!-- removeNotificationModal -->
-    <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mt-2 text-center">
-                        <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
-                        <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-                            <h4>Are you sure ?</h4>
-                            <p class="text-muted mx-4 mb-0">Are you sure you want to remove this Notification ?</p>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
-                        <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn w-sm btn-danger" id="delete-notification">Yes, Delete It!</button>
-                    </div>
-                </div>
-
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    <!-- /.modal -->
     <!-- ========== App Menu ========== -->
     <div class="app-menu navbar-menu">
         <!-- LOGO -->
@@ -250,8 +222,10 @@
             <!-- Light Logo-->
             <a href="index.html" class="logo logo-light">
                 <span class="logo-sm">
-                    <img src="{{asset('assets/images/precise.png')}}" alt="" height="22">
+                    <img src="" alt="" height="22">
                 </span>
+
+                <!-- sidebar logo -->
                 <span class="logo-lg">
                     <img src="{{asset('assets/images/pre2.png')}}" alt="" height="100">
                 </span>
@@ -260,40 +234,6 @@
                 <i class="ri-record-circle-line"></i>
             </button>
         </div>
-
-        <div class="dropdown sidebar-user m-1 rounded">
-            <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="d-flex align-items-center gap-2">
-                    <img class="rounded header-profile-user" src="{{asset('assets/images/users/avatar-1.jpg')}}" alt="Header Avatar">
-                    <span class="text-start">
-                        <span class="d-block fw-medium sidebar-user-name-text">Anna Adame</span>
-                        <span class="d-block fs-14 sidebar-user-name-sub-text"><i class="ri ri-circle-fill fs-10 text-success align-baseline"></i> <span class="align-middle">Online</span></span>
-                    </span>
-                </span>
-            </button>
-            <div class="dropdown-menu dropdown-menu-end">
-                <!-- item-->
-                <h6 class="dropdown-header">Welcome Anna!</h6>
-                <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
-                <a class="dropdown-item" href="apps-chat.html"><i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Messages</span></a>
-                <a class="dropdown-item" href="apps-tasks-kanban.html"><i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span></a>
-                <a class="dropdown-item" href="pages-faqs.html"><i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Help</span></a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span></a>
-                <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-success-subtle text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
-                <a class="dropdown-item" href="auth-lockscreen-basic.html"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span></a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-
-                <a class="dropdown-item"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
-                    <span class="align-middle" data-key="t-logout">Logout</span>
-                </a>
-            </div>
-        </div>
-
 
         <div id="scrollbar">
             <div class="container-fluid">
@@ -319,6 +259,20 @@
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item"><a href="{{ route('AddClient') }}" class="nav-link {{ request()->routeIs('AddClient') ? 'active' : '' }}"><i class="ri-user-add-line me-1"></i> Add</a></li>
                                 <li class="nav-item"><a href="{{ route('ViewClient') }}" class="nav-link {{ request()->routeIs('ViewClient') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="menu-title"><i class="ri-user-3-line me-2 text-success"></i><span>Subscription List</span></li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('SubList') ? '' : 'collapsed' }}" href="#sidebarlist" data-bs-toggle="collapse">
+                            <i class="ri-user-star-line"></i> <span>Subscription List</span>
+                        </a>
+                        <div class="collapse menu-dropdown {{ request()->routeIs('SubList') ? 'show' : '' }}" id="sidebarlist">
+                            <ul class="nav nav-sm flex-column">
+                                <a href="{{ route('AllPaymentList') }}" class="nav-link">
+                                    <i class="ri-eye-line"></i> All Payments
+                                </a>
                             </ul>
                         </div>
                     </li>
@@ -349,27 +303,27 @@
                             <ul class="nav nav-sm flex-column">
 
                                 @if(hasPermission('Operator','add'))
-                                <li><a href="{{ route('AddOperator') }}" class="nav-link {{ request()->routeIs('AddOperator') ? 'active':'' }}">Add Operator</a></li>
+                                <li><a href="{{ route('AddOperator') }}" class="nav-link {{ request()->routeIs('AddOperator') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Operator</a></li>
                                 @endif
 
                                 @if(hasPermission('Machine','add'))
-                                <li><a href="{{ route('AddMachine') }}" class="nav-link {{ request()->routeIs('AddMachine') ? 'active':'' }}">Add Machine</a></li>
+                                <li><a href="{{ route('AddMachine') }}" class="nav-link {{ request()->routeIs('AddMachine') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Machine</a></li>
                                 @endif
 
                                 @if(hasPermission('Setting','add'))
-                                <li><a href="{{ route('AddSetting') }}" class="nav-link {{ request()->routeIs('AddSetting') ? 'active':'' }}">Add Setting</a></li>
+                                <li><a href="{{ route('AddSetting') }}" class="nav-link {{ request()->routeIs('AddSetting') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Setting</a></li>
                                 @endif
 
                                 @if(hasPermission('Hsncode','add'))
-                                <li><a href="{{ route('addHsn') }}" class="nav-link {{ request()->routeIs('addHsn') ? 'active':'' }}">Add Hsncode</a></li>
+                                <li><a href="{{ route('addHsn') }}" class="nav-link {{ request()->routeIs('addHsn') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Hsncode</a></li>
                                 @endif
 
                                 @if(hasPermission('MaterialType','add'))
-                                <li><a href="{{ route('AddMaterialType') }}" class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active':'' }}">Add Material Type</a></li>
+                                <li><a href="{{ route('AddMaterialType') }}" class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Material Type</a></li>
                                 @endif
 
                                 @if(hasPermission('FinancialYear','add'))
-                                <li><a href="{{ route('AddFinancialYear') }}" class="nav-link {{ request()->routeIs('AddFinancialYear') ? 'active':'' }}">Add Financial Year</a></li>
+                                <li><a href="{{ route('AddFinancialYear') }}" class="nav-link {{ request()->routeIs('AddFinancialYear') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Financial Year</a></li>
                                 @endif
 
 
@@ -378,7 +332,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link menu-link {{ request()->routeIs('AddUserAdmin','ListUserAdmin','RolePermission') ? '' : 'collapsed' }}"
                                         href="#sidebarUserAdmin" data-bs-toggle="collapse">
-                                        <i class="ri-user-add-line me-1"></i> Role & Permission
+                                        <i class="ri-add-circle-line me-1"></i></i> Role & Permission
                                     </a>
 
                                     <div class="collapse menu-dropdown {{ request()->routeIs('AddUserAdmin','ListUserAdmin','RolePermission') ? 'show':'' }}" id="sidebarUserAdmin">
@@ -386,15 +340,15 @@
                                         <ul class="nav nav-sm flex-column">
 
                                             @if(hasPermission('UserAdmin','add'))
-                                            <li><a href="{{ route('AddUserAdmin') }}" class="nav-link {{ request()->routeIs('AddUserAdmin') ? 'active':'' }}">Create User</a></li>
+                                            <li><a href="{{ route('AddUserAdmin') }}" class="nav-link {{ request()->routeIs('AddUserAdmin') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Create User</a></li>
                                             @endif
 
                                             @if(hasPermission('UserAdmin','view'))
-                                            <li><a href="{{ route('ListUserAdmin') }}" class="nav-link {{ request()->routeIs('ListUserAdmin') ? 'active':'' }}">View Users</a></li>
+                                            <li><a href="{{ route('ListUserAdmin') }}" class="nav-link {{ request()->routeIs('ListUserAdmin') ? 'active':'' }}"><i class="ri-eye-line me-1"></i>View Users</a></li>
                                             @endif
 
                                             @if(hasPermission('UserAdmin','edit'))
-                                            <li><a href="{{ route('RolePermission') }}" class="nav-link {{ request()->routeIs('RolePermission') ? 'active':'' }}">Role & Permission</a></li>
+                                            <li><a href="{{ route('RolePermission') }}" class="nav-link {{ request()->routeIs('RolePermission') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Role & Permission</a></li>
                                             @endif
 
                                         </ul>
@@ -563,13 +517,13 @@
 
                                 @if(hasPermission('MaterialReq', 'add'))
                                 <li class="nav-item">
-                                    <a href="{{ route('AddMaterialReq') }}" class="nav-link {{ request()->routeIs('AddMaterialReq') ? 'active' : '' }}"> Add</a>
+                                    <a href="{{ route('AddMaterialReq') }}" class="nav-link {{ request()->routeIs('AddMaterialReq') ? 'active' : '' }}"><i class="ri-add-circle-line me-1"></i> Add</a>
                                 </li>
                                 @endif
 
                                 @if(hasPermission('MaterialReq', 'view'))
                                 <li class="nav-item">
-                                    <a href="{{ route('ViewMaterialReq') }}" class="nav-link {{ request()->routeIs('ViewMaterialReq') ? 'active' : '' }}"> View</a>
+                                    <a href="{{ route('ViewMaterialReq') }}" class="nav-link {{ request()->routeIs('ViewMaterialReq') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a>
                                 </li>
                                 @endif
                             </ul>
@@ -609,18 +563,15 @@
 
                     <li class="nav-item">
                         <a class="nav-link menu-link 
-                     {{ request()->routeIs(
-                'proforma.index','proforma.create','proforma.history','invoice.history' ) ? '' : 'collapsed' }}"
-                            href="#sidebarInvoice"
-                            data-bs-toggle="collapse">
+                     {{ request()->routeIs( 'proforma.index','proforma.create','proforma.history','invoice.history','invoice.view' ) ? '' : 'collapsed' }}"
+                            href="#sidebarInvoice" data-bs-toggle="collapse">
                             <i class="ri-file-list-3-line"></i>
                             <span>Invoice</span>
                         </a>
 
                         <div class="collapse menu-dropdown 
                         {{ request()->routeIs(
-                            'proforma.index','proforma.create', 'proforma.history','invoice.history'
-                        ) ? 'show' : '' }}"
+                            'proforma.index','proforma.create', 'proforma.history','invoice.history','invoice.view' ) ? 'show' : '' }}"
                             id="sidebarInvoice">
 
                             <ul class="nav nav-sm flex-column">
@@ -633,13 +584,6 @@
                                     </a>
                                 </li>
 
-                                <!-- Tax Invoice -->
-                                <!-- <li class="nav-item">
-                                    <a href="{{ route('invoice.add') }}"
-                                        class="nav-link {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
-                                        <i class="ri-file-list-3-line me-1"></i>Proforma Invoice
-                                    </a>
-                                </li> -->
                                 <li class="nav-item">
                                     <a href="{{ route('invoice.view') }}"
                                         class="nav-link {{ request()->routeIs('invoice.view') ? 'active' : '' }}">
@@ -699,9 +643,6 @@
     <!-- Vertical Overlay-->
     <div class="vertical-overlay"></div>
 
-    <!-- ============================================================== -->
-    <!-- Start right Content here -->
-    <!-- ============================================================== -->
     @yield('content')
     <!-- JAVASCRIPT -->
     <script src="{{asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
@@ -731,14 +672,6 @@
       
     </script> -->
     @endif
-
-
-    <!-- apexcharts -->
-    <script src="{{asset('assets/libs/apexcharts/apexcharts.min.js')}}"></script>
-
-    <!-- Vector map-->
-    <script src="{{asset('assets/libs/jsvectormap/jsvectormap.min.js')}}"></script>
-    <script src="{{asset('assets/libs/jsvectormap/maps/world-merc.js')}}"></script>
 
     <!-- gridjs js -->
     <script src="{{asset('assets/libs/gridjs/gridjs.umd.js')}}"></script>

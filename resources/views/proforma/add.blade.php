@@ -245,37 +245,40 @@
         }
 
         function fetchMachineRecords(customerId) {
-            if (!customerId) return;
-            $.get(`/invoice/fetch-machine-records/${customerId}`, function(data) {
+    if (!customerId) return;
 
-                machineData = data || [];
-                let options = '<option value="">Select Description</option>';
-                machineData.forEach(item => {
-                    options += `
+    $.get(`/proforma/fetch-machine-records/${customerId}`, function (data) {
+
+        machineData = data || [];
+        let options = '<option value="">Select Description</option>';
+
+        machineData.forEach(item => {
+            options += `
                 <option value="${item.part_description}"
                     data-project-id="${item.project_id}"
                     data-workorder-id="${item.workorder_id}"
-                    data-hsn="${item.hsn_code}"
+                    data-hsn="${item.hsn_code ?? ''}"
                     data-qty="${item.quantity}"
                     data-exp="${item.exp_time}"
                     data-vmc="${item.vmc_hr}"
                     data-material_rate="${item.material_rate}">
                     ${item.part_description}
                 </option>`;
-                });
+        });
 
-                $('#machineSelectTemplate').html(options);
+        $('#machineSelectTemplate').html(options);
 
-                $('#addItemBtn')
-                    .prop('disabled', false)
-                    .removeClass('btn-secondary')
-                    .addClass('btn-success');
+        $('#addItemBtn')
+            .prop('disabled', false)
+            .removeClass('btn-secondary')
+            .addClass('btn-success');
 
-                if (editMode) {
-                    loadExistingInvoiceItems();
-                }
-            });
+        if (editMode) {
+            loadExistingInvoiceItems();
         }
+    });
+}
+
 
         $('#addItemBtn').on('click', function() {
             const options = $('#machineSelectTemplate').html();
@@ -335,7 +338,7 @@
         }
 
         function loadExistingInvoiceItems() {
-            let items = @json($data ->items ?? []);
+            let items = @json($data->items ?? []);
             console.log(items);
 
             if (!items || !Array.isArray(items)) items = [];

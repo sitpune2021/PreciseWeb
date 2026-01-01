@@ -19,7 +19,7 @@ class PaymentController extends Controller
         $client = Client::with('plan')->where('login_id', Auth::id())->first();
         $plans = PaymentPlan::all();
 
-        
+
         return view('Payment.renew', compact('plans', 'client'));
     }
 
@@ -109,5 +109,18 @@ class PaymentController extends Controller
             ->get();
 
         return view('Payment.view', compact('payments'));
+    }
+
+    public function AllPaymentList()
+    {
+        if (auth()->user()->user_type != 1) {
+            abort(403);
+        }
+
+        $subscription = Order::with('user')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('Payment.all_view', compact('subscription'));
     }
 }

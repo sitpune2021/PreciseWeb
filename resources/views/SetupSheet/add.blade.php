@@ -113,7 +113,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_x" class="form-label">Size In X </label>
-                                                <input type="text" class="form-control" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? '') }}">
+                                                <input type="text" class="form-control mt-1" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? '') }}">
                                                 @error('size_in_x')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -123,7 +123,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_y" class="form-label">Size In Y </label>
-                                                <input type="text" class="form-control" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? '') }}">
+                                                <input type="text" class="form-control  mt-1" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? '') }}">
                                                 @error('size_in_y')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -133,7 +133,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_z" class="form-label">Size In Z </span></label>
-                                                <input type="text" class="form-control" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? '') }}">
+                                                <input type="text" class="form-control  mt-1" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? '') }}">
                                                 @error('size_in_z')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -142,7 +142,7 @@
 
                                         <div class="col-md-3">
                                             <label class="form-label">Setting <span class="text-red">*</span></label>
-                                            <select name="setting" class="form-control form-select">
+                                            <select name="setting" class="form-control form-select  mt-1">
                                                 <option value="">Select Setting</option>
                                                 @foreach($settings as $setting)
                                                 <option value="{{ $setting->setting_name }}"

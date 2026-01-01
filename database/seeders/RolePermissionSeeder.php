@@ -4,11 +4,19 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class RolePermissionSeeder extends Seeder
 {
     public function run()
     {
+        // 🔥 Admin user fetch (user_type = 1)
+        $admin = User::where('user_type', 1)->first();
+
+        if (!$admin) {
+            throw new \Exception('Admin user not found. Please seed users first.');
+        }
+
         $modules = [
             'Dashboard',
             'Client',
@@ -34,22 +42,29 @@ class RolePermissionSeeder extends Seeder
         $allPermissions = [];
 
         foreach ($modules as $module) {
-
-
-            if ($module == 'Dashboard') {
-                $allPermissions[$module] = ['view', 'view_work_orders', 'view_project', 'view_machinerecord'];
+            if ($module === 'Dashboard') {
+                $allPermissions[$module] = [
+                    'view',
+                    'view_work_orders',
+                    'view_project',
+                    'view_machinerecord'
+                ];
             } else {
-                $allPermissions[$module] = ['view', 'add', 'edit', 'delete'];
+                $allPermissions[$module] = [
+                    'view',
+                    'add',
+                    'edit',
+                    'delete'
+                ];
             }
         }
-        $json = json_encode($allPermissions);
-        $escaped = json_encode($json);
+
         DB::table('role_permissions')->insert([
-            'role_id' => 2,
-            'admin_id' => 2,
-            'permissions' => $escaped,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'admin_id'    => $admin->id,     // ✅ HERE
+            'role_id'     => 2,
+            'permissions' => json_encode($allPermissions),
+            'created_at'  => now(),
+            'updated_at'  => now(),
         ]);
     }
 }

@@ -75,7 +75,7 @@
                                         @foreach($dashboardCards as $card)
                                         <label class="me-4">
                                             <input type="checkbox"
-                                                class="perm"
+                                                class="perm large-checkbox me-1"
                                                 name="permissions[Dashboard][]"
                                                 value="view_{{ strtolower($card) }}">
                                             View {{ $card }}
@@ -83,10 +83,10 @@
                                         @endforeach
                                     </td>
                                     @else
-                                    <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="add"></td>
-                                    <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="view"></td>
-                                    <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="edit"></td>
-                                    <td><input type="checkbox" class="perm" name="permissions[{{ $module }}][]" value="delete"></td>
+                                    <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="add"></td>
+                                    <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="view"></td>
+                                    <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="edit"></td>
+                                    <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="delete"></td>
                                     @endif
 
                                 </tr>

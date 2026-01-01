@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ClientContoller extends Controller
 {
@@ -39,6 +40,7 @@ class ClientContoller extends Controller
         }
 
         $users = User::create([
+            'admin_id'  => Auth::id(),
             'name'      => $request->input('name'),
             'mobile'    => $request->input('phone_no'),
             'email'     => $request->input('email_id'),

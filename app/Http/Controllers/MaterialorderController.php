@@ -7,6 +7,7 @@ use App\Models\MaterialOrder;
 use App\Models\Customer;
 use App\Models\MaterialReq;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MaterialorderController extends Controller
 {
@@ -38,7 +39,7 @@ class MaterialorderController extends Controller
     {
         $orders = MaterialOrder::where('admin_id', Auth::id())
             ->latest()
-            ->paginate(10);
+            ->get();
 
         return view('Materialorder.view', compact('orders'));
     }
@@ -46,41 +47,46 @@ class MaterialorderController extends Controller
     // Store new material order
     public function storeMaterialorder(Request $request)
     {
-        $validatedData = $request->validate([
-            'customer_id'     => 'required|exists:customers,id',
-            'work_order_no'   => 'required|string|max:255',
-            'date'            => 'required|date',
-            'work_order_desc' => 'nullable|string|max:255',
-            'f_diameter'      => 'nullable|numeric|min:0',
-            'f_length'        => 'nullable|numeric|min:0',
-            'f_width'         => 'nullable|numeric|min:0',
-            'f_height'        => 'nullable|numeric|min:0',
-            'r_diameter'      => 'nullable|numeric|min:0',
-            'r_length'        => 'nullable|numeric|min:0',
-            'r_width'         => 'nullable|numeric|min:0',
-            'r_height'        => 'nullable|numeric|min:0',
-            'material'        => 'required|string|max:255',
-            'quantity'        => 'required|integer|min:1',
-
-            // id of selected material request
-            'material_req_id' => 'required|exists:material_reqs,id',
+        $request->validate([
+            'customer_id'      => 'required',
+            'work_order_no'    => 'required',
+            'date'             => 'required|date',
+            'material_req_ids' => 'required|array|min:1',
+            'work_order_desc'  => 'required|array',
+            'material'         => 'required|array',
+            'quantity'         => 'required|array',
         ]);
 
-        // admin id
-        $validatedData['admin_id'] = Auth::id();
+        foreach ($request->material_req_ids as $index => $reqId) {
 
-        // Save material_req_id (so we know which request was used)
-        $validatedData['material_req_id'] = $request->material_req_id;
+            // 🔥 GET SR NO FROM MATERIAL REQ
+            $materialReq = MaterialReq::find($reqId);
 
-        // IMPORTANT: store sr_no as the MaterialReq's sr_no (not the material_req id)
-        $materialReq = MaterialReq::find($request->material_req_id);
-        $validatedData['sr_no'] = $materialReq ? $materialReq->sr_no : null;
+            MaterialOrder::create([
+                'admin_id'        => Auth::id(),
+                'customer_id'     => $request->customer_id,
+                'material_req_id' => $reqId,
 
-        MaterialOrder::create($validatedData);
+                // ✅ SAVE SR NO
+                'sr_no'           => $materialReq->sr_no ?? null,
+
+                'work_order_no'   => $request->work_order_no,
+                'date'            => $request->date,
+
+                'work_order_desc' => $request->work_order_desc[$index] ?? null,
+                'r_diameter'      => $request->r_diameter[$index] ?? null,
+                'r_length'        => $request->r_length[$index] ?? null,
+                'r_width'         => $request->r_width[$index] ?? null,
+                'r_height'        => $request->r_height[$index] ?? null,
+                'material'        => $request->material[$index] ?? null,
+                'quantity'        => $request->quantity[$index] ?? 0,
+            ]);
+        }
 
         return redirect()->route('ViewMaterialorder')
-            ->with('success', 'Material Order created successfully.');
+            ->with('success', 'Material Order saved successfully');
     }
+
 
     // Edit form
     public function editMaterialorder($id)
@@ -88,6 +94,7 @@ class MaterialorderController extends Controller
         $decodedId = base64_decode($id);
 
         $record = MaterialOrder::withTrashed()
+            ->with('materialReq') // 🔥 IMPORTANT
             ->where('admin_id', Auth::id())
             ->findOrFail($decodedId);
 
@@ -123,28 +130,82 @@ class MaterialorderController extends Controller
             $record->restore();
         }
 
+        // Validate array inputs
         $validated = $request->validate([
             'customer_id'     => 'required|exists:customers,id',
             'date'            => 'required|date',
-            'work_order_desc' => 'nullable|string|max:255',
             'work_order_no'   => 'required|string|max:255',
-            'f_diameter'      => 'nullable|numeric|min:0',
-            'f_length'        => 'nullable|numeric|min:0',
-            'f_width'         => 'nullable|numeric|min:0',
-            'f_height'        => 'nullable|numeric|min:0',
-            'r_diameter'      => 'nullable|numeric|min:0',
-            'r_length'        => 'nullable|numeric|min:0',
-            'r_width'         => 'nullable|numeric|min:0',
-            'r_height'        => 'nullable|numeric|min:0',
-            'material'        => 'required|string|max:255',
-            'quantity'        => 'required|integer|min:1',
+
+            'work_order_desc' => 'required|array',
+            'work_order_desc.*' => 'nullable|string|max:255',
+
+            'f_diameter' => 'nullable|array',
+            'f_diameter.*' => 'nullable|numeric|min:0',
+
+            'f_length' => 'nullable|array',
+            'f_length.*' => 'nullable|numeric|min:0',
+
+            'f_width' => 'nullable|array',
+            'f_width.*' => 'nullable|numeric|min:0',
+
+            'f_height' => 'nullable|array',
+            'f_height.*' => 'nullable|numeric|min:0',
+
+            'r_diameter' => 'nullable|array',
+            'r_diameter.*' => 'nullable|numeric|min:0',
+
+            'r_length' => 'nullable|array',
+            'r_length.*' => 'nullable|numeric|min:0',
+
+            'r_width' => 'nullable|array',
+            'r_width.*' => 'nullable|numeric|min:0',
+
+            'r_height' => 'nullable|array',
+            'r_height.*' => 'nullable|numeric|min:0',
+
+            'material' => 'required|array',
+            'material.*' => 'required|string|max:255',
+
+            'quantity' => 'required|array',
+            'quantity.*' => 'required|integer|min:1',
         ]);
 
-        $record->update($validated);
+
+        // Log before update
+        Log::info('Material Order Update Start', [
+            'id' => $decodedId,
+            'old_record' => $record->toArray(),
+            'request_data' => $request->all(),
+        ]);
+
+        // Since table has single columns, pick first element from arrays
+        $record->update([
+            'customer_id'     => $validated['customer_id'],
+            'date'            => $validated['date'],
+            'work_order_no'   => $validated['work_order_no'],
+            'work_order_desc' => $validated['work_order_desc'][0] ?? null,
+            'f_diameter'      => $validated['f_diameter'][0] ?? null,
+            'f_length'        => $validated['f_diameter'][1] ?? null, // if needed
+            'f_width'         => $validated['f_diameter'][2] ?? null, // etc.
+            'f_height'        => $validated['f_diameter'][3] ?? null,
+            'r_diameter'      => $validated['r_diameter'][0] ?? null,
+            'r_length'        => $validated['r_length'][0] ?? null,
+            'r_width'         => $validated['r_width'][0] ?? null,
+            'r_height'        => $validated['r_height'][0] ?? null,
+            'material'        => $validated['material'][0] ?? null,
+            'quantity'        => $validated['quantity'][0] ?? null,
+        ]);
+
+        // Log after update
+        Log::info('Material Order Updated', [
+            'id' => $decodedId,
+            'updated_record' => $record->fresh()->toArray(),
+        ]);
 
         return redirect()->route('ViewMaterialorder')
             ->with('success', "Material Order '{$record->work_order_desc}' updated successfully.");
     }
+
 
     // Soft delete
     public function destroy($id)
@@ -194,53 +255,6 @@ class MaterialorderController extends Controller
             ->with('success', "Material Order '{$order->work_order_desc}' restored successfully.");
     }
 
-    // Get material request basic data by id (used when selecting a request)
-    public function getCustomerData($id)
-    {
-        // NOTE: removed admin filter so details come regardless of which admin created the MaterialReq
-        $material = MaterialReq::with(['materialType', 'customer'])
-            ->where('id', $id)
-            ->first();
-
-        if (!$material) {
-            return response()->json([]);
-        }
-
-        return response()->json([
-            'code'           => $material->customer->code ?? '',
-            'work_order_no'  => $material->work_order_no ?? '',
-            'description'    => $material->description ?? '',
-            'material_id'    => $material->material,
-            'material_name'  => $material->materialType->material_type ?? '',
-            'qty'            => $material->qty ?? '',
-            'f_diameter'     => $material->dia ?? '',
-            'f_length'       => $material->length ?? '',
-            'f_width'        => $material->width ?? '',
-            'f_height'       => $material->height ?? '',
-        ]);
-    }
-
-    // Get material requests for a customer (used to populate dropdown)
-    public function getMaterialRequests($customer_id)
-    {
-        try {
-            // Do NOT filter by admin_id here — fetch by customer only so SR numbers are consistent across admins
-            $requests = MaterialReq::where('customer_id', $customer_id)
-                ->select('id', 'sr_no', 'description', 'work_order_no')
-                ->orderBy('sr_no', 'asc') // order by sr_no for logical listing
-                ->get();
-
-            if ($requests->isEmpty()) {
-                return response()->json(['status' => 'empty']);
-            }
-
-            return response()->json(['status' => 'success', 'data' => $requests]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-
-    // Get details of a single material request
     public function getMaterialRequestDetails($id)
     {
         $data = MaterialReq::with('materialType')->find($id);
@@ -252,16 +266,50 @@ class MaterialorderController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => [
-                'work_order_no' => $data->work_order_no,
-                'date' => $data->date,
-                'description' => $data->description,
-                'material_name' => $data->materialType ? $data->materialType->material_type : '',
-                'dia' => $data->dia,
-                'length' => $data->length,
-                'width' => $data->width,
-                'height' => $data->height,
-                'qty' => $data->qty,
+                'description'   => $data->description,
+                'material_name' => $data->materialType->material_type ?? '',
+                'dia'           => $data->dia,
+                'length'        => $data->length,
+                'width'         => $data->width,
+                'height'        => $data->height,
+                'qty'           => $data->qty,
             ]
+        ]);
+    }
+
+    public function getMaterialRequests($customer_id)
+    {
+        $requests = MaterialReq::with('materialType')
+            ->where('customer_id', $customer_id)
+            ->orderBy('sr_no')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $requests->map(function ($r) {
+                return [
+                    'id'            => $r->id,
+                    'sr_no'         => $r->sr_no,
+                    'description'   => $r->description,
+                    'material_name' => $r->materialType->material_type ?? '',
+                    'dia'           => $r->dia,
+                    'length'        => $r->length,
+                    'width'         => $r->width,
+                    'height'        => $r->height,
+                    'qty'           => $r->qty,
+                ];
+            })
+        ]);
+    }
+
+    public function getCustomerWo($customerId)
+    {
+        $wo = MaterialReq::where('customer_id', $customerId)
+            ->orderBy('id', 'desc')
+            ->value('work_order_no');
+
+        return response()->json([
+            'work_order_no' => $wo
         ]);
     }
 }

@@ -23,9 +23,9 @@
 
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="buttons-datatables" class="display table table-bordered table-striped" style="width:100%">
+                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
-                                        <tr class="table-white text-center">
+                                        <tr class="">
                                             <th>#</th>
                                             <th>Sr.No</th>
                                             <th>Date</th>
@@ -42,14 +42,18 @@
                                         @forelse($orders as $order)
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
-                                            <td class="text-center">{{ $order->sr_no }}</td>
+                                            <td class="text-center">
+                                                SR-{{ $order->sr_no ?? $order->materialReq->sr_no ?? '-' }}
+                                            </td>
                                             <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
 
                                             <td class="text-center">{{ $order->customer->code ?? 'N/A' }}</td>
 
                                             <td class="text-start">{{ $order->work_order_desc }}</td>
 
-                                            <td class="text-end">{{ $order->material }}</td>
+                                            <td>
+                                                {{ $order->material }}
+                                            </td>
                                             <td class="text-end">{{ $order->quantity }}</td>
 
                                             <td class="text-center">
@@ -65,14 +69,14 @@
                                                     data-name="{{ $order->customer->code ?? 'N/A' }}"
                                                     data-date="{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}"
                                                     data-desc="{{ $order->work_order_desc }}"
-                                                    data-fdia="{{ $order->f_diameter }}"
-                                                    data-flen="{{ $order->f_length }}"
-                                                    data-fwid="{{ $order->f_width }}"
-                                                    data-fhei="{{ $order->f_height }}"
-                                                    data-rdia="{{ $order->r_diameter }}"
-                                                    data-rlen="{{ $order->r_length }}"
-                                                    data-rwid="{{ $order->r_width }}"
-                                                    data-rhei="{{ $order->r_height }}"
+                                                    data-fdia="{{ rtrim(rtrim($order->f_diameter, '0'), '.') }}"
+                                                    data-flen="{{ rtrim(rtrim($order->f_length, '0'), '.') }}"
+                                                    data-fwid="{{ rtrim(rtrim($order->f_width, '0'), '.') }}"
+                                                    data-fhei="{{ rtrim(rtrim($order->f_height, '0'), '.') }}"
+                                                    data-rdia="{{ rtrim(rtrim($order->r_diameter, '0'), '.') }}"
+                                                    data-rlen="{{ rtrim(rtrim($order->r_length, '0'), '.') }}"
+                                                    data-rwid="{{ rtrim(rtrim($order->r_width, '0'), '.') }}"
+                                                    data-rhei="{{ rtrim(rtrim($order->r_height, '0'), '.') }}"
                                                     data-mat="{{ $order->material }}"
 
                                                     data-qty="{{ $order->quantity }}">

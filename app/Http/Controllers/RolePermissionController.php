@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RolePermissionController extends Controller
 {
-
     public function RolePermission()
     {
         $roles = Role::all();
@@ -23,17 +22,17 @@ class RolePermissionController extends Controller
             'permissions' => 'required|array'
         ]);
 
-        RolePermission::where('role_id', $request->role_id)
-            ->where('admin_id', Auth::id())
-            ->delete();
+        RolePermission::updateOrCreate(
+            [
+                'role_id'  => $request->role_id,
+                'admin_id' => Auth::id(),
+            ],
+            [
+                'permissions' => $request->permissions,
+            ]
+        );
 
-        RolePermission::create([
-            'role_id'     => $request->role_id,
-            'permissions' => json_encode($request->permissions),
-            'admin_id'    => Auth::id(),
-        ]);
-
-        return redirect()->back()->with('success', 'Permissions saved successfully!');
+        return back()->with('success', 'Permissions saved successfully!');
     }
 
     public function getRolePermissions($role_id)
@@ -42,14 +41,11 @@ class RolePermissionController extends Controller
             ->where('admin_id', Auth::id())
             ->first();
 
-        if ($rolePermission) {
-            $permissions = json_decode($rolePermission->permissions, true);
-            return response()->json([
-                'status' => true,
-                'permissions' => $permissions ?? []
-            ]);
-        }
-
-        return response()->json(['status' => false, 'permissions' => []]);
+        return response()->json([
+            'status' => (bool) $rolePermission,
+            'permissions' => $rolePermission
+                ? $rolePermission->permissions // ✅ cast already gives array
+                : []
+        ]);
     }
 }
