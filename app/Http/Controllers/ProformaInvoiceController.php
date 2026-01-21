@@ -72,8 +72,6 @@ class ProformaInvoiceController extends Controller
 
     public function store(Request $request)
     {
-
-
         $validated = $request->validate([
             'customer_id' => 'required',
             'invoice_date'        => 'required',

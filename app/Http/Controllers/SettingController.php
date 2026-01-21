@@ -88,13 +88,19 @@ class SettingController extends Controller
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
+
         $setting = Setting::where('id', $id)
             ->where('admin_id', Auth::id())
             ->firstOrFail();
 
+        $settingName = $setting->name; 
+
         $setting->delete();
-        return redirect()->route('AddSetting')->with('success', 'Branch deleted successfully.');
+
+        return redirect()->route('AddSetting')
+            ->with('success', $settingName . ' deleted successfully.');
     }
+
 
     public function updateSettingStatus(Request $request)
     {

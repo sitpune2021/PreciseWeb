@@ -85,13 +85,19 @@ class MachineController extends Controller
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
+
         $machine = Machine::where('id', $id)
             ->where('admin_id', Auth::id())
             ->firstOrFail();
 
+        $machineName = $machine->name; 
+
         $machine->delete();
-        return redirect()->route('AddMachine')->with('success', 'Branch deleted successfully.');
+
+        return redirect()->route('AddMachine')
+            ->with('success', $machineName . ' deleted successfully.');
     }
+
 
     public function updateStatus(Request $request)
     {

@@ -227,7 +227,7 @@
 
                 <!-- sidebar logo -->
                 <span class="logo-lg">
-                    <img src="{{asset('assets/images/pre2.png')}}" alt="" height="100">
+                    <img src=" " alt="" height="100">
                 </span>
             </a>
             <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
@@ -553,6 +553,30 @@
                         </div>
                     </li>
                     @endif
+
+
+                     <!--quotation Page  -->
+                    
+                    <li class="menu-title"><i class="ri-shopping-bag-3-line me-2 text-success"></i><span>Quotation</span></li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('Addquotation','Viewquotation') ? '' : 'collapsed' }}" href="#sidebarquotation" data-bs-toggle="collapse">
+                            <i class="ri-shopping-cart-2-line"></i> <span>Quotation</span>
+                        </a>
+                        <div class="collapse menu-dropdown {{ request()->routeIs('Addquotation','Viewquotation') ? 'show' : '' }}" id="sidebarquotation">
+                            <ul class="nav nav-sm flex-column">
+
+                                 
+                                <li class="nav-item"><a href="{{ route('Addquotation') }}" class="nav-link {{ request()->routeIs('Addquotation') ? 'active' : '' }}"><i class="ri-add-line me-1"></i> Add</a></li>
+                               
+
+                                
+                                <li class="nav-item"><a href="{{ route('Viewquotation') }}" class="nav-link {{ request()->routeIs('ViewMaterialorder') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
+                               
+
+                            </ul>
+                        </div>
+                    </li>
+                    
 
                     @if(hasPermission('Invoice', 'view'))
                     <!-- Invoice -->

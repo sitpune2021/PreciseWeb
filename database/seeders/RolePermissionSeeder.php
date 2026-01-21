@@ -60,7 +60,7 @@ class RolePermissionSeeder extends Seeder
         }
 
         DB::table('role_permissions')->insert([
-            'admin_id'    => $admin->id,     // ✅ HERE
+            'admin_id'    => $admin->id,     
             'role_id'     => 2,
             'permissions' => json_encode($allPermissions),
             'created_at'  => now(),

@@ -148,29 +148,7 @@
 
                 <!-- Finish & Raw Size side-by-side -->
                 <div class="row text-center mb-3">
-                    <div class="col-6">
-                        <table class="table table-bordered">
-                            <tr class="bg-light">
-                                <th colspan="2">Finish Size</th>
-                            </tr>
-                            <tr>
-                                <th>DIA</th>
-                                <td id="v_fdia"></td>
-                            </tr>
-                            <tr>
-                                <th>Length</th>
-                                <td id="v_flen"></td>
-                            </tr>
-                            <tr>
-                                <th>Width</th>
-                                <td id="v_fwid"></td>
-                            </tr>
-                            <tr>
-                                <th>Height</th>
-                                <td id="v_fhei"></td>
-                            </tr>
-                        </table>
-                    </div>
+
                     <div class="col-6">
                         <table class="table table-bordered">
                             <tr class="bg-light">
@@ -213,11 +191,6 @@
                 document.getElementById('v_mat').innerText = this.dataset.mat;
                 document.getElementById('v_qty').innerText = this.dataset.qty;
 
-                // Finish Size
-                document.getElementById('v_fdia').innerText = this.dataset.fdia;
-                document.getElementById('v_flen').innerText = this.dataset.flen;
-                document.getElementById('v_fwid').innerText = this.dataset.fwid;
-                document.getElementById('v_fhei').innerText = this.dataset.fhei;
 
                 // Raw Size
                 document.getElementById('v_rdia').innerText = this.dataset.rdia;

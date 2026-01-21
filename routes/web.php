@@ -24,6 +24,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\ProformaInvoiceController;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Artisan;
 
@@ -46,7 +47,7 @@ Route::post('client/renew'                      , [ClientContoller::class, 'rene
  
 // Customer Routes
 Route::get( 'customer/add'                      , [CustomerContoller::class, 'AddCustomer'])->name('AddCustomer');
-Route::get( 'customer/view'                     , [CustomerContoller::class, 'ViewCustomer'])->name('ViewCustomer');
+// Route::get( 'customer/view'                     , [CustomerContoller::class, 'ViewCustomer'])->name('ViewCustomer');
 Route::post('customer/store'                    , [CustomerContoller::class, 'storeCustomer'])->name('storeCustomer');
 Route::get( 'customer/edit/{id}'                , [CustomerContoller::class, 'edit'])->name('editCustomer');
 Route::put( 'customer/update/{id}'              , [CustomerContoller::class, 'update'])->name('updateCustomer');
@@ -258,6 +259,16 @@ Route::get( 'proforma/fetch-material-rate/{material}'     , [ProformaInvoiceCont
 Route::get( 'proforma/convert/{id}'                       , [ProformaInvoiceController::class, 'convertToTax'])->name('proforma.convert');
 Route::get( 'proforma/edit/{id}'                          , [ProformaInvoiceController::class, 'proformaEdit'])->name('proforma.edit');
 Route::post('proforma/update/{id}'                        , [ProformaInvoiceController::class, 'proformaUpdate'])->name('proformaUpdate');
+
+
+// Quotation Routes
+Route::get( 'quotation/add'                               , [QuotationController::class, 'Addquotation'])->name('Addquotation');
+Route::get( 'quotation/view'                              , [QuotationController::class, 'Viewquotation'])->name('Viewquotation');
+Route::post('quotation/store'                             , [QuotationController::class, 'storequotation'])->name('storequotation');
+Route::get( 'quotation/edit/{id}'                         , [QuotationController::class, 'editquotation'])->name('editquotation');
+Route::get( 'quotation/delete/{id}'                       , [QuotationController::class, 'destroy'])->name('deletequotation');
+Route::put( 'quotation/update/{id}'                       , [QuotationController::class, 'update'])->name('updatequotation');
+Route::get('printquotation/{id}'                          , [QuotationController::class, 'printquotation'])->name('printquotation');
 
 
 });

@@ -8,6 +8,14 @@
                 <div class="col-xxl-12">
                     <div class="card shadow-sm">
                         <div class="card-header d-flex align-items-center">
+
+                             @if(isset($project))
+                            <!-- Back Button ONLY on Edit -->
+                            <a href="{{ route('ViewProject') }}" class="btn btn-sm btn-outline-success me-2">
+                                ← Back
+                            </a>
+                            @endif
+
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($project) ? 'Edit Project' : 'Add Project' }}
                             </h4>

@@ -4,7 +4,16 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
+
+
             <h5 class="card-title mb-0">
+                @if(isset($data))
+                <!-- Back Button ONLY on Edit -->
+                <a href="{{ route('proforma.index') }}" class="btn btn-sm btn-outline-success me-2">
+                    ← Back
+                </a>
+                @endif
+
                 {{ isset($data) ? 'Edit invoice' : 'Add invoice' }}
             </h5>
 
@@ -245,15 +254,15 @@
         }
 
         function fetchMachineRecords(customerId) {
-    if (!customerId) return;
+            if (!customerId) return;
 
-    $.get(`/proforma/fetch-machine-records/${customerId}`, function (data) {
+            $.get(`/proforma/fetch-machine-records/${customerId}`, function(data) {
 
-        machineData = data || [];
-        let options = '<option value="">Select Description</option>';
+                machineData = data || [];
+                let options = '<option value="">Select Description</option>';
 
-        machineData.forEach(item => {
-            options += `
+                machineData.forEach(item => {
+                    options += `
                 <option value="${item.part_description}"
                     data-project-id="${item.project_id}"
                     data-workorder-id="${item.workorder_id}"
@@ -264,20 +273,20 @@
                     data-material_rate="${item.material_rate}">
                     ${item.part_description}
                 </option>`;
-        });
+                });
 
-        $('#machineSelectTemplate').html(options);
+                $('#machineSelectTemplate').html(options);
 
-        $('#addItemBtn')
-            .prop('disabled', false)
-            .removeClass('btn-secondary')
-            .addClass('btn-success');
+                $('#addItemBtn')
+                    .prop('disabled', false)
+                    .removeClass('btn-secondary')
+                    .addClass('btn-success');
 
-        if (editMode) {
-            loadExistingInvoiceItems();
+                if (editMode) {
+                    loadExistingInvoiceItems();
+                }
+            });
         }
-    });
-}
 
 
         $('#addItemBtn').on('click', function() {
@@ -338,7 +347,7 @@
         }
 
         function loadExistingInvoiceItems() {
-            let items = @json($data->items ?? []);
+            let items = @json($data ->items ?? []);
             console.log(items);
 
             if (!items || !Array.isArray(items)) items = [];

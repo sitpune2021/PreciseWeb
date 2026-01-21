@@ -62,10 +62,10 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="invoice_desc" class="form-label">Hsn Description<span class="text-red">*</span></label>
+                                <label for="invoice_desc" class="form-label">HSN Description<span class="text-red">*</span></label>
                                 <input type="text" class="form-control"
                                     name="invoice_desc" value="{{ old('invoice_desc', $hsn->invoice_desc ?? '') }}"
-                                    placeholder="Enter Hsn Description">
+                                    placeholder="Enter HSN Description">
                                 <small class="text-red d-block" style="min-height:18px;">
                                     @error('invoice_desc') {{ $message }} @enderror
                                 </small>

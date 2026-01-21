@@ -49,10 +49,8 @@ class UserAdminController extends Controller
         $photoName = null;
 
         if ($request->hasFile('profile_photo')) {
-            $photo = $request->file('profile_photo');
-            $photoName = time() . '_' . $photo->getClientOriginalName();
-
-            $photo->move(public_path('assets/profile_photos'), $photoName);
+            $photoName = $request->file('profile_photo')
+                ->store('users/profile', 'public'); // SAME as update
         }
 
         User::create([

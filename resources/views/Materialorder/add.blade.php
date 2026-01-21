@@ -8,6 +8,14 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
+
+                        @if(isset($record))
+                        <!-- Back Button ONLY on Edit -->
+                        <a href="{{ route('ViewMaterialorder') }}" class="btn btn-sm btn-outline-success me-2">
+                            ← Back
+                        </a>
+                        @endif
+
                         {{ isset($record) ? 'Edit Material Order' : 'Add Material Order' }}
                     </h5>
                 </div>
@@ -73,9 +81,16 @@
 
                             <!-- SR -->
                             <div class="col-md-8">
-                                <label>Material Requests (SR)</label>
-                                <select id="material_data_dropdown" class="form-select" {{ isset($record) ? 'disabled' : '' }} multiple></select>
-                                @error('material_data_dropdown')
+                                <label>Material Requests (SR)<span class="text-red">*</span></label>
+                                <select id="material_data_dropdown"
+                                    class="form-select"
+                                    {{ isset($record) ? 'disabled' : '' }}
+                                    multiple>
+                                </select>
+
+                                <input type="hidden" name="material_req_ids_dummy" value="1">
+
+                                @error('material_req_ids')
                                 <span class="text-red small">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -91,7 +106,7 @@
                         </div>
                         @endif
 
-
+                        <h6 class="mt-4">Material Requests detils</h6>
                         <!-- TABLE -->
                         <div class="mt-4">
                             <table class="table table-bordered {{ isset($record) ? '' : 'd-none' }}" id="previewTable">
@@ -164,7 +179,7 @@
                         <!-- SUBMIT -->
                         <div class="text-end mt-4">
                             <button type="submit" class="btn btn-primary">
-                                Submit
+                                {{ isset($record) ? 'Update' : 'Submit' }}
                             </button>
                         </div>
 

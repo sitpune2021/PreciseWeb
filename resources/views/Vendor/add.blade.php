@@ -8,6 +8,14 @@
                 <div class="col-xxl-12">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
+
+                            @if(isset($vendor))
+                            <!-- Back Button ONLY on Edit -->
+                            <a href="{{ route('ViewVendor') }}" class="btn btn-sm btn-outline-success me-2">
+                                ← Back
+                            </a>
+                            @endif
+
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($vendor) ? 'Edit Vendor' : 'Add Vendor' }}
                             </h4>

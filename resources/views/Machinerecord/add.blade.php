@@ -11,6 +11,14 @@
                     <div class="card shadow-sm">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
+
+                                @if(isset($record))
+                                <!-- Back Button ONLY on Edit -->
+                                <a href="{{ route('ViewMachinerecord') }}" class="btn btn-sm btn-outline-success me-2">
+                                    ← Back
+                                </a>
+                                @endif
+
                                 {{ isset($record) ? 'Edit Machine Record' : 'Add Machine Record' }}
                             </h5>
                         </div>
