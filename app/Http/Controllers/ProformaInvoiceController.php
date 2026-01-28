@@ -51,7 +51,8 @@ class ProformaInvoiceController extends Controller
     public function create()
     {
         $adminId = Auth::id();
-        $adminSetting = AdminSetting::first();
+
+        $adminSetting = AdminSetting::where('admin_id', $adminId)->first();
 
         $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
@@ -272,7 +273,7 @@ class ProformaInvoiceController extends Controller
             $newNumber = "001";
         }
 
-        $invoiceNo =  $financialYear . "-I" . $newNumber;
+        $invoiceNo =  $financialYear . "-G" . $newNumber;
 
         $invoice = Invoice::create([
             'customer_id'     => $pro->customer_id,

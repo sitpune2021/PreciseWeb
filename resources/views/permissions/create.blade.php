@@ -8,12 +8,11 @@
                 @csrf
                 <div class="mb-3">
                     <label>Select Role:</label>
-                    <select name="role" class="form-control" required>
+                    <select name="role_id" class="form-control" required>
                         <option value="">-- Select Role --</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Programmer">Programmer</option>
-                        <option value="Supervisor">Supervisor</option>
-                        <option value="Finance">Finance</option>
+                        @foreach($roles as $role)
+                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 

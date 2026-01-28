@@ -269,6 +269,7 @@ Route::get( 'quotation/edit/{id}'                         , [QuotationController
 Route::get( 'quotation/delete/{id}'                       , [QuotationController::class, 'destroy'])->name('deletequotation');
 Route::put( 'quotation/update/{id}'                       , [QuotationController::class, 'update'])->name('updatequotation');
 Route::get('printquotation/{id}'                          , [QuotationController::class, 'printquotation'])->name('printquotation');
+ 
 
 
 });

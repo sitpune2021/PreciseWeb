@@ -14,9 +14,12 @@
 
                             <!-- Buttons on right -->
                             <div class="d-flex gap-2">
+                                @if(hasPermission('Quotation', 'add'))
                                 <a href="{{ route('Addquotation') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Quotation
                                 </a>
+                                @endif
+
                                 <a href="{{ route('trashMaterialReq') }}" class="btn btn-warning btn-sm">
                                     <i class="ri-delete-bin-line align-middle"></i> View Trash
                                 </a>
@@ -33,8 +36,14 @@
                                             <th>Project Name</th>
                                             <th>Date</th>
                                             <th>Description</th>
-                                            
+
+                                            @if(
+                                            hasPermission('Quotation', 'edit') ||
+                                            hasPermission('Quotation', 'delete')
+                                            )
                                             <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -45,40 +54,37 @@
                                             <td>{{ $q->project_name }}</td>
                                             <td>{{ \Carbon\Carbon::parse($q->date)->format('d-m-Y') }}</td>
                                             <td>{{ $q->project_name }}</td>
-                                             
-
-
-
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center align-items-center gap-2">
 
+                                                    @if(hasPermission('Quotation', 'edit'))
                                                     <a href="{{ route('editquotation', base64_encode($q->id)) }}"
                                                         class="btn btn-success btn-icon">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </a>
+                                                    @endif
 
+                                                    @if(hasPermission('Quotation', 'delete'))
                                                     <a href="{{ route('deletequotation', base64_encode($q->id)) }}"
                                                         onclick="return confirm('Are you sure you want to delete this record?')"
                                                         class="btn btn-danger btn-icon">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </a>
+                                                    @endif
 
+                                                    @if(hasPermission('Quotation', 'view'))
                                                     <a href="{{ route('printquotation', base64_encode($q->id)) }}"
                                                         target="_blank"
                                                         onclick="return confirm('Are you sure you want to print quotation?');"
                                                         class="btn btn-info btn-sm   px-3">
                                                         <i class="fas fa-print"></i>
                                                     </a>
-
+                                                    @endif
                                                 </div>
                                             </td>
-
-
                                         </tr>
                                         @endforeach
                                     </tbody>
-
-
                                 </table>
                             </div>
                         </div>
@@ -86,9 +92,6 @@
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     </div>
 </div>

@@ -15,9 +15,11 @@
 
                             <div class="d-flex align-items-center gap-2">
                                 <!-- Add WorkOrder Button -->
+                                @if(hasPermission('WorkOrders', 'add'))
                                 <a href="{{ route('AddWorkOrder') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add WorkOrder
                                 </a>
+                                @endif
 
                                 <!-- View Trash Button -->
                                 <a href="{{ route('trashWorkOrder') }}" class="btn btn-warning btn-sm">
@@ -43,7 +45,14 @@
                                             <th>Height</th>
                                             <th>Exp Time</th>
                                             <th>Qty</th>
+                                            @if(
+                                            hasPermission('WorkOrders', 'edit') ||
+                                            hasPermission('WorkOrders', 'delete')||
+                                            hasPermission('WorkOrders', 'view')
+                                            )
                                             <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -74,6 +83,7 @@
                                                 </a>
                                                 @endif
                                                 <!-- View Button to open Modal -->
+                                                @if(hasPermission('WorkOrders', 'view'))
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon viewWorkOrder"
                                                     data-bs-toggle="modal"
@@ -81,6 +91,9 @@
                                                     data-wo='@json($wo)'>
                                                     <i class="ri-eye-fill"></i>
                                                 </button>
+                                                @endif
+
+
                                                 @if(hasPermission('WorkOrders', 'delete'))
                                                 <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">

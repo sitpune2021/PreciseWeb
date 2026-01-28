@@ -13,9 +13,12 @@
 
                             <div class="ms-auto d-flex gap-2">
 
+                                @if(hasPermission('MachineRecord', 'add'))
                                 <a href="{{ route('AddMachinerecord') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Machine Records
                                 </a>
+                                @endif
+
                                 <a href="{{ route('trashMachineRecord') }}" class="btn btn-warning btn-sm">
                                     View Trash
                                 </a>
@@ -42,7 +45,14 @@
                                             <!-- <th>Time Taken</th> -->
                                             <!-- <th>Adjustment</th> -->
                                             <th>Invoice No</th>
-                                            <th width="10%">Action</th>
+                                            @if(
+                                            hasPermission('MachineRecord', 'edit') ||
+                                            hasPermission('MachineRecord', 'delete')||
+                                            hasPermission('MachineRecord', 'view')
+                                            )
+                                            <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -70,6 +80,7 @@
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </a>
                                                 @endif
+                                                @if(hasPermission('MachineRecord', 'view'))
                                                 <button type="button" class="btn btn-primary btn-sm viewBtn"
                                                     data-id="{{ $rec->id }}"
                                                     data-part="{{ $rec->part_no }}"
@@ -90,6 +101,7 @@
                                                     data-invoice_no="{{ $rec->invoice_no }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
+                                                @endif
 
                                                 @if(hasPermission('MachineRecord', 'delete'))
                                                 <a href="{{ route('DeleteMachinerecord', base64_encode($rec->id)) }}"

@@ -13,9 +13,11 @@
                             <h5 class="mb-0">View Projects</h5>
 
                             <div class="d-flex align-items-center gap-2">
+                                @if(hasPermission('Projects', 'add'))
                                 <a href="{{ route('AddProject') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Project
                                 </a>
+                                @endif
                             </div>
                         </div>
 
@@ -30,7 +32,14 @@
                                             <th>Customer<br>Code</th>
                                             <th>Project Name</th>
                                             <th>Qty</th>
+                                            @if(
+                                            hasPermission('Projects', 'edit') ||
+                                            hasPermission('Projects', 'delete') ||
+                                            hasPermission('Projects', 'view')
+                                            )
                                             <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -52,6 +61,7 @@
                                                 </a>
                                                 @endif
 
+                                                 @if(hasPermission('Projects', 'view'))
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewBtn"
                                                     data-id="{{ $project->id }}"
@@ -62,6 +72,8 @@
                                                     data-date="{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
+                                                @endif
+
                                                 @if(hasPermission('Projects', 'delete'))
                                                 <a href="{{ route('deleteProject', base64_encode($project->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">

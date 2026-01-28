@@ -4,8 +4,6 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-
-
             <h5 class="card-title mb-0">
                 @if(isset($data))
                 <!-- Back Button ONLY on Edit -->
@@ -347,7 +345,7 @@
         }
 
         function loadExistingInvoiceItems() {
-            let items = @json($data ->items ?? []);
+            let items = @json($data->items ?? []);
             console.log(items);
 
             if (!items || !Array.isArray(items)) items = [];

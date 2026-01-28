@@ -12,9 +12,13 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Material Orders</h5>
                             <div class="d-flex gap-2">
+
+                                @if(hasPermission('MaterialOrder', 'add'))
                                 <a href="{{ route('AddMaterialorder') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Material Order
                                 </a>
+                                @endif
+
                                 <a href="{{ route('trashMaterialorder') }}" class="btn btn-warning btn-sm">
                                     <i class="ri-delete-bin-line align-middle"></i> View Trash
                                 </a>
@@ -33,7 +37,13 @@
                                             <th>Work Order desc</th>
                                             <th>Material</th>
                                             <th>Qty</th>
-                                            <th>Action</th>
+                                            @if(
+                                            hasPermission('MaterialOrder', 'edit') ||
+                                            hasPermission('MaterialOrder', 'delete')
+                                            )
+                                            <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
 
                                     </thead>
@@ -57,12 +67,15 @@
                                             <td class="text-end">{{ $order->quantity }}</td>
 
                                             <td class="text-center">
+
                                                 @if(hasPermission('MaterialOrder', 'edit'))
                                                 <a href="{{ route('editMaterialorder', base64_encode($order->id)) }}" class="btn btn-success btn-sm">
                                                     <i class="ri-pencil-fill"></i>
                                                 </a>
                                                 @endif
+
                                                 <!-- View Button -->
+                                                @if(hasPermission('MaterialOrder', 'view'))
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm viewBtn"
                                                     data-no="{{ $order->sr_no }}"
@@ -82,6 +95,7 @@
                                                     data-qty="{{ $order->quantity }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
+                                                @endif
 
                                                 @if(hasPermission('MaterialOrder', 'delete'))
                                                 <a href="{{ route('deleteMaterialorder', base64_encode($order->id)) }}"

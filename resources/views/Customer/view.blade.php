@@ -28,9 +28,12 @@
                             </form>
 
                             <div class="d-flex gap-2">
+                                @if(hasPermission('Customer', 'add'))
                                 <a href="{{ route('AddCustomer') }}" class="btn btn-success btn-sm">
-                                    <i class="ri-add-line align-middle"></i> Add Customer
+                                    <i class="ri-add-line align-middle me-1"></i> Add Customer
                                 </a>
+                                @endif
+
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
                                     <i class="ri-upload-2-line align-middle"></i> Customer Import
                                 </button>
@@ -50,7 +53,10 @@
                                             <!-- <th>gst no</th> -->
                                             <th>Address</th>
                                             <th style="width: 15%;">Status</th>
+                                            @if(hasPermission('Customer', 'edit'))
                                             <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -82,12 +88,15 @@
                                                 </form>
                                             </td>
                                             <td>
-                                                
-                                                <a href="{{route('editCustomer', base64_encode($c->id))}}">
+                                                @if(hasPermission('Customer', 'edit'))
+                                                <a href="{{ route('editCustomer', base64_encode($c->id)) }}">
                                                     <button type="button" class="btn btn-success btn-icon waves-effect waves-light">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </button>
                                                 </a>
+                                                @endif
+
+                                                @if(hasPermission('Customer', 'view'))
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewCustomerBtn"
                                                     data-name="{{ $c->name }}"
@@ -100,13 +109,13 @@
                                                     data-address="{{ $c->address }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
+                                                @endif
+
+
                                                 <a href="{{ route('deleteCustomer', base64_encode($c->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
-
-                                                    <!-- <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
-                                                        <i class="ri-delete-bin-fill align-bottom"></i>
-                                                    </button> -->
                                                 </a>
+
 
                                             </td>
                                         </tr>

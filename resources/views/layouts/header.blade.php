@@ -369,31 +369,21 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddCustomer','ViewCustomer') ? '' : 'collapsed' }}"
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewCustomer') ? '' : 'collapsed' }}"
                             href="#sidebarCustomers" data-bs-toggle="collapse">
                             <i class="ri-team-line"></i> <span>Customer Master</span>
                         </a>
 
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddCustomer','ViewCustomer') ? 'show' : '' }}"
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewCustomer') ? 'show' : '' }}"
                             id="sidebarCustomers">
                             <ul class="nav nav-sm flex-column">
-
-                                @if(hasPermission('Customer', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('AddCustomer') }}" class="nav-link {{ request()->routeIs('AddCustomer') ? 'active' : '' }}">
-                                        <i class="ri-user-add-line me-1"></i> Add
-                                    </a>
-                                </li>
-                                @endif
-
                                 @if(hasPermission('Customer', 'view'))
                                 <li class="nav-item">
                                     <a href="{{ route('ViewCustomer') }}" class="nav-link {{ request()->routeIs('ViewCustomer') ? 'active' : '' }}">
                                         <i class="ri-eye-line me-1"></i> View
                                     </a>
                                 </li>
-                                @endif
-
+                               @endif
                             </ul>
                         </div>
                     </li>
@@ -403,14 +393,12 @@
                     <!-- Vendors -->
                     <li class="menu-title"><i class="ri-store-2-line me-2 text-info"></i><span>Vendors</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddVendor','ViewVendor') ? '' : 'collapsed' }}" href="#sidebarVendor" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewVendor') ? '' : 'collapsed' }}" href="#sidebarVendor" data-bs-toggle="collapse">
                             <i class="ri-truck-line"></i> <span>Vendor Master</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddVendor','ViewVendor') ? 'show' : '' }}" id="sidebarVendor">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewVendor') ? 'show' : '' }}" id="sidebarVendor">
                             <ul class="nav nav-sm flex-column">
-                                @if(hasPermission('Vendors', 'add'))
-                                <li class="nav-item"><a href="{{ route('AddVendor') }}" class="nav-link {{ request()->routeIs('AddVendor') ? 'active' : '' }}"><i class="ri-add-circle-line me-1"></i> Add</a></li>
-                                @endif
+
                                 @if(hasPermission('Vendors', 'view'))
                                 <li class="nav-item"><a href="{{ route('ViewVendor') }}" class="nav-link {{ request()->routeIs('ViewVendor') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
                                 @endif
@@ -424,14 +412,12 @@
                     <!-- Projects -->
                     <li class="menu-title"><i class="ri-briefcase-line me-2 text-purple"></i><span>Projects</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddProject','ViewProject') ? '' : 'collapsed' }}" href="#sidebarProject" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewProject') ? '' : 'collapsed' }}" href="#sidebarProject" data-bs-toggle="collapse">
                             <i class="ri-task-line"></i> <span>Project Entry</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddProject','ViewProject') ? 'show' : '' }}" id="sidebarProject">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewProject') ? 'show' : '' }}" id="sidebarProject">
                             <ul class="nav nav-sm flex-column">
-                                @if(hasPermission('Projects', 'add'))
-                                <li class="nav-item"><a href="{{ route('AddProject') }}" class="nav-link {{ request()->routeIs('AddProject') ? 'active' : '' }}"><i class="ri-add-circle-line me-1"></i> Add</a></li>
-                                @endif
+
                                 @if(hasPermission('Projects', 'view'))
                                 <li class="nav-item"><a href="{{ route('ViewProject') }}" class="nav-link {{ request()->routeIs('ViewProject') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
                                 @endif
@@ -444,14 +430,12 @@
                     @if(hasPermission('WorkOrders', 'view'))
                     <li class="menu-title"><i class="ri-file-list-2-line me-2 text-secondary"></i><span>Work Orders</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddWorkOrder','ViewWorkOrder') ? '' : 'collapsed' }}" href="#sidebarWorkOrder" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewWorkOrder') ? '' : 'collapsed' }}" href="#sidebarWorkOrder" data-bs-toggle="collapse">
                             <i class="ri-clipboard-line"></i> <span>Work Order Entry</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddWorkOrder','ViewWorkOrder') ? 'show' : '' }}" id="sidebarWorkOrder">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewWorkOrder') ? 'show' : '' }}" id="sidebarWorkOrder">
                             <ul class="nav nav-sm flex-column">
-                                @if(hasPermission('WorkOrders', 'add'))
-                                <li class="nav-item"><a href="{{ route('AddWorkOrder') }}" class="nav-link {{ request()->routeIs('AddWorkOrder') ? 'active' : '' }}"><i class="ri-add-line me-1"></i> Add</a></li>
-                                @endif
+
                                 @if(hasPermission('WorkOrders', 'view'))
                                 <li class="nav-item"><a href="{{ route('ViewWorkOrder') }}" class="nav-link {{ request()->routeIs('ViewWorkOrder') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
                                 @endif
@@ -464,15 +448,11 @@
                     <!-- Setup Sheet -->
                     <li class="menu-title"><i class="ri-layout-4-line me-2 text-dark"></i><span>Setup Sheet</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddSetupSheet','ViewSetupSheet') ? '' : 'collapsed' }}" href="#sidebarsetup" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewSetupSheet') ? '' : 'collapsed' }}" href="#sidebarsetup" data-bs-toggle="collapse">
                             <i class="ri-file-settings-line"></i> <span>Setup Sheet</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddSetupSheet','ViewSetupSheet') ? 'show' : '' }}" id="sidebarsetup">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewSetupSheet') ? 'show' : '' }}" id="sidebarsetup">
                             <ul class="nav nav-sm flex-column">
-
-                                @if(hasPermission('SetupSheet', 'add'))
-                                <li class="nav-item"><a href="{{ route('AddSetupSheet') }}" class="nav-link {{ request()->routeIs('AddSetupSheet') ? 'active' : '' }}"><i class="ri-add-circle-line me-1"></i> Add</a></li>
-                                @endif
                                 @if(hasPermission('SetupSheet', 'view'))
                                 <li class="nav-item"><a href="{{ route('ViewSetupSheet') }}" class="nav-link {{ request()->routeIs('ViewSetupSheet') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
                                 @endif
@@ -485,16 +465,11 @@
                     <!-- Machine Record -->
                     <li class="menu-title"><i class="ri-cpu-line me-2 text-primary"></i><span>Machine Records</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddMachinerecord','ViewMachinerecord') ? '' : 'collapsed' }}" href="#sidebarMrecord" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewMachinerecord') ? '' : 'collapsed' }}" href="#sidebarMrecord" data-bs-toggle="collapse">
                             <i class="ri-database-line"></i> <span>Machine Record</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddMachinerecord','ViewMachinerecord') ? 'show' : '' }}" id="sidebarMrecord">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewMachinerecord') ? 'show' : '' }}" id="sidebarMrecord">
                             <ul class="nav nav-sm flex-column">
-
-                                @if(hasPermission('MachineRecord', 'add'))
-                                <li class="nav-item"><a href="{{ route('AddMachinerecord') }}" class="nav-link {{ request()->routeIs('AddMachinerecord') ? 'active' : '' }}"><i class="ri-add-line me-1"></i> Add</a></li>
-                                @endif
-
                                 @if(hasPermission('MachineRecord', 'view'))
                                 <li class="nav-item"><a href="{{ route('ViewMachinerecord') }}" class="nav-link {{ request()->routeIs('ViewMachinerecord') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
                                 @endif
@@ -506,21 +481,13 @@
                     @if(hasPermission('MaterialReq', 'view'))
                     <li class="menu-title"><i class="ri-cpu-line me-2 text-primary"></i><span>Material Requirement</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? '' : 'collapsed' }}"
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewMaterialReq') ? '' : 'collapsed' }}"
                             href="#sidebarMaterialreq" data-bs-toggle="collapse" role="button"
-                            aria-expanded="{{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? 'true' : 'false' }}"
                             aria-controls="sidebarMaterialreq">
                             <i class="ri-apps-2-line"></i> <span data-key="t-apps">Material Requirement</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddMaterialReq','ViewMaterialReq') ? 'show' : '' }}" id="sidebarMaterialreq">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewMaterialReq') ? 'show' : '' }}" id="sidebarMaterialreq">
                             <ul class="nav nav-sm flex-column">
-
-                                @if(hasPermission('MaterialReq', 'add'))
-                                <li class="nav-item">
-                                    <a href="{{ route('AddMaterialReq') }}" class="nav-link {{ request()->routeIs('AddMaterialReq') ? 'active' : '' }}"><i class="ri-add-circle-line me-1"></i> Add</a>
-                                </li>
-                                @endif
-
                                 @if(hasPermission('MaterialReq', 'view'))
                                 <li class="nav-item">
                                     <a href="{{ route('ViewMaterialReq') }}" class="nav-link {{ request()->routeIs('ViewMaterialReq') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a>
@@ -535,15 +502,11 @@
                     @if(hasPermission('MaterialOrder', 'view'))
                     <li class="menu-title"><i class="ri-shopping-bag-3-line me-2 text-success"></i><span>Material Orders</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddMaterialorder','ViewMaterialorder') ? '' : 'collapsed' }}" href="#sidebarMaterial" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewMaterialorder') ? '' : 'collapsed' }}" href="#sidebarMaterial" data-bs-toggle="collapse">
                             <i class="ri-shopping-cart-2-line"></i> <span>Material Order</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddMaterialorder','ViewMaterialorder') ? 'show' : '' }}" id="sidebarMaterial">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewMaterialorder') ? 'show' : '' }}" id="sidebarMaterial">
                             <ul class="nav nav-sm flex-column">
-
-                                @if(hasPermission('MaterialOrder', 'add'))
-                                <li class="nav-item"><a href="{{ route('AddMaterialorder') }}" class="nav-link {{ request()->routeIs('AddMaterialorder') ? 'active' : '' }}"><i class="ri-add-line me-1"></i> Add</a></li>
-                                @endif
 
                                 @if(hasPermission('MaterialOrder', 'view'))
                                 <li class="nav-item"><a href="{{ route('ViewMaterialorder') }}" class="nav-link {{ request()->routeIs('ViewMaterialorder') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
@@ -554,29 +517,35 @@
                     </li>
                     @endif
 
-
-                     <!--quotation Page  -->
-                    
-                    <li class="menu-title"><i class="ri-shopping-bag-3-line me-2 text-success"></i><span>Quotation</span></li>
+                    <!-- Quotation Page -->
+                    @if(hasPermission('Quotation', 'view'))
+                    <li class="menu-title">
+                        <i class="ri-shopping-bag-3-line me-2 text-success"></i>
+                        <span>Quotation</span>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('Addquotation','Viewquotation') ? '' : 'collapsed' }}" href="#sidebarquotation" data-bs-toggle="collapse">
-                            <i class="ri-shopping-cart-2-line"></i> <span>Quotation</span>
+                        <a class="nav-link menu-link {{ request()->routeIs('Viewquotation') ? '' : 'collapsed' }}"
+                            href="#sidebarquotation" data-bs-toggle="collapse">
+                            <i class="ri-shopping-cart-2-line"></i>
+                            <span>Quotation</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('Addquotation','Viewquotation') ? 'show' : '' }}" id="sidebarquotation">
-                            <ul class="nav nav-sm flex-column">
-
-                                 
-                                <li class="nav-item"><a href="{{ route('Addquotation') }}" class="nav-link {{ request()->routeIs('Addquotation') ? 'active' : '' }}"><i class="ri-add-line me-1"></i> Add</a></li>
-                               
-
-                                
-                                <li class="nav-item"><a href="{{ route('Viewquotation') }}" class="nav-link {{ request()->routeIs('ViewMaterialorder') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
-                               
+                        <div class="collapse menu-dropdown {{ request()->routeIs('Viewquotation') ? 'show' : '' }}"
+                            id="sidebarquotation">
+                            <ul class="nav nav-sm flex-column">                      
+                             {{-- View Permission --}}
+                                @if(hasPermission('Quotation', 'view'))
+                                <li class="nav-item">
+                                    <a href="{{ route('Viewquotation') }}"
+                                        class="nav-link {{ request()->routeIs('Viewquotation') ? 'active' : '' }}">
+                                        <i class="ri-eye-line me-1"></i> View
+                                    </a>
+                                </li>
+                                @endif
 
                             </ul>
                         </div>
                     </li>
-                    
+                    @endif
 
                     @if(hasPermission('Invoice', 'view'))
                     <!-- Invoice -->

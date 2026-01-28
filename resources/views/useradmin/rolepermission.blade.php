@@ -56,7 +56,7 @@
                                 @foreach([
                                 'Dashboard','Operator','Machine','Setting','Hsncode','MaterialType',
                                 'FinancialYear','Customer','Vendors','Projects','WorkOrders',
-                                'SetupSheet','MachineRecord','MaterialReq','MaterialOrder','Invoice','Subscription'
+                                'SetupSheet','MachineRecord','MaterialReq','MaterialOrder','Invoice','Subscription','Quotation'
                                 ] as $module)
 
                                 {{-- Hide Subscription for all roles except role 2 --}}
@@ -67,7 +67,7 @@
                                 <tr>
                                     <td>{{ $module }}</td>
 
-                                    <input type="hidden" name="permissions[{{ $module }}][]" value="">
+
 
                                     {{-- Dashboard → card-wise view permissions --}}
                                     @if($module == 'Dashboard')
@@ -109,7 +109,13 @@
         </div>
     </div>
 </div>
-
+<style>
+    .large-checkbox {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+    }
+</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>

@@ -11,9 +11,12 @@
                         <div class="card-header d-flex align-items-center">
                             <h5 class="card-title mb-0">View Vendors</h5>
                             <div class="ms-auto">
+                                @if(hasPermission('Vendors', 'add'))
                                 <a href="{{ route('AddVendor') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Vendor
                                 </a>
+                                @endif
+
                                 <a href="{{ route('trashVendor') }}" class="btn btn-warning btn-sm">
                                     View Trash
                                 </a>
@@ -35,7 +38,13 @@
                                             <th>GST.No</th>
                                             <th>Address</th>
                                             <th>Status</th>
+                                            @if(
+                                            hasPermission('Vendors', 'edit') ||
+                                            hasPermission('Vendors', 'delete')
+                                            )
                                             <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -65,7 +74,7 @@
                                                     </button>
                                                 </a>
                                                 @endif
-                                            @if(hasPermission('Vendors', 'delete'))
+                                                @if(hasPermission('Vendors', 'delete'))
                                                 <a href="{{route('deleteVendor', base64_encode($vendor->id))}}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                     <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">

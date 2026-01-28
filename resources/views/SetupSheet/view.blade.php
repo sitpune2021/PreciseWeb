@@ -13,9 +13,11 @@
 
                             <div class="ms-auto d-flex gap-2">
                                 <!-- Add WorkOrder Button -->
+                                @if(hasPermission('SetupSheet', 'add'))
                                 <a href="{{ route('AddSetupSheet') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Setup Sheets
                                 </a>
+                                @endif
 
                                 <!-- View Trash Button -->
                                 <a href="{{ route('trashSetupSheet') }}" class="btn btn-warning btn-sm">
@@ -38,7 +40,14 @@
                                             <th>Size Y</th>
                                             <th>Size Z</th>
                                             <th>Setting</th>
+                                            @if(
+                                            hasPermission('SetupSheet', 'edit') ||
+                                            hasPermission('SetupSheet', 'delete')||
+                                            hasPermission('SetupSheet', 'view')
+                                            )
                                             <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,22 +78,20 @@
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </a>
                                                     @endif
-                                                    <!-- <button type="button" class="btn btn-primary btn-icon viewSetupSheet"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#viewSetupSheetModal"
-                                                        data-sheet='@json($sheet)'>
-                                                        <i class="ri-eye-fill align-bottom"></i>
-                                                    </button> -->
+
                                                     @if(hasPermission('SetupSheet', 'delete'))
                                                     <a href="{{ route('deleteSetupSheet', base64_encode($sheet->id)) }}" class="btn btn-danger btn-icon waves-effect waves-light"
                                                         onclick="return confirm('Are you sure you want to delete this record?')">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </a>
                                                     @endif
+
+                                                    @if(hasPermission('SetupSheet', 'view'))
                                                     <button type="button" class="btn btn-warning btn-icon printSetupSheet"
                                                         data-sheet='@json($sheet)'>
                                                         <i class="fas fa-print"></i>
                                                     </button>
+                                                    @endif
 
                                                 </div>
                                             </td>

@@ -14,9 +14,12 @@
 
                             <!-- Buttons on right -->
                             <div class="d-flex gap-2">
+                                @if(hasPermission('MaterialReq', 'add'))
                                 <a href="{{ route('AddMaterialReq') }}" class="btn btn-success btn-sm">
                                     <i class="ri-add-line align-middle"></i> Add Material Req
                                 </a>
+                                @endif
+
                                 <a href="{{ route('trashMaterialReq') }}" class="btn btn-warning btn-sm">
                                     <i class="ri-delete-bin-line align-middle"></i> View Trash
                                 </a>
@@ -35,7 +38,14 @@
                                             <th>Date</th>
                                             <th>Description</th>
                                             <th>Material Type</th>
+                                            @if(
+                                            hasPermission('MaterialReq', 'edit') ||
+                                            hasPermission('MaterialReq', 'delete')||
+                                            hasPermission('MaterialReq', 'view')
+                                            )
                                             <th width="12%">Action</th>
+                                            @endif
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,6 +68,8 @@
                                                         <i class="ri-pencil-fill"></i>
                                                     </a>
                                                     @endif
+
+                                                    @if(hasPermission('MaterialReq', 'view'))
                                                     <button type="button" class="btn btn-primary btn-sm viewMaterialReqBtn"
                                                         data-customer="{{ $req->customer->code ?? 'N/A' }}"
                                                         data-code="{{ $req->code }}"
@@ -88,6 +100,8 @@
                                                         data-total_cost="{{ $req->total_cost }}">
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
+                                                    @endif
+
                                                     @if(hasPermission('MaterialReq', 'delete'))
                                                     <a href="{{ route('deleteMaterialReq', base64_encode($req->id)) }}"
                                                         onclick="return confirm('Are you sure you want to delete this record?')"
