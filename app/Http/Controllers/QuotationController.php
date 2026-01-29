@@ -33,7 +33,7 @@ class QuotationController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('quotation.add', compact('codes', 'materialtype', 'customers'));
+        return view('Quotation.add', compact('codes', 'materialtype', 'customers'));
     }
     public function storequotation(Request $request)
     {
@@ -172,7 +172,7 @@ class QuotationController extends Controller
         $codes = Customer::all();
         $materialtype = MaterialType::all();
 
-        return view('quotation.add', compact('quotation', 'codes', 'materialtype'));
+        return view('Quotation.add', compact('quotation', 'codes', 'materialtype'));
     }
     public function update(Request $request, $id)
     {
@@ -278,6 +278,6 @@ class QuotationController extends Controller
             'address'
         ]);
 
-        return view('quotation.print', compact('quotation', 'client'));
+        return view('Quotation.print', compact('quotation', 'client'));
     }
 }
