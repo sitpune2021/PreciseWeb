@@ -11,9 +11,17 @@
                     <h5 class="mb-0">{{ isset($machine) ? 'Edit Machine' : 'Add Machine' }}</h5>
                 </div>
                 <div class="card-body">
-                     @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    
+                    @if(session('success'))
+                    <div class="d-flex">
+                        <div id="successAlert"
+                            class="alert alert-success alert-dismissible fade show py-2 px-3 mb-2"
+                            style="max-width:500px;">
+                            {{ session('success') }}
+                        </div>
+                    </div>
                     @endif
+
                     <form action="{{ isset($machine) ? route('updateMachine', base64_encode($machine->id)) : route('storeMachine') }}" method="POST">
                         @csrf
                         @if(isset($machine))
@@ -68,7 +76,12 @@
                                     <th style="width: 5%;">Sr.No</th>
                                     <th style="width: 50%;">Machine Name</th>
                                     <th style="width: 15%;">Status</th>
-                                    <th style="width: 10%;">Action</th>
+                                    @if(
+                                    hasPermission('Machine', 'edit') ||
+                                    hasPermission('Machine', 'delete')
+                                    )
+                                    <th width="12%">Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,15 +109,20 @@
                                     </td>
 
                                     <td>
+                                        @if(hasPermission('Machine', 'edit'))
                                         <a href="{{ route('editMachine', base64_encode($m->id)) }}" class="btn btn-success btn-sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
+                                        @endif
+
+                                        @if(hasPermission('Machine', 'delete'))
                                         <a href="{{route('deleteMachine', base64_encode($m->id))}}"
                                             onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </button>
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty

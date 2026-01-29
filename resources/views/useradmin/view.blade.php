@@ -4,7 +4,15 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-
+            @if(session('success'))
+            <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:1055;">
+                <div id="successAlert"
+                    class="alert alert-success alert-dismissible fade show py-2 px-3 shadow-sm text-center"
+                    style="max-width:500px;">
+                    {{ session('success') }}
+                </div>
+            </div>
+            @endif
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">View Users</h5>
@@ -15,7 +23,7 @@
 
                 <div class="card-body">
                     <div class="table-responsive">
-                         <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                        <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>

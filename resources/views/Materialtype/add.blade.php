@@ -12,7 +12,13 @@
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    <div class="d-flex">
+                        <div id="successAlert"
+                            class="alert alert-success alert-dismissible fade show py-2 px-3 mb-2"
+                            style="max-width:500px;">
+                            {{ session('success') }}
+                        </div>
+                    </div>
                     @endif
                     <form action="{{ isset($materialtype) ? route('updateMaterialType', base64_encode($materialtype->id)) : route('storeMaterialType') }}" method="POST">
                         @csrf
@@ -102,7 +108,13 @@
                                     <th class="text-center">Material Gravity</th>
                                     <th class="text-center">Material Rate</th>
                                     <th style="width: 15%;">Status</th>
-                                    <th>Action</th>
+                                    @if(
+                                    hasPermission('MaterialType', 'edit') ||
+                                    hasPermission('MaterialType', 'delete')
+
+                                    )
+                                    <th width="12%">Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,7 +149,7 @@
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </a>
                                         @endif
-                                        
+
                                         @if(hasPermission('MaterialType', 'delete'))
                                         <a href="{{route('deleteMaterialType', base64_encode($m->id))}}"
                                             onclick="return confirm('Are you sure you want to delete this record?')">

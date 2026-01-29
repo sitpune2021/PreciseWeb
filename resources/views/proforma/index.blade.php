@@ -4,15 +4,12 @@
  <div class="main-content">
      <div class="page-content">
          <div class="container-fluid">
-
              <div class="row mb-3">
                  <div class="col-lg-12">
                      <div class="d-flex justify-content-between align-items-center">
                          <h5 class="mb-0">
                              <i class="me-2"></i> Proforma Invoice List
                          </h5>
-
-
                      </div>
                  </div>
              </div>
@@ -53,12 +50,15 @@
              </div>
 
              @if(session('success'))
-             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                 <strong>{{ session('success') }}</strong>
-                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+             <div class="d-flex">
+                 <div id="successAlert"
+                     class="alert alert-success alert-dismissible fade show py-2 px-3 mb-2"
+                     style="max-width:500px;">
+                     {{ session('success') }}
+                 </div>
              </div>
              @endif
-             
+
              <!-- Table Section -->
              <div class="card shadow-sm border-0">
                  <div class="card-body">

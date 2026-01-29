@@ -9,9 +9,14 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">View Clients</h5>
+
+                            <a href="{{ route('AddClient') }}" class="btn btn-success btn-sm">
+                                <i class="ri-add-line align-middle"></i> Add Client
+                            </a>
                         </div>
+
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">

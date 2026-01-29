@@ -11,9 +11,17 @@
                     <h5 class="mb-0">{{ isset($hsn) ? 'Edit HSN Code' : 'Add HSN/SAC Code' }}</h5>
                 </div>
                 <div class="card-body">
+                    
                     @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    <div class="d-flex">
+                        <div id="successAlert"
+                            class="alert alert-success alert-dismissible fade show py-2 px-3 mb-2"
+                            style="max-width:500px;">
+                            {{ session('success') }}
+                        </div>
+                    </div>
                     @endif
+
                     <form action="{{ isset($hsn) ? route('updateHsn', base64_encode($hsn->id)) : route('storeHsn') }}" method="POST">
                         @csrf
                         @if(isset($hsn))
@@ -100,7 +108,11 @@
                                     <th>IGST %</th>
                                     <th>Invoice Description</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    @if(
+                                    hasPermission('Hsncode', 'edit') ||
+                                    hasPermission('Hsncode', 'delete'))
+                                    <th width="12%">Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>

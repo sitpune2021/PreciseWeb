@@ -252,12 +252,11 @@
 
                     <li class="menu-title"><i class="ri-user-3-line me-2 text-success"></i><span>Clients</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('AddClient','ViewClient') ? '' : 'collapsed' }}" href="#sidebarClient" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewClient') ? '' : 'collapsed' }}" href="#sidebarClient" data-bs-toggle="collapse">
                             <i class="ri-user-star-line"></i> <span>Client Master</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('AddClient','ViewClient') ? 'show' : '' }}" id="sidebarClient">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewClient') ? 'show' : '' }}" id="sidebarClient">
                             <ul class="nav nav-sm flex-column">
-                                <li class="nav-item"><a href="{{ route('AddClient') }}" class="nav-link {{ request()->routeIs('AddClient') ? 'active' : '' }}"><i class="ri-user-add-line me-1"></i> Add</a></li>
                                 <li class="nav-item"><a href="{{ route('ViewClient') }}" class="nav-link {{ request()->routeIs('ViewClient') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
                             </ul>
                         </div>
@@ -383,7 +382,7 @@
                                         <i class="ri-eye-line me-1"></i> View
                                     </a>
                                 </li>
-                               @endif
+                                @endif
                             </ul>
                         </div>
                     </li>
@@ -531,8 +530,8 @@
                         </a>
                         <div class="collapse menu-dropdown {{ request()->routeIs('Viewquotation') ? 'show' : '' }}"
                             id="sidebarquotation">
-                            <ul class="nav nav-sm flex-column">                      
-                             {{-- View Permission --}}
+                            <ul class="nav nav-sm flex-column">
+                                {{-- View Permission --}}
                                 @if(hasPermission('Quotation', 'view'))
                                 <li class="nav-item">
                                     <a href="{{ route('Viewquotation') }}"
@@ -731,6 +730,18 @@
 
 
             // }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alert = document.getElementById('successAlert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    alert.classList.add('fade');
+                    alert.remove();
+                }
+            }, 5000); // 5 seconds
         });
     </script>
 

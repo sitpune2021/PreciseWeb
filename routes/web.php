@@ -270,8 +270,6 @@ Route::get( 'quotation/delete/{id}'                       , [QuotationController
 Route::put( 'quotation/update/{id}'                       , [QuotationController::class, 'update'])->name('updatequotation');
 Route::get('printquotation/{id}'                          , [QuotationController::class, 'printquotation'])->name('printquotation');
  
-
-
 });
 Route::get('/clear-app-cache', function () {
  

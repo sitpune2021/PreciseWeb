@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class QuotationController extends Controller
 {
-
-
     public function Addquotation()
     {
         $adminId = Auth::id();
@@ -37,9 +35,6 @@ class QuotationController extends Controller
 
         return view('quotation.add', compact('codes', 'materialtype', 'customers'));
     }
-
-
-    /* ================= STORE ================= */
     public function storequotation(Request $request)
     {
         $request->validate([
@@ -169,10 +164,6 @@ class QuotationController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
-
-
-
-    /* ================= EDIT ================= */
     public function editquotation($id)
     {
         $id = base64_decode($id);
@@ -183,9 +174,6 @@ class QuotationController extends Controller
 
         return view('quotation.add', compact('quotation', 'codes', 'materialtype'));
     }
-
-
-    /* ================= UPDATE ================= */
     public function update(Request $request, $id)
     {
         $id = base64_decode($id);
@@ -266,8 +254,6 @@ class QuotationController extends Controller
         }
     }
 
-
-
     public function Viewquotation()
     {
         $quotations = Quotation::with(['customer'])
@@ -275,9 +261,8 @@ class QuotationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('quotation.view', compact('quotations'));
+        return view('Quotation.view', compact('quotations'));     
     }
-
 
     public function printquotation($id)
     {

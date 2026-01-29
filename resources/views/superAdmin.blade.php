@@ -10,10 +10,7 @@ use App\Models\MaterialType;
 use App\Models\FinancialYear;
 use App\Models\Vendor;
 use App\Models\WorkOrder;
-use App\Models\SetupSheet;
 use App\Models\MachineRecord;
-use App\Models\MaterialReq;
-use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -33,8 +30,6 @@ $currentMonthClients = Client::whereMonth('created_at', Carbon::now()->month)
 ->whereYear('created_at', Carbon::now()->year)
 ->count();
 $currentMonthPercentage = $currentMonthClients; // count = percentage
-
-
 
 
 // Renewal Clients
@@ -154,8 +149,6 @@ for ($m = 1; $m <= 12; $m++) {
     ->take(5)
     ->get();
 
-
-
     @endphp
 
     @extends('layouts.header')
@@ -180,7 +173,6 @@ for ($m = 1; $m <= 12; $m++) {
 
         <div class="page-content">
             <div class="container-fluid">
-
                 <!-- start page title -->
                 <div class="row">
                     <div class="col-12">
@@ -258,7 +250,7 @@ for ($m = 1; $m <= 12; $m++) {
                 <!--------------------- project page ---------------------------------->
                 @if(hasPermission('Dashboard', 'view_project'))
                 <div class="col-xl-12">
-                    <div class="card shadow-lg border-0 rounded-4 h-100">
+                    <div class="card shadow-lg border-0  h-100">
                         <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
                             <h4 class="card-title mb-0">
                                 <i class="ri-briefcase-4-line me-2 text-primary"></i> Latest Projects
@@ -336,13 +328,10 @@ for ($m = 1; $m <= 12; $m++) {
                 </div>
                 @endif
                 <!-- project end -->
-
-                <!-- --------------Work Orders --------------->
-
-                <!-- ---------------- Work Orders Table (Similar to Projects Table) -------------- -->
+                <!-- ---------------- Work Orders Table -------------- -->
                 @if(hasPermission('Dashboard', 'view_work_orders'))
                 <div class="col-xl-12 mt-4">
-                    <div class="card shadow-lg border-0 rounded-4 h-100">
+                    <div class="card shadow-lg border-0  h-100">
                         <div class="card-header d-flex justify-content-between align-items-center bg-gradient bg-light border-0 rounded-top-4">
                             <h4 class="card-title mb-0">
                                 <i class="ri-file-list-3-line me-2 text-primary"></i> Latest Work Orders
@@ -431,7 +420,8 @@ for ($m = 1; $m <= 12; $m++) {
                     </div>
                 </div>
                 @endif
-                <!-- ====== Latest Machine Records (Big Table) ====== -->
+
+                <!-- ====== Latest Machine Records ====== -->
                 @if(hasPermission('Dashboard', 'view_machinerecord'))
                 <div class="col-xxl-8">
                     <div class="card">

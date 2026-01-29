@@ -12,7 +12,13 @@
                 <div class="card-body">
 
                     @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    <div class="d-flex">
+                        <div id="successAlert"
+                            class="alert alert-success alert-dismissible fade show py-2 px-3 mb-2"
+                            style="max-width:500px;">
+                            {{ session('success') }}
+                        </div>
+                    </div>
                     @endif
 
                     <form method="POST" action="{{ route('Store') }}">

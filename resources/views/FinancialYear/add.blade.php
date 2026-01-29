@@ -11,8 +11,15 @@
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    <div class="d-flex">
+                        <div id="successAlert"
+                            class="alert alert-success alert-dismissible fade show py-2 px-3 mb-2"
+                            style="max-width:500px;">
+                            {{ session('success') }}
+                        </div>
+                    </div>
                     @endif
+                    
                     <form action="{{ isset($year) ? route('UpdateFinancialYear', base64_encode($year->id)) : route('StoreFinancialYear') }}" method="POST">
                         @csrf
                         @if(isset($year))
@@ -64,7 +71,12 @@
                                     <th style="width: 5%;">Sr.No</th>
                                     <th style="width: 50%;">Year</th>
                                     <th style="width: 15%;">Status</th>
-                                    <th style="width: 10%;">Action</th>
+                                    @if(
+                                    hasPermission('FinancialYear', 'edit') ||
+                                    hasPermission('FinancialYear', 'delete')
+                                    )
+                                    <th width="12%">Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>

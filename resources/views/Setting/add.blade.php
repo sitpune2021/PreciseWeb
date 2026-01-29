@@ -12,7 +12,13 @@
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    <div class="d-flex">
+                        <div id="successAlert"
+                            class="alert alert-success alert-dismissible fade show py-2 px-3 mb-2"
+                            style="max-width:500px;">
+                            {{ session('success') }}
+                        </div>
+                    </div>
                     @endif
                     <form action="{{ isset($setting) ? route('updateSetting', base64_encode($setting->id)) : route('storeSetting') }}" method="POST">
                         @csrf
@@ -70,7 +76,11 @@
                                 <th style="width: 5%;">Sr.No</th>
                                 <th style="width: 60%; text-align: center;">Setting Name</th>
                                 <th style="width: 15%;">Status</th>
-                                <th style="width: 10%;">Action</th>
+                                @if(
+                                hasPermission('Setting', 'edit') ||
+                                hasPermission('Setting', 'delete'))
+                                <th width="12%">Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
