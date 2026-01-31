@@ -210,13 +210,30 @@
         <tr>
             <td class="header-left" width="50%">
                 <div class="company-box">
-                    <div class="company-logo"> @if(isset($c) && $c->logo) <img src="{{ asset($c->logo) }}" width="90" height="90"> @else <img src="{{ asset('uploads/default-logo.png') }}" width="90" height="90"> @endif </div>
+                    <div class="company-logo">
+                        <img
+                            src="{{ 
+                    $adminSetting && $adminSetting->logo
+                        ? asset('uploads/settings/' . $adminSetting->logo)
+                        : asset('uploads/default-logo.png')
+                }}"
+                            width="90"
+                            height="90"
+                            style="object-fit:contain;"
+                            alt="Company Logo">
+                    </div>
+
                     <div>
                         <h3><strong>{{ $c->name ?? 'Company Name' }}</strong></h3>
-                        <p class="small"> {{ $c->address ?? 'Company Address' }}<br> Phone: {{ $c->phone_no ?? '-' }}<br> E-mail: {{ $c->email_id ?? '-' }} </p>
+                        <p class="small">
+                            {{ $c->address ?? 'Company Address' }} <br>
+                            Phone: {{ $c->phone_no ?? '-' }} <br>
+                            E-mail: {{ $c->email_id ?? '-' }}
+                        </p>
                     </div>
                 </div>
             </td>
+
             <td width="50%">
                 <table style="width:100%; border-collapse: collapse; font-size:12px;">
                     <tr>

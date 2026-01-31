@@ -165,17 +165,17 @@ class ProformaInvoiceController extends Controller
     }
 
     public function printInvoice($id)
-    {
-        $invoice = ProformaInvoice::with([
-            'items.workOrder.project'
-        ])->findOrFail($id);
+{
+    $invoice = ProformaInvoice::with([
+        'items.workOrder.project'
+    ])->findOrFail($id);
 
-        $adminSetting = AdminSetting::first();
+    $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
+    $c = Client::where('login_id', Auth::id())->first();
 
-        $c = Client::where('login_id', Auth::id())->first();
+    return view('proforma.print', compact('invoice', 'c', 'adminSetting'));
+}
 
-        return view('proforma.print', compact('invoice', 'c', 'adminSetting'));
-    }
 
     public function getHsnDetails($id)
     {

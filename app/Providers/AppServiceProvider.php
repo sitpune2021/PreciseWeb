@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\AdminSetting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Client;
@@ -36,6 +37,15 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('clientData', $client);
+
+            View::composer('*', function ($view) {
+                $view->with(
+                    'adminSetting',
+                    Auth::check()
+                        ? AdminSetting::where('admin_id', Auth::id())->first()
+                        : null
+                );
+            });
         });
 
 

@@ -126,7 +126,12 @@
                     <div class="dropdown ms-sm-3 header-item topbar-user">
                         <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="d-flex align-items-center">
-                                <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
+                                <img
+                                    class="rounded-circle header-profile-user"
+                                    src="{{ $adminSetting && $adminSetting->logo
+                                      ? asset('uploads/settings/' . $adminSetting->logo)
+                                      : asset('assets/images/users/avatar-1.jpg') }}"
+                                    alt="Header Avatar">
 
                                 <span class="text-start ms-xl-2">
                                     <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
@@ -205,7 +210,10 @@
         </div>
     </header>
 
-    <!-- /.modal -->
+    @php
+    use App\Models\AdminSetting;
+    $adminSetting = AdminSetting::where('admin_id', auth()->id())->first();
+    @endphp
     <!-- ========== App Menu ========== -->
     <div class="app-menu navbar-menu">
         <!-- LOGO -->
@@ -224,12 +232,32 @@
                 <span class="logo-sm">
                     <img src="" alt="" height="22">
                 </span>
+                <!-- <span class="logo-sm">
+                    <img
+                        src="{{ $adminSetting && $adminSetting->logo 
+                    ? asset('uploads/settings/' . $adminSetting->logo) 
+                    : asset('assets/images/default-logo.png') }}"
+                        alt="Logo"
+                        height="15">
+                </span> -->
 
                 <!-- sidebar logo -->
+
+                   <!-- sidebar logo -->
                 <span class="logo-lg">
                     <img src=" " alt="" height="100">
                 </span>
+                <!-- <span class="logo-lg">
+                    <img
+                        src="{{ $adminSetting && $adminSetting->logo 
+                    ? asset('uploads/settings/' . $adminSetting->logo) 
+                    : asset('assets/images/default-logo.png') }}"
+                        alt="Logo"
+                        height="50">
+                </span> -->
             </a>
+
+
             <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
                 <i class="ri-record-circle-line"></i>
             </button>
