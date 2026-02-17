@@ -39,7 +39,7 @@
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
-                                        <tr>
+                                        <tr class="table-light">
                                             <th>Sr No.</th>
                                             <th>Image</th>
                                             <th>Part Code</th>

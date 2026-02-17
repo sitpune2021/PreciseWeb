@@ -53,9 +53,8 @@
                                                  </span>
                                              </td>
 
-                                             <td>{{ \Carbon\Carbon::parse($pay->created_at)->format('d M Y, h:i A') }}</td>
+                                             <td>{{ \Carbon\Carbon::parse($pay->created_at)->format('d M Y') }}</td>
                                          </tr>
-
                                          @empty
                                          <tr>
                                              <td colspan="10" class="text-center text-muted">No payments found.</td>

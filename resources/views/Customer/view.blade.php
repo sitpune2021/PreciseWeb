@@ -53,7 +53,7 @@
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
-                                        <tr>
+                                        <tr class="table-light">
                                             <th>Sr.No</th>
                                             <th>Customer Name</th>
                                             <th>Email Id</th>
@@ -93,7 +93,7 @@
                                                             name="status"
                                                             value="1"
                                                             onchange="this.form.submit()"
-                                                            {{ $c->status == 1 ? 'checked' : '' }}>
+                                                           {{ $p->is_active == 1 ? 'checked' : '' }}>
                                                     </div>
                                                 </form>
                                             </td>

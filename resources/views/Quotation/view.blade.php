@@ -19,10 +19,6 @@
                                     <i class="ri-add-line align-middle"></i> Add Quotation
                                 </a>
                                 @endif
-
-                                <a href="{{ route('trashMaterialReq') }}" class="btn btn-warning btn-sm">
-                                    <i class="ri-delete-bin-line align-middle"></i> View Trash
-                                </a>
                             </div>
                         </div>
 
@@ -30,8 +26,9 @@
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
-                                        <tr>
+                                        <tr class="table-light">
                                             <th>Sr.No</th>
+                                            <th>Quotation No</th>
                                             <th>Customer<br>Code</th>
                                             <th>Project Name</th>
                                             <th>Date</th>
@@ -50,6 +47,7 @@
                                         @foreach($quotations as $index => $q)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
+                                            <td>{{ $q->quotation_no }}</td>
                                             <td>{{ $q->customer->code ?? '-' }}</td>
                                             <td>{{ $q->project_name }}</td>
                                             <td>{{ \Carbon\Carbon::parse($q->date)->format('d-m-Y') }}</td>
@@ -57,12 +55,12 @@
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                                    @if(hasPermission('Quotation', 'edit'))
+                                                    <!-- @if(hasPermission('Quotation', 'edit'))
                                                     <a href="{{ route('editquotation', base64_encode($q->id)) }}"
                                                         class="btn btn-success btn-icon">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </a>
-                                                    @endif
+                                                    @endif -->
 
                                                     @if(hasPermission('Quotation', 'delete'))
                                                     <a href="{{ route('deletequotation', base64_encode($q->id)) }}"
@@ -74,10 +72,12 @@
 
                                                     @if(hasPermission('Quotation', 'view'))
                                                     <a href="{{ route('printquotation', base64_encode($q->id)) }}"
-                                                        target="_blank"
                                                         onclick="return confirm('Are you sure you want to print quotation?');"
-                                                        class="btn btn-info btn-sm   px-3">
-                                                        <i class="fas fa-print"></i>
+                                                        class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center"
+                                                        style="width:38px; height:38px;">
+
+                                                        <i class="fas fa-print fa-lg"></i>
+
                                                     </a>
                                                     @endif
                                                 </div>

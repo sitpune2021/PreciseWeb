@@ -21,7 +21,7 @@ class MaterialReqController extends Controller
             ->select('id', 'code', 'name', 'customer_srno')
             ->orderBy('id', 'desc')
             ->get();
-          
+
         $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
             ->orderBy('name')
@@ -32,7 +32,6 @@ class MaterialReqController extends Controller
 
         return view('MaterialReq.add', compact('codes', 'materialtype', 'customers'));
     }
-
     public function storeMaterialReq(Request $request)
     {
         $validated = $request->validate([
@@ -105,18 +104,15 @@ class MaterialReqController extends Controller
         return redirect()->route('ViewMaterialReq')
             ->with('success', 'Material Requirement Added Successfully!');
     }
+    public function ViewMaterialReq()
+    {
+        $materialReq = MaterialReq::with(['materialType', 'customer'])
+            ->where('admin_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-   public function ViewMaterialReq()
-{
-    $materialReq = MaterialReq::with(['materialType', 'customer'])
-        ->where('admin_id', Auth::id())
-        ->orderBy('created_at', 'desc')  
-        ->get();
-
-    return view('MaterialReq.view', compact('materialReq'));
-}
-
-
+        return view('MaterialReq.view', compact('materialReq'));
+    }
     public function editMaterialReq(string $encryptedId)
     {
         $adminId = Auth::id();
@@ -132,7 +128,6 @@ class MaterialReqController extends Controller
 
         return view('MaterialReq.add', compact('codes', 'materialtype', 'materialReq'));
     }
-
     public function updateMaterialReq(Request $request, $id)
     {
         $id = base64_decode($id);
@@ -185,7 +180,6 @@ class MaterialReqController extends Controller
 
         return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement deleted successfully.');
     }
-
     public function trash()
     {
         $trashedMaterialReq = MaterialReq::onlyTrashed()
@@ -195,7 +189,6 @@ class MaterialReqController extends Controller
         $materialReq = MaterialReq::all();
         return view('MaterialReq.trash', compact('trashedMaterialReq', 'materialReq'));
     }
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -217,7 +210,6 @@ class MaterialReqController extends Controller
         return redirect()->route('ViewMaterialReq')
             ->with('success', "Material Requirement '{$material->code}' restored successfully.");
     }
-
     public function getMaterial($id)
     {
         $material = MaterialType::findOrFail($id);
@@ -227,7 +219,6 @@ class MaterialReqController extends Controller
             'rate'    => $material->material_rate,
         ]);
     }
-
     public function getWorkOrdersByCustomer($Id)
     {
         $adminId = Auth::id();

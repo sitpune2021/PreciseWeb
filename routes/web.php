@@ -21,6 +21,7 @@ use App\Http\Controllers\MaterialTypeController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentPlanController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\ProformaInvoiceController;
@@ -236,10 +237,25 @@ Route::get('/get-role-permissions/{id}'         , [RolePermissionController::cla
 Route::get( 'adminsetting/add'                  , [AdminSettingController::class, 'EditSetting'])->name('Setting');
 Route::post('adminSetting/Update'               , [AdminSettingController::class, 'UpdateAdminSetting'])->name('UpdateAdminSetting');
 
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+Route::get('plans'                              , [PaymentPlanController::class, 'index'])->name('admin.plans');
+Route::post('plans/store'                       , [PaymentPlanController::class, 'store'])->name('admin.plans.store');
+Route::get('plans/edit/{id}'                    , [PaymentPlanController::class, 'edit'])->name('admin.plans.edit');
+Route::put('plans/update/{id}'                  , [PaymentPlanController::class, 'update'])->name('admin.plans.update');
+Route::delete('plans/delete/{id}'               , [PaymentPlanController::class, 'destroy'])->name('admin.plans.delete');
+Route::post('/admin/plans/toggle', [PaymentPlanController::class, 'toggleStatus'])
+    ->name('admin.plans.toggle');
+
+});
+
 //Subcreation Plan
 Route::get( 'payment'                           , [PaymentController::class, 'Payment'])->name('Payment');
 Route::post('razorpay/order'                    , [PaymentController::class, 'order'])->name('razorpay.order');
-Route::post('payment/success'                   , [PaymentController::class, 'success'])->name('razorpay.success');
+// Route::post('payment/success'                   , [PaymentController::class, 'success'])->name('razorpay.success');
+Route::post('/razorpay/success'                   , [PaymentController::class, 'success'])->name('razorpay.success');
+
+Route::get('/payment/failed'                    , [PaymentController::class, 'failed'])->name('payment.failed');
 Route::get( 'Payment/view'                      , [PaymentController::class, 'PaymentList'])->name('PaymentList');
 Route::post('payment/verify'                    , [PaymentController::class, 'verify'])->name('payment.verify');
 Route::get( 'payment/view'                      , [PaymentController::class, 'AllPaymentList'])->name('AllPaymentList');
@@ -260,14 +276,14 @@ Route::get( 'proforma/convert/{id}'                       , [ProformaInvoiceCont
 Route::get( 'proforma/edit/{id}'                          , [ProformaInvoiceController::class, 'proformaEdit'])->name('proforma.edit');
 Route::post('proforma/update/{id}'                        , [ProformaInvoiceController::class, 'proformaUpdate'])->name('proformaUpdate');
 
-
 // Quotation Routes
 Route::get( 'quotation/add'                               , [QuotationController::class, 'Addquotation'])->name('Addquotation');
 Route::get( 'quotation/view'                              , [QuotationController::class, 'Viewquotation'])->name('Viewquotation');
 Route::post('quotation/store'                             , [QuotationController::class, 'storequotation'])->name('storequotation');
 Route::get( 'quotation/edit/{id}'                         , [QuotationController::class, 'editquotation'])->name('editquotation');
 Route::get( 'quotation/delete/{id}'                       , [QuotationController::class, 'destroy'])->name('deletequotation');
-Route::put( 'quotation/update/{id}'                       , [QuotationController::class, 'update'])->name('updatequotation');
+// Route::put( 'quotation/update/{id}'                       , [QuotationController::class, 'update'])->name('updatequotation');
+Route::put('quotation/update/{id}'                        , [QuotationController::class, 'update'])->name('updatequotation');
 Route::get('printquotation/{id}'                          , [QuotationController::class, 'printquotation'])->name('printquotation');
  
 });

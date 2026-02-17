@@ -18,7 +18,6 @@ class OperatorController extends Controller
 
         return view('Operator.add', compact('operators'));
     }
-
     public function storeOperator(Request $request)
     {
         $request->validate([
@@ -69,7 +68,6 @@ class OperatorController extends Controller
 
         return view('Operator.add', compact('operator', 'operators'));
     }
-
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -113,7 +111,6 @@ class OperatorController extends Controller
         return redirect()->route('AddOperator')
             ->with('success', "Operator '{$operator->operator_name}' updated and activated successfully.");
     }
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -127,7 +124,6 @@ class OperatorController extends Controller
 
         return redirect()->route('AddOperator')->with('success', 'Operator deleted successfully.');
     }
-
     public function updateOperatorStatus(Request $request)
     {
         $operator = Operator::where('id', $request->id)
@@ -139,7 +135,6 @@ class OperatorController extends Controller
 
         return back()->with('success', 'Status updated!');
     }
-
     public function trash()
     {
         $trashedOperators = Operator::onlyTrashed()
@@ -151,7 +146,6 @@ class OperatorController extends Controller
 
         return view('Operator.trash', compact('trashedOperators', 'Operators'));
     }
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

@@ -98,7 +98,6 @@ class WorkOrderController extends Controller
         return redirect()->route('ViewWorkOrder')->with('success', 'Work Orders added successfully!');
     }
 
-
     public function edit(string $encryptedId)
     {
         $adminId = Auth::id();

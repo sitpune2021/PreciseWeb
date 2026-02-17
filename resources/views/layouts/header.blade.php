@@ -243,7 +243,7 @@
 
                 <!-- sidebar logo -->
 
-                   <!-- sidebar logo -->
+                <!-- sidebar logo -->
                 <span class="logo-lg">
                     <img src=" " alt="" height="100">
                 </span>
@@ -291,6 +291,14 @@
                     </li>
 
                     <li class="menu-title"><i class="ri-user-3-line me-2 text-success"></i><span>Subscription List</span></li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.plans') }}"
+                            class="nav-link {{ request()->routeIs('admin.plans','admin.plans.*') ? 'active' : '' }}">
+                            <i class="ri-vip-crown-2-line me-1"></i> Plan Management
+                        </a>
+                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('SubList') ? '' : 'collapsed' }}" href="#sidebarlist" data-bs-toggle="collapse">
                             <i class="ri-user-star-line"></i> <span>Subscription List</span>
@@ -303,6 +311,7 @@
                             </ul>
                         </div>
                     </li>
+
                     @endif
 
                     {{-- Masters Menu (Only if ANY master permission exists) --}}
@@ -544,36 +553,6 @@
                     </li>
                     @endif
 
-                    <!-- Quotation Page -->
-                    @if(hasPermission('Quotation', 'view'))
-                    <li class="menu-title">
-                        <i class="ri-shopping-bag-3-line me-2 text-success"></i>
-                        <span>Quotation</span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('Viewquotation') ? '' : 'collapsed' }}"
-                            href="#sidebarquotation" data-bs-toggle="collapse">
-                            <i class="ri-shopping-cart-2-line"></i>
-                            <span>Quotation</span>
-                        </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('Viewquotation') ? 'show' : '' }}"
-                            id="sidebarquotation">
-                            <ul class="nav nav-sm flex-column">
-                                {{-- View Permission --}}
-                                @if(hasPermission('Quotation', 'view'))
-                                <li class="nav-item">
-                                    <a href="{{ route('Viewquotation') }}"
-                                        class="nav-link {{ request()->routeIs('Viewquotation') ? 'active' : '' }}">
-                                        <i class="ri-eye-line me-1"></i> View
-                                    </a>
-                                </li>
-                                @endif
-
-                            </ul>
-                        </div>
-                    </li>
-                    @endif
-
                     @if(hasPermission('Invoice', 'view'))
                     <!-- Invoice -->
                     <li class="menu-title">
@@ -610,6 +589,36 @@
                                         <i class="ri-file-list-3-line me-1"></i>Invoice List
                                     </a>
                                 </li>
+
+                            </ul>
+                        </div>
+                    </li>
+                    @endif
+
+                    <!-- Quotation Page -->
+                    @if(hasPermission('Quotation', 'view'))
+                    <li class="menu-title">
+                        <i class="ri-shopping-bag-3-line me-2 text-success"></i>
+                        <span>Quotation</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('Viewquotation') ? '' : 'collapsed' }}"
+                            href="#sidebarquotation" data-bs-toggle="collapse">
+                            <i class="ri-shopping-cart-2-line"></i>
+                            <span>Quotation</span>
+                        </a>
+                        <div class="collapse menu-dropdown {{ request()->routeIs('Viewquotation') ? 'show' : '' }}"
+                            id="sidebarquotation">
+                            <ul class="nav nav-sm flex-column">
+                                {{-- View Permission --}}
+                                @if(hasPermission('Quotation', 'view'))
+                                <li class="nav-item">
+                                    <a href="{{ route('Viewquotation') }}"
+                                        class="nav-link {{ request()->routeIs('Viewquotation') ? 'active' : '' }}">
+                                        <i class="ri-eye-line me-1"></i> View
+                                    </a>
+                                </li>
+                                @endif
 
                             </ul>
                         </div>
@@ -672,26 +681,7 @@
     <script src="{{asset('assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
     <script src="{{asset('assets/js/plugins.js')}}"></script>
 
-    @if(session('plan_alert'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- <script>
-        Swal.fire({
-            icon: 'warning', // warning icon for plan alerts
-            title: 'Warning!',
-            text: "{{ session('plan_alert') }}",
-            width: 350,
-            padding: '1rem',
-            timer: 8000,
-            timerProgressBar: true,
-            showConfirmButton: true,
-            customClass: {
-                popup: 'swal2-popup-small'
-            }
-        });
-
-      
-    </script> -->
-    @endif
+   
 
     <!-- gridjs js -->
     <script src="{{asset('assets/libs/gridjs/gridjs.umd.js')}}"></script>
@@ -769,7 +759,7 @@
                     alert.classList.add('fade');
                     alert.remove();
                 }
-            }, 5000); // 5 seconds
+            }, 5000);
         });
     </script>
 

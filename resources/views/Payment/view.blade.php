@@ -9,9 +9,18 @@
              <div class="row">
                  <div class="col-lg-12">
                      <div class="card">
-                         <div class="card-header">
+                         <div class="card-header d-flex align-items-center">
+
                              <h5 class="card-title mb-0">Subscription Plans List</h5>
+
+                             <div class="ms-auto">
+                                 <a href="{{ route('Payment') }}" class="btn btn-success btn-sm">
+                                     <i class="ri-add-line align-middle"></i> Add Payment Plan
+                                 </a>
+                             </div>
+
                          </div>
+
                          <div class="card-body">
                              <div class="table-responsive">
                                  <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -53,7 +62,7 @@
                                                  </span>
                                              </td>
 
-                                             <td>{{ \Carbon\Carbon::parse($pay->created_at)->format('d M Y, h:i A') }}</td>
+                                             <td>{{ ($pay->created_at)->format('d M Y') }}</td>
                                          </tr>
 
                                          @empty

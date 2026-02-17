@@ -19,9 +19,9 @@
                             <div class="col-md-3">
                                 <div class="plan-card text-center"
                                     data-id="{{ $plan->id }}"
-                                    data-plan="{{ $plan->name }}"
+                                    data-plan="{{ $plan->title }}"
                                     data-price="{{ $plan->price }}"
-                                    data-period="{{ $plan->period }}"
+                                    data-days="{{ $plan->days }}"
                                     data-short="{{ $plan->short_text }}">
 
                                     <h6 class="fw-bold mb-1">{{ $plan->title }}</h6>
@@ -55,8 +55,6 @@
                                         </svg>
                                         Select Plan
                                     </button>
-
-
                                     @endif
                                 </div>
                             </div>
@@ -67,7 +65,6 @@
             </div>
             
             <form id="planConfirmForm" method="POST" action="{{ route('razorpay.order') }}">
-
                 @csrf
                 <div class="modal fade" id="planModal" tabindex="-1">
                     <div class="modal-dialog">
@@ -103,7 +100,7 @@
                                                     <th class="text-start">Period</th>
                                                     <td class="text-end"><span id="modalPlanPeriod"></span></td>
                                                 </tr>
-                                                <tr class="card__list_item">
+                                                <tr class="card__list_item">    
                                                     <th class="text-start">Expiry Date</th>
                                                     <td class="text-end"><span id="modalPlanExpiry"></span></td>
                                                 </tr>

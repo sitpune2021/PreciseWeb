@@ -9,13 +9,11 @@
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
 
-                            @if(isset($vendor))
                             <!-- Back Button ONLY on Edit -->
                             <a href="{{ route('ViewVendor') }}" class="btn btn-sm btn-outline-success me-2">
                                 ← Back
                             </a>
-                            @endif
-
+                 
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($vendor) ? 'Edit Vendor' : 'Add Vendor' }}
                             </h4>
@@ -125,9 +123,6 @@
                                                 <input type="hidden" name="status" value="Active"> <!-- Form value -->
                                             </div>
                                         </div>
-
-
-
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <label for="address" class="form-label">Address <span class="mandatory">*</span></label>

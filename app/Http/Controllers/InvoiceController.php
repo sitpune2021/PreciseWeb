@@ -43,7 +43,6 @@ class InvoiceController extends Controller
 
         return view('invoice.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
-
     public function view(Request $request)
     {
         $adminId = Auth::id();
@@ -71,7 +70,6 @@ class InvoiceController extends Controller
 
         return view('invoice.view', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
-
     public function create()
     {
         $adminId = Auth::id();
@@ -93,7 +91,6 @@ class InvoiceController extends Controller
 
         return view('invoice.add', compact('customers', 'hsncodes', 'workOrders', 'adminSetting'));
     }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -183,7 +180,6 @@ class InvoiceController extends Controller
 
         return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
-
     public function printInvoice($id)
     {
         $invoice = Invoice::with('items')->findOrFail($id);
@@ -199,7 +195,6 @@ class InvoiceController extends Controller
         ]);
         return view('invoice.print', compact('invoice', 'c', 'adminSetting'));
     }
-
     public function proprint($id)
     {
         $invoice = Invoice::with('items')->findOrFail($id);
@@ -217,7 +212,6 @@ class InvoiceController extends Controller
 
         return view('invoice.proprint', compact('invoice', 'c', 'adminSetting'));
     }
-
     public function getHsnDetails($id)
     {
         $hsn_code = Hsncode::where('id', $id)
@@ -234,7 +228,6 @@ class InvoiceController extends Controller
         }
         return response()->json(['error' => 'Not Found'], 404);
     }
-
     public function getMachineRecords($customer_id)
     {
         $adminId = Auth::id();

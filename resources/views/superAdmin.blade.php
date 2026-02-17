@@ -525,5 +525,22 @@ for ($m = 1; $m <= 12; $m++) {
                 </div>
             </footer>
         </div>
-
+        <!-- @if(session('plan_alert'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'warning', // warning icon for plan alerts
+                title: 'Warning!',
+                text: "{{ session('plan_alert') }}",
+                width: 350,
+                padding: '1rem',
+                timer: 8000,
+                timerProgressBar: true,
+                showConfirmButton: true,
+                customClass: {
+                    popup: 'swal2-popup-small'
+                }
+            });
+        </script>
+        @endif -->
         @endsection

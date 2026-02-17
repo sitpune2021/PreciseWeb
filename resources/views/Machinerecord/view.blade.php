@@ -37,7 +37,7 @@
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered table-sm" style="width:100%">
                                     <thead>
-                                        <tr>
+                                        <tr class="table-light">
                                             <th>Sr.No</th>
                                             <th>Part No</th>
                                             <!-- <th>Customer Code</th> -->

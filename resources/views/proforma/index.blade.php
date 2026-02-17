@@ -96,7 +96,7 @@
                                                  class="btn btn-outline-primary btn-sm rounded-pill px-3">
                                                  <i class="fas fa-print me-1"></i>
                                              </a>
-
+                                             
                                              <!-- Edit -->
                                              <a href="{{ route('proforma.edit', base64_encode($invoice->id)) }}"
                                                  class="btn btn-outline-warning btn-sm rounded-pill px-3">

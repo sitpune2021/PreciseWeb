@@ -18,7 +18,6 @@ class MaterialTypeController extends Controller
 
         return view('Materialtype.add', compact('materialtypes'));
     }
-
     public function storeMaterialType(Request $request)
     {
         $request->validate([
@@ -55,7 +54,6 @@ class MaterialTypeController extends Controller
 
         return redirect()->route('AddMaterialType')->with('success', 'Material Type added successfully');
     }
-
     public function editMaterialType(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -70,7 +68,6 @@ class MaterialTypeController extends Controller
             ->get();
         return view('Materialtype.add', compact('materialtypes', 'materialtype'));
     }
-
     public function updateMaterialType(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -115,7 +112,6 @@ class MaterialTypeController extends Controller
         return redirect()->route('AddMaterialType')
             ->with('success', 'Material Type updated successfully.');
     }
-
     public function updateMaterialStatus(Request $request)
     {
 
@@ -129,7 +125,6 @@ class MaterialTypeController extends Controller
 
         return back()->with('success', 'Status updated!');
     }
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -145,7 +140,6 @@ class MaterialTypeController extends Controller
         return redirect()->route('AddMaterialType')
             ->with('success', 'Material Type deleted successfully.');
     }
-
     public function trash()
     {
 
@@ -161,7 +155,6 @@ class MaterialTypeController extends Controller
 
         return view('Materialtype.trash', compact('trashedmaterialtypes', 'materialtypes'));
     }
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

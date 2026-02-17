@@ -1,29 +1,23 @@
 @extends('layouts.header')
 @section('content')
-
 <div class="main-content">
-
     <div class="page-content">
         <div class="container-fluid">
-
             <div class="row">
                 <div class="col-xxl-12">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
 
-                            @if(isset($customer))
                             <!-- Back Button ONLY on Edit -->
                             <a href="{{ route('ViewCustomer') }}" class="btn btn-sm btn-outline-success me-2">
                                 ← Back
                             </a>
-                            @endif
 
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($customer) ? 'Edit Customer' : 'Add Customer' }}
                             </h4>
 
                         </div>
-
                         <div class="card-body">
                             @if(session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>

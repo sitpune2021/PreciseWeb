@@ -24,9 +24,6 @@ class UserAdminController extends Controller
 
         return view('useradmin.view', compact('users'));
     }
-
-
-
     public function AddUserAdmin()
     {
         $mode = 'add';
@@ -162,4 +159,5 @@ class UserAdminController extends Controller
             'permissions' => $rolePermission ? $rolePermission->permissions : []
         ]);
     }
+
 }

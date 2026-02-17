@@ -17,88 +17,122 @@ class PaymentController extends Controller
     public function Payment()
     {
         $client = Client::with('plan')->where('login_id', Auth::id())->first();
-        $plans = PaymentPlan::all();
-
-
+        $plans = PaymentPlan::where('is_active', 1)->get();
         return view('Payment.renew', compact('plans', 'client'));
     }
-
     public function order(Request $request)
     {
+        $request->validate([
+            'planId' => 'required|exists:payment_plan,id'
+        ]);
+        $plan = PaymentPlan::where('id', $request->planId)
+            ->where('is_active', 1)
+            ->firstOrFail();
+        $basePrice = $plan->price;
+        $gstAmount = round(($basePrice * $plan->gst) / 100);
+        $totalAmount = $basePrice + $gstAmount;
 
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
-        $price = $request->price ?? 1;
-        $priceWithGST = round($price); // 18% GST
 
         $razorpayOrder = $api->order->create([
             'receipt' => 'order_' . time(),
-            'amount' => $priceWithGST * 100,
+            'amount' => $totalAmount * 100,
             'currency' => 'INR'
         ]);
 
         $order = Order::create([
             'user_id' => Auth::id(),
-            'plan_id' => $request->planId ?? null,
+            'plan_id' => $plan->id,
+            'plan_title' => $plan->title,
+            'plan_days' => $plan->days,
+            'gst_percentage' => $plan->gst,
             'razorpay_order_id' => $razorpayOrder['id'],
-            'amount' => $priceWithGST,
+            'amount' => $totalAmount,
             'payment_status' => 'pending',
-            'plan_status' => '0'
+            'plan_status' => 0
         ]);
 
         return view('checkout', [
             'orderId' => $razorpayOrder['id'],
-            'amount' => $razorpayOrder['amount'],
+            'amount' => $totalAmount * 100,
             'razorpayKey' => env('RAZORPAY_KEY'),
-            'plan_id' => $request->planId
+            'plan_id' => $plan->id
         ]);
     }
-
     public function success(Request $request)
     {
-        $client = Client::where('login_id', Auth::id())->first();
-
-        $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
-        $plan  = PaymentPlan::findOrFail($order->plan_id);
-
-        $planDays = $plan->days;
-
-        if (!empty($client->plan_expiry) && Carbon::parse($client->plan_expiry)->isFuture()) {
-
-            $expiry = Carbon::parse($client->plan_expiry)->addDays($planDays);
-        } else {
-
-            $expiry = Carbon::now()->addDays($planDays);
-        }
-        Order::where('user_id', Auth::id())->update(['plan_status' => '0']);
-
-        $order->update([
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_signature'  => $request->razorpay_signature,
-            'payment_status'      => 'completed',
-            'plan_status'         => '1'
+        $request->validate([
+            'razorpay_order_id' => 'required',
+            'razorpay_payment_id' => 'required',
+            'razorpay_signature' => 'required'
         ]);
 
-        if ($plan->short_text === 'trial') {
-            if ($client->is_trial_used == 1) {
-                return back()->with('error', 'Trial plan can be used only once.');
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+
+        try {
+            $api->utility->verifyPaymentSignature([
+                'razorpay_order_id' => $request->razorpay_order_id,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature' => $request->razorpay_signature
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('payment.failed')
+                ->with('error', 'Payment verification failed');
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $order = Order::where('razorpay_order_id', $request->razorpay_order_id)
+                ->where('payment_status', 'pending')
+                ->firstOrFail();
+
+            $client = Client::where('login_id', Auth::id())->first();
+            $plan   = PaymentPlan::findOrFail($order->plan_id);
+
+            $planDays = $plan->days;
+
+            if (!empty($client->plan_expiry) && Carbon::parse($client->plan_expiry)->isFuture()) {
+                $expiry = Carbon::parse($client->plan_expiry)->addDays($planDays);
+            } else {
+                $expiry = Carbon::now()->addDays($planDays);
             }
-            $client->update(['is_trial_used' => 1]);
+
+            // Old plans inactive
+            Order::where('user_id', Auth::id())->update(['plan_status' => 0]);
+
+            $order->update([
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature'  => $request->razorpay_signature,
+                'payment_status'      => 'completed',
+                'plan_status'         => 1
+            ]);
+
+            $client->update([
+                'plan_type'   => $order->plan_id,
+                'plan_expiry' => $expiry,
+                'status'      => 1
+            ]);
+
+            DB::commit();
+
+            return view('Payment.success', compact('order'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Something went wrong');
         }
-        $client->update([
-            'plan_type'   => $order->plan_id,
-            'plan_expiry' => $expiry,
-            'status'      => 1
-        ]);
-
-        return view('Payment.success', [
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_signature' => $request->razorpay_signature,
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'amount' => $order->amount,
-            'payment_status' => "completed"
-        ]);
     }
+    public function failed(Request $request)
+    {
+        if ($request->order_id) {
+            Order::where('razorpay_order_id', $request->order_id)
+                ->where('payment_status', 'pending')
+                ->update(['payment_status' => 'failed']);
+        }
 
+        return view('Payment.failed');
+    }
     public function PaymentList()
     {
         $adminId = Auth::id();
@@ -110,7 +144,6 @@ class PaymentController extends Controller
 
         return view('Payment.view', compact('payments'));
     }
-
     public function AllPaymentList()
     {
         if (auth()->user()->user_type != 1) {

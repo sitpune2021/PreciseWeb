@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
@@ -15,7 +14,6 @@ class CustomerContoller extends Controller
     {
         return view('Customer.add');
     }
-
     public function storeCustomer(Request $request)
     {
         $request->merge([
@@ -114,14 +112,12 @@ class CustomerContoller extends Controller
 
         return view('Customer.view', compact('customer'));
     }
-
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
         $customer = Customer::where('admin_id', Auth::id())->findOrFail($id);
         return view('Customer.add', compact('customer'));
     }
-
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -179,7 +175,6 @@ class CustomerContoller extends Controller
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer updated successfully.');
     }
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -190,7 +185,6 @@ class CustomerContoller extends Controller
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer deleted successfully.');
     }
-
     public function updateCustomerStatus(Request $request)
     {
         $customer = Customer::where('admin_id', Auth::id())->findOrFail($request->id);
@@ -199,7 +193,6 @@ class CustomerContoller extends Controller
 
         return back()->with('success', 'Status updated!');
     }
-
     public function importCustomers(Request $request)
     {
         $request->validate([
@@ -286,7 +279,6 @@ class CustomerContoller extends Controller
 
         return redirect()->back()->with('success', $message);
     }
-
     public function exportSample()
     {
         $filePath = public_path('assets/excel/PRECISE_ENGINEERING.xlsx');

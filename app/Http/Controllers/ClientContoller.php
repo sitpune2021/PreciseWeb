@@ -8,10 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-
 class ClientContoller extends Controller
 {
-
     public function AddClient()
     {
         return view('Client.add');
@@ -50,10 +48,8 @@ class ClientContoller extends Controller
             'user_type' => 2,
         ]);
 
-
-        $today = now();
-        $expiry = now()->addDays(7);
-
+        $today = Carbon::today();
+        $expiry = $today->copy()->addDays(7);
 
         Client::create([
             'name'         => $request->input('name'),

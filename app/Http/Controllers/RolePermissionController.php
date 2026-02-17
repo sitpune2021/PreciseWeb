@@ -14,37 +14,6 @@ class RolePermissionController extends Controller
         $roles = Role::all();
         return view('useradmin.rolepermission', compact('roles'));
     }
-
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'role_id' => 'required|exists:roles,id',
-    //         'permissions' => 'required|array'
-    //     ]);
-
-    //     $cleanPermissions = [];
-
-    //     foreach ($request->permissions as $module => $actions) {
-    //         $actions = array_filter($actions);
-    //         if (!empty($actions)) {
-    //             $cleanPermissions[$module] = array_values($actions);
-    //         }
-    //     }
-
-    //     RolePermission::updateOrCreate(
-    //         [
-    //             'admin_id' => auth()->id(), // 🔥 VERY IMPORTANT
-    //             'role_id'  => $request->role_id,
-    //         ],
-    //         [
-    //             'permissions' => $cleanPermissions
-    //         ]
-    //     );
-
-    //     return back()->with('success', 'Permissions saved successfully!');
-    // }
-
-
     public function store(Request $request)
     {
         $request->validate([
@@ -79,8 +48,6 @@ class RolePermissionController extends Controller
 
         return back()->with('success', 'Permissions saved successfully!');
     }
-
-
     public function getRolePermissions($role_id)
     {
         $rolePermission = RolePermission::where('role_id', $role_id)

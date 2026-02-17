@@ -18,7 +18,6 @@ class MachineController extends Controller
 
         return view('Machine.add', compact('machines'));
     }
-
     public function storeMachine(Request $request)
     {
         $request->validate([
@@ -46,7 +45,6 @@ class MachineController extends Controller
 
         return redirect()->route('AddMachine')->with('success', 'Machine added successfully');
     }
-
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -60,7 +58,6 @@ class MachineController extends Controller
             ->get();
         return view('Machine.add', compact('machine', 'machines'));
     }
-
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -90,15 +87,13 @@ class MachineController extends Controller
             ->where('admin_id', Auth::id())
             ->firstOrFail();
 
-        $machineName = $machine->name; 
+        $machineName = $machine->name;
 
         $machine->delete();
 
         return redirect()->route('AddMachine')
             ->with('success', $machineName . ' deleted successfully.');
     }
-
-
     public function updateStatus(Request $request)
     {
 
@@ -111,7 +106,6 @@ class MachineController extends Controller
 
         return back()->with('success', 'Status updated!');
     }
-
     public function trash()
     {
         $trashedmachine = Machine::onlyTrashed()
@@ -123,7 +117,6 @@ class MachineController extends Controller
 
         return view('Machine.trash', compact('trashedmachine', 'Machine'));
     }
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

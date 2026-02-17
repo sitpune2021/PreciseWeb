@@ -5,13 +5,12 @@
     <div class="page-content">
         <div class="container-fluid">
             <h5 class="card-title mb-0">
-                @if(isset($data))
+               
                 <!-- Back Button ONLY on Edit -->
                 <a href="{{ route('proforma.index') }}" class="btn btn-sm btn-outline-success me-2">
                     ← Back
                 </a>
-                @endif
-
+                
                 {{ isset($data) ? 'Edit invoice' : 'Add invoice' }}
             </h5>
 

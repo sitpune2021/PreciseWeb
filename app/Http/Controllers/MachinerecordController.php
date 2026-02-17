@@ -53,52 +53,48 @@ class MachinerecordController extends Controller
             'projects'
         ));
     }
-public function StoreMachinerecord(Request $request)
-{
-    $validated = $request->validate([
-        'part_no'     => 'required|string|max:100',
-        'code'        => 'required|string|max:100',
-        'work_order'  => 'required',
-        'first_set'   => 'nullable|string|max:100',
-        'qty'         => 'required|integer|min:1',
-        'machine'     => 'required|string|max:100',
-        'operator'    => 'required|string|max:100',
-        'setting_no'  => 'required|string|max:100',
-        'est_time'    => 'required|string|max:100',
-        'material'    => 'required|string|max:200',
-        'start_time'  => 'required|date',
-        'end_time'    => 'required|date|after_or_equal:start_time',
-        'adjustment'  => 'nullable|string|max:100',
-        'hrs'         => 'required|numeric|min:0',
-        'invoice_no'  => 'nullable|string|max:100',
-    ]);
+    public function StoreMachinerecord(Request $request)
+    {
+        $validated = $request->validate([
+            'part_no'     => 'required|string|max:100',
+            'code'        => 'required|string|max:100',
+            'work_order'  => 'required',
+            'first_set'   => 'nullable|string|max:100',
+            'qty'         => 'required|integer|min:1',
+            'machine'     => 'required|string|max:100',
+            'operator'    => 'required|string|max:100',
+            'setting_no'  => 'required|string|max:100',
+            'est_time'    => 'required|string|max:100',
+            'material'    => 'required|string|max:200',
+            'start_time'  => 'required|date',
+            'end_time'    => 'required|date|after_or_equal:start_time',
+            'adjustment'  => 'nullable|string|max:100',
+            'hrs'         => 'required|numeric|min:0',
+            'invoice_no'  => 'nullable|string|max:100',
+        ]);
 
-    $validated['admin_id'] = Auth::id();
+        $validated['admin_id'] = Auth::id();
 
-    // Keep work_order as-is (user-visible)
-    $validated['work_order'] = $request->work_order;
+        // Keep work_order as-is (user-visible)
+        $validated['work_order'] = $request->work_order;
 
-    // **Generate serial for work_order_id**
-    $lastSerial = MachineRecord::max('work_order_id'); // get highest value in table
-    $validated['work_order_id'] = $lastSerial ? $lastSerial + 1 : 1;
+        // **Generate serial for work_order_id**
+        $lastSerial = MachineRecord::max('work_order_id'); // get highest value in table
+        $validated['work_order_id'] = $lastSerial ? $lastSerial + 1 : 1;
 
-    MachineRecord::create($validated);
+        MachineRecord::create($validated);
 
-    return redirect()->route('ViewMachinerecord')
-        ->with('success', 'Machine Record Added Successfully');
-}
-
-
-
+        return redirect()->route('ViewMachinerecord')
+            ->with('success', 'Machine Record Added Successfully');
+    }
     public function ViewMachinerecord()
     {
         $record = MachineRecord::where('admin_id', Auth::id())->latest()->get();
-       
+
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 
         return view('Machinerecord.view', compact('record', 'workorders'));
     }
-
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -147,7 +143,6 @@ public function StoreMachinerecord(Request $request)
             'codes'
         ));
     }
-
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -180,7 +175,6 @@ public function StoreMachinerecord(Request $request)
 
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Updated Successfully');
     }
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -189,7 +183,6 @@ public function StoreMachinerecord(Request $request)
 
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record deleted successfully.');
     }
-
     public function fetchData($part_code)
     {
         $data = SetupSheet::where('part_code', $part_code)
@@ -223,7 +216,6 @@ public function StoreMachinerecord(Request $request)
 
         return view('Machinerecord.trash', compact('trashedMachines', 'machines'));
     }
-
     public function getInvoiceByCustomer($customer_id)
     {
         $invoice =  Invoice::where('customer_id', $customer_id)
@@ -236,7 +228,6 @@ public function StoreMachinerecord(Request $request)
             return response()->json(['invoice_no' => null]);
         }
     }
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

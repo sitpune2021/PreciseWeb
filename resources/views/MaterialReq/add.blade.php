@@ -11,14 +11,12 @@
 
                             <!-- Header -->
                             <div class="card-header align-items-center d-flex">
-
-                                 @if(isset($materialReq))                               
+                                                             
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('ViewMaterialReq') }}" class="btn btn-sm btn-outline-success me-2">
                                     ← Back
                                 </a>
-                                @endif
-
+                               
                                 <h4 class="mb-0 flex-grow-1">
                                     {{ isset($materialReq) ? 'Edit Material Requirement' : 'Add Material Requirement' }}
                                 </h4>

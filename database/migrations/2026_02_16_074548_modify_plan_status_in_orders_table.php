@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('org_pass')->nullable()->change();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->tinyInteger('plan_status')->default(0)->change();
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('org_pass')->nullable(false)->change();
+        Schema::table('orders', function (Blueprint $table) {          
+            $table->string('plan_status')->nullable()->change();
         });
     }
 };

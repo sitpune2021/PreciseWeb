@@ -8,7 +8,6 @@ span.mandatory {
     color: #ff0000;
 }
 
-
 .dropdown-list {
     position: absolute;
     top: 100%;
@@ -60,11 +59,8 @@ span.mandatory {
     cursor: pointer;
     border: 2px solid transparent;
     background: #ffffff;
-}
-
-.plan-card:hover {
-    transform: translateY(-5px);
-    border-color: #7b1fa2;
+     transform: translateY(-5px);
+    border-color: #310148;
     box-shadow: 0px 6px 15px rgb(0 0 0 / 12%);
 }
 

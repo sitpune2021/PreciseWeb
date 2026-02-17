@@ -21,7 +21,6 @@ class ProformaInvoiceController extends Controller
 {
     public function index(Request $request)
     {
-
         $adminId = Auth::id();
 
         $customers = Customer::where('status', 1)
@@ -47,7 +46,6 @@ class ProformaInvoiceController extends Controller
 
         return view('proforma.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
-
     public function create()
     {
         $adminId = Auth::id();
@@ -70,7 +68,6 @@ class ProformaInvoiceController extends Controller
 
         return view('proforma.add', compact('customers', 'hsncodes', 'workOrders', 'adminSetting'));
     }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -163,20 +160,17 @@ class ProformaInvoiceController extends Controller
 
         return redirect()->route('proforma.index')->with('success', 'Proforma created successfully! ' . $invoiceNo);
     }
-
     public function printInvoice($id)
-{
-    $invoice = ProformaInvoice::with([
-        'items.workOrder.project'
-    ])->findOrFail($id);
+    {
+        $invoice = ProformaInvoice::with([
+            'items.workOrder.project'
+        ])->findOrFail($id);
 
-    $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
-    $c = Client::where('login_id', Auth::id())->first();
+        $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
+        $c = Client::where('login_id', Auth::id())->first();
 
-    return view('proforma.print', compact('invoice', 'c', 'adminSetting'));
-}
-
-
+        return view('proforma.print', compact('invoice', 'c', 'adminSetting'));
+    }
     public function getHsnDetails($id)
     {
         $hsn_code = Hsncode::where('id', $id)
@@ -251,7 +245,6 @@ class ProformaInvoiceController extends Controller
 
         return response()->json($data);
     }
-
     public function convertToTax($id)
     {
         $pro = ProformaInvoice::with('items')->findOrFail($id);
@@ -316,7 +309,6 @@ class ProformaInvoiceController extends Controller
 
         return back()->with('success', 'Converted Successfully!');
     }
-
     public function proformaEdit($id)
     {
 
@@ -340,7 +332,6 @@ class ProformaInvoiceController extends Controller
         $adminSetting = AdminSetting::first();
         return view('proforma.add', compact('data', 'customers', 'clients', 'hsncodes', 'workOrders', 'adminSetting'));
     }
-
     public function proformaUpdate(Request $request, $id)
     {
 

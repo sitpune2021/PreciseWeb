@@ -40,7 +40,7 @@
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered table-sm" style="width:100%">
                                     <thead>
-                                        <tr>
+                                        <tr class="table-light"> 
                                             <th>Sr.<br>No</th>
                                             <th>Wo<br>Order<br>No.</th>
                                             <th>Customer <br>Code</th>

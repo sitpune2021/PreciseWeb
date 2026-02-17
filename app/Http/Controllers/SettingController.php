@@ -45,7 +45,6 @@ class SettingController extends Controller
 
         return redirect()->route('AddSetting')->with('success', 'Setting added successfully');
     }
-
     public function editSetting(string $encryptedId)
     {
 
@@ -61,7 +60,6 @@ class SettingController extends Controller
             ->get();
         return view('Setting.add', compact('setting', 'settings'));
     }
-
     public function updateSetting(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -84,7 +82,6 @@ class SettingController extends Controller
 
         return redirect()->route('AddSetting')->with('success', 'Setting updated successfully.');
     }
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -93,15 +90,13 @@ class SettingController extends Controller
             ->where('admin_id', Auth::id())
             ->firstOrFail();
 
-        $settingName = $setting->name; 
+        $settingName = $setting->name;
 
         $setting->delete();
 
         return redirect()->route('AddSetting')
             ->with('success', $settingName . ' deleted successfully.');
     }
-
-
     public function updateSettingStatus(Request $request)
     {
         $setting = Setting::where('id', $request->id)
@@ -113,7 +108,6 @@ class SettingController extends Controller
 
         return back()->with('success', 'Status updated!');
     }
-
     public function trash()
     {
 
@@ -126,7 +120,6 @@ class SettingController extends Controller
 
         return view('Setting.trash', compact('trashedSetting', 'Setting'));
     }
-
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

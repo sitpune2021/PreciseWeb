@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\AdminSetting;
@@ -27,10 +25,8 @@ class AdminSettingController extends Controller
                 'stamp' => null,
             ]);
         }
-
         return view('Admin.setting', compact('data'));
     }
-
     public function UpdateAdminSetting(Request $request)
     {
         $setting = AdminSetting::where('admin_id', Auth::id())->first();
@@ -40,9 +36,6 @@ class AdminSettingController extends Controller
                 'admin_id' => Auth::id()
             ]);
         }
-
-        // ---- Validation remains same ----
-
         $request->validate([
             'gst_no' => [
                 'nullable',
@@ -68,9 +61,6 @@ class AdminSettingController extends Controller
             'logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'stamp' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
-
-        // ---- Same logic for updating fields ----
-
         $setting->fill($request->except(['logo', 'stamp', 'remove_logo', 'remove_stamp']));
 
         if ($request->has('remove_logo')) $setting->logo = null;
@@ -89,7 +79,6 @@ class AdminSettingController extends Controller
         }
 
         $setting->save();
-
         return back()->with('success', 'Admin Settings Updated Successfully');
     }
 }

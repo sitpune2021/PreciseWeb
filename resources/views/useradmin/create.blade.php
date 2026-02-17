@@ -6,14 +6,20 @@
         <div class="container-fluid">
 
             <div class="card shadow-sm">
-
                 <div class="card-header d-flex align-items-center">
+
+                    <!-- Back Button ONLY on Edit -->
+                    <a href="{{ route('ListUserAdmin') }}" class="btn btn-sm btn-outline-success me-2">
+                        ← Back
+                    </a>
+
                     <h4 class="mb-0 flex-grow-1">
                         {{ $mode === 'edit' ? 'Edit User' : 'Add User' }}
                     </h4>
                 </div>
 
                 <div class="card-body">
+
                     <form method="POST"
                         action="{{ $mode === 'edit' ? route('UpdateUserAdmin', $user->id) : route('StoreUser') }}"
                         enctype="multipart/form-data">
@@ -95,8 +101,6 @@
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
-
-
                             <div class="col-md-6">
                                 <label>Profile Photo</label>
                                 <input type="file" name="profile_photo" class="form-control">
@@ -108,9 +112,6 @@
                                 @endif
 
                             </div>
-
-
-
                         </div>
 
                         <div class="text-end mt-3">
@@ -127,31 +128,30 @@
     </div>
 </div>
 <script>
-    function togglePassword(fieldId, iconSpan) {
-        let field = document.getElementById(fieldId);
+    document.addEventListener('DOMContentLoaded', function() {
 
-        if (field.type === "password") {
-            field.type = "text";
-            iconSpan.querySelector('i').classList.remove('fa-eye');
-            iconSpan.querySelector('i').classList.add('fa-eye-slash');
-        } else {
-            field.type = "password";
-            iconSpan.querySelector('i').classList.remove('fa-eye-slash');
-            iconSpan.querySelector('i').classList.add('fa-eye');
+        const emailInput = document.getElementById('email');
+        const usernameInput = document.getElementById('username');
+
+        if (emailInput && usernameInput) {
+
+            emailInput.addEventListener('input', function() {
+
+                let emailValue = this.value.trim();
+
+                if (emailValue.includes('@')) {
+                    usernameInput.value = emailValue;
+                } else {
+                    usernameInput.value = '';
+                }
+
+            });
+
         }
-    }
 
-    document.getElementById('email').addEventListener('input', function() {
-        let email = this.value;
-
-        if (email.includes('@')) {
-            document.getElementById('user_name').value = email;
-        }
-    });
-
-    document.getElementById('password').addEventListener('input', function() {
-        document.getElementById('password_confirmation').value = this.value;
     });
 </script>
+
+
 
 @endsection

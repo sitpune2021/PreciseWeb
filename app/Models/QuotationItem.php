@@ -30,6 +30,8 @@ class QuotationItem extends Model
         'ht',
         'wirecut',
         'machining_cost',
+        'material_gravity',
+        
     ];
 
     public function quotation()

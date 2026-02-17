@@ -17,11 +17,17 @@ class Quotation extends Model
         'description',
         'date',
         'total_manufacturing_cos',
+        'total_tool_cost',
+        'profit_percent',
+        'overhead_percent',
+
         'profit',
         'overhead',
+
         'terms_conditions',
         'status',
     ];
+
 
     public function items()
     {
@@ -29,13 +35,12 @@ class Quotation extends Model
     }
 
     public function customer()
-{
-    return $this->belongsTo(Customer::class);
-}
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
-   public function client()
+    public function client()
     {
         return $this->belongsTo(Client::class, 'client_id');
     }
-
 }

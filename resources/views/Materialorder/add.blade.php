@@ -8,14 +8,12 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-
-                        @if(isset($record))
+                      
                         <!-- Back Button ONLY on Edit -->
                         <a href="{{ route('ViewMaterialorder') }}" class="btn btn-sm btn-outline-success me-2">
                             ← Back
                         </a>
-                        @endif
-
+                        
                         {{ isset($record) ? 'Edit Material Order' : 'Add Material Order' }}
                     </h5>
                 </div>

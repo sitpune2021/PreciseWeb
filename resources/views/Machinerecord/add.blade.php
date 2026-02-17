@@ -11,14 +11,12 @@
                     <div class="card shadow-sm">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
-
-                                @if(isset($record))
+                                                              
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('ViewMachinerecord') }}" class="btn btn-sm btn-outline-success me-2">
                                     ← Back
                                 </a>
-                                @endif
-
+                            
                                 {{ isset($record) ? 'Edit Machine Record' : 'Add Machine Record' }}
                             </h5>
                         </div>
@@ -38,7 +36,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
-                                        <select name="part_no" id="part_no" class="form-control form-select "
+                                        <select name="part_no" id="part_no" class="form-control form-select"
                                             {{ isset($record) ? 'disabled' : '' }}>
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)

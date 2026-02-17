@@ -38,7 +38,7 @@
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
-                                        <tr class="">
+                                        <tr class="table-light">
                                             <th>#</th>
                                             <th>Sr.No</th>
                                             <th>Date</th>

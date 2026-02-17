@@ -59,88 +59,148 @@
             border: none;
         }
 
+        .company-box {
+            display: flex;
+            align-items: flex-start;
+        }
+
+
+
+        .company-logo {
+            /* width: 90px;
+            height: 90px; */
+            /* margin-right: 8px; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         @media print {
+
             @page {
                 size: A4 landscape;
                 margin: 8mm;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            table,
+            th,
+            td {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- ================= TITLE ================= -->
+    <!--TITLE-->
     <table>
         <tr>
-            <td class="title">QUOTATION – 2025–2026</td>
+            <td class="title">
+                QUOTATION –
+                {{ now()->month >= 4 ? now()->year.'–'.(now()->year+1) : (now()->year-1).'–'.now()->year }}
+            </td>
+
         </tr>
     </table>
 
-    <!-- ================= HEADER ================= -->
-    <table>
+    <!--HEADER -->
+    <table style="margin-top:5px;">
         <tr>
-            <td style="width:35%">
-                <table class="no-border">
+            <!-- LEFT COMPANY SECTION  -->
+            <td style="width:40%; border:1.5px solid #000; vertical-align:top; padding:6px;">
+
+                <table class="no-border" style="width:100%;">
                     <tr>
-                        <td style="width:60px">
-                            @if($client && $client->logo)
-                            <img src="{{ asset($client->logo) }}" height="55">
-                            @endif
+                        <!-- Logo -->
+                        <td style="width:70px; vertical-align:top;">
+                            <img src="{{ 
+                            $adminSetting && $adminSetting->logo
+                                ? asset('uploads/settings/' . $adminSetting->logo)
+                                : asset('uploads/default-logo.png')
+                        }}"
+                                style="max-width:60px; max-height:60px; object-fit:contain;"
+                                alt="Company Logo">
                         </td>
-                        <td class="left">
-                            <strong>{{ $client->name }}</strong><br>
+
+                        <!-- Company Details -->
+                        <td class="left" style="vertical-align:top; padding-left:5px;">
+                            <strong style="font-size:13px;">
+                                {{ $client->name }}
+                            </strong><br>
+
                             {{ $client->address }}<br>
+
                             Email : {{ $client->email_id }}<br>
                             Cell : {{ $client->phone_no }}
                         </td>
                     </tr>
                 </table>
+
             </td>
 
-            <td style="width:65%">
-                <table>
+            <!--  RIGHT QUOTATION INFO  -->
+            <td style="width:60%; border:1.5px solid ; padding:0;">
+
+                <table style="width:100%; border-collapse:collapse;">
                     <tr>
-                        <td class="bold">Quotation No.</td>
-                        <td>{{ $quotation->quotation_no }}</td>
-                        <td class="bold">Project Name</td>
-                        <td>{{ $quotation->project_name }}</td>
+                        <td class="bold center" style="width:20%; border:1px solid #000;">Quotation No.</td>
+                        <td class="center" style="width:30%; border:1px solid #000;">
+                            {{ $quotation->quotation_no }}
+                        </td>
+
+                        <td class="bold center" style="width:20%; border:1px solid #000;">Project Name</td>
+                        <td class="center" style="width:30%; border:1px solid #000;">
+                            {{ $quotation->project_name }}
+                        </td>
                     </tr>
+
                     <tr>
-                        <td class="bold">Date</td>
-                        <td>{{ \Carbon\Carbon::parse($quotation->date)->format('d-M-Y') }}</td>
-                        <td class="bold">Customer Name</td>
-                        <td>{{ $quotation->customer->name }}</td>
+                        <td class="bold center" style="border:1px solid #000;">Date</td>
+                        <td class="center" style="border:1px solid #000;">
+                            {{ \Carbon\Carbon::parse($quotation->date)->format('d-M-Y') }}
+                        </td>
+
+                        <td class="bold center" style="border:1px solid ">Customer Name</td>
+                        <td class="center" style="border:1px solid #000;">
+                            {{ $quotation->customer->name }}
+                        </td>
                     </tr>
                 </table>
+
             </td>
         </tr>
     </table>
 
 
-
-    <!-- ================= MAIN TABLE ================= -->
+    <!--MAIN TABLE -->
     <table>
 
         <thead>
             <tr>
-                <th rowspan="2" width="30px">Sl<br>No</th>
+                <th rowspan="2" width="30px">SR<br>No</th>
                 <th rowspan="2" width="100px">Description</th>
 
                 <th colspan="4">Raw Material & Size</th>
 
-                <th rowspan="2">Qty<br>Kg</th>
-                <th rowspan="2">MATL</th>
-                <th rowspan="2">Rate<br>Kg</th>
+                <th rowspan="2">Qty IN<br>Kg</th>
+                <th rowspan="2" width="40px">MATL</th>
+                <th rowspan="2">Rate Per<br>Kg</th>
                 <th rowspan="2">QTY</th>
-                <th rowspan="2">MATL<br>Cost</th>
+                <th rowspan="2" width="60px">MATL<br>Cost</th>
 
                 <th colspan="5">RS / SQ.CM / MIN</th>
                 <th colspan="2">VMC</th>
                 <th colspan="2">EDM DRILL</th>
 
                 <th rowspan="2">H&amp;T</th>
-                <th rowspan="2">WIRECUT</th>
-                <th rowspan="2">Machining<br>Cost</th>
+                <th rowspan="2">WI CUT</th>
+                <th rowspan="2" width="70px">Machining<br>Cost</th>
             </tr>
 
             <tr>
@@ -174,7 +234,7 @@
                 <td class="center">{{ (int)$item->width }}</td>
                 <td class="center">{{ (int)$item->height }}</td>
 
-                <td class="right">{{ (int)$item->qty_in_kg }}</td>
+                <td class="right">{{$item->qty_in_kg }}</td>
                 <td class="center">MS</td>
                 <td class="right">{{ (int)$item->material_rate }}</td>
                 <td class="center">{{ (int)$item->qty }}</td>
@@ -186,8 +246,8 @@
                 <td class="right">{{ (int)$item->cg }}</td>
                 <td class="right">{{ (int)$item->sg }}</td>
 
-                <td class="right">{{ (int)$item->vmc_soft }}</td>
-                <td class="right">{{ (int)$item->vmc_hard }}</td>
+                <td class="right">{{ $item->vmc_soft }}</td>
+                <td class="right">{{ $item->vmc_hard }}</td>
 
                 <td class="center">{{ (int)$item->edm_qty }}</td>
                 <td class="right">{{ (int)$item->edm_hole }}</td>
@@ -202,39 +262,67 @@
 
     </table>
 
-    <!-- ================= TERMS + TOTAL ================= -->
+    <!--TERMS + TOTAL-->
     <table>
         <tr>
             <td style="width:70%" class="left bold">
                 Terms & Conditions :<br>
                 All Taxes Extra.<br>
-                Transportation at your end.<br>
-                Lead time 1–2 weeks after PO.<br>
-                50% payment against PO, 40% after trial, 10% against delivery.<br><br>
+                {{ $quotation->terms_conditions }}
+                <br>
+                <br>
                 <strong>GST No :</strong> 27AAMFP5025G1Z6
             </td>
 
             <td style="width:30%">
-                <table>
+            <td style="width:30%; vertical-align:top;">
+
+                <table style="border:1.5px solid #000;">
+
+                    <tr>
+                        <th style="width:55%;" class="right">Particular</th>
+                        <th style="width:15%;" class="center">%</th>
+                        <th style="width:30%;" class="right">Amount</th>
+                    </tr>
+
                     <tr>
                         <td class="bold right">Total Manufacturing Cost</td>
-                        <td class="right">Rs. {{ number_format($quotation->total_manufacturing_cos,0) }}</td>
-                    </tr>
-                    <tr>
-                        <td class="bold right">Profit</td>
-                        <td class="right">Rs. {{ number_format($quotation->profit,0) }}</td>
-                    </tr>
-                    <tr>
-                        <td class="bold right">Overhead</td>
-                        <td class="right">Rs. {{ number_format($quotation->overhead,0) }}</td>
-                    </tr>
-                    <tr>
-                        <td class="bold right">Total Tool Cost</td>
-                        <td class="right bold">
-                            Rs. {{ number_format($quotation->total_manufacturing_cos + $quotation->profit + $quotation->overhead,0) }}
+                        <td class="center">-</td>
+                        <td class="right">
+                            Rs. {{ number_format($quotation->total_manufacturing_cos,0) }}
                         </td>
                     </tr>
+
+                    <tr>
+                        <td class="bold right">Profit</td>
+                        <td class="center bold">
+                            {{ $quotation->profit_percent }}%
+                        </td>
+                        <td class="right">
+                            Rs. {{ number_format($quotation->profit,0) }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="bold right">Overhead</td>
+                        <td class="center bold">
+                            {{ $quotation->overhead_percent }}%
+                        </td>
+                        <td class="right">
+                            Rs. {{ number_format($quotation->overhead,0) }}
+                        </td>
+                    </tr>
+
+                    <tr style="background-color:#e0e0e0;">
+                        <td class="bold right">Total Tool Cost</td>
+                        <td class="center">-</td>
+                        <td class="right bold">
+                            Rs. {{ number_format($quotation->total_tool_cost ?? 0, 0) }}
+                        </td>
+                    </tr>
+
                 </table>
+            </td>
             </td>
         </tr>
     </table>

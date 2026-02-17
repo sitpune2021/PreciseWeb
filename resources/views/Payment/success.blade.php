@@ -5,13 +5,27 @@
 <style>
     /* Smooth Fade & Scale Animation */
     @keyframes pop {
-        0% { transform: scale(0.8); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
 
     @keyframes slideUp {
-        0% { opacity: 0; transform: translateY(20px); }
-        100% { opacity: 1; transform: translateY(0); }
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .success-card {
@@ -20,7 +34,7 @@
         padding: 30px;
         border-radius: 15px;
         background: #ffffff;
-        box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
         animation: slideUp 0.5s ease-out;
     }
 
@@ -63,9 +77,10 @@
                 <p class="text-muted">Your payment has been processed.</p>
 
                 <div class="amount-box text-start mx-auto">
-                    <p><strong>Payment ID:</strong> {{ $razorpay_payment_id }}</p>
-                    <p><strong>Order ID:</strong> {{ $razorpay_order_id }}</p>
-                    <p><strong>Amount:</strong> ₹{{ $amount }}</p>
+                    <p><strong>Payment ID:</strong> {{ $order->razorpay_payment_id }}</p>
+                    <p><strong>Order ID:</strong> {{ $order->razorpay_order_id }}</p>
+                    <p><strong>Amount:</strong> ₹{{ $order->amount }}</p>
+
                 </div>
 
                 <a href="{{ url('/') }}" class="btn btn-success mt-4">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminSetting;
 use App\Models\Client;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
@@ -16,6 +17,35 @@ class QuotationController extends Controller
 {
     public function Addquotation()
     {
+
+        $year  = now()->year;
+        $month = now()->month;
+
+        if ($month >= 4) {
+            $startYear = substr($year, 2, 2);
+            $endYear   = substr($year + 1, 2, 2);
+        } else {
+            $startYear = substr($year - 1, 2, 2);
+            $endYear   = substr($year, 2, 2);
+        }
+
+        $financialYear = $startYear . $endYear;
+
+        $lastQuotation = Quotation::where('admin_id', auth()->id())
+            ->where('quotation_no', 'like', $financialYear . '-%')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $nextNumber = 1;
+
+        if ($lastQuotation) {
+            $lastNumber = explode('-', $lastQuotation->quotation_no)[1];
+            $nextNumber = $lastNumber + 1;
+        }
+
+        $quotation_no = $financialYear . '-' . $nextNumber;
+
+
         $adminId = Auth::id();
 
         $codes = Customer::where('status', 1)
@@ -33,133 +63,150 @@ class QuotationController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('Quotation.add', compact('codes', 'materialtype', 'customers'));
+        return view('Quotation.add', compact('codes', 'materialtype', 'customers', 'quotation_no'));
     }
     public function storequotation(Request $request)
     {
+        Log::info('Quotation Request:', $request->all());
         $request->validate([
-            'customer_id'  => 'required',
-            'quotation_no' => 'required',
-            'project_name' => 'required',
-            'date'         => 'required|date',
+            'customer_id' => 'required|exists:customers,id',
+            'project_name' => 'required|string',
+            'date' => 'required|date',
 
-            'items'        => 'required|array|min:1'
+            'items' => 'required|array|min:1',
+            'items.*.Description' => 'required|string',
+            'items.*.qty' => 'required|numeric|min:1',
+            'items.*.material_type_id' => 'required|exists:material_types,id',
+
+        ], [
+
+            // Qty Messages
+            'items.*.qty.required' => 'Please enter quantity.',
+            'items.*.qty.numeric'  => 'Quantity must be a number.',
+            'items.*.qty.min'      => 'Quantity must be at least 1.',
+
+            // Material Type Messages
+            'items.*.material_type_id.required' => 'Please select Material Type.',
+            'items.*.material_type_id.exists'   => 'Invalid Material selected.',
         ]);
-
 
         DB::beginTransaction();
 
         try {
+            // 🔹 Generate Financial Year
+            $year  = now()->year;
+            $month = now()->month;
 
-            $srNo = (Quotation::where('admin_id', auth()->id())->max('sr_no') ?? 0) + 1;
+            if ($month >= 4) {
+                $startYear = substr($year, 2, 2);
+                $endYear   = substr($year + 1, 2, 2);
+            } else {
+                $startYear = substr($year - 1, 2, 2);
+                $endYear   = substr($year, 2, 2);
+            }
+
+            $financialYear = $startYear . $endYear;
+
+            // 🔹 Get Last Number
+            $lastQuotation = Quotation::where('admin_id', auth()->id())
+                ->where('quotation_no', 'like', $financialYear . '-%')
+                ->orderBy('id', 'desc')
+                ->first();
+
+            $nextNumber = 1;
+
+            if ($lastQuotation) {
+                $lastNumber = explode('-', $lastQuotation->quotation_no)[1];
+                $nextNumber = $lastNumber + 1;
+            }
+
+            $quotation_no = $financialYear . '-' . $nextNumber;
+
+            // $quotation_no = (Quotation::where('admin_id', auth()->id())->max('sr_no') ?? 0) + 1;
 
             $quotation = Quotation::create([
                 'customer_id' => $request->customer_id,
-                'quotation_no' => $request->quotation_no,
+                'quotation_no' => $quotation_no,
                 'project_name' => $request->project_name,
                 'date'        => $request->date,
-                'sr_no'       => $srNo,
                 'admin_id'    => auth()->id(),
-                'terms_conditions' => $request->terms_conditions
-            ]);
+                'terms_conditions' => $request->terms_conditions, // nullable
+                'overhead_percent' => (float)($request->overhead_percent ?? 0),
+                'profit_percent'   => (float)($request->profit_percent ?? 0),
 
+            ]);
             $grandTotal = 0;
 
             foreach ($request->items as $item) {
 
-                $material = MaterialType::findOrFail($item['material_type_id']);
-                /* INPUT */
-                $dia    = (float)($item['dia'] ?? 0);
-                $len    = (float)($item['length'] ?? 0);
-                $wid    = (float)($item['WIDTH'] ?? 0);
-                $hei    = (float)($item['HEIGHT'] ?? 0);
-                $qty    = (float)($item['qty'] ?? 1);
+                // $material = MaterialType::findOrFail($item['material_type_id']);
+                $material = MaterialType::find($item['material_type_id']);
 
-                $rate    = (float)($item['material_rate'] ?? 0);
-                $gravity = (float)($item['gravity'] ?? 0);
+                if (!$material) {
+                    DB::rollBack();
+                    return back()->with('error', 'Invalid Material selected for one of the items.');
+                }
 
-                $lathe   = (float)($item['lathe'] ?? 0);
-                $vmcSoft = (float)($item['vmc_soft'] ?? 0);
-                $vmcHard = (float)($item['vmc_hard'] ?? 0);
-
-                $edmHole = (float)($item['edm_hole'] ?? 0);
-                $wirecut = (float)($item['wirecut'] ?? 0);
-
-                /* QTY IN KG */
-                $cylWt = (pi() * pow($dia / 2, 2) * $hei / 1000000) * $gravity;
-                $boxWt = ($len * $wid * $hei / 1000000) * $gravity;
-                $qtyKg = $cylWt + $boxWt;
-
-                /* MATERIAL COST */
-                $materialCost = ($qtyKg * $rate) * 1.30;
-
-                /* MG RG SG (Excel Match) */
-                $mg = ((($len * $hei + $wid * $hei) * 2 * 0.5) / 100)
-                    + (($len * $wid) * 2 * 0.5 / 100);
-
-                $rg = ($len * $wid) * 2 * 0.3 / 100;
-
-                $sg = ((($len * $hei + $wid * $hei) * 2) / 100)
-                    + (($len * $wid) * 2 / 100);
-
-                /* EXTRA */
-                $edmCost     = $hei * $edmHole * 6;
-                $htCost      = $qtyKg * 80;
-                $wirecutCost = $wirecut * $hei * 0.25;
-
-
-                /* MACHINING COST */
-                $machiningCost =
-                    (
-                        $lathe +
-                        $mg +
-                        $rg +
-                        $sg +
-                        $edmCost +
-                        $wirecutCost +
-                        $htCost +
-                        $vmcSoft +
-                        $vmcHard
-                    ) * $qty;
-
+                $machiningCost = (float)($item['machining_cost'] ?? 0);
                 $grandTotal += $machiningCost;
 
-                /* SAVE ITEM */
                 $quotation->items()->create([
                     'description'   => $item['Description'] ?? null,
-                    'dia'           => $dia,
-                    'length'        => $len,
-                    'width'         => $wid,
-                    'height'        => $hei,
-                    'qty'           => $qty,
-                    'qty_in_kg'     => round($qtyKg, 3),
-                    'material'      => $material->material_type, // ✅ text
-                    'material_type_id' => $material->id,
-                    'material_rate' => $rate,
-                    'material_cost' => round($materialCost, 2),
-                    'lathe'         => $lathe,
-                    'mg'            => round($mg, 2),
-                    'rg'            => round($rg, 2),
-                    'sg'            => round($sg, 2),
-                    'vmc_soft'      => $vmcSoft,
-                    'vmc_hard'      => $vmcHard,
-                    'edm_hole'      => $edmHole,
-                    'wirecut'       => $wirecut,
-                    'ht' => round($htCost, 2),
-                    'machining_cost' => round($machiningCost, 2),
+                    'dia'           => (float)($item['dia'] ?? 0),
+                    'length'        => (float)($item['length'] ?? 0),
+                    'width'         => (float)($item['WIDTH'] ?? 0),
+                    'height'        => (float)($item['HEIGHT'] ?? 0),
+                    'qty'           => (float)($item['qty'] ?? 1),
+                    'qty_in_kg'     => (float)($item['qty_in_kg'] ?? 0),
 
+                    'material'      => $material->material_type,
+                    'material_type_id' => $material->id,
+                    'material_rate' => (float)($item['material_rate'] ?? 0),
+                    'material_cost' => (float)($item['material_cost'] ?? 0),
+
+                    'lathe'         => (float)($item['lathe'] ?? 0),
+                    'mg'            => (float)($item['mg'] ?? 0),
+                    'rg'            => (float)($item['rg'] ?? 0),
+                    'cg'            => (float)($item['cg'] ?? 0),
+                    'sg'            => (float)($item['sg'] ?? 0),
+                    'vmc_soft'      => (float)($item['vmc_soft'] ?? 0),
+                    'vmc_hard'      => (float)($item['vmc_hard'] ?? 0),
+                    'edm_hole'      => (float)($item['edm_hole'] ?? 0),
+                    'wirecut'       => (float)($item['wirecut'] ?? 0),
+                    'ht'            => (float)($item['h_t'] ?? 0),
+                    'material_gravity'  => $item['material_gravity'] ?? null,
+
+                    'machining_cost' => $machiningCost,
                 ]);
             }
 
+            $profitPercent = (float)($request->profit_percent ?? 0);
+            $overheadPercent = (float)($request->overhead_percent ?? 0);
+
+            $profitAmount = round(($grandTotal * $profitPercent) / 100, 2);
+            $overheadAmount = round(($grandTotal * $overheadPercent) / 100, 2);
+
+            $totalToolCost = round($grandTotal + $profitAmount + $overheadAmount, 2);
+
             $quotation->update([
                 'total_manufacturing_cos' => round($grandTotal, 2),
-                'profit'   => round($grandTotal * 0.10, 2),
-                'overhead' => round($grandTotal * 0.05, 2),
+                'profit_percent' => $profitPercent,
+                'overhead_percent' => $overheadPercent,
+                'profit' => $profitAmount,
+                'overhead' => $overheadAmount,
+                'total_tool_cost' => $totalToolCost,
+            ]);
+
+            $quotation->update([
+                'total_manufacturing_cos' => round($grandTotal, 2),
             ]);
 
             DB::commit();
-            return redirect()->route('Viewquotation')->with('success', 'Quotation Created');
+
+            return redirect()->route('Viewquotation')
+                ->with('success', 'Quotation Created Successfully');
         } catch (\Exception $e) {
+
             DB::rollBack();
             return back()->with('error', $e->getMessage());
         }
@@ -190,7 +237,9 @@ class QuotationController extends Controller
 
         try {
 
-            $quotation = Quotation::findOrFail($id);
+            // $quotation = Quotation::findOrFail($id);
+            $quotation = Quotation::with('items')->findOrFail($id);
+
 
             /* ===== UPDATE HEADER ===== */
             $quotation->update([
@@ -216,6 +265,7 @@ class QuotationController extends Controller
 
                 $quotation->items()->create([
                     'description'    => $item['Description'] ?? null,
+                    'material_type_id' => $item['material_type_id'] ?? null,
                     'dia'            => $item['dia'] ?? null,
                     'length'         => $item['length'] ?? null,
                     'width'          => $item['WIDTH'] ?? null,
@@ -253,7 +303,6 @@ class QuotationController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
-
     public function Viewquotation()
     {
         $quotations = Quotation::with(['customer'])
@@ -261,14 +310,14 @@ class QuotationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('Quotation.view', compact('quotations'));     
+        return view('Quotation.view', compact('quotations'));
     }
-
     public function printquotation($id)
     {
         $id = base64_decode($id);
         $quotation = Quotation::with('items', 'customer')->findOrFail($id);
         $adminId = Auth::id();
+        $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
         $client = Client::where('login_id', $adminId)->first([
             'name',
             'phone_no',
@@ -278,6 +327,31 @@ class QuotationController extends Controller
             'address'
         ]);
 
-        return view('Quotation.print', compact('quotation', 'client'));
+        $manufacturing = $quotation->total_manufacturing_cos;
+
+        $profitAmount = ($manufacturing * $quotation->profit_percent) / 100;
+        $overheadAmount = ($manufacturing * $quotation->overhead_percent) / 100;
+
+        $totalToolCost = $manufacturing + $profitAmount + $overheadAmount;
+
+        return view('Quotation.print', compact(
+            'quotation',
+            'client',
+            'adminSetting',
+            'profitAmount',
+            'overheadAmount',
+            'manufacturing',
+            'totalToolCost'
+        ));
+    }
+    public function destroy(string $id)
+    {
+        $id = base64_decode($id);
+        $Quotation = Quotation::where('admin_id', Auth::id())->findOrFail($id);
+        $Quotation->status = 0;
+        $Quotation->save();
+        $Quotation->delete();
+
+        return redirect()->route('Viewquotation')->with('success', 'Quotation deleted successfully.');
     }
 }

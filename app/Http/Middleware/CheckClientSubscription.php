@@ -13,51 +13,50 @@ class CheckClientSubscription
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
-
-        if (!$user) return redirect()->route('login');
+        if (!$user) {
+            return redirect()->route('login');
+        }
 
         $client = Client::where('login_id', $user->id)->first();
+        if (!$client) {
+            return $next($request);
+        }
 
-        if ($client) {
-            $today = Carbon::today();
-            $expiry = Carbon::parse($client->plan_expiry);
+        $today = Carbon::today();
+        $expiry = Carbon::parse($client->plan_expiry);
 
-            $remaining = $today->diffInDays($expiry, false);
-            $remaining = round($remaining);
+        $remaining = $today->diffInDays($expiry, false); // remaining days
 
-            $expAlert = "";
+        //  Account inactive check
+        if ($client->status == 0) {
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'Your account is inactive. Contact admin.');
+        }
 
-            if ($remaining == 5) {
+        // Trial expiry notifications (3 days left)
+        if ($remaining == 3) {
+            $request->session()->flash('plan_alert', "Your plan will expire in 3 days! Please renew.");
+        }
+        $request->session()->flash('plan_alert', "Remaining days: $remaining");
 
-                $value = session('click');
-                if ($value = "") {
-                    session(['click' => 1]);
-
-
-                    $expAlert = "⚠️ Your plan will expire in 5 days!";
-                }
-            } elseif ($remaining == 3) {
-                $expAlert = "⚠️ Your plan will expire in 3 days!";
-            } elseif ($remaining < 0) {
-
-                $client->update([
-                    'status' => 0
-                ]);
-                session()->forget('click');
-
+        //  Plan expired logic
+        if ($remaining < 0) {
+            if ($client->status == 1) {
+                // admin already toggled ON, allow login
+                // optional: auto extend plan to allow login
+                // $client->plan_expiry = $today->copy()->addDays(7);
+                // $client->save();
+                return $next($request);
+            } else {
+                // plan expired & status off -> logout
                 Auth::logout();
-
                 return redirect()->route('login')
-                    ->with('error', '❌ Your plan has expired. Please renew your subscription.');
-            }
-
-
-            // Send alert message to session
-            if ($expAlert) {
-                $request->session()->flash('plan_alert', $expAlert);
+                    ->with('error', 'Your plan has expired. Please renew.');
             }
         }
 
         return $next($request);
     }
 }
+
+
