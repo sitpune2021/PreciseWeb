@@ -244,7 +244,7 @@ Route::post('plans/store'                       , [PaymentPlanController::class,
 Route::get('plans/edit/{id}'                    , [PaymentPlanController::class, 'edit'])->name('admin.plans.edit');
 Route::put('plans/update/{id}'                  , [PaymentPlanController::class, 'update'])->name('admin.plans.update');
 Route::delete('plans/delete/{id}'               , [PaymentPlanController::class, 'destroy'])->name('admin.plans.delete');
-Route::post('/admin/plans/toggle', [PaymentPlanController::class, 'toggleStatus'])
+Route::post('/admin/plans/toggle'               , [PaymentPlanController::class, 'toggleStatus'])
     ->name('admin.plans.toggle');
 
 });

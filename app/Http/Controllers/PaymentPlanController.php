@@ -14,7 +14,7 @@ class PaymentPlanController extends Controller
         }
 
         $plans = PaymentPlan::orderBy('id', 'desc')->get();
-        return view('admin.payment.plans.index', compact('plans'));
+        return view('Admin.Payment.Plans.index', compact('plans'));
     }
     public function store(Request $request)
     {
@@ -41,7 +41,7 @@ class PaymentPlanController extends Controller
         $plans = PaymentPlan::orderBy('id', 'desc')->get();
         $plan  = PaymentPlan::findOrFail($id);
 
-        return view('admin.payment.plans.index', compact('plans', 'plan'));
+        return view('Admin.Payment.Plans.index', compact('plans', 'plan'));
     }
     public function update(Request $request, $id)
     {
