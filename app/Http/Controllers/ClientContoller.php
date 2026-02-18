@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+
 class ClientContoller extends Controller
 {
     public function AddClient()
@@ -128,12 +129,31 @@ class ClientContoller extends Controller
         return redirect()->route('ViewClient')->with('success', 'Client updated successfully.');
     }
 
+    // public function destroy(string $encryptedId)
+    // {
+    //     $id = base64_decode($encryptedId);
+    //     $client = Client::findOrFail($id);
+    //     $client->delete();
+    //     return redirect()->route('ViewClient')->with('success', 'Branch deleted successfully.');
+    // }
+
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
         $client = Client::findOrFail($id);
+        // Delete related user
+        if ($client->login_id) {
+            User::where('id', $client->login_id)->delete();
+        }
+        // Delete logo file
+        if ($client->logo && file_exists(public_path($client->logo))) {
+            unlink(public_path($client->logo));
+        }
+        // Delete client
         $client->delete();
-        return redirect()->route('ViewClient')->with('success', 'Branch deleted successfully.');
+
+        return redirect()->route('ViewClient')
+            ->with('success', 'Client and related user deleted successfully.');
     }
 
     public function updateClientStatus(Request $request)

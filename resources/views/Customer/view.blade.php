@@ -93,7 +93,7 @@
                                                             name="status"
                                                             value="1"
                                                             onchange="this.form.submit()"
-                                                           {{ $p->is_active == 1 ? 'checked' : '' }}>
+                                                           {{ $c->is_active == 1 ? 'checked' : '' }}>
                                                     </div>
                                                 </form>
                                             </td>
