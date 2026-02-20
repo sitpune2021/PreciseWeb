@@ -34,12 +34,34 @@ class UserAdminController extends Controller
     public function StoreUser(Request $request)
     {
         $request->validate([
-            'name'          => 'required|string|max:255',
-            'username'      => 'required|string|max:255|unique:users,username',
-            'email'         => 'required|string|email|max:255|unique:users,email',
-            'mobile'        => 'required|digits:10|unique:users,mobile',
-            'user_type'     => 'required|in:1,2,3,4,5',
-            'status'        => 'required|in:0,1',
+            'name'      => 'required|string|max:255',
+
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users')->where(function ($query) {
+                    return $query->where('admin_id', Auth::id());
+                }),
+            ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->where(fn($query) => $query->where('admin_id', Auth::id())),     
+            ],
+
+
+            'mobile' => [
+                'required',
+                'digits:10',
+             Rule::unique('users')->where(fn($query) => $query->where('admin_id', Auth::id())), 
+               
+            ],
+
+            'user_type' => 'required|in:1,2,3,4,5',
+            'status'    => 'required|in:0,1',
             'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
@@ -51,7 +73,7 @@ class UserAdminController extends Controller
         }
 
         User::create([
-            'admin_id' => Auth::id(), // logged-in admin
+            'admin_id' => Auth::id(),
             'name'      => $request->name,
             'username'  => $request->username,
             'email'     => $request->email,
@@ -159,5 +181,4 @@ class UserAdminController extends Controller
             'permissions' => $rolePermission ? $rolePermission->permissions : []
         ]);
     }
-
 }

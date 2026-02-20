@@ -57,8 +57,8 @@ class ProformaInvoiceController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $hsncodes = Hsncode::where('is_active', 1)
-            ->where('admin_id', $adminId)
+        $hsncodes = Hsncode::where('admin_id', $adminId)
+            ->where('is_active', 1)
             ->get();
 
         $workOrders = WorkOrder::where('status', 1)
@@ -189,6 +189,63 @@ class ProformaInvoiceController extends Controller
         return response()->json(['error' => 'Not Found'], 404);
     }
 
+    // public function getMachineRecords($customer_id)
+    // {
+    //     $adminId = Auth::id();
+
+    //     $usedWorkOrders = \DB::table('proforma_items')
+    //         ->join('proforma_invoices', 'proforma_items.invoice_id', '=', 'proforma_invoices.id')
+    //         ->where('proforma_invoices.customer_id', $customer_id)
+    //         ->where('proforma_invoices.admin_id', $adminId)
+    //         ->pluck('proforma_items.work_order_id')
+    //         ->toArray();
+
+
+    //     $records = WorkOrder::where('admin_id', $adminId)
+    //         ->where('customer_id', $customer_id)
+    //         ->where('status', 1)
+    //         ->whereNotIn('id', $usedWorkOrders)
+    //         ->orderBy('id', 'asc')
+    //         ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
+
+    //     if ($records->isEmpty()) {
+    //         return response()->json([]);
+    //     }
+
+    //     $machineRecords = MachineRecord::where('admin_id', $adminId)
+    //         ->get(['id', 'work_order_id', 'hrs']);
+
+
+    //     $materials = MaterialType::where('admin_id', $adminId)
+    //         ->get(['material_type', 'material_rate']);
+
+
+    //     $data = $records->map(function ($r) use ($materials, $machineRecords) {
+
+    //         $machine = $machineRecords->first(function ($m) use ($r) {
+    //             return !empty($m->work_order_id) && $m->work_order_id == $r->workorder_id;
+    //         });
+
+    //         $mat = $materials->firstWhere('material_type', $r->material);
+
+    //         return [
+    //             'id'               => $r->id,
+    //             'project_id'       => $r->project_id,
+    //             'part_description' => $r->part_description,
+    //             'quantity'         => $r->quantity,
+    //             'exp_time'         => $r->exp_time,
+    //             'vmc_hr'           => $machine->hrs ?? 0,
+    //             'material_type'    => $r->material,
+    //             'material_rate'    => $mat->material_rate ?? 0,
+    //             'workorder_id' => $r->id,
+    //             'machine_id'       => $machine->id ?? null,
+    //         ];
+    //     });
+
+
+    //     return response()->json($data);
+    // }
+
     public function getMachineRecords($customer_id)
     {
         $adminId = Auth::id();
@@ -199,7 +256,6 @@ class ProformaInvoiceController extends Controller
             ->where('proforma_invoices.admin_id', $adminId)
             ->pluck('proforma_items.work_order_id')
             ->toArray();
-
 
         $records = WorkOrder::where('admin_id', $adminId)
             ->where('customer_id', $customer_id)
@@ -215,16 +271,13 @@ class ProformaInvoiceController extends Controller
         $machineRecords = MachineRecord::where('admin_id', $adminId)
             ->get(['id', 'work_order_id', 'hrs']);
 
-
         $materials = MaterialType::where('admin_id', $adminId)
             ->get(['material_type', 'material_rate']);
 
-
         $data = $records->map(function ($r) use ($materials, $machineRecords) {
 
-            $machine = $machineRecords->first(function ($m) use ($r) {
-                return !empty($m->work_order_id) && $m->work_order_id == $r->workorder_id;
-            });
+            // ✅ FIXED LINE
+            $machine = $machineRecords->firstWhere('work_order_id', $r->id);
 
             $mat = $materials->firstWhere('material_type', $r->material);
 
@@ -234,17 +287,17 @@ class ProformaInvoiceController extends Controller
                 'part_description' => $r->part_description,
                 'quantity'         => $r->quantity,
                 'exp_time'         => $r->exp_time,
-                'vmc_hr'           => $machine->hrs ?? 0,
+                'vmc_hr'           => $machine->hrs ?? 0,   // ✅ EST now correct
                 'material_type'    => $r->material,
                 'material_rate'    => $mat->material_rate ?? 0,
-                'workorder_id' => $r->id,
+                'workorder_id'     => $r->id,
                 'machine_id'       => $machine->id ?? null,
             ];
         });
 
-
         return response()->json($data);
     }
+
     public function convertToTax($id)
     {
         $pro = ProformaInvoice::with('items')->findOrFail($id);
@@ -311,7 +364,6 @@ class ProformaInvoiceController extends Controller
     }
     public function proformaEdit($id)
     {
-
         $adminId = Auth::id();
 
         $id = base64_decode($id);
@@ -320,22 +372,154 @@ class ProformaInvoiceController extends Controller
 
         $customers = Customer::all();
         $clients   = Client::all();
-        $hsncodes  = Hsncode::all();
+        // $adminId = Auth::id();
+
+        $hsncodes = Hsncode::where('admin_id', $adminId)
+            ->where('is_active', 1)
+            ->get();
 
         $workOrders = WorkOrder::where('customer_id', $data->customer_id)
             ->where('admin_id', $adminId)
             ->get();
 
-
-
-
         $adminSetting = AdminSetting::first();
         return view('proforma.add', compact('data', 'customers', 'clients', 'hsncodes', 'workOrders', 'adminSetting'));
     }
+
+    // public function proformaUpdate(Request $request, $id)
+    // {
+
+    //     $adminId = Auth::id();;
+    //     $id = base64_decode($id);
+    //     $invoice = ProformaInvoice::findOrFail($id);
+
+    //     if ($invoice->is_proforma_printed == 1) {
+    //         return back()->with('error', 'Proforma already printed. Cannot update.');
+    //     }
+
+    //     $request->validate([
+    //         'customer_id' => 'nullable',
+    //         'desc.*'      => 'required|string',
+    //         'hsn_code' => 'required|string',
+    //         'qty.*'       => 'required|numeric|min:1',
+    //         'rate.*'      => 'required|numeric|min:0',
+    //         'amount.*'    => 'required|numeric|min:0',
+    //         'hrs.*'       => 'nullable|string',
+    //         'vmc_hr.*'    => 'nullable|numeric|min:0',
+    //         'adj.*'       => 'nullable|numeric|min:0',
+    //         'sub_total'   => 'required|numeric|min:0',
+    //         'total_tax'   => 'required|numeric|min:0',
+    //         'grand_total' => 'required|numeric|min:0',
+    //     ]);
+
+    //     $invoice->update([
+    //         'customer_id'     => $request->customer_id,
+    //         'sub_total'       => $request->sub_total,
+    //         'total_tax'       => $request->total_tax,
+    //         'adjustment'      => $request->adj_total ?? 0,
+    //         'round_off'       => $request->round_off ?? 0,
+    //         'grand_total'     => $request->grand_total,
+    //         'total_hrs'       => array_sum($request->hrs ?? []),
+    //         'total_vmc' => array_sum($request->vmc_hr ?? []),
+    //         'declaration'     => $request->declaration,
+    //         'note'            => $request->note,
+    //         'bank_details'    => $request->bank_details,
+    //         'amount_in_words' => $request->amount_in_words,
+    //         'admin_id'        => $adminId,
+    //         'invoice_no'      => $request->invoice_no,
+    //         'invoice_date'    => $request->invoice_date,
+    //     ]);
+
+
+    //     if (!empty($request->desc)) {
+
+    //         foreach ($request->desc as $i => $desc) {
+
+    //             $hsn = $request->hsn_code[0] ?? null;
+    //             $hsnMaster = $hsn
+    //                 ? Hsncode::where('hsn_code', $hsn)
+    //                 ->where('admin_id', $adminId)
+    //                 ->first()
+    //                 : null;
+
+    //             $cgst_rate = $hsnMaster->cgst ?? 0;
+    //             $sgst_rate = $hsnMaster->sgst ?? 0;
+    //             $igst_rate = $hsnMaster->igst ?? 0;
+
+    //             // Correct GST logic
+    //             if (($cgst_rate > 0 || $sgst_rate > 0) && $igst_rate > 0) {
+    //                 $igst_rate = 0;
+    //             }
+    //             if ($igst_rate > 0) {
+    //                 $cgst_rate = 0;
+    //                 $sgst_rate = 0;
+    //             }
+
+    //             // Convert HRS string (3.30 hr → 3.30)
+    //             $hrs = isset($request->hrs[$i])
+    //                 ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i]))
+    //                 : 0;
+
+    //             // If ID exists → UPDATE, else CREATE
+    //             if (!empty($request->id[$i])) {
+
+
+
+    //                 $item = ProformaItem::find($request->id[$i]);
+
+    //                 $item->update([
+    //                     'part_name'     => $desc,
+    //                     'project_id'    => $request->project_id[$i],
+    //                     'work_order_id' => $request->work_order_id[$i],
+    //                     'hsn_code'      => $request->hsn_code[$i],
+    //                     'qty'           => $request->qty[$i],
+    //                     'rate'          => $request->rate[$i],
+    //                     'amount'        => $request->amount[$i],
+    //                     'material_rate' => $request->material_rate[$i],
+    //                     'hrs'           => $hrs,
+    //                     'vmc'           => $request->vmc_hr[$i],
+    //                     'adj'           => $request->adj[$i],
+    //                     'sgst'          => $sgst_rate,
+    //                     'cgst'          => $cgst_rate,
+    //                     'igst'          => $igst_rate,
+    //                 ]);
+    //             } else {
+
+    //                 // Create new
+    //                 $invoice->items()->create([
+    //                     'part_name'     => $desc,
+    //                     'project_id'    => $request->project_id[$i],
+    //                     'work_order_id' => $request->work_order_id[$i],
+    //                     'hsn_code'      => $request->hsn_code[0],
+    //                     'qty'           => $request->qty[$i],
+    //                     'rate'          => $request->rate[$i],
+    //                     'amount'        => $request->amount[$i],
+    //                     'material_rate' => $request->material_rate[$i],
+    //                     'hrs'           => $hrs,
+    //                     'vmc'           => $request->vmc_hr[$i],
+    //                     'adj'           => $request->adj[$i],
+    //                     'sgst'          => $sgst_rate,
+    //                     'cgst'          => $cgst_rate,
+    //                     'igst'          => $igst_rate,
+    //                 ]);
+    //             }
+
+    //             // Update Work Order status
+    //             if (!empty($request->work_order_id[$i])) {
+    //                 WorkOrder::where('id', $request->work_order_id[$i])
+    //                     ->update(['status' => 2]);
+    //             }
+    //         }
+    //     }
+
+    //     return redirect()
+    //         ->route('proforma.index')
+    //         ->with('success', 'Proforma Invoice Updated Successfully.');
+    // }
+
     public function proformaUpdate(Request $request, $id)
     {
-
-        $adminId = Auth::id();;
+        $adminId = Auth::id();
         $id = base64_decode($id);
         $invoice = ProformaInvoice::findOrFail($id);
 
@@ -343,114 +527,70 @@ class ProformaInvoiceController extends Controller
             return back()->with('error', 'Proforma already printed. Cannot update.');
         }
 
+        // ✅ VALIDATION
         $request->validate([
             'customer_id' => 'nullable',
             'desc.*'      => 'required|string',
-            'hsn_code.*'  => 'required|string',
+            'hsn_code.*'  => 'required|string',   // FIXED
             'qty.*'       => 'required|numeric|min:1',
             'rate.*'      => 'required|numeric|min:0',
             'amount.*'    => 'required|numeric|min:0',
-            'hrs.*'       => 'nullable|string',
-            'vmc_hr.*'    => 'nullable|numeric|min:0',
-            'adj.*'       => 'nullable|numeric|min:0',
             'sub_total'   => 'required|numeric|min:0',
             'total_tax'   => 'required|numeric|min:0',
             'grand_total' => 'required|numeric|min:0',
         ]);
 
+        // ✅ UPDATE INVOICE
         $invoice->update([
-            'customer_id'     => $request->customer_id,
-            'sub_total'       => $request->sub_total,
-            'total_tax'       => $request->total_tax,
-            'adjustment'      => $request->adj_total ?? 0,
-            'round_off'       => $request->round_off ?? 0,
-            'grand_total'     => $request->grand_total,
-            'total_hrs'       => array_sum($request->hrs ?? []),
-            'total_vmc'       => array_sum($request->vmc ?? []),
-            'declaration'     => $request->declaration,
-            'note'            => $request->note,
-            'bank_details'    => $request->bank_details,
-            'amount_in_words' => $request->amount_in_words,
-            'admin_id'        => $adminId,
-            'invoice_no'      => $request->invoice_no,
-            'invoice_date'    => $request->invoice_date,
+            'customer_id' => $request->customer_id,
+            'sub_total'   => $request->sub_total,
+            'total_tax'   => $request->total_tax,
+            'adjustment'  => $request->adj_total ?? 0,
+            'round_off'   => $request->round_off ?? 0,
+            'grand_total' => $request->grand_total,
+            'invoice_no'  => $request->invoice_no,
+            'invoice_date' => $request->invoice_date,
+            'hsn_code'    => $request->hsn_code[0] ?? null, // single column असल्यास
+            'admin_id'    => $adminId,
         ]);
 
+        // ✅ LOOP ITEMS
+        foreach ($request->desc as $i => $desc) {
 
-        if (!empty($request->desc)) {
+            $hsn = $request->hsn_code[$i] ?? null;
 
-            foreach ($request->desc as $i => $desc) {
+            // HSN MASTER FETCH
+            $hsnMaster = Hsncode::where('hsn_code', $hsn)
+                ->where('admin_id', $adminId)
+                ->first();
 
-                $hsn = $request->hsn_code[0] ?? null;
-                $hsnMaster = $hsn ? Hsncode::where('hsn_code', $hsn)->first() : null;
+            $cgst = $hsnMaster->cgst ?? 0;
+            $sgst = $hsnMaster->sgst ?? 0;
+            $igst = $hsnMaster->igst ?? 0;
 
-                $cgst_rate = $hsnMaster->cgst ?? 0;
-                $sgst_rate = $hsnMaster->sgst ?? 0;
-                $igst_rate = $hsnMaster->igst ?? 0;
+            // GST LOGIC
+            if ($igst > 0) {
+                $cgst = 0;
+                $sgst = 0;
+            }
 
-                // Correct GST logic
-                if (($cgst_rate > 0 || $sgst_rate > 0) && $igst_rate > 0) {
-                    $igst_rate = 0;
-                }
-                if ($igst_rate > 0) {
-                    $cgst_rate = 0;
-                    $sgst_rate = 0;
-                }
+            $data = [
+                'part_name' => $desc,
+                'project_id' => $request->project_id[$i] ?? null,
+                'work_order_id' => $request->work_order_id[$i] ?? null,
+                'hsn_code'  => $hsn,
+                'qty'       => $request->qty[$i],
+                'rate'      => $request->rate[$i],
+                'amount'    => $request->amount[$i],
+                'sgst'      => $sgst,
+                'cgst'      => $cgst,
+                'igst'      => $igst,
+            ];
 
-                // Convert HRS string (3.30 hr → 3.30)
-                $hrs = isset($request->hrs[$i])
-                    ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i]))
-                    : 0;
-
-                // If ID exists → UPDATE, else CREATE
-                if (!empty($request->id[$i])) {
-
-
-
-                    $item = ProformaItem::find($request->id[$i]);
-
-                    $item->update([
-                        'part_name'     => $desc,
-                        'project_id'    => $request->project_id[$i],
-                        'work_order_id' => $request->work_order_id[$i],
-                        'hsn_code'      => $request->hsn_code[0],
-                        'qty'           => $request->qty[$i],
-                        'rate'          => $request->rate[$i],
-                        'amount'        => $request->amount[$i],
-                        'material_rate' => $request->material_rate[$i],
-                        'hrs'           => $hrs,
-                        'vmc'           => $request->vmc_hr[$i],
-                        'adj'           => $request->adj[$i],
-                        'sgst'          => $sgst_rate,
-                        'cgst'          => $cgst_rate,
-                        'igst'          => $igst_rate,
-                    ]);
-                } else {
-
-                    // Create new
-                    $invoice->items()->create([
-                        'part_name'     => $desc,
-                        'project_id'    => $request->project_id[$i],
-                        'work_order_id' => $request->work_order_id[$i],
-                        'hsn_code'      => $request->hsn_code[0],
-                        'qty'           => $request->qty[$i],
-                        'rate'          => $request->rate[$i],
-                        'amount'        => $request->amount[$i],
-                        'material_rate' => $request->material_rate[$i],
-                        'hrs'           => $hrs,
-                        'vmc'           => $request->vmc_hr[$i],
-                        'adj'           => $request->adj[$i],
-                        'sgst'          => $sgst_rate,
-                        'cgst'          => $cgst_rate,
-                        'igst'          => $igst_rate,
-                    ]);
-                }
-
-                // Update Work Order status
-                if (!empty($request->work_order_id[$i])) {
-                    WorkOrder::where('id', $request->work_order_id[$i])
-                        ->update(['status' => 2]);
-                }
+            if (!empty($request->id[$i])) {
+                ProformaItem::where('id', $request->id[$i])->update($data);
+            } else {
+                $invoice->items()->create($data);
             }
         }
 

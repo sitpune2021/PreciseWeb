@@ -8,7 +8,7 @@
                
                 <!-- Back Button ONLY on Edit -->
                 <a href="{{ route('proforma.index') }}" class="btn btn-sm btn-outline-success me-2">
-                    ← Back
+                    ← 
                 </a>
                 
                 {{ isset($data) ? 'Edit invoice' : 'Add invoice' }}
@@ -136,7 +136,7 @@
                                         data-sgst="{{ $h->sgst }}"
                                         data-cgst="{{ $h->cgst }}"
                                         data-igst="{{ $h->igst }}"
-                                        {{ isset($invoice->items[0]) && $invoice->items[0]->hsn_code == $h->hsn_code ? 'selected' : '' }}>
+                                        {{ old('hsn_code.0', $data->items[0]->hsn_code ?? '') == $h->hsn_code ? 'selected' : '' }}>
                                         {{ $h->hsn_code }}
                                     </option>
                                     @endforeach

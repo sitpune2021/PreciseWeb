@@ -11,12 +11,12 @@
 
                             <!-- Header -->
                             <div class="card-header align-items-center d-flex">
-                                                             
+
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('ViewMaterialReq') }}" class="btn btn-sm btn-outline-success me-2">
-                                    ← Back
+                                    ← 
                                 </a>
-                               
+
                                 <h4 class="mb-0 flex-grow-1">
                                     {{ isset($materialReq) ? 'Edit Material Requirement' : 'Add Material Requirement' }}
                                 </h4>
@@ -75,16 +75,13 @@
                                         <div class="col-md-4">
                                             <label class="form-label">Part No </label>
 
-                                            <select name="part_no" id="part_no" class="form-control form-select mt-1 js-example-basic-single" {{ isset($materialReq) ? 'disabled' : '' }}>
+                                            <select name="part_no" id="part_no" class="form-control form-select mt-1 js-example-basic-single">
                                                 <option value="">Select Part No</option>
                                             </select>
-
                                             @error('part_no')
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
                                         </div>
-
-
                                         <input type="hidden" name="work_order_no" id="work_order_no"
                                             value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}">
 
@@ -516,58 +513,72 @@
     <script>
         $(document).ready(function() {
 
-            $('#customer_id').change(function() {
-                let customerId = $(this).val();
+            let selectedPart = "{{ old('part_no', $materialReq->part_no ?? '') }}";
+            let selectedCustomer = "{{ old('customer_id', $materialReq->customer_id ?? '') }}";
+
+            function loadWorkOrders(customerId, selectedPartId = null) {
+
+                if (!customerId) {
+                    $('#part_no').html('<option value="">Select Part No</option>');
+                    return;
+                }
 
                 $('#part_no').html('<option value="">Loading...</option>');
 
-                if (customerId) {
-                    $.ajax({
-                        url: '/get-workorders-by-customer/' + customerId,
-                        type: 'GET',
-                        success: function(data) {
+                $.ajax({
+                    url: '/get-workorders-by-customer/' + customerId,
+                    type: 'GET',
+                    success: function(data) {
 
-                            let options = '<option value="">Select Part No</option>';
+                        let options = '<option value="">Select Part No</option>';
 
-                            $.each(data, function(index, wo) {
+                        $.each(data, function(index, wo) {
 
-                                let partNo =
-                                    (wo.customer?.code ?? '') + '_' +
-                                    (wo.project?.project_no ?? '') + '_' +
-                                    (wo.part ?? '') + '_' +
-                                    (wo.quantity ?? '');
+                            let partNo =
+                                (wo.customer?.code ?? '') + '_' +
+                                (wo.project?.project_no ?? '') + '_' +
+                                (wo.part ?? '') + '_' +
+                                (wo.quantity ?? '');
 
+                            let selected = (selectedPartId == wo.id) ? 'selected' : '';
 
-                                options += `
-                        <option value="${partNo}"
-                            data-desc="${wo.part_description ?? ''}">
-                            ${partNo}
-                        </option>`;
-                            });
+                            options += `<option value="${wo.id}" ${selected}
+                                data-desc="${wo.part_description ?? ''}">
+                                ${partNo}
+                                </option>`;
+                        });
 
-                            $('#part_no').html(options);
+                        $('#part_no').html(options);
+
+                        // Edit mode description auto fill
+                        if (selectedPartId) {
+                            let desc = $('#part_no option:selected').data('desc') || '';
+                            $('#description').val(desc);
                         }
-                    });
-                } else {
-                    $('#part_no').html('<option value="">Select Part No</option>');
-                }
+                    }
+                });
+            }
+
+            // 🔹 Customer change
+            $('#customer_id').change(function() {
+                let customerId = $(this).val();
+                loadWorkOrders(customerId);
             });
 
-
-        });
-
-        $(document).ready(function() {
-
+            // 🔹 Part change → description autofill
             $('#part_no').on('change', function() {
-
                 let desc = $(this).find(':selected').data('desc') || '';
-
                 $('#description').val(desc);
-
             });
+
+            // 🔹 Edit Mode Auto Load
+            if (selectedCustomer) {
+                loadWorkOrders(selectedCustomer, selectedPart);
+            }
 
         });
     </script>
+
 
 
     @endsection

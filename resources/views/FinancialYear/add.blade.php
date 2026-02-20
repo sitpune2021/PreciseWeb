@@ -5,8 +5,12 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card shadow-sm mb-4">         
+                <div class="card-header d-flex align-items-center">
+                    <!-- Back Button ONLY on Edit -->
+                    <a href="{{ route('home') }}" class="btn btn-sm btn-outline-success me-2">
+                        ←
+                    </a>
                     <h5 class="mb-0">{{ isset($year) ? 'Edit Financial Year' : 'Add Financial Year' }}</h5>
                 </div>
                 <div class="card-body">
@@ -19,7 +23,7 @@
                         </div>
                     </div>
                     @endif
-                    
+
                     <form action="{{ isset($year) ? route('UpdateFinancialYear', base64_encode($year->id)) : route('StoreFinancialYear') }}" method="POST">
                         @csrf
                         @if(isset($year))

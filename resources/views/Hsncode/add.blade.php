@@ -7,11 +7,15 @@
 
             <!-- Form Start -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex align-items-center">
+                    <!-- Back Button ONLY on Edit -->
+                    <a href="{{ route('home') }}" class="btn btn-sm btn-outline-success me-2">
+                        ←
+                    </a>
                     <h5 class="mb-0">{{ isset($hsn) ? 'Edit HSN Code' : 'Add HSN/SAC Code' }}</h5>
                 </div>
                 <div class="card-body">
-                    
+
                     @if(session('success'))
                     <div class="d-flex">
                         <div id="successAlert"

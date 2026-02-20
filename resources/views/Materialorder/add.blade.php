@@ -11,7 +11,7 @@
                       
                         <!-- Back Button ONLY on Edit -->
                         <a href="{{ route('ViewMaterialorder') }}" class="btn btn-sm btn-outline-success me-2">
-                            ← Back
+                            ← 
                         </a>
                         
                         {{ isset($record) ? 'Edit Material Order' : 'Add Material Order' }}

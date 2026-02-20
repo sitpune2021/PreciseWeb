@@ -10,7 +10,7 @@
 
                     <!-- Back Button ONLY on Edit -->
                     <a href="{{ route('ListUserAdmin') }}" class="btn btn-sm btn-outline-success me-2">
-                        ← Back
+                        ← 
                     </a>
 
                     <h4 class="mb-0 flex-grow-1">

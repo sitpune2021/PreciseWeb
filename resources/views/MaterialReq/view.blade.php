@@ -40,13 +40,13 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
-                                            <th>#</th>
-                                            <th>Sr.No</th>
-                                            <th>Customer Code</th>
+                                            <th style="width:30px;">#</th>
+                                            <th style="width: 30px;">Sr.No</th>
+                                            <th style="width:30px;">Customer Code</th>
                                             <!-- <th>Code</th> -->
-                                            <th>Date</th>
-                                            <th>Description</th>
-                                            <th>Material Type</th>
+                                            <th style="width:70px;">Date</th>
+                                            <th style="width: 70px;">Description</th>
+                                            <th style="width: 70px;">Material Type</th>
                                             @if(
                                             hasPermission('MaterialReq', 'edit') ||
                                             hasPermission('MaterialReq', 'delete')||
@@ -84,6 +84,13 @@
                                                         data-code="{{ $req->code }}"
                                                         data-date="{{ $req->date }}"
                                                         data-sr_no="{{ $req->sr_no }}"
+                                                        data-part_no="{{ 
+                                                                $req->workorder?->customer?->code . '_' .
+                                                                $req->workorder?->project?->project_no . '_' .
+                                                                $req->workorder?->part . '_' .
+                                                                $req->workorder?->quantity 
+                                                            }}
+                                                            "
                                                         data-description="{{ $req->description }}"
                                                         data-dia="{{ $req->dia }}"
                                                         data-length="{{ $req->length }}"
@@ -157,6 +164,10 @@
                                 <tr>
                                     <th>Sr.No</th>
                                     <td id="mr_workorder"></td>
+                                </tr>
+                                <tr>
+                                    <th>Part No</th>
+                                    <td id="mr_part_no"></td>
                                 </tr>
                                 <tr>
                                     <th>Description</th>
@@ -260,6 +271,7 @@
                             document.getElementById("mr_code").textContent = this.dataset.code;
                             document.getElementById("mr_date").textContent = this.dataset.date;
                             document.getElementById("mr_workorder").textContent = this.dataset.sr_no;
+                            document.getElementById("mr_part_no").textContent = this.dataset.part_no;
                             document.getElementById("mr_description").textContent = this.dataset.description;
                             document.getElementById("mr_dia").textContent = this.dataset.dia;
                             document.getElementById("mr_length").textContent = this.dataset.length;

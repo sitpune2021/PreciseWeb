@@ -12,7 +12,7 @@
 
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('Viewquotation') }}" class="btn btn-sm btn-outline-success me-2">
-                                    ← Back
+                                    ← 
                                 </a>
                                 {{ isset($quotation) ? 'Edit Quotation' : 'Add Quotation' }}
                             </h4>
@@ -294,7 +294,6 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
 
 <script>
     $(document).ready(function() {

@@ -26,6 +26,7 @@ class MaterialReq extends Model
         'width',
         'height',
         'material',
+        'part_no',
         'material_rate',
         'material_gravity',
         'qty',
@@ -45,6 +46,7 @@ class MaterialReq extends Model
         'material_cost',
         'total_cost',
         'sr_no'
+
     ];
 
     public function customer()
@@ -60,5 +62,10 @@ class MaterialReq extends Model
     public function materialOrders()
     {
         return $this->hasMany(MaterialOrder::class);
+    }
+
+    public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'part_no');
     }
 }

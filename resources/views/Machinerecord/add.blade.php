@@ -14,7 +14,7 @@
                                                               
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('ViewMachinerecord') }}" class="btn btn-sm btn-outline-success me-2">
-                                    ← Back
+                                    ← 
                                 </a>
                             
                                 {{ isset($record) ? 'Edit Machine Record' : 'Add Machine Record' }}
@@ -194,7 +194,6 @@
                                         @enderror
                                     </div>
 
-
                                     <!-- <div class="col-md-2">
                                         <label class="form-label">Minute <span class="text-red">*</span></label>
                                         <input type="number" name="minute" class="form-control"
@@ -204,8 +203,6 @@
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div> -->
-
-
                                     <!-- HRS -->
                                     <div class="col-md-2">
                                         <label class="form-label">HRS <span class="text-red">*</span></label>
@@ -237,8 +234,6 @@
                                             value="{{ old('invoice_no', $record->invoice_no ?? '') }}">
                                         @error('invoice_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
-
-
                                     <!-- Buttons -->
                                     <div class="col-lg-12 text-end">
                                         <button type="submit" class="btn btn-primary">

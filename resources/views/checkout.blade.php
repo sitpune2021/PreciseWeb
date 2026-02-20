@@ -41,7 +41,7 @@
             "modal": {
                 "ondismiss": function() {
                     // User cancelled payment
-                    window.location.href = "{{ route('payment.failed') }}?order_id={{ $orderId }}";
+                    window.location.href = "{{ route('Payment.failed') }}?order_id={{ $orderId }}";
                 }
             }
         };

@@ -130,7 +130,6 @@ class PaymentController extends Controller
                 ->where('payment_status', 'pending')
                 ->update(['payment_status' => 'failed']);
         }
-
         return view('Payment.failed');
     }
     public function PaymentList()

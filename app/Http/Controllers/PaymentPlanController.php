@@ -14,7 +14,7 @@ class PaymentPlanController extends Controller
         }
 
         $plans = PaymentPlan::orderBy('id', 'desc')->get();
-       return view('admin.payment.plans.index', compact('plans'));
+        return view('admin.payment.plans.index', compact('plans'));
     }
     public function store(Request $request)
     {
@@ -75,13 +75,12 @@ class PaymentPlanController extends Controller
             ->with('success', 'Plan Deleted Successfully');
     }
     public function toggleStatus(Request $request)
-{
-    $plan = PaymentPlan::findOrFail($request->id);
+    {
+        $plan = PaymentPlan::findOrFail($request->id);
 
-    $plan->is_active = $request->has('status') ? 1 : 0;
-    $plan->save();
+        $plan->is_active = $request->has('status') ? 1 : 0;
+        $plan->save();
 
-    return redirect()->back()->with('success', 'Plan status updated successfully');
-}
-
+        return redirect()->back()->with('success', 'Plan status updated successfully');
+    }
 }

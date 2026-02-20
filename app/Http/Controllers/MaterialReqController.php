@@ -14,7 +14,7 @@ class MaterialReqController extends Controller
     public function AddMaterialReq()
     {
         $adminId = Auth::id();
-
+        $parts = WorkOrder::where('admin_id', $adminId)->get();
         $codes = Customer::where('status', 1)
             ->whereNotNull('admin_id')
             ->where('admin_id', $adminId)
@@ -30,7 +30,7 @@ class MaterialReqController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('MaterialReq.add', compact('codes', 'materialtype', 'customers'));
+        return view('MaterialReq.add', compact('codes', 'materialtype', 'customers', 'parts'));
     }
     public function storeMaterialReq(Request $request)
     {
@@ -39,6 +39,7 @@ class MaterialReqController extends Controller
             'code'          => 'required|string|max:50',
             'date'          => 'required|date',
             'description'   => 'nullable|string|max:255',
+            'part_no' => 'nullable|string|max:100',
             'work_order_no' => 'required|string|max:50',
             'dia'           => 'nullable|numeric|min:0',
             'length'        => 'nullable|numeric|min:0',
@@ -92,6 +93,7 @@ class MaterialReqController extends Controller
         $data = $validated;
         $data['sr_no'] = $sr_no; // assign serial number
         $data['material'] = $request->material;
+        $data['part_no'] = $request->part_no;
         $data['material_gravity'] = $material->material_gravity;
         $data['material_rate'] = $material->material_rate;
         $data['weight'] = $weight;
@@ -116,62 +118,45 @@ class MaterialReqController extends Controller
     public function editMaterialReq(string $encryptedId)
     {
         $adminId = Auth::id();
-
         $id = base64_decode($encryptedId);
-        $materialReq = MaterialReq::where('admin_id', Auth::id())->findOrFail($id);
+
+        $materialReq = MaterialReq::where('admin_id', $adminId)->findOrFail($id);
 
         $materialtype = MaterialType::where('admin_id', $adminId)
             ->orderBy('id', 'desc')
             ->get();
 
-        $codes = Customer::select('id', 'name', 'code', 'customer_srno')->get();
+        $codes = Customer::select('id', 'name', 'code', 'customer_srno')
+            ->where('admin_id', $adminId)
+            ->get();
 
-        return view('MaterialReq.add', compact('codes', 'materialtype', 'materialReq'));
+        // ✅ Add $parts
+        $parts = WorkOrder::where('admin_id', $adminId)->get();
+
+        return view('MaterialReq.add', compact('codes', 'materialtype', 'materialReq', 'parts'));
     }
+
     public function updateMaterialReq(Request $request, $id)
     {
         $id = base64_decode($id);
-        $materialReq = MaterialReq::where('admin_id', Auth::id())->findOrFail($id);
+
+        $materialReq = MaterialReq::where('admin_id', Auth::id())
+            ->findOrFail($id);
 
         $request->validate([
             'customer_id' => 'required',
             'date' => 'required|date',
             'work_order_no' => 'required',
             'description' => 'nullable',
+            'part_no' => 'nullable|string|max:100',
         ]);
 
-        $materialReq->update([
-            'customer_id' => $request->customer_id,
-            'date' => $request->date,
-            'work_order_no' => $request->work_order_no,
-            'description' => $request->description,
-            'dia' => $request->dia,
-            'length' => $request->length,
-            'width' => $request->width,
-            'height' => $request->height,
-            'material' => $request->material,
-            'material_rate' => $request->material_rate,
-            'material_gravity' => $request->material_gravity,
-            'qty' => $request->qty,
-            'weight' => $request->weight,
-            'material_cost' => $request->material_cost,
-            'lathe' => $request->lathe,
-            'mg4' => $request->mg4,
-            'mg2' => $request->mg2,
-            'rg2' => $request->rg2,
-            'sg4' => $request->sg4,
-            'sg2' => $request->sg2,
-            'vmc_hrs' => $request->vmc_hrs,
-            'vmc_cost' => $request->vmc_cost,
-            'hrc' => $request->hrc,
-            'edm_qty' => $request->edm_qty,
-            'edm_rate' => $request->edm_rate,
-            'cl' => $request->cl,
-            'total_cost' => $request->total_cost,
-        ]);
+        $materialReq->update($request->all());
 
-        return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement updated successfully!');
+        return redirect()->route('ViewMaterialReq')
+            ->with('success', 'Material Requirement updated successfully!');
     }
+
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);

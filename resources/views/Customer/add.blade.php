@@ -10,13 +10,11 @@
 
                             <!-- Back Button ONLY on Edit -->
                             <a href="{{ route('ViewCustomer') }}" class="btn btn-sm btn-outline-success me-2">
-                                ← Back
+                                ← 
                             </a>
-
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($customer) ? 'Edit Customer' : 'Add Customer' }}
                             </h4>
-
                         </div>
                         <div class="card-body">
                             @if(session('success'))
