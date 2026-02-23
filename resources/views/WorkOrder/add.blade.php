@@ -9,12 +9,12 @@
                 <div class="col-xxl-12">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
-                          
+
                             <!-- Back Button ONLY on Edit -->
                             <a href="{{ route('ViewWorkOrder') }}" class="btn btn-sm btn-outline-success me-2">
-                                ← 
+                                ←
                             </a>
-                        
+
                             <h4 class="mb-0 flex-grow-1"> {{ isset($workorder) ? 'Edit WorkOrder' : 'Add Work Order' }}</h4>
                         </div>
 
@@ -36,13 +36,16 @@
                                                     id="customer_id"
                                                     name="customer_id"
                                                     {{ isset($workorder) ? 'disabled' : '' }}>
+
                                                     <option value="">Select Customer Code</option>
+
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}"
-                                                        {{ old('customer_id', $workorder->customer_id ?? '') == $c->id ? 'selected' : '' }}>
+                                                        {{ old('customer_id', $workorder->customer_id ?? $lastCustomer ?? '') == $c->id ? 'selected' : '' }}>
                                                         {{ $c->code }}
                                                     </option>
                                                     @endforeach
+
                                                 </select>
 
                                                 @if(isset($workorder))
@@ -75,7 +78,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2 ">
+                                        <!-- <div class="col-md-2 ">
                                             <div class="mb-2">
                                                 <label for="previous_part" class="form-label">Previous Part List</label>
                                                 <select class="form-control form-select mt-1" id="previous_part" name="previous_part">
@@ -84,7 +87,7 @@
 
                                                 <span class="text-red small previous_part"></span>
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-md-2">
                                             <div class="mb-2">
@@ -215,15 +218,15 @@
                                             <span class="text-red small material"></span>
                                         </div>
 
-                                        <div class="col-md-9">
+                                        <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">Part Description</label>
-                                                <input type="text" class="form-control mt-1" id="part_description" name="part_description"
-                                                    placeholder="Description"
+                                                <input type="text" class="form-control  mt-1" id="part_description" name="part_description"
+                                                    placeholder="Description" 
                                                     value="{{ old('part_description', $workorder->part_description ?? '') }}">
                                             </div>
                                         </div>
-
+                                   
                                         <div class="text-end mt-3" id="topButtons">
                                             @if(isset($workorder))
                                             <button type="submit" class="btn btn-primary">Update</button>
@@ -241,7 +244,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Sr. No.</th>
-                                                    <th>Customer Code</th>
+                                                    <th>Customer <br>Code</th>
                                                     <th>Part</th>
                                                     <th>Material<br>Type</th>
                                                     <th>Project<br>.name</th>
@@ -265,8 +268,15 @@
                                             </button>
                                         </div>
                                     </div>
-
                                     <script>
+                                        let isEditPage = {
+                                            {
+                                                isset($workorder) ? 'true' : 'false'
+                                            }
+                                        };
+                                    </script>
+                                    <script>
+                                        let isEditingRow = false;
                                         let rowCount = 0;
 
                                         function clearErrors() {
@@ -274,11 +284,13 @@
                                                 if (!el.classList.contains("error")) el.textContent = "";
                                             });
                                         }
-
                                         document.addEventListener("DOMContentLoaded", function() {
                                             let customerDropdown = document.getElementById("customer_id");
+
                                             if (!customerDropdown.hasAttribute("disabled")) {
-                                                customerDropdown.selectedIndex = 0;
+                                                if (!customerDropdown.value) {
+                                                    customerDropdown.selectedIndex = 0;
+                                                }
                                             }
                                         });
 
@@ -394,6 +406,8 @@
                                             });
 
                                             newRow.querySelector(".editRow").addEventListener("click", function() {
+                                                isEditingRow = true;
+
                                                 let row = this.closest('tr');
 
                                                 let customerVal = row.querySelector('input[name*="[customer_id]"]').value;
@@ -436,11 +450,16 @@
                                             document.querySelectorAll("input, textarea").forEach(el => {
                                                 if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
                                             });
-                                            $('#customer_id').val('').trigger('change');
+                                            // $('#customer_id').val('').trigger('change');
+                                            if (!isEditingRow) {
+                                                $('#customer_id').val('').trigger('change');
+                                            }
                                             $('#material').val('').trigger('change');
                                             document.getElementById("workOrderTableWrapper").style.display = "block";
                                             document.getElementById("submitBtn").style.display = "inline-block";
                                             return true;
+
+                                            isEditingRow = false;
                                         }
 
                                         function updateSrNo() {
@@ -516,98 +535,176 @@
                                     <script>
                                         $(document).ready(function() {
 
-                                            function loadProjects(customerId, selectedProjectId = null) {
-                                                if (customerId) {
-                                                    $.ajax({
-                                                        url: '/get-projects/' + customerId,
-                                                        type: 'GET',
-                                                        dataType: 'json',
-                                                        success: function(data) {
-                                                            let projectDropdown = $('#project_id');
-                                                            projectDropdown.html('<option value="">Select Project</option>');
+                                            let isEditPage = @json(isset($workorder));
 
-                                                            if (data.length > 0) {
-                                                                $.each(data, function(index, project) {
-                                                                    let selected = '';
-                                                                    if (selectedProjectId && selectedProjectId == project.id) {
-                                                                        selected = 'selected';
-                                                                    }
-                                                                    projectDropdown.append(
-                                                                        '<option value="' + project.id + '" data-quantity="' + project.quantity + '" ' + selected + '>' +
-                                                                        project.project_name + '</option>'
-                                                                    );
-                                                                });
-                                                            }
-                                                        }
-                                                    });
-                                                } else {
-                                                    $('#project_id').html('<option value="">Select Project</option>');
-                                                    $('#previous_part').html('<option value="">No Previous Part</option>');
-                                                }
+
+                                            // PAGE LOAD PROJECT AUTO LOAD
+                                            let customerId = $('#customer_id').val();
+                                            let projectId = $('#project_id').val();
+
+                                            if (customerId) {
+                                                loadProjects(customerId, projectId);
                                             }
 
-                                            function loadParts(projectId) {
-                                                if (projectId) {
-                                                    $.ajax({
-                                                        url: '/get-parts/' + projectId,
-                                                        type: 'GET',
-                                                        dataType: 'json',
-                                                        success: function(data) {
-                                                            $('#previous_part').empty();
-
-                                                            if (data.length > 0) {
-                                                                $.each(data, function(index, part) {
-                                                                    $('#previous_part').append('<option value="' + part + '">' + part + '</option>');
-                                                                });
-                                                            } else {
-                                                                $('#previous_part').append('<option value="">No Previous Part</option>');
-                                                            }
-                                                        }
-                                                    });
-                                                } else {
-                                                    $('#previous_part').empty().append('<option value="">No Previous Part</option>');
-                                                }
-                                            }
-
+                                            // CUSTOMER CHANGE
                                             $('#customer_id').on('change', function() {
                                                 let customerId = $(this).val();
                                                 loadProjects(customerId);
                                             });
 
-                                            $('#project_id').off('change').on('change', function() {
+                                            // PROJECT CHANGE
+                                            $('#project_id').on('change', function() {
+
                                                 let selectedOption = $(this).find(':selected');
                                                 let projectId = selectedOption.val();
+                                                let customerId = $('#customer_id').val();
+
                                                 let qty = selectedOption.data('quantity');
                                                 let selectedText = selectedOption.text();
 
+                                                loadNextPart(customerId, projectId);
                                                 loadParts(projectId);
 
+                                                // description
                                                 if (selectedText && selectedText !== "Select Project") {
                                                     $('#part_description').val(selectedText).prop('readonly', true);
                                                 } else {
                                                     $('#part_description').val('').prop('readonly', false);
                                                 }
 
-                                                if ($('#workOrderTableWrapper').is(':hidden')) {
-                                                    $('#quantity').val(qty || '');
+                                                // quantity auto only on insert
+                                                if (!isEditPage) {
+                                                    if ($('#workOrderTableWrapper').is(':hidden')) {
+                                                        $('#quantity').val(qty || '');
+                                                    }
                                                 }
+
                                             });
 
+                                            // LOAD PROJECTS
+                                            function loadProjects(customerId, selectedProjectId = null) {
+
+                                                if (!customerId) {
+                                                    $('#project_id').html('<option value="">Select Project</option>');
+                                                    return;
+                                                }
+
+                                                $.ajax({
+                                                    url: '/get-projects/' + customerId,
+                                                    type: 'GET',
+                                                    dataType: 'json',
+                                                    success: function(data) {
+
+                                                        let projectDropdown = $('#project_id');
+                                                        projectDropdown.empty();
+                                                        projectDropdown.append('<option value="">Select Project</option>');
+
+                                                        if (data.length > 0) {
+
+                                                            $.each(data, function(index, project) {
+
+                                                                let selected = '';
+
+                                                                if (selectedProjectId && selectedProjectId == project.id) {
+                                                                    selected = 'selected';
+                                                                }
+
+                                                                let projectNo = project.project_no ?? '';
+                                                                let projectName = project.project_name ?? '';
+
+                                                                projectDropdown.append(
+                                                                    `<option value="${project.id}" 
+                                                                    data-quantity="${project.quantity || ''}" 
+                                                                    ${selected}>
+                                                                    ${projectNo} ${projectName}
+                                                                </option>`
+                                                                );
+
+                                                            });
+
+                                                        } else {
+
+                                                            projectDropdown.append('<option value="">No Project Found</option>');
+
+                                                        }
+
+                                                    }
+                                                });
+
+                                            }
+
+                                            // LOAD PREVIOUS PARTS
+                                            function loadParts(projectId) {
+
+                                                if (!projectId) {
+                                                    $('#previous_part').html('<option value="">No Previous Part</option>');
+                                                    return;
+                                                }
+
+                                                $.ajax({
+                                                    url: '/get-parts/' + projectId,
+                                                    type: 'GET',
+                                                    dataType: 'json',
+                                                    success: function(data) {
+
+                                                        $('#previous_part').empty();
+
+                                                        if (data.length > 0) {
+
+                                                            $.each(data, function(index, part) {
+                                                                $('#previous_part').append(`<option value="${part}">${part}</option>`);
+                                                            });
+
+                                                        } else {
+
+                                                            $('#previous_part').append('<option value="">No Previous Part</option>');
+
+                                                        }
+
+                                                    }
+                                                });
+
+                                            }
+
+                                            // NEXT PART
+                                            function loadNextPart(customerId, projectId) {
+
+                                                if (!customerId || !projectId) return;
+
+                                                $.ajax({
+                                                    url: '/get-next-part/' + customerId + '/' + projectId,
+                                                    type: 'GET',
+                                                    success: function(data) {
+                                                        $('#part').val(data.next_part);
+                                                    }
+                                                });
+
+                                            }
+
+                                            // TEXTAREA EDIT ENABLE
                                             $('#part_description').on('dblclick', function() {
                                                 $(this).prop('readonly', false);
                                             });
 
+
+                                            // EDIT PAGE DATA LOAD
                                             @if(isset($workorder))
+
                                             loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
                                             loadParts('{{ $workorder->project_id }}');
 
                                             setTimeout(function() {
+
                                                 let qty = $("#project_id option:selected").data('quantity');
-                                                if (qty) {
+
+                                                if (!isEditPage && qty) {
                                                     $('#quantity').val(qty);
                                                 }
-                                            }, 800);
+
+                                            }, 600);
+
                                             @endif
+
                                         });
                                     </script>
 

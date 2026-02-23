@@ -42,9 +42,9 @@
                                     <thead>
                                         <tr class="table-light"> 
                                             <th>Sr.<br>No</th>
-                                            <th>Wo<br>Order<br>No.</th>
-                                            <th>Customer <br>Code</th>
-                                            <th>Part<br>No.</th>
+                                            <!-- <th>Wo<br>Order<br>No.</th> -->
+                                            <!-- <th>Customer <br>Code</th> -->
+                                            <!-- <th>Part<br>No.</th> -->
                                             <th>Date</th>
                                             <th>Part Code</th>
                                             <th>Part Description</th>
@@ -69,9 +69,9 @@
 
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $wo->project?->project_no ?? '' }}</td>
-                                            <td>{{ $wo->customer?->code ?? '' }}</td>
-                                            <td>{{ $wo->part }}</td>
+                                            <!-- <td>{{ $wo->project?->project_no ?? '' }}</td> -->
+                                            <!-- <td>{{ $wo->customer?->code ?? '' }}</td> -->
+                                            <!-- <td>{{ $wo->part }}</td> -->
                                             <td>{{ $wo->date }}</td>
                                             <td>
                                                 {{ ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}

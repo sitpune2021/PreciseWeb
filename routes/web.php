@@ -34,7 +34,6 @@ Route::middleware(['auth','check.subscription'])->group(function () {
  
 Route::get('/'                         , [HomeController::class, 'index'])->name('home');
 
- 
 // Client Routes
 Route::get( 'client/add'                        , [ClientContoller::class, 'AddClient'])->name('AddClient');
 Route::get( 'client/view'                       , [ClientContoller::class, 'ViewClient'])->name('ViewClient');
@@ -82,6 +81,9 @@ Route::post('WorkOrder/import'                  , [WorkorderController::class, '
 Route::get( 'workorder/export-sample'           , [WorkorderController::class, 'exportSample'])->name('exportWorkOrder');
 Route::get( 'workorder/trash'                   , [WorkOrderController::class, 'trash'])->name('trashWorkOrder');
 Route::get( 'workorder/restore/{id}'            , [WorkOrderController::class, 'restore'])->name('restoreWorkOrder');
+Route::get('/get-next-part/{customerId}/{projectId}', [WorkOrderController::class, 'getNextPart']);
+Route::get('/get-last-customer-code', [WorkOrderController::class,'getLastCustomerCode']);
+
 
 // Project Routes
 Route::get( 'project/add'                       , [ProjectController::class, 'AddProject'])->name('AddProject');

@@ -38,7 +38,13 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('WorkOrder.add', compact('codes', 'projects', 'workorders', 'materialtype'));
+
+        // LAST CUSTOMER CODE
+        $lastCustomer = WorkOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('customer_id');
+
+        return view('WorkOrder.add', compact('codes', 'projects', 'workorders', 'materialtype', 'lastCustomer'));
     }
 
     public function ViewWorkOrder()
@@ -121,7 +127,11 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype'));
+        $lastCustomer = WorkOrder::where('admin_id', $adminId)
+            ->latest()
+            ->value('customer_id');
+
+        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer'));
     }
 
     public function update(Request $request, string $encryptedId)
@@ -183,6 +193,48 @@ class WorkOrderController extends Controller
             ->pluck('part');
 
         return response()->json($parts);
+    }
+
+    public function getNextPart($customerId, $projectId)
+    {
+        $adminId = Auth::id();
+
+        $lastPart = WorkOrder::where('customer_id', $customerId)
+            ->where('project_id', $projectId)
+            ->where('admin_id', $adminId)
+            ->max('part');
+
+        $nextPart = $lastPart ? $lastPart + 1 : 1;
+
+        return response()->json([
+            'next_part' => $nextPart
+        ]);
+    }
+
+    public function getLastCustomer()
+    {
+        $adminId = Auth::id();
+
+        $lastCustomer = WorkOrder::where('admin_id', $adminId)
+            ->latest()
+            ->value('customer_id');
+
+        return response()->json(['customer_id' => $lastCustomer]);
+    }
+
+    public function getLastCustomerCode()
+    {
+        $lastCustomer = Customer::orderBy('id', 'desc')->first();
+
+        if ($lastCustomer) {
+            return response()->json([
+                'code' => $lastCustomer->customer_code
+            ]);
+        }
+
+        return response()->json([
+            'code' => 'CUST001'
+        ]);
     }
 
     public function trash()

@@ -76,7 +76,7 @@ class QuotationController extends Controller
             'items' => 'required|array|min:1',
             'items.*.Description' => 'required|string',
             'items.*.qty' => 'required|numeric|min:1',
-            'items.*.material_type_id' => 'required|exists:material_types,id',
+            'items.*.material_type_id' => 'nullable|exists:material_types,id',
 
         ], [
 
@@ -85,9 +85,6 @@ class QuotationController extends Controller
             'items.*.qty.numeric'  => 'Quantity must be a number.',
             'items.*.qty.min'      => 'Quantity must be at least 1.',
 
-            // Material Type Messages
-            'items.*.material_type_id.required' => 'Please select Material Type.',
-            'items.*.material_type_id.exists'   => 'Invalid Material selected.',
         ]);
 
         DB::beginTransaction();
@@ -241,7 +238,7 @@ class QuotationController extends Controller
             $quotation = Quotation::with('items')->findOrFail($id);
 
 
-            /* ===== UPDATE HEADER ===== */
+            /*  UPDATE HEADER */
             $quotation->update([
                 'customer_id'      => $request->customer_id,
                 'quotation_no'     => $request->quotation_no,
@@ -252,12 +249,12 @@ class QuotationController extends Controller
                 'terms_conditions' => $request->terms_conditions,
             ]);
 
-            /* ===== DELETE OLD ITEMS ===== */
+            /*  DELETE OLD ITEMS  */
             $quotation->items()->delete();
 
             $grandTotal = 0;
 
-            /* ===== INSERT ITEMS ===== */
+            /*  INSERT ITEMS  */
             foreach ($request->items as $item) {
                 // Use floatval() to make sure null or empty strings are treated as 0
                 $machiningCost = floatval($item['machining_cost'] ?? 0);
@@ -289,7 +286,7 @@ class QuotationController extends Controller
                 ]);
             }
 
-            /* ===== UPDATE TOTAL ===== */
+            /*  UPDATE TOTAL  */
             $quotation->update([
                 'total_manufacturing_cos' => $grandTotal
             ]);

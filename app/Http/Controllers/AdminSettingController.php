@@ -25,7 +25,7 @@ class AdminSettingController extends Controller
                 'stamp' => null,
             ]);
         }
-        return view('Admin.setting', compact('data'));
+        return view('admin.setting', compact('data'));
     }
     public function UpdateAdminSetting(Request $request)
     {

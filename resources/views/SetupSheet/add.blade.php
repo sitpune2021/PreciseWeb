@@ -8,12 +8,12 @@
                 <div class="col-xxl-12">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
-                         
+
                             <!-- Back Button ONLY on Edit -->
                             <a href="{{ route('ViewSetupSheet') }}" class="btn btn-sm btn-outline-success me-2">
-                                ← 
+                                ←
                             </a>
-                        
+
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($setupSheet) ? 'Edit Setup Sheet' : 'Add Setup Sheet' }}
                             </h4>
@@ -181,6 +181,9 @@
                                                     value="{{ old('x_refer', $setupSheet->x_refer ?? '') }}">
                                                 <ul id="xOptions" class="dropdown-list">
                                                     <li data-value="">Select X refer</li>
+                                                    @foreach($xOptions as $opt)
+                                                    <li data-value="{{ $opt }}">{{ $opt }}</li>
+                                                    @endforeach
                                                     <li data-value="Centre">Centre</li>
                                                     <li data-value="Face Shown">Face Shown</li>
                                                     <li data-value="Hole Centre">Hole Centre</li>
@@ -200,6 +203,9 @@
                                                     value="{{ old('y_refer', $setupSheet->y_refer ?? '') }}">
                                                 <ul id="yOptions" class="dropdown-list">
                                                     <li data-value="">Select Y refer</li>
+                                                    @foreach($yOptions as $opt)
+                                                    <li data-value="{{ $opt }}">{{ $opt }}</li>
+                                                    @endforeach
                                                     <li data-value="Centre">Centre</li>
                                                     <li data-value="Face Shown">Face Shown</li>
                                                     <li data-value="Hole Centre">Hole Centre</li>
@@ -219,6 +225,9 @@
                                                     value="{{ old('z_refer', $setupSheet->z_refer ?? '') }}">
                                                 <ul id="zOptions" class="dropdown-list">
                                                     <li data-value="">Select Z refer</li>
+                                                    @foreach($zOptions as $opt)
+                                                    <li data-value="{{ $opt }}">{{ $opt }}</li>
+                                                    @endforeach
                                                     <li data-value="Top">Top</li>
                                                     <li data-value="Centre">Centre</li>
                                                     <li data-value="Face Shown">Face Shown</li>
@@ -238,6 +247,9 @@
                                                     value="{{ old('clamping', $setupSheet->clamping ?? '') }}">
                                                 <ul id="clampingOptions" class="dropdown-list">
                                                     <li data-value="">Select Clamping</li>
+                                                    @foreach($clampingOptions as $opt)
+                                                    <li data-value="{{ $opt }}">{{ $opt }}</li>
+                                                    @endforeach
                                                     <li data-value="Vice">Vice</li>
                                                     <li data-value="Fixture">Fixture</li>
                                                     <li data-value="Magnet">Magnet</li>

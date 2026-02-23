@@ -167,6 +167,16 @@ for ($m = 1; $m <= 12; $m++) {
         .newJob {
             margin-top: 35px;
         }
+
+        .btn-sm {
+            font-size: 12px;
+            padding: 5px 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            transition: 0.2s;
+        }
     </style>
 
     <div class="main-content">
@@ -247,6 +257,62 @@ for ($m = 1; $m <= 12; $m++) {
 
                 @if(auth()->user()->user_type == 2 || auth()->user()->user_type==3 || auth()->user()->user_type==4 || auth()->user()->user_type==5 )
 
+
+                <div class="row g-2">
+
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Quick Menu</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap gap-2">
+
+                                <a href="{{ route('AddCustomer') }}" class="btn btn-sm btn-info ">
+                                    <i class="ri-group-line"></i> Add Customer
+                                </a>
+
+                                <a href="{{ route('AddVendor') }}" class="btn btn-sm btn-dark ">
+                                    <i class="ri-store-line"></i> Add Vendor
+                                </a>
+
+                                <a href="{{ route('AddProject') }}" class="btn btn-sm btn-success ">
+                                    <i class="ri-folder-add-line"></i> Add Project
+                                </a>
+
+                                <a href="{{ route('AddWorkOrder') }}" class="btn btn-sm btn-warning ">
+                                    <i class="ri-file-add-line"></i>Add Workorder
+                                </a>
+
+                                <a href="{{ route('AddSetupSheet') }}" class="btn btn-sm btn-secondary ">
+                                    <i class="ri-settings-3-line"></i> Add Setup Sheet
+                                </a>
+
+                                <a href="{{ route('AddMachinerecord') }}" class="btn btn-sm btn-info ">
+                                    <i class="ri-cpu-line"></i> Add Machine Rec
+                                </a>
+
+                                <a href="{{ route('AddMaterialReq') }}" class="btn btn-sm btn-danger ">
+                                    <i class="ri-stack-line"></i> Add Material Req
+                                </a>
+
+                                <a href="{{ route('AddMaterialorder') }}" class="btn btn-sm btn-warning ">
+                                    <i class="ri-stack-line"></i> Add Material Order
+                                </a>
+
+                                <a href="{{ route('proforma.add') }}" class="btn btn-sm btn-primary ">
+                                    <i class="ri-file-text-line"></i> Add Proforma Inv
+                                </a>
+
+                                <a href="{{ route('Addquotation') }}" class="btn btn-sm btn-info ">
+                                    <i class="ri-folder-add-line"></i> Add Quotation
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!--------------------- project page ---------------------------------->
                 @if(hasPermission('Dashboard', 'view_project'))
                 <div class="col-xl-12">
@@ -257,11 +323,11 @@ for ($m = 1; $m <= 12; $m++) {
                             </h4>
                             <div class="flex-shrink-0">
                                 <a href="{{ route('AddProject') }}"
-                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                    class="btn btn-sm btn-primary  me-2 shadow-sm btn-animate">
                                     <i class="ri-add-line"></i> Add New
                                 </a>
                                 <a href="{{ route('ViewProject') }}"
-                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                    class="btn btn-sm btn-success  shadow-sm btn-animate">
                                     View All <i class="ri-arrow-right-line ms-1"></i>
                                 </a>
                             </div>
@@ -338,11 +404,11 @@ for ($m = 1; $m <= 12; $m++) {
                             </h4>
                             <div class="flex-shrink-0">
                                 <a href="{{ route('AddWorkOrder') }}"
-                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
+                                    class="btn btn-sm btn-primary  me-2 shadow-sm btn-animate">
                                     <i class="ri-add-line"></i> Add New
                                 </a>
                                 <a href="{{ route('ViewWorkOrder') }}"
-                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
+                                    class="btn btn-sm btn-success  shadow-sm btn-animate">
                                     View All <i class="ri-arrow-right-line ms-1"></i>
                                 </a>
                             </div>
@@ -423,81 +489,100 @@ for ($m = 1; $m <= 12; $m++) {
 
                 <!-- ====== Latest Machine Records ====== -->
                 @if(hasPermission('Dashboard', 'view_machinerecord'))
-                <div class="col-xxl-8">
-                    <div class="card">
-                        <div class="card-header align-items-center d-flex">
-                            <h4 class="card-title mb-0 flex-grow-1">Latest Machine Records</h4>
-                            <div class="flex-shrink-0">
-                                <a href="{{ route('AddMachinerecord') }}"
-                                    class="btn btn-sm btn-primary rounded-pill me-2 shadow-sm btn-animate">
-                                    <i class="ri-add-line"></i> Add New
-                                </a>
-                                <a href="{{ route('ViewMachinerecord') }}"
-                                    class="btn btn-sm btn-success rounded-pill shadow-sm btn-animate">
-                                    View All <i class="ri-arrow-right-line ms-1"></i>
-                                </a>
+                <div class="row">
+                    <div class="col-xxl-8">
+                        <div class="card">
+                            <div class="card-header align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Latest Machine Records</h4>
+                                <div class="flex-shrink-0">
+                                    <a href="{{ route('AddMachinerecord') }}"
+                                        class="btn btn-sm btn-primary  me-2 shadow-sm btn-animate">
+                                        <i class="ri-add-line"></i> Add New
+                                    </a>
+                                    <a href="{{ route('ViewMachinerecord') }}"
+                                        class="btn btn-sm btn-success  shadow-sm btn-animate">
+                                        View All <i class="ri-arrow-right-line ms-1"></i>
+                                    </a>
+                                </div>
+
                             </div>
 
+                            <div class="card-body">
+                                <div class="table-responsive table-card">
+                                    <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
+                                        <thead class="text-muted table-light">
+                                            <tr>
+                                                <th scope="col">SR NO.</th>
+                                                <th scope="col">Part No</th>
+                                                <th scope="col">Work Order</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Start Time</th>
+                                                <th scope="col">End Time</th>
+                                                <th scope="col">Total Run (Hrs)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($latestMachineRecords as $rec)
+                                            <tr>
+                                                <td>
+                                                    <a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a>
+                                                </td>
+                                                <td class="fw-bold">{{ $rec->part_no }}</td>
+                                                <td>{{ $rec->work_order }}</td>
+
+                                                <td>
+                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('h:i A') : '-' }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('h:i A') : '-' }}
+                                                </td>
+
+                                                <td>
+                                                    @if($rec->start_time && $rec->end_time)
+                                                    @php
+                                                    $diffInMinutes = \Carbon\Carbon::parse($rec->start_time)
+                                                    ->diffInMinutes(\Carbon\Carbon::parse($rec->end_time));
+                                                    $hours = number_format($diffInMinutes / 60, 2);
+                                                    @endphp
+                                                    <span class="text-success">
+                                                        {{ $hours }} hr
+                                                    </span>
+                                                    @else
+                                                    <span class="text-muted">Running...</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted">No Machine Records Found</td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="card-body">
-                            <div class="table-responsive table-card">
-                                <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
-                                    <thead class="text-muted table-light">
-                                        <tr>
-                                            <th scope="col">SR NO.</th>
-                                            <th scope="col">Part No</th>
-                                            <th scope="col">Work Order</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Start Time</th>
-                                            <th scope="col">End Time</th>
-                                            <th scope="col">Total Run (Hrs)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($latestMachineRecords as $rec)
-                                        <tr>
-                                            <td>
-                                                <a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a>
-                                            </td>
-                                            <td class="fw-bold">{{ $rec->part_no }}</td>
-                                            <td>{{ $rec->work_order }}</td>
+                    <div class="col-xxl-4">
+                        <div class="card shadow-lg border-0 bg-light h-100">
+                            <div class="card-body d-flex flex-column justify-content-center text-center">
 
-                                            <td>
-                                                {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
-                                            </td>
+                                <p class="text-muted">
+                                    Create new machine setup sheet quickly from here.
+                                </p>
 
-                                            <td>
-                                                {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('h:i A') : '-' }}
-                                            </td>
+                                <a href="{{ route('AddSetupSheet') }}"
+                                    class="btn btn-primary  px-3 mt-2">
+                                    <i class="ri-add-circle-line me-1"></i> Add Setup Sheet
+                                </a>
 
-                                            <td>
-                                                {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('h:i A') : '-' }}
-                                            </td>
-
-                                            <td>
-                                                @if($rec->start_time && $rec->end_time)
-                                                @php
-                                                $diffInMinutes = \Carbon\Carbon::parse($rec->start_time)
-                                                ->diffInMinutes(\Carbon\Carbon::parse($rec->end_time));
-                                                $hours = number_format($diffInMinutes / 60, 2);
-                                                @endphp
-                                                <span class="text-success">
-                                                    {{ $hours }} hr
-                                                </span>
-                                                @else
-                                                <span class="text-muted">Running...</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="7" class="text-center text-muted">No Machine Records Found</td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-
-                                </table>
                             </div>
                         </div>
                     </div>

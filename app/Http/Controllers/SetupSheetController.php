@@ -20,7 +20,27 @@ class SetupSheetController extends Controller
             ->orderBy('id', 'desc')
             ->get();
         $settings = Setting::where('admin_id', Auth::id())->get();
-        return view('SetupSheet.add', compact('codes', 'settings'));
+
+        $xOptions = SetupSheet::select('x_refer')
+            ->whereNotNull('x_refer')
+            ->distinct()
+            ->pluck('x_refer');
+
+        $yOptions = SetupSheet::select('y_refer')
+            ->whereNotNull('y_refer')
+            ->distinct()
+            ->pluck('y_refer');
+
+        $zOptions = SetupSheet::select('z_refer')
+            ->whereNotNull('z_refer')
+            ->distinct()
+            ->pluck('z_refer');
+
+        $clampingOptions = SetupSheet::select('clamping')
+            ->whereNotNull('clamping')
+            ->distinct()
+            ->pluck('clamping');
+        return view('SetupSheet.add', compact('codes', 'settings', 'xOptions', 'yOptions', 'zOptions', 'clampingOptions'));
     }
 
     public function storeSetupSheet(Request $request)
@@ -46,15 +66,15 @@ class SetupSheetController extends Controller
             'qty' => ['required', 'integer', 'min:1'],
 
             'holes'        => 'nullable|array',
-            'holes.*'      => 'required|numeric|min:0',
-            'hole_x'       => 'required|array',
-            'hole_x.*'     => 'required|numeric|min:0',
-            'hole_y'       => 'required|array',
-            'hole_y.*'     => 'required|numeric|min:0',
-            'hole_dia'     => 'required|array',
-            'hole_dia.*'   => 'required|numeric|min:0',
-            'hole_depth'   => 'required|array',
-            'hole_depth.*' => 'required|numeric|min:0',
+            'holes.*'      => 'nullable|numeric|min:0',
+            'hole_x'       => 'nullable|array',
+            'hole_x.*'     => 'nullable|numeric|min:0',
+            'hole_y'       => 'nullable|array',
+            'hole_y.*'     => 'nullable|numeric|min:0',
+            'hole_dia'     => 'nullable|array',
+            'hole_dia.*'   => 'nullable|numeric|min:0',
+            'hole_depth'   => 'nullable|array',
+            'hole_depth.*' => 'nullable|numeric|min:0',
 
             'setup_image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
@@ -99,7 +119,27 @@ class SetupSheetController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record'));
+        $xOptions = SetupSheet::select('x_refer')
+            ->whereNotNull('x_refer')
+            ->distinct()
+            ->pluck('x_refer');
+
+        $yOptions = SetupSheet::select('y_refer')
+            ->whereNotNull('y_refer')
+            ->distinct()
+            ->pluck('y_refer');
+
+        $zOptions = SetupSheet::select('z_refer')
+            ->whereNotNull('z_refer')
+            ->distinct()
+            ->pluck('z_refer');
+
+        $clampingOptions = SetupSheet::select('clamping')
+            ->whereNotNull('clamping')
+            ->distinct()
+            ->pluck('clamping');
+
+        return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record', 'xOptions', 'yOptions', 'zOptions', 'clampingOptions'));
     }
 
     public function update(Request $request, string $encryptedId)
