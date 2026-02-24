@@ -27,7 +27,12 @@ class ProjectController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('Project.add', compact('customers', 'codes'));
+        $projects = Project::with('customer')
+            ->where('admin_id', $adminId)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('Project.add', compact('customers', 'codes', 'projects'));
     }
     public function storeProject(Request $request)
     {
@@ -68,7 +73,7 @@ class ProjectController extends Controller
             'project_no'    => $projectNo,
         ]);
 
-        return redirect()->route('ViewProject')->with('success', 'Project added successfully.');
+        return redirect()->route('AddProject')->with('success', 'Project added successfully.');
     }
     public function ViewProject()
     {
@@ -94,7 +99,12 @@ class ProjectController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('Project.add', compact('project', 'customers'));
+        $projects = Project::with('customer')
+            ->where('admin_id', $adminId)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('Project.add', compact('project', 'customers', 'projects'));
     }
     public function update(Request $request, string $encryptedId)
     {
@@ -135,7 +145,7 @@ class ProjectController extends Controller
             'date'          => $request->date ?: now(),
         ]);
 
-        return redirect()->route('ViewProject')->with('success', 'Project updated successfully.');
+        return redirect()->route('AddProject')->with('success', 'Project updated successfully.');
     }
     public function destroy(string $encryptedId)
     {
@@ -145,6 +155,6 @@ class ProjectController extends Controller
         $project = Project::where('admin_id', $adminId)->findOrFail($id);
         $project->delete();
 
-        return redirect()->route('ViewProject')->with('success', 'Project deleted successfully.');
+        return redirect()->route('AddProject')->with('success', 'Project deleted successfully.');
     }
 }

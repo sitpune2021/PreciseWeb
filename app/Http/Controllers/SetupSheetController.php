@@ -168,16 +168,16 @@ class SetupSheetController extends Controller
 
             'qty'         => ['required', 'integer', 'min:1'],
 
-            'holes'        => 'nullable|array',
-            'holes.*'      => 'required|numeric|min:0',
-            'hole_x'       => 'required|array',
-            'hole_x.*'     => 'required|numeric|min:0',
-            'hole_y'       => 'required|array',
-            'hole_y.*'     => 'required|numeric|min:0',
-            'hole_dia'     => 'required|array',
-            'hole_dia.*'   => 'required|numeric|min:0',
-            'hole_depth'   => 'required|array',
-            'hole_depth.*' => 'required|numeric|min:0',
+             'holes'        => 'nullable|array',
+            'holes.*'      => 'nullable|numeric|min:0',
+            'hole_x'       => 'nullable|array',
+            'hole_x.*'     => 'nullable|numeric|min:0',
+            'hole_y'       => 'nullable|array',
+            'hole_y.*'     => 'nullable|numeric|min:0',
+            'hole_dia'     => 'nullable|array',
+            'hole_dia.*'   => 'nullable|numeric|min:0',
+            'hole_depth'   => 'nullable|array',
+            'hole_depth.*' => 'nullable|numeric|min:0',
 
             'setup_image'  => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);

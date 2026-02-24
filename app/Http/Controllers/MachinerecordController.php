@@ -71,17 +71,10 @@ class MachinerecordController extends Controller
             'adjustment'  => 'nullable|string|max:100',
             'hrs'         => 'required|numeric|min:0',
             'invoice_no'  => 'nullable|string|max:100',
+            'work_order_id' => 'required|exists:work_orders,id',
         ]);
 
         $validated['admin_id'] = Auth::id();
-
-        // Keep work_order as-is (user-visible)
-        $validated['work_order'] = $request->work_order;
-
-        // **Generate serial for work_order_id**
-        $lastSerial = MachineRecord::max('work_order_id'); // get highest value in table
-        $validated['work_order_id'] = $lastSerial ? $lastSerial + 1 : 1;
-
         MachineRecord::create($validated);
 
         return redirect()->route('ViewMachinerecord')

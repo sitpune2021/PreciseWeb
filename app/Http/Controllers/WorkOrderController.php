@@ -44,6 +44,7 @@ class WorkOrderController extends Controller
             ->latest('id')
             ->value('customer_id');
 
+
         return view('WorkOrder.add', compact('codes', 'projects', 'workorders', 'materialtype', 'lastCustomer'));
     }
 
@@ -101,7 +102,7 @@ class WorkOrderController extends Controller
             ]);
         }
 
-        return redirect()->route('ViewWorkOrder')->with('success', 'Work Orders added successfully!');
+        return redirect()->route('AddWorkOrder')->with('success', 'Work Orders added successfully!');
     }
 
     public function edit(string $encryptedId)
@@ -131,7 +132,12 @@ class WorkOrderController extends Controller
             ->latest()
             ->value('customer_id');
 
-        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer'));
+        $workorders = WorkOrder::with(['customer', 'project'])
+            ->where('admin_id', $adminId)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer', 'workorders'));
     }
 
     public function update(Request $request, string $encryptedId)
@@ -156,7 +162,7 @@ class WorkOrderController extends Controller
         $workOrder = WorkOrder::where('admin_id', $adminId)->findOrFail($id);
         $workOrder->update($validated);
 
-        return redirect()->route('ViewWorkOrder')->with('success', 'Work Entry updated successfully.');
+        return redirect()->route('AddWorkOrder')->with('success', 'Work Entry updated successfully.');
     }
 
     public function destroy(string $encryptedId)
@@ -167,7 +173,7 @@ class WorkOrderController extends Controller
         $workOrder = WorkOrder::where('admin_id', $adminId)->findOrFail($id);
         $workOrder->delete();
 
-        return redirect()->route('ViewWorkOrder')->with('success', 'Work Order deleted successfully.');
+        return redirect()->route('AddWorkOrder')->with('success', 'Work Order deleted successfully.');
     }
 
     public function getProjects($customerId)
@@ -271,7 +277,7 @@ class WorkOrderController extends Controller
                 ->with('success', "Work Order '{$workOrder->work_order_no}' already exists. Redirected to Edit Page.");
         }
 
-        return redirect()->route('ViewWorkOrder')
+        return redirect()->route('AddWorkOrder')
             ->with('success', "Work Order '{$workOrder->work_order_no}' restored successfully.");
     }
 }

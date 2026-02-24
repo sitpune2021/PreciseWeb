@@ -11,12 +11,12 @@
                     <div class="card shadow-sm">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
-                                                              
+
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('ViewMachinerecord') }}" class="btn btn-sm btn-outline-success me-2">
-                                    ← 
+                                    ←
                                 </a>
-                            
+
                                 {{ isset($record) ? 'Edit Machine Record' : 'Add Machine Record' }}
                             </h5>
                         </div>
@@ -30,9 +30,7 @@
                                 @method('PUT')
                                 @endif
                                 <div class="row g-3">
-
-
-
+                                    <input type="hidden" name="work_order_id" id="work_order_id">
                                     <div class="col-md-4">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
@@ -45,6 +43,7 @@
                                             @endphp
 
                                             <option value="{{ $partNo }}"
+                                                data-id="{{ $wo->id }}"
                                                 data-code="{{ $wo->customer?->code ?? '' }}"
                                                 data-workorder="{{ $wo->project?->project_no }}"
 
@@ -248,8 +247,6 @@
                                     </div>
                                 </div>
                             </form>
-
-
                         </div>
                     </div>
                 </div>
@@ -259,11 +256,12 @@
     </div>
 </div>
 <script>
+    //  PART NO CHANGE 
     document.getElementById('part_no').addEventListener('change', function() {
-
 
         let selected = this.options[this.selectedIndex];
 
+        document.getElementById('work_order_id').value = selected.getAttribute('data-id') || '';
         document.getElementById('code').value = selected.getAttribute('data-code') || '';
         document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
         document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
@@ -272,15 +270,19 @@
     });
 
 
+    //  CALCULATE HOURS 
     function calculateHours() {
+
         let start = document.querySelector('[name="start_time"]').value;
         let end = document.querySelector('[name="end_time"]').value;
 
         if (start && end) {
+
             let startTime = new Date(start);
             let endTime = new Date(end);
 
             if (endTime >= startTime) {
+
                 let diffMinutes = (endTime - startTime) / (1000 * 60);
                 let actualHrs = diffMinutes / 60;
                 let hrs = diffMinutes * 0.02;
@@ -290,7 +292,6 @@
                 document.querySelector('[name="time_taken"]').value = timeTaken.toFixed(2);
                 document.querySelector('[name="actual_hrs"]').value = actualHrs.toFixed(2);
 
-
                 if (document.querySelector('[name="minute"]')) {
                     document.querySelector('[name="minute"]').value = diffMinutes.toFixed(0);
                 }
@@ -298,49 +299,50 @@
         }
     }
 
-    // Event binding
+
+    //  TIME EVENTS 
     document.querySelector('[name="start_time"]').addEventListener('change', calculateHours);
     document.querySelector('[name="end_time"]').addEventListener('change', calculateHours);
-</script>
 
-<script>
+
+    //  CUSTOMER CHANGE 
     document.getElementById('customer_id').addEventListener('change', function() {
+
         let customerId = this.value;
         let partSelect = document.getElementById('part_no');
 
-        partSelect.innerHTML = '<option value="">Select Part No</option>'; // reset
+        partSelect.innerHTML = '<option value="">Select Part No</option>';
 
         if (customerId) {
+
             fetch(`/get-customer-parts/${customerId}`)
                 .then(response => response.json())
                 .then(data => {
+
                     data.forEach(part => {
+
                         let option = document.createElement('option');
+
                         option.value = part.part_no;
                         option.textContent = part.part_no;
+
+                        option.setAttribute('data-id', part.id);
                         option.setAttribute('data-code', part.code);
                         option.setAttribute('data-workorder', part.project_id);
                         option.setAttribute('data-partdesc', part.part_description);
                         option.setAttribute('data-qty', part.quantity);
                         option.setAttribute('data-e_time', part.exp_time);
+
                         partSelect.appendChild(option);
+
                     });
+
                 });
+
         }
-    });
-
-    document.getElementById('part_no').addEventListener('change', function() {
-        let selected = this.options[this.selectedIndex];
-
-        document.getElementById('code').value = selected.getAttribute('data-code') || '';
-        document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
-        document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
-        document.getElementById('qty').value = selected.getAttribute('data-qty') || '';
-        document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
 
     });
 </script>
-
 
 <script>
     $(document).ready(function() {

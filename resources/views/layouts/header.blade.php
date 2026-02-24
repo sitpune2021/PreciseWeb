@@ -298,7 +298,7 @@
                             <i class="ri-vip-crown-2-line me-1"></i> Plan Management
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('SubList') ? '' : 'collapsed' }}" href="#sidebarlist" data-bs-toggle="collapse">
                             <i class="ri-user-star-line"></i> <span>Subscription List</span>
@@ -448,14 +448,14 @@
                     <!-- Projects -->
                     <li class="menu-title"><i class="ri-briefcase-line me-2 text-purple"></i><span>Projects</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('ViewProject') ? '' : 'collapsed' }}" href="#sidebarProject" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('AddProject') ? '' : 'collapsed' }}" href="#sidebarProject" data-bs-toggle="collapse">
                             <i class="ri-task-line"></i> <span>Project Entry</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewProject') ? 'show' : '' }}" id="sidebarProject">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('AddProject') ? 'show' : '' }}" id="sidebarProject">
                             <ul class="nav nav-sm flex-column">
 
-                                @if(hasPermission('Projects', 'view'))
-                                <li class="nav-item"><a href="{{ route('ViewProject') }}" class="nav-link {{ request()->routeIs('ViewProject') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
+                                @if(hasPermission('Projects', 'Add'))
+                                <li class="nav-item"><a href="{{ route('AddProject') }}" class="nav-link {{ request()->routeIs('AddProject') ? 'active' : '' }}"><i class="ri-add-circle-line me-1"></i></i> Add</a></li>
                                 @endif
                             </ul>
                         </div>
@@ -466,14 +466,14 @@
                     @if(hasPermission('WorkOrders', 'view'))
                     <li class="menu-title"><i class="ri-file-list-2-line me-2 text-secondary"></i><span>Work Orders</span></li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('ViewWorkOrder') ? '' : 'collapsed' }}" href="#sidebarWorkOrder" data-bs-toggle="collapse">
+                        <a class="nav-link menu-link {{ request()->routeIs('AddWorkOrder') ? '' : 'collapsed' }}" href="#sidebarWorkOrder" data-bs-toggle="collapse">
                             <i class="ri-clipboard-line"></i> <span>Work Order Entry</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('ViewWorkOrder') ? 'show' : '' }}" id="sidebarWorkOrder">
+                        <div class="collapse menu-dropdown {{ request()->routeIs('AddWorkOrder') ? 'show' : '' }}" id="sidebarWorkOrder">
                             <ul class="nav nav-sm flex-column">
 
                                 @if(hasPermission('WorkOrders', 'view'))
-                                <li class="nav-item"><a href="{{ route('ViewWorkOrder') }}" class="nav-link {{ request()->routeIs('ViewWorkOrder') ? 'active' : '' }}"><i class="ri-eye-line me-1"></i> View</a></li>
+                                <li class="nav-item"><a href="{{ route('AddWorkOrder') }}" class="nav-link {{ request()->routeIs('AddWorkOrder') ? 'active' : '' }}"><i class="ri-add-circle-line me-1"></i> Add</a></li>
                                 @endif
                             </ul>
                         </div>
@@ -681,7 +681,7 @@
     <script src="{{asset('assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
     <script src="{{asset('assets/js/plugins.js')}}"></script>
 
-   
+
 
     <!-- gridjs js -->
     <script src="{{asset('assets/libs/gridjs/gridjs.umd.js')}}"></script>

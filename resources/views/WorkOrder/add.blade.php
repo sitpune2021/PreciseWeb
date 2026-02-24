@@ -11,7 +11,7 @@
                         <div class="card-header align-items-center d-flex">
 
                             <!-- Back Button ONLY on Edit -->
-                            <a href="{{ route('ViewWorkOrder') }}" class="btn btn-sm btn-outline-success me-2">
+                            <a href="{{ route('home') }}" class="btn btn-sm btn-outline-success me-2">
                                 ←
                             </a>
 
@@ -19,9 +19,7 @@
                         </div>
 
                         <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
-                            @endif
+
                             <div class="live-preview">
                                 <form id="workOrderForm" action="{{ isset($workorder) ? route('updateWorkEntry', base64_encode($workorder->id)) : route('storeWorkEntry') }}" method="POST">
 
@@ -222,11 +220,11 @@
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label">Part Description</label>
                                                 <input type="text" class="form-control  mt-1" id="part_description" name="part_description"
-                                                    placeholder="Description" 
+                                                    placeholder="Description"
                                                     value="{{ old('part_description', $workorder->part_description ?? '') }}">
                                             </div>
                                         </div>
-                                   
+
                                         <div class="text-end mt-3" id="topButtons">
                                             @if(isset($workorder))
                                             <button type="submit" class="btn btn-primary">Update</button>
@@ -242,7 +240,7 @@
                                     <div class="table-responsive mt-4" id="workOrderTableWrapper" style="display: none;">
                                         <table class="table table-bordered" id="workOrderTable">
                                             <thead>
-                                                <tr>
+                                                <tr class="bg-light">
                                                     <th>Sr. No.</th>
                                                     <th>Customer <br>Code</th>
                                                     <th>Part</th>
@@ -268,117 +266,256 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <script>
-                                        let isEditPage = {
-                                            {
-                                                isset($workorder) ? 'true' : 'false'
-                                            }
-                                        };
-                                    </script>
-                                    <script>
-                                        let isEditingRow = false;
-                                        let rowCount = 0;
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
 
-                                        function clearErrors() {
-                                            document.querySelectorAll(".text-red").forEach(el => {
-                                                if (!el.classList.contains("error")) el.textContent = "";
-                                            });
-                                        }
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            let customerDropdown = document.getElementById("customer_id");
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @if(session('success'))
+                            <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:1055;">
+                                <div id="successAlert"
+                                    class="alert alert-success alert-dismissible fade show py-2 px-3 shadow-sm text-center"
+                                    style="max-width:500px;">
+                                    {{ session('success') }}
+                                </div>
+                            </div>
+                            @endif
+                            <div class="card">
 
-                                            if (!customerDropdown.hasAttribute("disabled")) {
-                                                if (!customerDropdown.value) {
-                                                    customerDropdown.selectedIndex = 0;
-                                                }
-                                            }
-                                        });
 
-                                        function validateFields() {
-                                            clearErrors();
-                                            let hasError = false;
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">View Work Order Entries</h5>
 
-                                            let customerVal = document.querySelector("#customer_id").value;
-                                            let part = document.getElementById("part").value;
-                                            let material = document.getElementById("material").value;
-                                            let project_id = document.getElementById("project_id").value;
-                                            let date = document.getElementById("date").value;
-                                            let exp_time = document.getElementById("exp_time").value;
-                                            let quantity = document.getElementById("quantity").value;
-                                            let description = document.getElementById("part_description").value;
+                                    <div class="d-flex align-items-center gap-2">
+                                        <!-- Add WorkOrder Button -->
+                                        <!-- @if(hasPermission('WorkOrders', 'add'))
+                                        <a href="{{ route('AddWorkOrder') }}" class="btn btn-success btn-sm">
+                                            <i class="ri-add-line align-middle"></i> Add WorkOrder
+                                        </a>
+                                        @endif -->
 
-                                            if (!customerVal) {
-                                                $(".customer").text("The customer field is required");
-                                                hasError = true;
-                                            }
-                                            if (!part) {
-                                                $(".part").text("The Part field is required");
-                                                hasError = true;
-                                            }
-                                            if (!project_id) {
-                                                $(".project_id").text("The Project name field is required");
-                                                hasError = true;
-                                            }
-                                            if (!date) {
-                                                $(".date").text("The Date field is required");
-                                                hasError = true;
-                                            }
-                                            if (!exp_time) {
-                                                $(".exp_time").text("The Exp time field is required");
-                                                hasError = true;
-                                            }
-                                            if (!quantity) {
-                                                $(".quantity").text("The Quantity field is required");
-                                                hasError = true;
-                                            }
-                                            if (!material) {
-                                                $(".material").text("The Material field is required");
-                                                hasError = true;
-                                            }
+                                        <!-- View Trash Button -->
+                                        <a href="{{ route('trashWorkOrder') }}" class="btn btn-warning btn-sm">
+                                            View Trash
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="buttons-datatables" class="display table table-bordered table-sm" style="width:100%">
+                                            <thead>
+                                                <tr class="table-light">
+                                                    <th>Sr.<br>No</th>
+                                                    <!-- <th>Wo<br>Order<br>No.</th> -->
+                                                    <!-- <th>Customer <br>Code</th> -->
+                                                    <!-- <th>Part<br>No.</th> -->
+                                                    <th>Date</th>
+                                                    <th>Part Code</th>
+                                                    <th>Part Description</th>
+                                                    <th>Dia</th>
+                                                    <th>Length</th>
+                                                    <th>Width</th>
+                                                    <th>Height</th>
+                                                    <th>Exp Time</th>
+                                                    <th>Qty</th>
+                                                    @if(
+                                                    hasPermission('WorkOrders', 'edit') ||
+                                                    hasPermission('WorkOrders', 'delete')||
+                                                    hasPermission('WorkOrders', 'view')
+                                                    )
+                                                    <th width="12%">Action</th>
+                                                    @endif
 
-                                            return !hasError;
-                                        }
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($workorders as $wo)
 
-                                        function attachValidationEvents() {
-                                            document.querySelectorAll("#workOrderForm input, #workOrderForm textarea, #workOrderForm select").forEach(el => {
-                                                el.addEventListener("input", function() {
-                                                    let errorClass = "." + this.id;
-                                                    $(errorClass).text("");
-                                                });
-                                                el.addEventListener("change", function() {
-                                                    let errorClass = "." + this.id;
-                                                    $(errorClass).text("");
-                                                });
-                                            });
-                                        }
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <!-- <td>{{ $wo->project?->project_no ?? '' }}</td> -->
+                                                    <!-- <td>{{ $wo->customer?->code ?? '' }}</td> -->
+                                                    <!-- <td>{{ $wo->part }}</td> -->
+                                                    <td>{{ $wo->date }}</td>
+                                                    <td>
+                                                        {{ ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
+                                                    </td>
+                                                    <td>{{ $wo->part_description }}</td>
+                                                    <td>{{ $wo->dimeter }}</td>
+                                                    <td>{{ $wo->length }}</td>
+                                                    <td>{{ $wo->width }}</td>
+                                                    <td>{{ $wo->height }}</td>
+                                                    <td>{{ $wo->exp_time }}</td>
+                                                    <td>{{ $wo->quantity }}</td>
+                                                    <td>
+                                                        @if(hasPermission('WorkOrders', 'edit'))
+                                                        <a href="{{ route('editWorkOrder', base64_encode($wo->id)) }}">
+                                                            <button type="button" class="btn btn-success btn-icon">
+                                                                <i class="ri-pencil-fill"></i>
+                                                            </button>
+                                                        </a>
+                                                        @endif
+                                                        <!-- View Button to open Modal -->
+                                                        <!-- @if(hasPermission('WorkOrders', 'view'))
+                                                        <button type="button"
+                                                            class="btn btn-primary btn-icon viewWorkOrder"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#viewWorkOrderModal"
+                                                            data-wo='@json($wo)'>
+                                                            <i class="ri-eye-fill"></i>
+                                                        </button>
+                                                        @endif -->
 
-                                        function addRow() {
-                                            if (!validateFields()) return false;
 
-                                            let customer = document.querySelector("#customer_id option:checked").text;
-                                            let customerVal = document.querySelector("#customer_id").value;
-                                            let part = document.getElementById("part").value;
+                                                        @if(hasPermission('WorkOrders', 'delete'))
+                                                        <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}"
+                                                            onclick="return confirm('Are you sure you want to delete this record?')">
+                                                            <button type="button" class="btn btn-danger btn-icon">
+                                                                <i class="ri-delete-bin-fill"></i>
+                                                            </button>
+                                                        </a>
+                                                        @endif
 
-                                            let material = document.getElementById("material").value;
-                                            let material_name = document.querySelector("#material option:checked").text;
+                                                        <a href="{{ route('AddMachinerecord', base64_encode($wo->id)) }}">
+                                                            <button type="button" class="btn btn-info btn-icon waves-effect waves-light">
+                                                                <i class="ri-add-circle-line me-1"></i></i>
+                                                            </button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
 
-                                            let project_id = document.getElementById("project_id").value;
-                                            let project_name = document.querySelector("#project_id option:checked").text;
-                                            let date = document.getElementById("date").value;
-                                            let dimeter = document.getElementById("dimeter").value;
-                                            let length = document.getElementById("length").value;
-                                            let width = document.getElementById("width").value;
-                                            let height = document.getElementById("height").value;
-                                            let exp_time = document.getElementById("exp_time").value;
-                                            let quantity = document.getElementById("quantity").value;
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                            let description = document.getElementById("part_description").value;
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                                            rowCount++;
-                                            let tableBody = document.querySelector("#workOrderTable tbody");
 
-                                            let newRow = document.createElement("tr");
-                                            newRow.innerHTML = `
+
+<script>
+    let isEditPage = {
+        {
+            isset($workorder) ? 'true' : 'false'
+        }
+    };
+</script>
+<script>
+    let isEditingRow = false;
+    let rowCount = 0;
+
+    function clearErrors() {
+        document.querySelectorAll(".text-red").forEach(el => {
+            if (!el.classList.contains("error")) el.textContent = "";
+        });
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        let customerDropdown = document.getElementById("customer_id");
+
+        if (!customerDropdown.hasAttribute("disabled")) {
+            if (!customerDropdown.value) {
+                customerDropdown.selectedIndex = 0;
+            }
+        }
+    });
+
+    function validateFields() {
+        clearErrors();
+        let hasError = false;
+
+        let customerVal = document.querySelector("#customer_id").value;
+        let part = document.getElementById("part").value;
+        let material = document.getElementById("material").value;
+        let project_id = document.getElementById("project_id").value;
+        let date = document.getElementById("date").value;
+        let exp_time = document.getElementById("exp_time").value;
+        let quantity = document.getElementById("quantity").value;
+        let description = document.getElementById("part_description").value;
+
+        if (!customerVal) {
+            $(".customer").text("The customer field is required");
+            hasError = true;
+        }
+        if (!part) {
+            $(".part").text("The Part field is required");
+            hasError = true;
+        }
+        if (!project_id) {
+            $(".project_id").text("The Project name field is required");
+            hasError = true;
+        }
+        if (!date) {
+            $(".date").text("The Date field is required");
+            hasError = true;
+        }
+        if (!exp_time) {
+            $(".exp_time").text("The Exp time field is required");
+            hasError = true;
+        }
+        if (!quantity) {
+            $(".quantity").text("The Quantity field is required");
+            hasError = true;
+        }
+        if (!material) {
+            $(".material").text("The Material field is required");
+            hasError = true;
+        }
+
+        return !hasError;
+    }
+
+    function attachValidationEvents() {
+        document.querySelectorAll("#workOrderForm input, #workOrderForm textarea, #workOrderForm select").forEach(el => {
+            el.addEventListener("input", function() {
+                let errorClass = "." + this.id;
+                $(errorClass).text("");
+            });
+            el.addEventListener("change", function() {
+                let errorClass = "." + this.id;
+                $(errorClass).text("");
+            });
+        });
+    }
+
+    function addRow() {
+        if (!validateFields()) return false;
+
+        let customer = document.querySelector("#customer_id option:checked").text;
+        let customerVal = document.querySelector("#customer_id").value;
+        let part = document.getElementById("part").value;
+
+        let material = document.getElementById("material").value;
+        let material_name = document.querySelector("#material option:checked").text;
+
+        let project_id = document.getElementById("project_id").value;
+        let project_name = document.querySelector("#project_id option:checked").text;
+        let date = document.getElementById("date").value;
+        let dimeter = document.getElementById("dimeter").value;
+        let length = document.getElementById("length").value;
+        let width = document.getElementById("width").value;
+        let height = document.getElementById("height").value;
+        let exp_time = document.getElementById("exp_time").value;
+        let quantity = document.getElementById("quantity").value;
+
+        let description = document.getElementById("part_description").value;
+
+        rowCount++;
+        let tableBody = document.querySelector("#workOrderTable tbody");
+
+        let newRow = document.createElement("tr");
+        newRow.innerHTML = `
                                                 <td>${rowCount}</td>
                                                 <td><input type="hidden" name="rows[${rowCount}][customer_id]" value="${customerVal}">${customer}</td>
                                                 <td><input type="hidden" name="rows[${rowCount}][part]" value="${part}">${part}</td>
@@ -397,316 +534,316 @@
                                                     <button type="button" class="btn btn-danger btn-sm deleteRow">🗑</button>
                                                 </td>
                                             `;
-                                            tableBody.appendChild(newRow);
-                                            clearDimensions();
+        tableBody.appendChild(newRow);
+        clearDimensions();
 
-                                            newRow.querySelector(".deleteRow").addEventListener("click", function() {
-                                                newRow.remove();
-                                                updateSrNo();
-                                            });
+        newRow.querySelector(".deleteRow").addEventListener("click", function() {
+            newRow.remove();
+            updateSrNo();
+        });
 
-                                            newRow.querySelector(".editRow").addEventListener("click", function() {
-                                                isEditingRow = true;
+        newRow.querySelector(".editRow").addEventListener("click", function() {
+            isEditingRow = true;
 
-                                                let row = this.closest('tr');
+            let row = this.closest('tr');
 
-                                                let customerVal = row.querySelector('input[name*="[customer_id]"]').value;
-                                                let projectId = row.querySelector('input[name*="[project_id]"]').value;
-                                                let part = row.querySelector('input[name*="[part]"]').value;
-                                                let material = row.querySelector('input[name*="[material]"]').value;
-                                                let date = row.querySelector('input[name*="[date]"]').value;
-                                                let dimeter = row.querySelector('input[name*="[dimeter]"]').value;
-                                                let length = row.querySelector('input[name*="[length]"]').value;
-                                                let width = row.querySelector('input[name*="[width]"]').value;
-                                                let height = row.querySelector('input[name*="[height]"]').value;
-                                                let exp_time = row.querySelector('input[name*="[exp_time]"]').value;
-                                                let quantity = row.querySelector('input[name*="[quantity]"]').value;
-                                                let description = row.querySelector('input[name*="[part_description]"]').value;
+            let customerVal = row.querySelector('input[name*="[customer_id]"]').value;
+            let projectId = row.querySelector('input[name*="[project_id]"]').value;
+            let part = row.querySelector('input[name*="[part]"]').value;
+            let material = row.querySelector('input[name*="[material]"]').value;
+            let date = row.querySelector('input[name*="[date]"]').value;
+            let dimeter = row.querySelector('input[name*="[dimeter]"]').value;
+            let length = row.querySelector('input[name*="[length]"]').value;
+            let width = row.querySelector('input[name*="[width]"]').value;
+            let height = row.querySelector('input[name*="[height]"]').value;
+            let exp_time = row.querySelector('input[name*="[exp_time]"]').value;
+            let quantity = row.querySelector('input[name*="[quantity]"]').value;
+            let description = row.querySelector('input[name*="[part_description]"]').value;
 
-                                                $('#customer_id').val(customerVal).trigger('change');
+            $('#customer_id').val(customerVal).trigger('change');
 
-                                                let interval = setInterval(function() {
-                                                    if ($('#project_id option').length > 1) {
-                                                        $('#project_id').val(projectId).trigger('change');
-                                                        clearInterval(interval);
-                                                    }
-                                                }, 100);
+            let interval = setInterval(function() {
+                if ($('#project_id option').length > 1) {
+                    $('#project_id').val(projectId).trigger('change');
+                    clearInterval(interval);
+                }
+            }, 100);
 
-                                                $('#part').val(part);
-                                                $('#material').val(material).trigger('change');
-                                                $('#date').val(date);
-                                                $('#dimeter').val(dimeter);
-                                                $('#length').val(length);
-                                                $('#width').val(width);
-                                                $('#height').val(height);
-                                                $('#exp_time').val(exp_time);
-                                                $('#quantity').val(quantity);
-                                                $('#part_description').val(description);
+            $('#part').val(part);
+            $('#material').val(material).trigger('change');
+            $('#date').val(date);
+            $('#dimeter').val(dimeter);
+            $('#length').val(length);
+            $('#width').val(width);
+            $('#height').val(height);
+            $('#exp_time').val(exp_time);
+            $('#quantity').val(quantity);
+            $('#part_description').val(description);
 
-                                                row.remove();
-                                                updateSrNo();
-                                            });
+            row.remove();
+            updateSrNo();
+        });
 
-                                            document.querySelectorAll("input, textarea").forEach(el => {
-                                                if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
-                                            });
-                                            // $('#customer_id').val('').trigger('change');
-                                            if (!isEditingRow) {
-                                                $('#customer_id').val('').trigger('change');
-                                            }
-                                            $('#material').val('').trigger('change');
-                                            document.getElementById("workOrderTableWrapper").style.display = "block";
-                                            document.getElementById("submitBtn").style.display = "inline-block";
-                                            return true;
+        document.querySelectorAll("input, textarea").forEach(el => {
+            if (el.type !== "hidden" && el.id !== "customer_id") el.value = "";
+        });
+        // $('#customer_id').val('').trigger('change');
+        if (!isEditingRow) {
+            $('#customer_id').val('').trigger('change');
+        }
+        $('#material').val('').trigger('change');
+        document.getElementById("workOrderTableWrapper").style.display = "block";
+        document.getElementById("submitBtn").style.display = "inline-block";
+        return true;
 
-                                            isEditingRow = false;
-                                        }
+        isEditingRow = false;
+    }
 
-                                        function updateSrNo() {
-                                            document.querySelectorAll("#workOrderTable tbody tr").forEach((tr, index) => {
-                                                tr.querySelector("td:first-child").textContent = index + 1;
-                                            });
-                                            rowCount = document.querySelectorAll("#workOrderTable tbody tr").length;
-                                        }
+    function updateSrNo() {
+        document.querySelectorAll("#workOrderTable tbody tr").forEach((tr, index) => {
+            tr.querySelector("td:first-child").textContent = index + 1;
+        });
+        rowCount = document.querySelectorAll("#workOrderTable tbody tr").length;
+    }
 
-                                        document.getElementById("addFirstRowBtn")?.addEventListener("click", addRow);
+    document.getElementById("addFirstRowBtn")?.addEventListener("click", addRow);
 
-                                        document.getElementById("workOrderForm").addEventListener("submit", function(e) {
-                                            if (rowCount === 0) {
-                                                if (!validateFields()) {
-                                                    e.preventDefault();
-                                                    alert("Please fill required fields and add at least one row.");
-                                                    return false;
-                                                }
-                                            }
-                                        });
+    document.getElementById("workOrderForm").addEventListener("submit", function(e) {
+        if (rowCount === 0) {
+            if (!validateFields()) {
+                e.preventDefault();
+                alert("Please fill required fields and add at least one row.");
+                return false;
+            }
+        }
+    });
 
-                                        attachValidationEvents();
-                                    </script>
+    attachValidationEvents();
+</script>
 
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            let diameter = document.getElementById("dimeter");
-                                            let height = document.getElementById("height");
-                                            let length = document.getElementById("length");
-                                            let width = document.getElementById("width");
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let diameter = document.getElementById("dimeter");
+        let height = document.getElementById("height");
+        let length = document.getElementById("length");
+        let width = document.getElementById("width");
 
-                                            function toggleFields() {
-                                                if (diameter.value) {
-                                                    length.disabled = true;
-                                                    width.disabled = true;
-                                                    length.value = "";
-                                                    width.value = "";
+        function toggleFields() {
+            if (diameter.value) {
+                length.disabled = true;
+                width.disabled = true;
+                length.value = "";
+                width.value = "";
 
-                                                    diameter.disabled = false;
-                                                    height.disabled = false;
-                                                } else if (length.value || width.value) {
-                                                    diameter.disabled = true;
-                                                    diameter.value = "";
+                diameter.disabled = false;
+                height.disabled = false;
+            } else if (length.value || width.value) {
+                diameter.disabled = true;
+                diameter.value = "";
 
-                                                    length.disabled = false;
-                                                    width.disabled = false;
-                                                    height.disabled = false;
-                                                } else {
-                                                    diameter.disabled = false;
-                                                    length.disabled = false;
-                                                    width.disabled = false;
-                                                    height.disabled = false;
-                                                }
-                                            }
+                length.disabled = false;
+                width.disabled = false;
+                height.disabled = false;
+            } else {
+                diameter.disabled = false;
+                length.disabled = false;
+                width.disabled = false;
+                height.disabled = false;
+            }
+        }
 
-                                            window.clearDimensions = function() {
-                                                diameter.value = "";
-                                                length.value = "";
-                                                width.value = "";
-                                                height.value = "";
-                                                toggleFields();
-                                            }
+        window.clearDimensions = function() {
+            diameter.value = "";
+            length.value = "";
+            width.value = "";
+            height.value = "";
+            toggleFields();
+        }
 
-                                            diameter.addEventListener("input", toggleFields);
-                                            length.addEventListener("input", toggleFields);
-                                            width.addEventListener("input", toggleFields);
+        diameter.addEventListener("input", toggleFields);
+        length.addEventListener("input", toggleFields);
+        width.addEventListener("input", toggleFields);
 
-                                            toggleFields();
-                                        });
-                                    </script>
+        toggleFields();
+    });
+</script>
 
-                                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                    <script>
-                                        $(document).ready(function() {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
 
-                                            let isEditPage = @json(isset($workorder));
+        let isEditPage = @json(isset($workorder));
 
 
-                                            // PAGE LOAD PROJECT AUTO LOAD
-                                            let customerId = $('#customer_id').val();
-                                            let projectId = $('#project_id').val();
+        // PAGE LOAD PROJECT AUTO LOAD
+        let customerId = $('#customer_id').val();
+        let projectId = $('#project_id').val();
 
-                                            if (customerId) {
-                                                loadProjects(customerId, projectId);
-                                            }
+        if (customerId) {
+            loadProjects(customerId, projectId);
+        }
 
-                                            // CUSTOMER CHANGE
-                                            $('#customer_id').on('change', function() {
-                                                let customerId = $(this).val();
-                                                loadProjects(customerId);
-                                            });
+        // CUSTOMER CHANGE
+        $('#customer_id').on('change', function() {
+            let customerId = $(this).val();
+            loadProjects(customerId);
+        });
 
-                                            // PROJECT CHANGE
-                                            $('#project_id').on('change', function() {
+        // PROJECT CHANGE
+        $('#project_id').on('change', function() {
 
-                                                let selectedOption = $(this).find(':selected');
-                                                let projectId = selectedOption.val();
-                                                let customerId = $('#customer_id').val();
+            let selectedOption = $(this).find(':selected');
+            let projectId = selectedOption.val();
+            let customerId = $('#customer_id').val();
 
-                                                let qty = selectedOption.data('quantity');
-                                                let selectedText = selectedOption.text();
+            let qty = selectedOption.data('quantity');
+            let selectedText = selectedOption.text();
 
-                                                loadNextPart(customerId, projectId);
-                                                loadParts(projectId);
+            loadNextPart(customerId, projectId);
+            loadParts(projectId);
 
-                                                // description
-                                                if (selectedText && selectedText !== "Select Project") {
-                                                    $('#part_description').val(selectedText).prop('readonly', true);
-                                                } else {
-                                                    $('#part_description').val('').prop('readonly', false);
-                                                }
+            // description
+            if (selectedText && selectedText !== "Select Project") {
+                $('#part_description').val(selectedText).prop('readonly', true);
+            } else {
+                $('#part_description').val('').prop('readonly', false);
+            }
 
-                                                // quantity auto only on insert
-                                                if (!isEditPage) {
-                                                    if ($('#workOrderTableWrapper').is(':hidden')) {
-                                                        $('#quantity').val(qty || '');
-                                                    }
-                                                }
+            // quantity auto only on insert
+            if (!isEditPage) {
+                if ($('#workOrderTableWrapper').is(':hidden')) {
+                    $('#quantity').val(qty || '');
+                }
+            }
 
-                                            });
+        });
 
-                                            // LOAD PROJECTS
-                                            function loadProjects(customerId, selectedProjectId = null) {
+        // LOAD PROJECTS
+        function loadProjects(customerId, selectedProjectId = null) {
 
-                                                if (!customerId) {
-                                                    $('#project_id').html('<option value="">Select Project</option>');
-                                                    return;
-                                                }
+            if (!customerId) {
+                $('#project_id').html('<option value="">Select Project</option>');
+                return;
+            }
 
-                                                $.ajax({
-                                                    url: '/get-projects/' + customerId,
-                                                    type: 'GET',
-                                                    dataType: 'json',
-                                                    success: function(data) {
+            $.ajax({
+                url: '/get-projects/' + customerId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
 
-                                                        let projectDropdown = $('#project_id');
-                                                        projectDropdown.empty();
-                                                        projectDropdown.append('<option value="">Select Project</option>');
+                    let projectDropdown = $('#project_id');
+                    projectDropdown.empty();
+                    projectDropdown.append('<option value="">Select Project</option>');
 
-                                                        if (data.length > 0) {
+                    if (data.length > 0) {
 
-                                                            $.each(data, function(index, project) {
+                        $.each(data, function(index, project) {
 
-                                                                let selected = '';
+                            let selected = '';
 
-                                                                if (selectedProjectId && selectedProjectId == project.id) {
-                                                                    selected = 'selected';
-                                                                }
+                            if (selectedProjectId && selectedProjectId == project.id) {
+                                selected = 'selected';
+                            }
 
-                                                                let projectNo = project.project_no ?? '';
-                                                                let projectName = project.project_name ?? '';
+                            let projectNo = project.project_no ?? '';
+                            let projectName = project.project_name ?? '';
 
-                                                                projectDropdown.append(
-                                                                    `<option value="${project.id}" 
+                            projectDropdown.append(
+                                `<option value="${project.id}" 
                                                                     data-quantity="${project.quantity || ''}" 
                                                                     ${selected}>
                                                                     ${projectNo} ${projectName}
                                                                 </option>`
-                                                                );
+                            );
 
-                                                            });
+                        });
 
-                                                        } else {
+                    } else {
 
-                                                            projectDropdown.append('<option value="">No Project Found</option>');
+                        projectDropdown.append('<option value="">No Project Found</option>');
 
-                                                        }
+                    }
 
-                                                    }
-                                                });
+                }
+            });
 
-                                            }
+        }
 
-                                            // LOAD PREVIOUS PARTS
-                                            function loadParts(projectId) {
+        // LOAD PREVIOUS PARTS
+        function loadParts(projectId) {
 
-                                                if (!projectId) {
-                                                    $('#previous_part').html('<option value="">No Previous Part</option>');
-                                                    return;
-                                                }
+            if (!projectId) {
+                $('#previous_part').html('<option value="">No Previous Part</option>');
+                return;
+            }
 
-                                                $.ajax({
-                                                    url: '/get-parts/' + projectId,
-                                                    type: 'GET',
-                                                    dataType: 'json',
-                                                    success: function(data) {
+            $.ajax({
+                url: '/get-parts/' + projectId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
 
-                                                        $('#previous_part').empty();
+                    $('#previous_part').empty();
 
-                                                        if (data.length > 0) {
+                    if (data.length > 0) {
 
-                                                            $.each(data, function(index, part) {
-                                                                $('#previous_part').append(`<option value="${part}">${part}</option>`);
-                                                            });
+                        $.each(data, function(index, part) {
+                            $('#previous_part').append(`<option value="${part}">${part}</option>`);
+                        });
 
-                                                        } else {
+                    } else {
 
-                                                            $('#previous_part').append('<option value="">No Previous Part</option>');
+                        $('#previous_part').append('<option value="">No Previous Part</option>');
 
-                                                        }
+                    }
 
-                                                    }
-                                                });
+                }
+            });
 
-                                            }
+        }
 
-                                            // NEXT PART
-                                            function loadNextPart(customerId, projectId) {
+        // NEXT PART
+        function loadNextPart(customerId, projectId) {
 
-                                                if (!customerId || !projectId) return;
+            if (!customerId || !projectId) return;
 
-                                                $.ajax({
-                                                    url: '/get-next-part/' + customerId + '/' + projectId,
-                                                    type: 'GET',
-                                                    success: function(data) {
-                                                        $('#part').val(data.next_part);
-                                                    }
-                                                });
+            $.ajax({
+                url: '/get-next-part/' + customerId + '/' + projectId,
+                type: 'GET',
+                success: function(data) {
+                    $('#part').val(data.next_part);
+                }
+            });
 
-                                            }
+        }
 
-                                            // TEXTAREA EDIT ENABLE
-                                            $('#part_description').on('dblclick', function() {
-                                                $(this).prop('readonly', false);
-                                            });
-
-
-                                            // EDIT PAGE DATA LOAD
-                                            @if(isset($workorder))
-
-                                            loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
-                                            loadParts('{{ $workorder->project_id }}');
-
-                                            setTimeout(function() {
-
-                                                let qty = $("#project_id option:selected").data('quantity');
-
-                                                if (!isEditPage && qty) {
-                                                    $('#quantity').val(qty);
-                                                }
-
-                                            }, 600);
-
-                                            @endif
-
-                                        });
-                                    </script>
+        // TEXTAREA EDIT ENABLE
+        $('#part_description').on('dblclick', function() {
+            $(this).prop('readonly', false);
+        });
 
 
-                                    @endsection
+        // EDIT PAGE DATA LOAD
+        @if(isset($workorder))
+
+        loadProjects('{{ $workorder->customer_id }}', '{{ $workorder->project_id }}');
+        loadParts('{{ $workorder->project_id }}');
+
+        setTimeout(function() {
+
+            let qty = $("#project_id option:selected").data('quantity');
+
+            if (!isEditPage && qty) {
+                $('#quantity').val(qty);
+            }
+
+        }, 600);
+
+        @endif
+
+    });
+</script>
+
+
+@endsection
