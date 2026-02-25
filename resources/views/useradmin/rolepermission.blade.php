@@ -41,8 +41,14 @@
                             </div>
                         </div>
 
-                        <h5 class="mt-4">Role Permissions</h5>
+                        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                            <h5 class="mb-0">Role Permissions</h5>
 
+                            <label class="d-flex align-items-center fw-semibold">
+                                <input type="checkbox" id="selectAll" class="large-checkbox me-2">
+                                Select All
+                            </label>
+                        </div>
                         <table class="table table-bordered text-center mt-3">
                             <thead class="table-light">
                                 <tr>
@@ -72,9 +78,6 @@
 
                                 <tr>
                                     <td>{{ $module }}</td>
-
-
-
                                     {{-- Dashboard → card-wise view permissions --}}
                                     @if($module == 'Dashboard')
                                     <td colspan="4" class="text-start">
@@ -100,9 +103,7 @@
                                 @endforeach
                             </tbody>
 
-                        </table>
-
-
+                        </table> 
                         <div class="mt-3">
                             <button type="submit" class="btn btn-primary">Save Permissions</button>
                         </div>
@@ -165,6 +166,28 @@
 
         $("#role_id").change(function() {
             loadPermissions();
+        });
+
+    });
+
+    $(document).ready(function() {
+
+        function updateSelectAll() {
+            if ($(".perm:checked").length === $(".perm").length) {
+                $("#selectAll").prop("checked", true);
+            } else {
+                $("#selectAll").prop("checked", false);
+            }
+        }
+
+        // Select All click
+        $("#selectAll").on("change", function() {
+            $(".perm").prop("checked", $(this).prop("checked"));
+        });
+
+        // Individual checkbox change
+        $(".perm").on("change", function() {
+            updateSelectAll();
         });
 
     });

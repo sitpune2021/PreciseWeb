@@ -16,7 +16,6 @@
                                 <a href="{{ route('ViewMachinerecord') }}" class="btn btn-sm btn-outline-success me-2">
                                     ←
                                 </a>
-
                                 {{ isset($record) ? 'Edit Machine Record' : 'Add Machine Record' }}
                             </h5>
                         </div>
@@ -31,7 +30,7 @@
                                 @endif
                                 <div class="row g-3">
                                     <input type="hidden" name="work_order_id" id="work_order_id">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
                                         <select name="part_no" id="part_no" class="form-control form-select"
@@ -78,8 +77,8 @@
                                     </div>
 
                                     <!-- Work Order No -->
-                                    <div class="col-md-2">
-                                        <label class="form-label">Work Order No</label>
+                                    <div class="col-md-1">
+                                        <label class="form-label">Wo No</label>
                                         <input type="text" id="work_order" name="work_order"
                                             class="form-control" value="{{ old('work_order', $record->work_order ?? '') }}" readonly>
                                     </div>
@@ -94,7 +93,7 @@
                                     <!-- Qty -->
                                     <div class="col-md-2">
                                         <label class="form-label">Qty <span class="text-red">*</span></label>
-                                        <input type="number" name="qty" id="qty" class="form-control mt-1"
+                                        <input type="number" name="qty" id="qty" class="form-control"
                                             value="{{ old('qty', $record->qty ?? '') }}">
                                         @error('qty') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
@@ -205,9 +204,17 @@
                                     <!-- HRS -->
                                     <div class="col-md-2">
                                         <label class="form-label">HRS <span class="text-red">*</span></label>
-                                        <input type="number" step="0.01" name="hrs" class="form-control"
+                                        <input type="number" step="0.01" id="hrs" name="hrs" class="form-control"
                                             value="{{ old('hrs', $record->hrs ?? '') }}">
                                         @error('hrs') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
+
+                                    <div class="col-md-2">
+                                        <label class="form-label">IDL Time<span class="text-red"></span></label>
+                                        <input type="text" step="0.01" name="idl_time" id="idl_time" class="form-control"
+                                            value="{{ old('idl_time', $record->idl_time ?? '') }}">
+                                        @error('idl_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- Time Taken -->
@@ -271,6 +278,40 @@
 
 
     //  CALCULATE HOURS 
+    // function calculateHours() {
+
+    //     let start = document.querySelector('[name="start_time"]').value;
+    //     let end = document.querySelector('[name="end_time"]').value;
+
+    //     if (start && end) {
+
+    //         let startTime = new Date(start);
+    //         let endTime = new Date(end);
+
+    //         if (endTime >= startTime) {
+
+    //             let diffMinutes = (endTime - startTime) / (1000 * 60);
+    //             let actualHrs = diffMinutes / 60;
+    //             let hrs = diffMinutes * 0.02;
+    //             let timeTaken = hrs;
+
+    //             document.querySelector('[name="hrs"]').value = hrs.toFixed(2);
+    //             document.querySelector('[name="time_taken"]').value = timeTaken.toFixed(2);
+    //             document.querySelector('[name="actual_hrs"]').value = actualHrs.toFixed(2);
+
+    //             if (document.querySelector('[name="minute"]')) {
+    //                 document.querySelector('[name="minute"]').value = diffMinutes.toFixed(0);
+    //             }
+    //         }
+    //     }
+    // }
+
+    // document.querySelector('[name="start_time"]').addEventListener('change', calculateHours);
+    // document.querySelector('[name="end_time"]').addEventListener('change', calculateHours);
+
+
+    let totalMinutesGlobal = 0;
+
     function calculateHours() {
 
         let start = document.querySelector('[name="start_time"]').value;
@@ -284,26 +325,85 @@
             if (endTime >= startTime) {
 
                 let diffMinutes = (endTime - startTime) / (1000 * 60);
-                let actualHrs = diffMinutes / 60;
-                let hrs = diffMinutes * 0.02;
-                let timeTaken = hrs;
 
-                document.querySelector('[name="hrs"]').value = hrs.toFixed(2);
-                document.querySelector('[name="time_taken"]').value = timeTaken.toFixed(2);
-                document.querySelector('[name="actual_hrs"]').value = actualHrs.toFixed(2);
+                totalMinutesGlobal = diffMinutes;
 
-                if (document.querySelector('[name="minute"]')) {
-                    document.querySelector('[name="minute"]').value = diffMinutes.toFixed(0);
-                }
+                updateHrs(diffMinutes);
             }
         }
     }
 
+    function updateHrs(minutes) {
 
-    //  TIME EVENTS 
+        let hrs = Math.floor(minutes / 60);
+        let mins = minutes % 60;
+
+        document.getElementById('hrs').value =
+            hrs + "." + (mins < 10 ? "0" + mins : mins);
+    }
+
+    function calculateIdleAdjustment() {
+
+        let value = document.getElementById('idl_time').value.trim();
+
+        // IDL remove केला तर original hrs
+        if (!value) {
+            updateHrs(totalMinutesGlobal);
+            document.getElementById('adjustment').value = '';
+            return;
+        }
+
+        let idleHours = 0;
+        let idleMinutes = 0;
+
+        if (value.includes(':')) {
+
+            let parts = value.split(':');
+            idleHours = parseInt(parts[0]) || 0;
+            idleMinutes = parseInt(parts[1]) || 0;
+
+        } else {
+
+            idleMinutes = parseInt(value) || 0;
+
+            if (idleMinutes >= 60) {
+                idleHours = Math.floor(idleMinutes / 60);
+                idleMinutes = idleMinutes % 60;
+            }
+        }
+
+        let idleTotalMinutes = (idleHours * 60) + idleMinutes;
+
+        let machineMinutes = totalMinutesGlobal - idleTotalMinutes;
+
+        if (machineMinutes < 0) machineMinutes = 0;
+
+        updateHrs(machineMinutes);
+
+        if (totalMinutesGlobal > 0) {
+
+            let percent = (idleTotalMinutes / totalMinutesGlobal) * 100;
+
+            document.getElementById('adjustment').value =
+                percent.toFixed(2) + '%';
+        }
+    }
+
+    document.getElementById('idl_time').addEventListener('keyup', calculateIdleAdjustment);
+    document.getElementById('idl_time').addEventListener('change', calculateIdleAdjustment);
+
     document.querySelector('[name="start_time"]').addEventListener('change', calculateHours);
     document.querySelector('[name="end_time"]').addEventListener('change', calculateHours);
 
+    window.addEventListener('load', function() {
+
+        calculateHours();
+
+        if (document.getElementById('idl_time').value) {
+            calculateIdleAdjustment();
+        }
+
+    });
 
     //  CUSTOMER CHANGE 
     document.getElementById('customer_id').addEventListener('change', function() {

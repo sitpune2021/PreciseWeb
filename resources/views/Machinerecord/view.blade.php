@@ -51,15 +51,16 @@
                                             <th>Start Time</th>
                                             <th>End Time</th>
                                             <th>Total Hrs</th>
+                                            <th>IDL Time</th>
                                             <!-- <th>Time Taken</th> -->
                                             <!-- <th>Adjustment</th> -->
-                                            <th>Invoice No</th>
+                                            <!-- <th>Invoice No</th> -->
                                             @if(
                                             hasPermission('MachineRecord', 'edit') ||
                                             hasPermission('MachineRecord', 'delete')||
                                             hasPermission('MachineRecord', 'view')
                                             )
-                                            <th width="12%">Action</th>
+                                            <th width="9%">Action</th>
                                             @endif
 
                                         </tr>
@@ -82,7 +83,8 @@
                                             <!-- <td>{{ $rec->time_taken }}</td> -->
                                             <!-- <td>{{ $rec->adjustment }}</td> -->
                                             <td>{{ $rec->hrs }}</td>
-                                            <td>{{ $rec->invoice_no }}</td>
+                                            <td>{{ $rec->idl_time }}</td>
+                                            <!-- <td>{{ $rec->invoice_no }}</td> -->
                                             <td>
                                                 @if(hasPermission('MachineRecord', 'edit'))
                                                 <a href="{{ route('EditMachinerecord', base64_encode($rec->id)) }}" class="btn btn-success btn-sm">

@@ -29,6 +29,7 @@ class MachineRecord extends Model
         'adjustment',
         // 'minute',
         'hrs',
+        'idl_time',
         // 'time_taken',
         // 'actual_hrs',
         'invoice_no'

@@ -354,11 +354,33 @@
                                                     <td>
                                                         @if(hasPermission('WorkOrders', 'edit'))
                                                         <a href="{{ route('editWorkOrder', base64_encode($wo->id)) }}">
-                                                            <button type="button" class="btn btn-success btn-icon">
+                                                            <button type="button" class="btn btn-success btn-sm btn-icon">
                                                                 <i class="ri-pencil-fill"></i>
                                                             </button>
                                                         </a>
                                                         @endif
+
+                                                        @if(hasPermission('WorkOrders', 'delete'))
+                                                        <a href="{{ route('deleteWorkOrder', base64_encode($wo->id)) }}"
+                                                            onclick="return confirm('Are you sure you want to delete this record?')">
+                                                            <button type="button" class="btn btn-danger btn-sm btn-icon">
+                                                                <i class="ri-delete-bin-fill"></i>
+                                                            </button>
+                                                        </a>
+                                                        @endif
+
+                                                        <a href="{{ route('AddMachinerecord', base64_encode($wo->id)) }}">
+                                                            <button type="button" class="btn btn-info btn-sm btn-icon waves-effect waves-light">
+                                                                <i class="ri-add-circle-line">M</i>
+                                                            </button>
+                                                        </a>
+
+                                                        <a href="{{ route('AddSetupSheet', base64_encode($wo->id)) }}">
+                                                            <button type="button" class="btn btn-primary btn-sm btn-icon waves-effect waves-light">
+                                                                <i class="ri-add-circle-line">S</i>
+                                                            </button>
+                                                        </a>
+
                                                         <!-- View Button to open Modal -->
                                                         <!-- @if(hasPermission('WorkOrders', 'view'))
                                                         <button type="button"
@@ -369,22 +391,6 @@
                                                             <i class="ri-eye-fill"></i>
                                                         </button>
                                                         @endif -->
-
-
-                                                        @if(hasPermission('WorkOrders', 'delete'))
-                                                        <a href="{{route('deleteWorkOrder', base64_encode($wo->id)) }}"
-                                                            onclick="return confirm('Are you sure you want to delete this record?')">
-                                                            <button type="button" class="btn btn-danger btn-icon">
-                                                                <i class="ri-delete-bin-fill"></i>
-                                                            </button>
-                                                        </a>
-                                                        @endif
-
-                                                        <a href="{{ route('AddMachinerecord', base64_encode($wo->id)) }}">
-                                                            <button type="button" class="btn btn-info btn-icon waves-effect waves-light">
-                                                                <i class="ri-add-circle-line me-1"></i></i>
-                                                            </button>
-                                                        </a>
                                                     </td>
                                                 </tr>
                                                 @endforeach

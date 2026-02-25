@@ -31,14 +31,13 @@
 
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <label for="customer_id" class="form-label">Customer Code <span class="text-red">*</span></label>
-                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id"
-                                            {{ isset($project) ? 'disabled' : '' }}>
+                                        <label for="customer_id" class="form-label">Customer Name <span class="text-red">*</span></label>
+                                        <select class="form-select js-example-basic-single" id="customer_id" name="customer_id">
                                             <option value="">Select Customer</option>
                                             @foreach($customers as $c)
                                             <option value="{{ $c->id }}" data-code="{{ $c->code }}"
                                                 {{ old('customer_id', $project->customer_id ?? '') == $c->id ? 'selected' : '' }}>
-                                                {{ $c->code }}
+                                                {{ $c->name }} - [{{ $c->code }}]
                                             </option>
                                             @endforeach
                                         </select>
@@ -47,11 +46,11 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <label for="code" class="form-label">Customer Code</label>
                                         <input type="text" class="form-control" id="code" name="code"
                                             value="{{ old('code', $project->customer_code ?? '') }}" readonly>
-                                    </div>
+                                    </div> -->
 
                                     <div class="col-md-4">
                                         <label for="project_name" class="form-label">Project Name <span class="text-red">*</span></label>
@@ -63,17 +62,28 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-1">
+                                        <label for="project_no" class="form-label">Project No</label>
+
+                                        <input type="number"
+                                            class="form-control"
+                                            id="project_no"
+                                            name="project_no"
+                                            value="{{ old('project_no', isset($project) ? $project->project_no : $nextProjectNo) }}"
+                                            readonly>
+                                    </div>
+
+                                    <div class="col-md-1">
                                         <label for="quantity" class="form-label">Quantity <span class="text-red">*</span></label>
                                         <input type="number" class="form-control" id="quantity" name="quantity" min="1"
-                                            placeholder="Enter Quantity"
+                                            placeholder="Quantity"
                                             value="{{ old('quantity', $project->quantity ?? '') }}">
                                         @error('quantity')
                                         <span class="text-red small">{{ $message }}</span>
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
                                         <label for="date" class="form-label">Date</label>
                                         <input type="date" class="form-control" id="date" name="date"
                                             value="{{ old('date', isset($project->date) ? \Carbon\Carbon::parse($project->date)->format('Y-m-d') : '') }}">
@@ -141,7 +151,7 @@
                                                     hasPermission('Projects', 'delete') ||
                                                     hasPermission('Projects', 'view')
                                                     )
-                                                    <th width="12%">Action</th>
+                                                    <th width="10%">Action</th>
                                                     @endif
 
                                                 </tr>
@@ -177,14 +187,14 @@
                                                         </button>
                                                         @endif -->
 
-                                                        @if(hasPermission('Projects', 'delete'))
+                                                        <!-- @if(hasPermission('Projects', 'delete'))
                                                         <a href="{{ route('deleteProject', base64_encode($project->id)) }}"
                                                             onclick="return confirm('Are you sure you want to delete this record?')">
                                                             <button type="button" class="btn btn-danger btn-icon waves-effect waves-light">
                                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                                             </button>
                                                         </a>
-                                                        @endif
+                                                        @endif -->
 
                                                         <a href="{{ route('AddWorkOrder', base64_encode($project->id)) }}">
                                                             <button type="button" class="btn btn-info btn-icon waves-effect waves-light">

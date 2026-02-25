@@ -32,7 +32,9 @@ class ProjectController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('Project.add', compact('customers', 'codes', 'projects'));
+        $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
+
+        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo'));
     }
     public function storeProject(Request $request)
     {
@@ -70,7 +72,8 @@ class ProjectController extends Controller
             'quantity'      => $request->quantity,
             'date'          => $request->date ?: now(),
             'admin_id'      => $adminId,
-            'project_no'    => $projectNo,
+            // 'project_no'    => $projectNo,
+            'project_no'    => $request->project_no,
         ]);
 
         return redirect()->route('AddProject')->with('success', 'Project added successfully.');
@@ -104,7 +107,9 @@ class ProjectController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('Project.add', compact('project', 'customers', 'projects'));
+        $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
+
+        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo'));
     }
     public function update(Request $request, string $encryptedId)
     {

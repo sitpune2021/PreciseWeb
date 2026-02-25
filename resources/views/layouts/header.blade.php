@@ -298,7 +298,7 @@
                             <i class="ri-vip-crown-2-line me-1"></i> Plan Management
                         </a>
                     </li>
-
+                    
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('SubList') ? '' : 'collapsed' }}" href="#sidebarlist" data-bs-toggle="collapse">
                             <i class="ri-user-star-line"></i> <span>Subscription List</span>
@@ -681,7 +681,7 @@
     <script src="{{asset('assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
     <script src="{{asset('assets/js/plugins.js')}}"></script>
 
-
+   
 
     <!-- gridjs js -->
     <script src="{{asset('assets/libs/gridjs/gridjs.umd.js')}}"></script>
