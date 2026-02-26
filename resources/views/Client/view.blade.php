@@ -21,7 +21,7 @@
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
-                                        <tr>
+                                        <tr class="bg-light">
                                             <th>Sr.No</th>
                                             <th>Client Name</th>
                                             <th>Email Address</th>

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
@@ -42,7 +43,7 @@ class CustomerContoller extends Controller
             'email_id' => [
                 'nullable',
                 'email',
-                'max:40',
+                'max:255',
             ],
             'gst_no' => [
                 'nullable',
@@ -84,7 +85,6 @@ class CustomerContoller extends Controller
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer created successfully.');
     }
-
     public function ViewCustomer(Request $request)
     {
         $query = Customer::where('admin_id', Auth::id())
@@ -154,7 +154,7 @@ class CustomerContoller extends Controller
             'email_id' => [
                 'nullable',
                 'email',
-                'max:40',
+                'max:255',
             ],
             'gst_no' => [
                 'nullable',
