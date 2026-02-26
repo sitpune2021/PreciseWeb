@@ -1,11 +1,11 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('Setting','view') || hasPermission('Setting','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-
             <!-- Form Start -->
+            @if(hasPermission('Setting','add'))
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex align-items-center">
                     <!-- Back Button ONLY on Edit -->
@@ -61,10 +61,11 @@
                 </div>
                 </form>
             </div>
+            @endif
         </div>
         <!-- Form End -->
-
         <!-- List Start -->
+        @if(hasPermission('Setting','view'))
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Setting List</h5>
@@ -79,12 +80,8 @@
                             <tr>
                                 <th style="width: 5%;">Sr.No</th>
                                 <th style="width: 60%; text-align: center;">Setting Name</th>
-                                <th style="width: 15%;">Status</th>
-                                @if(
-                                hasPermission('Setting', 'edit') ||
-                                hasPermission('Setting', 'delete'))
-                                <th width="12%">Action</th>
-                                @endif
+                                <th style="width: 15%;">Status</th>                        
+                                <th width="12%">Action</th>                           
                             </tr>
                         </thead>
                         <tbody>
@@ -136,10 +133,9 @@
                 </div>
             </div>
         </div>
+        @endif
         <!-- List End -->
-
     </div>
 </div>
-</div>
-
+@endif
 @endsection

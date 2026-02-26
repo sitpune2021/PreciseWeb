@@ -346,7 +346,7 @@
 
         let value = document.getElementById('idl_time').value.trim();
 
-        // IDL remove केला तर original hrs
+         
         if (!value) {
             updateHrs(totalMinutesGlobal);
             document.getElementById('adjustment').value = '';

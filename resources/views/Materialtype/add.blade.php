@@ -1,13 +1,14 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('MaterialType','view') || hasPermission('MaterialType','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
 
             <!-- Form Start -->
+            @if(hasPermission('MaterialType','add'))
             <div class="card shadow-sm mb-4">
-                    <div class="card-header d-flex align-items-center">
+                <div class="card-header d-flex align-items-center">
                     <!-- Back Button ONLY on Edit -->
                     <a href="{{ route('home') }}" class="btn btn-sm btn-outline-success me-2">
                         ←
@@ -93,15 +94,15 @@
                     </form>
                 </div>
             </div>
+            @endif
             <!-- Form End -->
-
             <!-- List Start -->
+            @if(hasPermission('MaterialType','view'))
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Material Type List</h5>
                     <a href="{{ route('trashMaterialType') }}" class="btn btn-warning btn-sm">View Trash</a>
                 </div>
-
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -112,13 +113,7 @@
                                     <th class="text-center">Material Gravity</th>
                                     <th class="text-center">Material Rate</th>
                                     <th style="width: 15%;">Status</th>
-                                    @if(
-                                    hasPermission('MaterialType', 'edit') ||
-                                    hasPermission('MaterialType', 'delete')
-
-                                    )
                                     <th width="12%">Action</th>
-                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,18 +129,11 @@
                                             <input type="hidden" name="id" value="{{ $m->id }}">
                                             <input type="hidden" name="status" value="0"> {{-- default value --}}
                                             <div class="form-check form-switch d-flex justify-content-center">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="checkbox"
-                                                    role="switch"
-                                                    id="statusSwitch{{ $m->id }}"
-                                                    name="status"
-                                                    value="1"
+                                                <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch{{ $m->id }}" name="status" value="1"
                                                     onchange="this.form.submit()"
                                                     {{ $m->status == 1 ? 'checked' : '' }}>
                                             </div>
                                         </form>
-
                                     </td>
                                     <td>
                                         @if(hasPermission('MaterialType', 'edit'))
@@ -174,10 +162,10 @@
                     </div>
                 </div>
             </div>
+            @endif
             <!-- List End -->
-
         </div>
     </div>
 </div>
-
+@endif
 @endsection

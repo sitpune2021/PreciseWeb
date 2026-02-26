@@ -21,7 +21,7 @@
                                 @endif
                             </div>
                         </div>
-
+                        @if(hasPermission('Quotation', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -33,14 +33,7 @@
                                             <th>Project Name</th>
                                             <th>Date</th>
                                             <th>Description</th>
-
-                                            @if(
-                                            hasPermission('Quotation', 'edit') ||
-                                            hasPermission('Quotation', 'delete')
-                                            )
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,17 +62,12 @@
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </a>
                                                     @endif
-
-                                                    @if(hasPermission('Quotation', 'view'))
                                                     <a href="{{ route('printquotation', base64_encode($q->id)) }}"
                                                         onclick="return confirm('Are you sure you want to print quotation?');"
                                                         class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center"
                                                         style="width:38px; height:38px;">
-
                                                         <i class="fas fa-print fa-lg"></i>
-
                                                     </a>
-                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -88,7 +76,7 @@
                                 </table>
                             </div>
                         </div>
-
+                        @endif
                     </div>
                 </div>
             </div>

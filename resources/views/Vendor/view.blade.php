@@ -32,7 +32,7 @@
                             </div>
                         </div>
 
-
+                        @if(hasPermission('Vendors', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -47,13 +47,7 @@
                                             <th>GST.No</th>
                                             <th>Address</th>
                                             <th>Status</th>
-                                            @if(
-                                            hasPermission('Vendors', 'edit') ||
-                                            hasPermission('Vendors', 'delete')
-                                            )
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -99,6 +93,7 @@
                                 </table>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div><!--end row-->

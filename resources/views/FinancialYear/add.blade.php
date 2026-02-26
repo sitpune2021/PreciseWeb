@@ -1,10 +1,10 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('FinancialYear','view') || hasPermission('FinancialYear','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-
+            @if(hasPermission('FinancialYear','add'))
             <div class="card shadow-sm mb-4">         
                 <div class="card-header d-flex align-items-center">
                     <!-- Back Button ONLY on Edit -->
@@ -58,7 +58,9 @@
                     </form>
                 </div>
             </div>
+            @endif
 
+            @if(hasPermission('FinancialYear', 'view'))
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Financial Year List</h5>
@@ -75,12 +77,7 @@
                                     <th style="width: 5%;">Sr.No</th>
                                     <th style="width: 50%;">Year</th>
                                     <th style="width: 15%;">Status</th>
-                                    @if(
-                                    hasPermission('FinancialYear', 'edit') ||
-                                    hasPermission('FinancialYear', 'delete')
-                                    )
-                                    <th width="12%">Action</th>
-                                    @endif
+                                    <th width="12%">Action</th>    
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,13 +90,7 @@
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $y->id }}">
                                             <div class="form-check form-switch d-flex justify-content-center">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="checkbox"
-                                                    role="switch"
-                                                    id="statusSwitch{{ $y->id }}"
-                                                    name="status"
-                                                    value="1"
+                                                <input class="form-check-input"  type="checkbox" role="switch"id="statusSwitch{{ $y->id }}" name="status" value="1"
                                                     onchange="this.form.submit()"
                                                     {{ $y->status == 1 ? 'checked' : '' }}>
                                             </div>
@@ -132,8 +123,9 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>
-
+@endif
 @endsection

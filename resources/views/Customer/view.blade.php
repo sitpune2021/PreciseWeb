@@ -49,6 +49,7 @@
                                 </button>
                             </div>
                         </div>
+                        @if(hasPermission('Customer', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -63,10 +64,7 @@
                                             <!-- <th>gst no</th> -->
                                             <th>Address</th>
                                             <th style="width: 15%;">Status</th>
-                                            @if(hasPermission('Customer', 'edit'))
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -85,14 +83,7 @@
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{ $c->id }}">
                                                     <div class="form-check form-switch d-flex justify-content-center">
-                                                        <input
-                                                            class="form-check-input"
-                                                            type="checkbox"
-                                                            role="switch"
-                                                            id="statusSwitch{{ $c->id }}"
-                                                            name="status"
-                                                            value="1"
-                                                            onchange="this.form.submit()"
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch{{ $c->id }}" name="status" value="1" onchange="this.form.submit()"
                                                             {{ $c->status == 1 ? 'checked' : '' }}>
                                                     </div>
                                                 </form>
@@ -105,13 +96,10 @@
                                                     </button>
                                                 </a>
                                                 @endif
-
-                                                @if(hasPermission('Customer', 'view'))
                                                 <button type="button"
                                                     class="btn btn-primary btn-icon waves-effect waves-light viewCustomerBtn"
                                                     data-name="{{ $c->name }}"
                                                     data-code="{{ $c->code }}"
-
                                                     data-email_id="{{ $c->email_id }}"
                                                     data-contact="{{ $c->contact_person }}"
                                                     data-phone="{{ $c->phone_no }}"
@@ -119,14 +107,9 @@
                                                     data-address="{{ $c->address }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-                                                @endif
-
-
                                                 <a href="{{ route('deleteCustomer', base64_encode($c->id)) }}"
                                                     onclick="return confirm('Are you sure you want to delete this record?')">
                                                 </a>
-
-
                                             </td>
                                         </tr>
                                         @endforeach
@@ -134,10 +117,9 @@
                                 </table>
                             </div>
                         </div>
+                        @endif
                     </div>
-
                     <!-- Import Button -->
-
                     <!-- Modal -->
                     <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
                         <div class="modal-dialog">

@@ -34,7 +34,7 @@
                                 </a>
                             </div>
                         </div>
-
+                        @if(hasPermission('SetupSheet', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -49,21 +49,13 @@
                                             <th>Size Y</th>
                                             <th>Size Z</th>
                                             <th>Setting</th>
-                                            @if(
-                                            hasPermission('SetupSheet', 'edit') ||
-                                            hasPermission('SetupSheet', 'delete')||
-                                            hasPermission('SetupSheet', 'view')
-                                            )
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($sheets as $sheet)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-
                                             <td>
                                                 @if($sheet->setup_image)
                                                 <img src="{{ asset('setup_images/'.$sheet->setup_image) }}"
@@ -72,7 +64,6 @@
                                                 <span class="text-muted">No Image</span>
                                                 @endif
                                             </td>
-
                                             <td>{{ $sheet->part_code }}</td>
                                             <td>{{ $sheet->work_order_no }}</td>
                                             <td>{{ $sheet->date }}</td>
@@ -94,14 +85,10 @@
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </a>
                                                     @endif
-
-                                                    @if(hasPermission('SetupSheet', 'view'))
                                                     <button type="button" class="btn btn-warning btn-icon printSetupSheet"
                                                         data-sheet='@json($sheet)'>
                                                         <i class="fas fa-print"></i>
                                                     </button>
-                                                    @endif
-
                                                 </div>
                                             </td>
                                         </tr>
@@ -110,6 +97,7 @@
                                 </table>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -118,7 +106,50 @@
     </div>
 </div>
 
+<!-- CSS -->
+<style>
+    .a4-portrait {
+        width: 100%;
+        min-height: 100%;
+        padding: 0;
+        margin: 0 auto;
+        background: #fff;
+        font-size: 15px;
+    }
 
+    /* Print Settings */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        body * {
+            visibility: hidden;
+        }
+
+        #viewSetupSheetModal,
+        #viewSetupSheetModal * {
+            visibility: visible;
+        }
+
+        #viewSetupSheetModal .modal-dialog {
+            position: absolute;
+            left: 0;
+            top: 0;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        .a4-portrait {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            font-size: 20px;
+        }
+    }
+</style>
 
 <!-- View Setup Sheet Modal -->
 <!-- Modal -->
@@ -211,7 +242,6 @@
                                 <td id="sheet_z_refer"></td>
                                 <td id="sheet_clamping"></td>
                                 <td id="sheet_qty"></td>
-
                             </tr>
                         </tbody>
                     </table>
@@ -237,55 +267,6 @@
         </div>
     </div>
 </div>
-
-
-<!-- CSS -->
-<style>
-    .a4-portrait {
-        width: 100%;
-        min-height: 100%;
-        padding: 0;
-        margin: 0 auto;
-        background: #fff;
-        font-size: 15px;
-    }
-
-    /* Print Settings */
-    @media print {
-        @page {
-            size: A4 portrait;
-            margin: 10mm;
-        }
-
-        body * {
-            visibility: hidden;
-        }
-
-        #viewSetupSheetModal,
-        #viewSetupSheetModal * {
-            visibility: visible;
-        }
-
-        #viewSetupSheetModal .modal-dialog {
-            position: absolute;
-            left: 0;
-            top: 0;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
-
-        .a4-portrait {
-            width: 100%;
-            min-height: 100%;
-            margin: 0;
-            font-size: 20px;
-        }
-
-
-    }
-</style>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -307,22 +288,20 @@
             }
 
             if (data.setup_image) {
-                document.getElementById('sheet_image_container').innerHTML = `<div style=" width:370px; height:370px; 
-            border:1px solid #ccc; 
-            display:flex; 
-            align-items:center; 
-            justify-content:center; 
-            margin:auto;">
+                document.getElementById('sheet_image_container').innerHTML = `
+        <div style="width:320px;height:320px;border:1px solid #ccc;
+        display:flex;align-items:center;justify-content:center;margin:auto;">
             <img src="/setup_images/${data.setup_image}" 
-                 alt="Setup Image" 
-                 style="
-                max-width:100%; 
-                max-height:100%; 
-                object-fit:contain;
-                 ">
+                 alt="Setup Image"
+                 style="max-width:100%;max-height:100%;object-fit:contain;">
         </div>`;
             } else {
-                document.getElementById('sheet_image_container').innerHTML = "";
+                document.getElementById('sheet_image_container').innerHTML = `
+        <div style="width:320px;height:320px;border:1px solid #ccc;
+        display:flex;align-items:center;justify-content:center;margin:auto;
+        color:#999;font-size:14px;">
+            
+        </div>`;
             }
 
             document.getElementById('sheet_part_code').textContent = data.part_code ?? '';

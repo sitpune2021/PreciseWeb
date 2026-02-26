@@ -33,7 +33,8 @@
                                 </a>
                             </div>
                         </div>
-
+                        
+                        @if(hasPermission('MaterialOrder', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -46,13 +47,7 @@
                                             <th>Work Order desc</th>
                                             <th>Material</th>
                                             <th>Qty</th>
-                                            @if(
-                                            hasPermission('MaterialOrder', 'edit') ||
-                                            hasPermission('MaterialOrder', 'delete')
-                                            )
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
 
                                     </thead>
@@ -84,7 +79,6 @@
                                                 @endif
 
                                                 <!-- View Button -->
-                                                @if(hasPermission('MaterialOrder', 'view'))
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm viewBtn"
                                                     data-no="{{ $order->sr_no }}"
@@ -104,7 +98,7 @@
                                                     data-qty="{{ $order->quantity }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-                                                @endif
+
 
                                                 @if(hasPermission('MaterialOrder', 'delete'))
                                                 <a href="{{ route('deleteMaterialorder', base64_encode($order->id)) }}"
@@ -124,6 +118,7 @@
                                 </table>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div><!--end row-->

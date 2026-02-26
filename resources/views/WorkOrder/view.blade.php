@@ -17,8 +17,6 @@
                     </div>
                     @endif
                     <div class="card">
-
-
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Work Order Entries</h5>
 
@@ -53,15 +51,8 @@
                                             <th>Width</th>
                                             <th>Height</th>
                                             <th>Exp Time</th>
-                                            <th>Qty</th>
-                                            @if(
-                                            hasPermission('WorkOrders', 'edit') ||
-                                            hasPermission('WorkOrders', 'delete')||
-                                            hasPermission('WorkOrders', 'view')
-                                            )
+                                            <th>Qty</th>                                        
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>

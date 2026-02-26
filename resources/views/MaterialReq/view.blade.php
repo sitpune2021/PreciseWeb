@@ -17,7 +17,6 @@
                     </div>
                     @endif
                     <div class="card">
-
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">View Material Requirements</h5>
 
@@ -35,6 +34,7 @@
                             </div>
                         </div>
 
+                        @if(hasPermission('MaterialReq', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -47,14 +47,7 @@
                                             <th style="width:70px;">Date</th>
                                             <th style="width: 70px;">Description</th>
                                             <th style="width: 70px;">Material Type</th>
-                                            @if(
-                                            hasPermission('MaterialReq', 'edit') ||
-                                            hasPermission('MaterialReq', 'delete')||
-                                            hasPermission('MaterialReq', 'view')
-                                            )
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -78,7 +71,6 @@
                                                     </a>
                                                     @endif
 
-                                                    @if(hasPermission('MaterialReq', 'view'))
                                                     <button type="button" class="btn btn-primary btn-sm viewMaterialReqBtn"
                                                         data-customer="{{ $req->customer->code ?? 'N/A' }}"
                                                         data-code="{{ $req->code }}"
@@ -116,7 +108,7 @@
                                                         data-total_cost="{{ $req->total_cost }}">
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
-                                                    @endif
+
 
                                                     @if(hasPermission('MaterialReq', 'delete'))
                                                     <a href="{{ route('deleteMaterialReq', base64_encode($req->id)) }}"
@@ -134,7 +126,7 @@
                                 </table>
                             </div>
                         </div>
-
+                        @endif
                     </div>
                 </div>
             </div>

@@ -40,15 +40,8 @@
                                             <th>Project<br>No.</th>
                                             <th>Customer<br>Code</th>
                                             <th>Project Name</th>
-                                            <th>Qty</th>
-                                            @if(
-                                            hasPermission('Projects', 'edit') ||
-                                            hasPermission('Projects', 'delete') ||
-                                            hasPermission('Projects', 'view')
-                                            )
+                                            <th>Qty</th>                                   
                                             <th width="12%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>

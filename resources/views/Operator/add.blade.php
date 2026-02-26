@@ -1,13 +1,14 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('Operator','view') || hasPermission('Operator','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
 
             <!-- Form Start -->
+            @if(hasPermission('Operator','add'))
             <div class="card shadow-sm mb-4">
-                   <div class="card-header d-flex align-items-center">
+                <div class="card-header d-flex align-items-center">
                     <!-- Back Button ONLY on Edit -->
                     <a href="{{ route('home') }}" class="btn btn-sm btn-outline-success me-2">
                         ←
@@ -68,20 +69,6 @@
                                 </small>
                                 @enderror
                             </div>
-                            <script>
-                                function isNumberKey(evt) {
-
-                                    if (!/[0-9]/.test(evt.key)) {
-                                        return false;
-                                    }
-                                    let input = evt.target.value;
-
-                                    if (input.length >= 10) {
-                                        return false;
-                                    }
-                                    return true;
-                                }
-                            </script>
 
                             <!-- Submit Button -->
                             <div class="col-md-2 col-sm-6 mb-3">
@@ -95,9 +82,24 @@
 
                 </div>
             </div>
+            @endif
             <!-- Form End -->
+            <script>
+                function isNumberKey(evt) {
 
+                    if (!/[0-9]/.test(evt.key)) {
+                        return false;
+                    }
+                    let input = evt.target.value;
+
+                    if (input.length >= 10) {
+                        return false;
+                    }
+                    return true;
+                }
+            </script>
             <!-- List Start -->
+            @if(hasPermission('Operator', 'view'))
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Operator List</h5>
@@ -114,12 +116,7 @@
                                     <th style="width: 45%; text-align: center;">Operator Name</th>
                                     <th style="width: 25%; text-align: center;">Phone Number</th>
                                     <th style="width: 15%;">Status</th>
-                                    @if(
-                                    hasPermission('Operator', 'edit') ||
-                                    hasPermission('Operator', 'delete')
-                                    )
                                     <th width="15%">Action</th>
-                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,14 +135,8 @@
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $o->id }}">
                                             <div class="form-check form-switch d-flex justify-content-center">
-                                                <input class="form-check-input"
-                                                    type="checkbox"
-                                                    role="switch"
-                                                    id="statusSwitch{{ $o->id }}"
-                                                    name="status"
-                                                    value="1"
-                                                    onchange="this.form.submit()"
-                                                    {{ $o->status == 1 ? 'checked' : '' }}>
+                                                <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch{{ $o->id }}" name="status"
+                                                    value="1" onchange="this.form.submit()" {{ $o->status == 1 ? 'checked' : '' }}>
                                             </div>
                                         </form>
                                     </td>
@@ -175,10 +166,10 @@
                     </div>
                 </div>
             </div>
+            @endif
             <!-- List End -->
-
         </div>
     </div>
 </div>
-
+@endif
 @endsection

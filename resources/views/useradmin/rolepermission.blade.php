@@ -41,14 +41,8 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-                            <h5 class="mb-0">Role Permissions</h5>
+                        <h5 class="mt-4">Role Permissions</h5>
 
-                            <label class="d-flex align-items-center fw-semibold">
-                                <input type="checkbox" id="selectAll" class="large-checkbox me-2">
-                                Select All
-                            </label>
-                        </div>
                         <table class="table table-bordered text-center mt-3">
                             <thead class="table-light">
                                 <tr>
@@ -94,16 +88,21 @@
                                     @else
                                     <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="add"></td>
                                     <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="view"></td>
-                                    <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="edit"></td>
-                                    <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="delete"></td>
+                                    <td>
+                                        @if($module != 'Quotation')
+                                        <input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="edit">
+                                    </td>
                                     @endif
-
+                                    <td>
+                                        @if($module != 'Customer' && $module != 'Projects' && $module != 'Invoice')
+                                        <input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="delete">
+                                        @endif
+                                    </td>
+                                    @endif
                                 </tr>
-
                                 @endforeach
                             </tbody>
-
-                        </table> 
+                        </table>
                         <div class="mt-3">
                             <button type="submit" class="btn btn-primary">Save Permissions</button>
                         </div>
@@ -166,28 +165,6 @@
 
         $("#role_id").change(function() {
             loadPermissions();
-        });
-
-    });
-
-    $(document).ready(function() {
-
-        function updateSelectAll() {
-            if ($(".perm:checked").length === $(".perm").length) {
-                $("#selectAll").prop("checked", true);
-            } else {
-                $("#selectAll").prop("checked", false);
-            }
-        }
-
-        // Select All click
-        $("#selectAll").on("change", function() {
-            $(".perm").prop("checked", $(this).prop("checked"));
-        });
-
-        // Individual checkbox change
-        $(".perm").on("change", function() {
-            updateSelectAll();
         });
 
     });

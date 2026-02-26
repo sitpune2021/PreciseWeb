@@ -1,12 +1,12 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('WorkOrders','view') || hasPermission('WorkOrders','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-
             <div class="row">
                 <div class="col-xxl-12">
+                    @if(hasPermission('WorkOrders','add'))
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
 
@@ -270,6 +270,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
                 <div class="container-fluid">
 
@@ -284,9 +285,8 @@
                                 </div>
                             </div>
                             @endif
+                            @if(hasPermission('WorkOrders', 'view'))
                             <div class="card">
-
-
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">View Work Order Entries</h5>
 
@@ -297,7 +297,6 @@
                                             <i class="ri-add-line align-middle"></i> Add WorkOrder
                                         </a>
                                         @endif -->
-
                                         <!-- View Trash Button -->
                                         <a href="{{ route('trashWorkOrder') }}" class="btn btn-warning btn-sm">
                                             View Trash
@@ -322,14 +321,7 @@
                                                     <th>Height</th>
                                                     <th>Exp Time</th>
                                                     <th>Qty</th>
-                                                    @if(
-                                                    hasPermission('WorkOrders', 'edit') ||
-                                                    hasPermission('WorkOrders', 'delete')||
-                                                    hasPermission('WorkOrders', 'view')
-                                                    )
-                                                    <th width="12%">Action</th>
-                                                    @endif
-
+                                                    <th width="12%">Action</th>                                                 
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -369,18 +361,21 @@
                                                         </a>
                                                         @endif
 
+                                                        @if(hasPermission('MachineRecord', 'add'))
                                                         <a href="{{ route('AddMachinerecord', base64_encode($wo->id)) }}">
                                                             <button type="button" class="btn btn-info btn-sm btn-icon waves-effect waves-light">
                                                                 <i class="ri-add-circle-line">M</i>
                                                             </button>
                                                         </a>
+                                                        @endif
 
+                                                        @if(hasPermission('SetupSheet', 'add'))
                                                         <a href="{{ route('AddSetupSheet', base64_encode($wo->id)) }}">
                                                             <button type="button" class="btn btn-primary btn-sm btn-icon waves-effect waves-light">
                                                                 <i class="ri-add-circle-line">S</i>
                                                             </button>
                                                         </a>
-
+                                                        @endif
                                                         <!-- View Button to open Modal -->
                                                         <!-- @if(hasPermission('WorkOrders', 'view'))
                                                         <button type="button"
@@ -395,11 +390,11 @@
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-
                                         </table>
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -408,8 +403,7 @@
         </div>
     </div>
 </div>
-
-
+@endif
 
 <script>
     let isEditPage = {

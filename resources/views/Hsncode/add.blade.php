@@ -1,11 +1,12 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('Hsncode','view') || hasPermission('Hsncode','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
 
             <!-- Form Start -->
+            @if(hasPermission('Hsncode','add'))
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex align-items-center">
                     <!-- Back Button ONLY on Edit -->
@@ -92,7 +93,10 @@
                     </form>
                 </div>
             </div>
-
+            @endif
+            <!-- Form End -->
+            <!-- List Start -->
+            @if(hasPermission('Hsncode', 'view'))
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">HSN Code List</h5>
@@ -112,11 +116,7 @@
                                     <th>IGST %</th>
                                     <th>Invoice Description</th>
                                     <th>Status</th>
-                                    @if(
-                                    hasPermission('Hsncode', 'edit') ||
-                                    hasPermission('Hsncode', 'delete'))
-                                    <th width="12%">Action</th>
-                                    @endif
+                                    <th width="12%">Action</th> 
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,9 +163,13 @@
                     </div>
                 </div>
             </div>
+            @endif
+            <!-- List End -->
+        </div>
         </div>
     </div>
 </div>
+@endif
 <script>
     document.querySelectorAll('.only-positive').forEach(function(input) {
         input.addEventListener('input', function() {

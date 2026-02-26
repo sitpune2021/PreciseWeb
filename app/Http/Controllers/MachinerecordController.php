@@ -70,13 +70,17 @@ class MachinerecordController extends Controller
             'end_time'    => 'required|date|after_or_equal:start_time',
             'adjustment'  => 'nullable|string|max:100',
             'hrs'         => 'required|numeric|min:0',
-            'idl_time'    => 'nullable|string|max:100',
             'invoice_no'  => 'nullable|string|max:100',
-            'work_order_id' => 'required|exists:work_orders,id',
         ]);
 
         $validated['admin_id'] = Auth::id();
-        MachineRecord::create($validated);
+
+        // record insert
+        $record = MachineRecord::create($validated);
+
+        // auto serial number set
+        $record->work_order_id = $record->id;
+        $record->save();
 
         return redirect()->route('ViewMachinerecord')
             ->with('success', 'Machine Record Added Successfully');

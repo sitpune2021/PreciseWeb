@@ -33,6 +33,7 @@
                                 </a>
                             </div>
                         </div>
+                         @if(hasPermission('MachineRecord', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables" class="display table table-bordered table-sm" style="width:100%">
@@ -55,14 +56,7 @@
                                             <!-- <th>Time Taken</th> -->
                                             <!-- <th>Adjustment</th> -->
                                             <!-- <th>Invoice No</th> -->
-                                            @if(
-                                            hasPermission('MachineRecord', 'edit') ||
-                                            hasPermission('MachineRecord', 'delete')||
-                                            hasPermission('MachineRecord', 'view')
-                                            )
                                             <th width="9%">Action</th>
-                                            @endif
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -91,7 +85,7 @@
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </a>
                                                 @endif
-                                                @if(hasPermission('MachineRecord', 'view'))
+                                               
                                                 <button type="button" class="btn btn-primary btn-sm viewBtn"
                                                     data-id="{{ $rec->id }}"
                                                     data-part="{{ $rec->part_no }}"
@@ -112,7 +106,6 @@
                                                     data-invoice_no="{{ $rec->invoice_no }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
-                                                @endif
 
                                                 @if(hasPermission('MachineRecord', 'delete'))
                                                 <a href="{{ route('DeleteMachinerecord', base64_encode($rec->id)) }}"
@@ -131,6 +124,7 @@
 
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

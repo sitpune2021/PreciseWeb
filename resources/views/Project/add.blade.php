@@ -1,11 +1,12 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('Projects','view') || hasPermission('Projects','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xxl-12">
+                    @if(hasPermission('Projects','add') || hasPermission('Projects','edit'))
                     <div class="card shadow-sm">
                         <div class="card-header d-flex align-items-center">
 
@@ -106,6 +107,7 @@
                             </form>
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 <div class="container-fluid">
@@ -121,8 +123,8 @@
                                 </div>
                             </div>
                             @endif
+                            @if(hasPermission('Projects', 'view'))
                             <div class="card">
-
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">View Projects</h5>
 
@@ -134,7 +136,6 @@
                                         @endif
                                     </div> -->
                                 </div>
-
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
@@ -147,13 +148,9 @@
                                                     <th>Project Name</th>
                                                     <th style="width:50px;">Qty</th>
                                                     @if(
-                                                    hasPermission('Projects', 'edit') ||
-                                                    hasPermission('Projects', 'delete') ||
-                                                    hasPermission('Projects', 'view')
-                                                    )
+                                                    hasPermission('Projects', 'edit') || hasPermission('Projects', 'view'))
                                                     <th width="10%">Action</th>
                                                     @endif
-
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -195,12 +192,13 @@
                                                             </button>
                                                         </a>
                                                         @endif -->
-
+                                                        @if(hasPermission('WorkOrders','add'))
                                                         <a href="{{ route('AddWorkOrder', base64_encode($project->id)) }}">
                                                             <button type="button" class="btn btn-info btn-icon waves-effect waves-light">
                                                                 <i class="ri-add-circle-line me-1"></i></i>
                                                             </button>
                                                         </a>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -208,7 +206,9 @@
                                         </table>
                                     </div>
                                 </div>
+                             
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -256,7 +256,7 @@
         </div>
     </div>
 </div>
-
+@endif
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {

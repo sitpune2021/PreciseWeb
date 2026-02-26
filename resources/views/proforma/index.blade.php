@@ -31,22 +31,20 @@
                                          @endforeach
                                      </select>
                                  </div>
-
                                  <button type="submit" class="btn btn-primary">
                                      Search
                                  </button>
                              </form>
 
                              <!-- Right Side : Add Button -->
+                             @if(hasPermission('Invoice', 'add'))
                              <a href="{{ route('proforma.add') }}" class="btn btn-success shadow-sm">
                                  </i> Add Invoice
                              </a>
-
+                             @endif
                          </div>
-
                      </div>
                  </div>
-
              </div>
 
              @if(session('success'))
@@ -60,6 +58,7 @@
              @endif
 
              <!-- Table Section -->
+               @if(hasPermission('Invoice', 'view'))
              <div class="card shadow-sm border-0">
                  <div class="card-body">
                      <div class="table-responsive">
@@ -96,12 +95,14 @@
                                                  class="btn btn-outline-primary btn-sm rounded-pill px-3">
                                                  <i class="fas fa-print me-1"></i>
                                              </a>
-                                             
+
                                              <!-- Edit -->
+                                               @if(hasPermission('Invoice', 'edit'))
                                              <a href="{{ route('proforma.edit', base64_encode($invoice->id)) }}"
                                                  class="btn btn-outline-warning btn-sm rounded-pill px-3">
                                                  <i class="fas fa-edit me-1"></i>
                                              </a>
+                                             @endif
 
                                              <!-- Tax Convert -->
                                              <a href="{{ route('proforma.convert', $invoice->id) }}"
@@ -109,13 +110,9 @@
                                                  onclick="return confirm('Convert to Final TAX Invoice?');">
                                                  <i class="fas fa-print me-1"></i>
                                              </a>
-
                                          </div>
                                      </td>
-
-
                                  </tr>
-
                                  @empty
                                  <tr>
                                      <td colspan="6" class="text-center text-muted py-4">
@@ -129,11 +126,8 @@
                      </div>
                  </div>
              </div>
-
+             @endif
          </div>
      </div>
  </div>
-
-
-
  @endsection

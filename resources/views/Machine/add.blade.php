@@ -1,13 +1,14 @@
 @extends('layouts.header')
 @section('content')
-
+@if(hasPermission('Machine','view') || hasPermission('Machine','add'))
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
 
             <!-- Form Start -->
+            @if(hasPermission('Machine','add'))
             <div class="card shadow-sm mb-4">
-                    <div class="card-header d-flex align-items-center">
+                <div class="card-header d-flex align-items-center">
                     <!-- Back Button ONLY on Edit -->
                     <a href="{{ route('home') }}" class="btn btn-sm btn-outline-success me-2">
                         ←
@@ -15,7 +16,6 @@
                     <h5 class="mb-0">{{ isset($machine) ? 'Edit Machine' : 'Add Machine' }}</h5>
                 </div>
                 <div class="card-body">
-                    
                     @if(session('success'))
                     <div class="d-flex">
                         <div id="successAlert"
@@ -62,9 +62,11 @@
                     </form>
                 </div>
             </div>
+            @endif
             <!-- Form End -->
 
             <!-- List Start -->
+            @if(hasPermission('Machine','view'))
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Machine List</h5>
@@ -80,16 +82,10 @@
                                     <th style="width: 5%;">Sr.No</th>
                                     <th style="width: 50%;">Machine Name</th>
                                     <th style="width: 15%;">Status</th>
-                                    @if(
-                                    hasPermission('Machine', 'edit') ||
-                                    hasPermission('Machine', 'delete')
-                                    )
                                     <th width="12%">Action</th>
-                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
-
                                 @forelse($machines as $m)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
@@ -99,19 +95,11 @@
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $m->id }}">
                                             <div class="form-check form-switch">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="checkbox"
-                                                    role="switch"
-                                                    id="statusSwitch{{ $m->id }}"
-                                                    name="status"
-                                                    value="1"
-                                                    onchange="this.form.submit()"
-                                                    {{ $m->status == 1 ? 'checked' : '' }}>
+                                                <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch{{ $m->id }}" name="status"
+                                                    value="1" onchange="this.form.submit()" {{ $m->status == 1 ? 'checked' : '' }}>
                                             </div>
                                         </form>
                                     </td>
-
                                     <td>
                                         @if(hasPermission('Machine', 'edit'))
                                         <a href="{{ route('editMachine', base64_encode($m->id)) }}" class="btn btn-success btn-sm">
@@ -139,10 +127,11 @@
                     </div>
                 </div>
             </div>
+            @endif
             <!-- List End -->
-
         </div>
     </div>
 </div>
+@endif
 
 @endsection
