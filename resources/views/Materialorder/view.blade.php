@@ -33,7 +33,7 @@
                                 </a>
                             </div>
                         </div>
-                        
+
                         @if(hasPermission('MaterialOrder', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
@@ -43,7 +43,7 @@
                                             <th>#</th>
                                             <th>Sr.No</th>
                                             <th>Date</th>
-                                            <th>Customer Code</th>
+                                            <th style="width: 40px;">Customer Code</th>
                                             <th>Work Order desc</th>
                                             <th>Material</th>
                                             <th>Qty</th>
@@ -57,7 +57,7 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">
-                                                SR-{{ $order->sr_no ?? $order->materialReq->sr_no ?? '-' }}
+                                                {{ $order->sr_no ?? $order->materialReq->sr_no ?? '-' }}
                                             </td>
                                             <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
 

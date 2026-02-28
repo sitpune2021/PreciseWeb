@@ -23,21 +23,25 @@ class SetupSheetController extends Controller
 
         $xOptions = SetupSheet::select('x_refer')
             ->whereNotNull('x_refer')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('x_refer');
 
         $yOptions = SetupSheet::select('y_refer')
             ->whereNotNull('y_refer')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('y_refer');
 
         $zOptions = SetupSheet::select('z_refer')
             ->whereNotNull('z_refer')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('z_refer');
 
         $clampingOptions = SetupSheet::select('clamping')
             ->whereNotNull('clamping')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('clamping');
         return view('SetupSheet.add', compact('codes', 'settings', 'xOptions', 'yOptions', 'zOptions', 'clampingOptions'));
@@ -121,21 +125,25 @@ class SetupSheetController extends Controller
 
         $xOptions = SetupSheet::select('x_refer')
             ->whereNotNull('x_refer')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('x_refer');
 
         $yOptions = SetupSheet::select('y_refer')
             ->whereNotNull('y_refer')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('y_refer');
 
         $zOptions = SetupSheet::select('z_refer')
             ->whereNotNull('z_refer')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('z_refer');
 
         $clampingOptions = SetupSheet::select('clamping')
             ->whereNotNull('clamping')
+            ->where('admin_id', Auth::id())
             ->distinct()
             ->pluck('clamping');
 
@@ -168,7 +176,7 @@ class SetupSheetController extends Controller
 
             'qty'         => ['required', 'integer', 'min:1'],
 
-             'holes'        => 'nullable|array',
+            'holes'        => 'nullable|array',
             'holes.*'      => 'nullable|numeric|min:0',
             'hole_x'       => 'nullable|array',
             'hole_x.*'     => 'nullable|numeric|min:0',

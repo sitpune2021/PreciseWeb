@@ -257,7 +257,7 @@ Route::post('razorpay/order'                    , [PaymentController::class, 'or
 // Route::post('payment/success'                   , [PaymentController::class, 'success'])->name('razorpay.success');
 Route::post('/razorpay/success'                   , [PaymentController::class, 'success'])->name('razorpay.success');
 
-Route::get('/payment/failed'                    , [PaymentController::class, 'failed'])->name('payment.failed');
+Route::get('/payment/failed'                    , [PaymentController::class, 'failed'])->name('Payment.failed');
 Route::get( 'Payment/view'                      , [PaymentController::class, 'PaymentList'])->name('PaymentList');
 Route::post('payment/verify'                    , [PaymentController::class, 'verify'])->name('payment.verify');
 Route::get( 'payment/view'                      , [PaymentController::class, 'AllPaymentList'])->name('AllPaymentList');

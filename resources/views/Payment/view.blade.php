@@ -48,7 +48,7 @@
                                              <td>{{ $pay->razorpay_order_id ?? '-' }}</td>
                                              <td>{{ $pay->razorpay_payment_id ?? '-' }}</td>
 
-                                             <td>{{ $pay->amount }}</td>
+                                             <td>₹ {{ number_format($pay->amount,2) }}</td>
 
                                              <td>
                                                  <span class="badge bg-{{ $pay->payment_status == 'completed' ? 'success' : ($pay->payment_status == 'failed' ? 'danger' : 'secondary') }}">
@@ -62,7 +62,7 @@
                                                  </span>
                                              </td>
 
-                                             <td>{{ ($pay->created_at)->format('d M Y') }}</td>
+                                             <td>{{ $pay->created_at ? $pay->created_at->format('d M Y') : '-' }}</td>
                                          </tr>
 
                                          @empty

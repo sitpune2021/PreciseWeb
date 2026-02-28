@@ -8,12 +8,12 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                      
+
                         <!-- Back Button ONLY on Edit -->
                         <a href="{{ route('ViewMaterialorder') }}" class="btn btn-sm btn-outline-success me-2">
-                            ← 
+                            ←
                         </a>
-                        
+
                         {{ isset($record) ? 'Edit Material Order' : 'Add Material Order' }}
                     </h5>
                 </div>
@@ -32,7 +32,7 @@
 
                             <!-- CUSTOMER -->
                             <div class="col-md-2">
-                                <label>Customer <span class="text-red">*</span></label>
+                                <label>Customer Code <span class="text-red">*</span></label>
 
                                 <select id="customer_id" name="customer_id"
                                     class="form-select js-example-basic-single"
@@ -47,7 +47,7 @@
                                     @endforeach
                                 </select>
 
-                                {{-- 🔥 Disabled field value send to backend --}}
+                                {{-- Disabled field value send to backend --}}
                                 @if(isset($record))
                                 <input type="hidden" name="customer_id" value="{{ $record->customer_id }}">
                                 @endif
@@ -57,7 +57,6 @@
                                 @enderror
                             </div>
 
-
                             <!-- WO NO -->
                             <div class="col-md-3 d-none">
                                 <label>WO No</label>
@@ -66,9 +65,8 @@
                                     value="{{ $record->work_order_no ?? '' }}">
                             </div>
 
-
                             <!-- DATE -->
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label>Date <span class="text-red">*</span></label>
                                 <input type="date" name="date" class="form-control"
                                     value="{{ $record->date ?? old('date') }}">
@@ -80,14 +78,20 @@
                             <!-- SR -->
                             <div class="col-md-8">
                                 <label>Material Requests (SR)<span class="text-red">*</span></label>
-                                <select id="material_data_dropdown"
-                                    class="form-select"
-                                    {{ isset($record) ? 'disabled' : '' }}
+                                <select id="material_data_dropdown"name="material_req_ids[]"
+                                    class="form-select js-example-basic-single select2-hidden"
                                     multiple>
+                                    @if(isset($materialRequests))
+                                    @foreach($materialRequests as $mr)
+                                    <option value="{{ $mr->id }}"
+                                        @if(isset($record) && in_array($mr->id, [$record->material_req_id])) selected @endif>
+                                        SR-{{ $mr->sr_no }}
+                                    </option>
+                                    @endforeach
+                                    @endif
+
                                 </select>
-
                                 <input type="hidden" name="material_req_ids_dummy" value="1">
-
                                 @error('material_req_ids')
                                 <span class="text-red small">{{ $message }}</span>
                                 @enderror
@@ -108,17 +112,17 @@
                         <!-- TABLE -->
                         <div class="mt-4">
                             <table class="table table-bordered {{ isset($record) ? '' : 'd-none' }}" id="previewTable">
-                                <thead class="table-light">
+                                <thead class="table-light text-center">
                                     <tr>
                                         <th style="width:60px">SR</th>
                                         <th style="width:35%">Description</th>
-                                        <th style="width:65px">Die</th>
-                                        <th style="width:65px">Len</th>
-                                        <th style="width:65px">Wid</th>
-                                        <th style="width:65px">Hei</th>
+                                        <th style="width:80px">Dia</th>
+                                        <th style="width:80px">Length</th>
+                                        <th style="width:80px">Width</th>
+                                        <th style="width:80px">Height</th>
                                         <th style="width:120px">Material</th>
                                         <th style="width:65px; text-align:center">Qty</th>
-                                        <th style="width:80px">Action</th>
+                                        <th style="width:20px">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -126,7 +130,7 @@
                                     {{-- EDIT MODE --}}
                                     @if(isset($record))
                                     <tr id="row_{{ $record->material_req_id }}">
-                                        <td>SR-{{ $materialReq->sr_no ?? '' }}</td>
+                                        <td>{{ $record->sr_no ?? '' }}</td>
 
                                         <td>
                                             <input type="text" name="work_order_desc[]" class="form-control"
@@ -197,8 +201,14 @@
 
         $('#material_data_dropdown').select2({
             placeholder: 'Select SR',
-            width: '100%'
+            width: '100%',
+            closeOnSelect: false
         });
+
+        // EDIT MODE SELECTED VALUE
+        @if(isset($record))
+        $('#material_data_dropdown').val(['{{ $record->material_req_id }}']).trigger('change');
+        @endif
 
         @if(!isset($record))
         // CUSTOMER CHANGE (only in add mode)
@@ -230,44 +240,154 @@
         });
 
         // ADD SR
-        $('#addMaterialBtn').click(function() {
-            let ids = $('#material_data_dropdown').val();
-            if (!ids) return;
+        // $('#addMaterialBtn').click(function() {
+        //     let ids = $('#material_data_dropdown').val();
+        //     if (!ids) return;
 
+        //     let tbody = $('#previewTable tbody');
+
+        //     ids.forEach(id => {
+        //         if (addedRows[id]) return;
+        //         addedRows[id] = true;
+
+        //         let d = allRequests[id];
+
+        //         tbody.append(`
+        //         <tr id="row_${id}">
+        //             <td>SR-${d.sr_no}</td>
+        //             <td><input type="text" name="work_order_desc[]" class="form-control" value="${d.description}"></td>
+        //             <td><input type="text" name="r_diameter[]" class="form-control" value="${d.dia ?? ''}"></td>
+        //             <td><input type="text" name="r_length[]" class="form-control" value="${d.length ?? ''}"></td>
+        //             <td><input type="text" name="r_width[]" class="form-control" value="${d.width ?? ''}"></td>
+        //             <td><input type="text" name="r_height[]" class="form-control" value="${d.height ?? ''}"></td>
+        //             <td><input type="text" name="material[]" class="form-control" value="${d.material_name}"></td>
+        //             <td><input type="number" name="quantity[]" class="form-control" value="${d.qty}"></td>
+        //             <td>
+        //                 <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">Remove</button>
+        //             </td>
+        //             <input type="hidden" name="material_req_ids[]" value="${id}">
+        //         </tr>
+        //         `);
+        //     });
+
+        //     $('#previewTable').removeClass('d-none');
+        // });
+
+
+        let selectedIds = [];
+
+        $('#material_data_dropdown').on('change', function() {
+
+            let ids = $(this).val() || [];
             let tbody = $('#previewTable tbody');
 
+            // ADD NEW ROWS
             ids.forEach(id => {
+
                 if (addedRows[id]) return;
+
                 addedRows[id] = true;
 
                 let d = allRequests[id];
 
                 tbody.append(`
-                <tr id="row_${id}">
-                    <td>SR-${d.sr_no}</td>
-                    <td><input type="text" name="work_order_desc[]" class="form-control" value="${d.description}"></td>
-                    <td><input type="text" name="r_diameter[]" class="form-control" value="${d.dia ?? ''}"></td>
-                    <td><input type="text" name="r_length[]" class="form-control" value="${d.length ?? ''}"></td>
-                    <td><input type="text" name="r_width[]" class="form-control" value="${d.width ?? ''}"></td>
-                    <td><input type="text" name="r_height[]" class="form-control" value="${d.height ?? ''}"></td>
-                    <td><input type="text" name="material[]" class="form-control" value="${d.material_name}"></td>
-                    <td><input type="number" name="quantity[]" class="form-control" value="${d.qty}"></td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">Remove</button>
-                    </td>
-                    <input type="hidden" name="material_req_ids[]" value="${id}">
-                </tr>
-                `);
+        <tr id="row_${id}">
+            <td>SR-${d.sr_no}</td>
+
+            <td>
+                <input type="text" name="work_order_desc[]" 
+                class="form-control form-control-sm"
+                value="${d.description}">
+            </td>
+
+            <td>
+                <input type="number" step="0.01"
+                name="r_diameter[]" 
+                class="form-control form-control-sm"
+                value="${d.dia ?? ''}">
+            </td>
+
+            <td>
+                <input type="number" step="0.01"
+                name="r_length[]" 
+                class="form-control form-control-sm"
+                value="${d.length ?? ''}">
+            </td>
+
+            <td>
+                <input type="number" step="0.01"
+                name="r_width[]" 
+                class="form-control form-control-sm"
+                value="${d.width ?? ''}">
+            </td>
+
+            <td>
+                <input type="number" step="0.01"
+                name="r_height[]" 
+                class="form-control form-control-sm"
+                value="${d.height ?? ''}">
+            </td>
+
+            <td>
+                <input type="text"
+                name="material[]"
+                class="form-control form-control-sm"
+                value="${d.material_name}">
+            </td>
+
+            <td>
+                <input type="number"
+                name="quantity[]"
+                class="form-control form-control-sm"
+                value="${d.qty}">
+            </td>
+
+            <td>
+                <button type="button"
+                class="btn btn-sm btn-danger removeRow"
+                data-id="${id}">
+                <i class="fa fa-trash"></i>
+                </button>
+            </td>
+
+            <input type="hidden" name="material_req_ids[]" value="${id}">
+        </tr>
+        `);
+
             });
 
-            $('#previewTable').removeClass('d-none');
-        });
+            // REMOVE UNSELECTED ROWS
+            selectedIds.forEach(oldId => {
 
+                if (!ids.includes(oldId)) {
+
+                    delete addedRows[oldId];
+
+                    $('#row_' + oldId).remove();
+                }
+            });
+            selectedIds = ids;
+            $('#previewTable').removeClass('d-none');
+
+        });
         // REMOVE
         $(document).on('click', '.removeRow', function() {
+
             let id = $(this).data('id');
+
             delete addedRows[id];
+
             $('#row_' + id).remove();
+
+            // remove from select dropdown
+            let selected = $('#material_data_dropdown').val();
+
+            selected = selected.filter(function(item) {
+                return item != id;
+            });
+
+            $('#material_data_dropdown').val(selected).trigger('change');
+
         });
         @endif
 

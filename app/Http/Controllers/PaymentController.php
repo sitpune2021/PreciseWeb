@@ -25,12 +25,35 @@ class PaymentController extends Controller
         $request->validate([
             'planId' => 'required|exists:payment_plan,id'
         ]);
+
         $plan = PaymentPlan::where('id', $request->planId)
             ->where('is_active', 1)
             ->firstOrFail();
+
         $basePrice = $plan->price;
         $gstAmount = round(($basePrice * $plan->gst) / 100);
         $totalAmount = $basePrice + $gstAmount;
+
+        // FREE PLAN HANDLE
+        if ($totalAmount <= 0) {
+
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'plan_id' => $plan->id,
+                'plan_title' => $plan->title,
+                'plan_days' => $plan->days,
+                'gst_percentage' => $plan->gst,
+                'razorpay_order_id' => null,
+                'amount' => 0,
+                'payment_status' => 'completed',
+                'plan_status' => 1
+            ]);
+
+            return redirect()->route('razorpay.success')
+                ->with('success', 'Free plan activated');
+        }
+
+        //  PAID PLAN (Your existing logic)
 
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 

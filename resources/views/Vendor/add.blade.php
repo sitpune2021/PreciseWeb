@@ -4,6 +4,80 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
+            <!-- <div class="row g-2">
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Quick Menu</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+
+                            @if(hasPermission('Customer', 'add'))
+                            <a href="{{ route('AddCustomer') }}" class="btn btn-sm btn-info ">
+                                <i class="ri-group-line"></i> Add Customer
+                            </a>
+                            @endif
+
+                            @if(hasPermission('Vendors', 'add'))
+                            <a href="{{ route('AddVendor') }}" class="btn btn-sm btn-dark ">
+                                <i class="ri-store-line"></i> Add Vendor
+                            </a>
+                            @endif
+
+                            @if(hasPermission('Projects', 'add'))
+                            <a href="{{ route('AddProject') }}" class="btn btn-sm btn-success ">
+                                <i class="ri-folder-add-line"></i> Add Project
+                            </a>
+                            @endif
+
+                            @if(hasPermission('WorkOrders', 'add'))
+                            <a href="{{ route('AddWorkOrder') }}" class="btn btn-sm btn-warning ">
+                                <i class="ri-file-add-line"></i>Add Work
+                            </a>
+                            @endif
+
+                            @if(hasPermission('SetupSheet', 'add'))
+                            <a href="{{ route('AddSetupSheet') }}" class="btn btn-sm btn-secondary ">
+                                <i class="ri-settings-3-line"></i> Add Setup
+                            </a>
+                            @endif
+
+                            @if(hasPermission('MachineRecord', 'add'))
+                            <a href="{{ route('AddMachinerecord') }}" class="btn btn-sm btn-info ">
+                                <i class="ri-cpu-line"></i> Add Machine Rec
+                            </a>
+                            @endif
+
+                            @if(hasPermission('MaterialReq', 'add'))
+                            <a href="{{ route('AddMaterialReq') }}" class="btn btn-sm btn-danger ">
+                                <i class="ri-stack-line"></i> Add Material Req
+                            </a>
+                            @endif
+
+                            @if(hasPermission('MaterialOrder', 'add'))
+                            <a href="{{ route('AddMaterialorder') }}" class="btn btn-sm btn-warning ">
+                                <i class="ri-stack-line"></i> Add Material O
+                            </a>
+                            @endif
+
+                            @if(hasPermission('Invoice', 'add'))
+                            <a href="{{ route('proforma.add') }}" class="btn btn-sm btn-primary ">
+                                <i class="ri-file-text-line"></i> Add Proforma In
+                            </a>
+                            @endif
+
+                            @if(hasPermission('Quotation', 'add'))
+                            <a href="{{ route('Addquotation') }}" class="btn btn-sm btn-info ">
+                                <i class="ri-folder-add-line"></i> Add Quotation
+                            </a>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+            </div> -->
             <div class="row">
                 <div class="col-xxl-12">
                     <div class="card">
@@ -11,9 +85,9 @@
 
                             <!-- Back Button ONLY on Edit -->
                             <a href="{{ route('ViewVendor') }}" class="btn btn-sm btn-outline-success me-2">
-                                ← 
+                                ←
                             </a>
-                 
+
                             <h4 class="mb-0 flex-grow-1">
                                 {{ isset($vendor) ? 'Edit Vendor' : 'Add Vendor' }}
                             </h4>

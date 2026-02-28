@@ -31,7 +31,7 @@
                                     @endif
 
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single"
@@ -39,7 +39,7 @@
                                                     name="customer_id"
                                                     data-selected="{{ old('customer_id', $setupSheet->customer_id ?? '') }}"
                                                     {{ isset($setupSheet) ? 'disabled' : '' }}>
-                                                    <option value="">Select Customer Code</option>
+                                                    <option value="">Select Code</option>
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}" data-code="{{ $c->code }}"
                                                         {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
@@ -60,7 +60,7 @@
 
 
                                         <!-- Part Code -->
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span></label>
                                                 <select id="part_code"
@@ -105,7 +105,7 @@
                                         </div>
 
                                         <!-- Date -->
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
                                                 <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $setupSheet->date ?? '') }}">
@@ -146,7 +146,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="form-label">Setting <span class="text-red">*</span></label>
                                             <select name="setting" class="form-control form-select  mt-1">
                                                 <option value="">Select Setting</option>
@@ -161,7 +161,7 @@
                                         </div>
 
                                         <!-- E Time -->
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="e_time" class="form-label">Expected Time<span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="e_time" name="e_time" value="{{ old('e_time', $setupSheet->e_time ?? '') }}">
@@ -270,18 +270,18 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <div class="mb-3">
-                                                <label for="part_description" class="form-label">Part Description</label>
+                                                <label for="part_description" class="form-label mt-1">Part Description</label>
                                                 <input type="text" class="form-control" id="part_description"
                                                     name="description">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="setup_image" class="form-label">Upload Image</label>
-                                                <input type="file" class="form-control" id="setup_image" name="setup_image" accept="image/*">
+                                                <input type="file" class="form-control mt-1" id="setup_image" name="setup_image" accept="image/*">
                                                 @error('setup_image')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -300,7 +300,7 @@
                                             @endif
                                         </div>
                                         <div class="col-md-12">
-                                            <h4 class="text-center mt-4 mb-3"><b>Dowel Holes</b></h4>
+                                            <h4 class="mt-1 mb-3"><b>Dowel Holes</b></h4>
                                         </div>
 
                                         @php

@@ -32,19 +32,15 @@
                                     @endif
 
                                     <div class="row">
-
                                         <!-- Customer -->
                                         <div class="col-md-3">
                                             <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
-
                                             <select class="form-select js-example-basic-single  mt-1"
                                                 id="customer_id"
                                                 name="customer_id"
                                                 data-selected="{{ old('customer_id', $materialReq->customer_id ?? '') }}"
                                                 {{ isset($materialReq) ? 'disabled' : '' }}>
-
-                                                <option value="">Select Customer Code</option>
-
+                                                <option value="">Select Code</option>
                                                 @foreach($codes as $c)
                                                 <option value="{{ $c->id }}"
                                                     data-code="{{ $c->code }}"
@@ -54,7 +50,6 @@
                                                 </option>
                                                 @endforeach
                                             </select>
-
                                             @error('customer_id')
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
@@ -64,15 +59,14 @@
                                             @endif
                                         </div>
 
-
                                         <!-- Customer Code -->
                                         <div class="col-md-2">
                                             <label for="code" class="form-label">Code</label>
-                                            <input type="text" class="form-control mt-1 " id="code" name="code"
+                                            <input type="text" class="form-control" id="code" name="code"
                                                 value="{{ old('code', $materialReq->code ?? '') }}" readonly>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label class="form-label">Part No </label>
 
                                             <select name="part_no" id="part_no" class="form-control form-select mt-1 js-example-basic-single">
@@ -86,10 +80,10 @@
                                             value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}">
 
                                         <!-- Date -->
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
-                                                <input type="date" name="date" id="date" class="form-control " value="{{ old('date', $materialReq->date ?? '') }}">
+                                                <input type="date" name="date" id="date" class="form-control" value="{{ old('date', $materialReq->date ?? '') }}">
                                                 @error('date') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>

@@ -40,7 +40,7 @@
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         /* Make Select2 look like a normal input */
         .select2-container--default .select2-selection--single {
@@ -57,6 +57,15 @@
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 38px;
             right: 10px;
+
+        }
+
+        .select2-hidden {
+            visibility: hidden;
+        }
+
+        .select2-container {
+            width: 100% !important;
         }
     </style>
 </head>
@@ -126,12 +135,27 @@
                     <div class="dropdown ms-sm-3 header-item topbar-user">
                         <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="d-flex align-items-center">
-                                <img
+                                <!-- <img
                                     class="rounded-circle header-profile-user"
                                     src="{{ $adminSetting && $adminSetting->logo
                                       ? asset('uploads/settings/' . $adminSetting->logo)
                                       : asset('assets/images/users/avatar-1.jpg') }}"
-                                    alt="Header Avatar">
+                                    alt="Header Avatar"> -->
+                                @php
+                                $photo = asset('assets/images/users/avatar-1.jpg');
+
+                                if(auth()->user()->user_type == 1 || auth()->user()->user_type == 2){
+                                if($adminSetting && $adminSetting->logo){
+                                $photo = asset('uploads/settings/'.$adminSetting->logo);
+                                }
+                                }else{
+                                if(auth()->user()->profile_photo){
+                                $photo = asset('storage/'.auth()->user()->profile_photo);
+                                }
+                                }
+                                @endphp
+
+                                <img class="rounded-circle header-profile-user" src="{{ $photo }}" alt="Header Avatar">
 
                                 <span class="text-start ms-xl-2">
                                     <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
@@ -362,7 +386,6 @@
                                 <li><a href="{{ route('AddFinancialYear') }}" class="nav-link {{ request()->routeIs('AddFinancialYear') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Financial Year</a></li>
                                 @endif
 
-
                                 {{-- Role & Permission Menu  --}}
                                 @if(hasPermission('UserAdmin','add') || hasPermission('UserAdmin','view') || hasPermission('UserAdmin','edit'))
                                 <li class="nav-item">
@@ -396,7 +419,6 @@
                         </div>
                     </li>
                     @endif
-
 
                     <!-- Customers -->
                     @if(hasPermission('Customer','view') || hasPermission('Customer','add'))
@@ -442,7 +464,6 @@
                         </div>
                     </li>
                     @endif
-
 
                     @if(hasPermission('Projects', 'view') || hasPermission('Projects', 'add'))
                     <!-- Projects -->
@@ -697,7 +718,13 @@
 
     <script>
         $(document).ready(function() {
-            $('.js-example-basic-single').select2();
+
+            $('.js-example-basic-single').select2({
+                width: '100%'
+            });
+
+            $('.select2-hidden').css('visibility', 'visible');
+
         });
     </script>
     <script>

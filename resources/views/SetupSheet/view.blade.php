@@ -182,11 +182,11 @@
                     </div>
 
                     <!-- Main Sheet Table -->
-                    <table class="table table-bordered table-sm text-center align-middle">
+                    <table class="table table-bordered table-sm text-center align-middle mb-1">
                         <thead class="table-light">
                             <tr>
                                 <th>Part Code</th>
-                                <th>Work Order No</th>
+                                <th>Work No</th>
                                 <th>Date</th>
                                 <th>Part Description</th>
                             </tr>
@@ -202,7 +202,7 @@
                     </table>
 
                     <!-- Sizes & Settings -->
-                    <table class="table table-bordered table-sm text-center align-middle mt-2">
+                    <table class="table table-bordered table-sm text-center align-middle mb-1">
                         <thead class="table-light">
                             <tr>
                                 <th>Size X</th>
@@ -224,7 +224,7 @@
                     </table>
 
                     <!-- References & Clamping -->
-                    <table class="table table-bordered table-sm text-center align-middle mt-2">
+                    <table class="table table-bordered table-sm text-center align-middle mb-1">
                         <thead class="table-light">
                             <tr>
                                 <th>X Refer</th>
@@ -247,7 +247,7 @@
                     </table>
 
                     <!-- Holes -->
-                    <h6 class="mt-3">Dowel Holes</h6>
+                    <h6 class="p-0">Dowel Holes</h6>
                     <table class="table table-bordered table-sm text-center align-middle">
                         <thead class="table-light">
                             <tr>
@@ -297,7 +297,7 @@
         </div>`;
             } else {
                 document.getElementById('sheet_image_container').innerHTML = `
-        <div style="width:320px;height:320px;border:1px solid #ccc;
+        <div style="width:320px;height:320px; solid #ccc;
         display:flex;align-items:center;justify-content:center;margin:auto;
         color:#999;font-size:14px;">
             

@@ -30,7 +30,7 @@
                                 @endif
                                 <div class="row g-3">
                                     <input type="hidden" name="work_order_id" id="work_order_id">
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
                                         <select name="part_no" id="part_no" class="form-control form-select"
@@ -98,7 +98,7 @@
                                         @error('qty') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
                                         <select name="machine" class="form-control form-select mt-1">
                                             <option value=""> Select Machine </option>
@@ -112,7 +112,7 @@
                                         @error('machine') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
                                         <select name="operator" class="form-control form-select mt-1">
                                             <option value="">Select Operator</option>
@@ -159,7 +159,7 @@
 
                                     <div class="col-md-2">
                                         <label class="form-label">Estimated Time (hrs) <span class="text-red">*</span></label>
-                                        <input type="text" step="0.01" name="est_time" id="e_time" class="form-control"
+                                        <input type="text" step="0.01" name="est_time" id="e_time" class="form-control mt-1"
                                             value="{{ old('est_time', $record->est_time ?? '') }}">
 
                                         @error('est_time') <span class="text-red small">{{ $message }}</span> @enderror
@@ -234,7 +234,7 @@
                                     </div> -->
 
                                     <!-- Invoice No -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Invoice No</label>
                                         <input type="text" name="invoice_no" class="form-control"
                                             value="{{ old('invoice_no', $record->invoice_no ?? '') }}">

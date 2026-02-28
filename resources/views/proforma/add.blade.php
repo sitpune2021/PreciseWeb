@@ -4,8 +4,7 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-            <h5 class="card-title mb-0">
-               
+            <h5 class="card-title mb-0">          
                 <!-- Back Button ONLY on Edit -->
                 <a href="{{ route('proforma.index') }}" class="btn btn-sm btn-outline-success me-2">
                     ← 
@@ -24,8 +23,6 @@
                 <form action="{{ isset($data) ? route('proformaUpdate', base64_encode($data->id)) : route('proforma.store') }}" method="POST">
 
                     <input type="hidden" name="invoice_no" value="{{ $data->invoice_no ?? '' }}">
-
-
                     @csrf
                     <div class="row align-items-end">
                         <div class="row g-3">
@@ -86,7 +83,7 @@
                                         <th>ADJ</th>
                                         <th>EST</th>
                                         <th>Action</th>
-                                    </tr>
+                                    </tr> 
                                 </thead>
 
                                 <tbody id="itemsTableBody">
@@ -124,7 +121,7 @@
 
                     <div class="card p-3 shadow-sm mb-4">
                         <div class="row g-3">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-label fw-bold">HSN Code</label>
                                 <select name="hsn_code[]" id="hsnSelect" class="form-select hsnSelect">
                                     @if(!isset($data))
@@ -143,7 +140,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-label fw-bold">Sub Total (₹)</label>
                                 <input type="text" id="sub_total" name="sub_total" class="form-control" value="{{ old('sub_total', $data->sub_total ?? '') }}" readonly>
                             </div>
@@ -160,18 +157,18 @@
                                 <label class="form-label fw-bold">IGST %</label>
                                 <input type="text" id="total_tax_percent" name="total_tax_percent" class="form-control" value="{{ old('total_tax_percent', $data->total_tax_percent ?? '') }}" readonly>
                             </div>
-                        </div>
+                         
 
-                        <div class="row g-3 mt-2">
-                            <div class="col-md-3">
+                         
+                            <div class="col-md-2">
                                 <label class="form-label fw-bold">Total Tax (₹)</label>
                                 <input type="text" id="total_tax" name="total_tax" class="form-control" value="{{ old('total_tax', $data->total_tax ?? '') }}" readonly>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-label fw-bold">Round Off (₹)</label>
                                 <input type="text" id="round_off" name="round_off" class="form-control" value="{{ old('round_off', $data->round_off ?? '') }}">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-label fw-bold text-success">Grand Total (₹)</label>
                                 <input type="text" id="grand_total" name="grand_total" class="form-control fw-bold text-success" value="{{ old('grand_total', $data->grand_total ?? '') }}" readonly>
                             </div>

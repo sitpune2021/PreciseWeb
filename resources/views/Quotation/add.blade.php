@@ -12,7 +12,7 @@
 
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('Viewquotation') }}" class="btn btn-sm btn-outline-success me-2">
-                                    ← 
+                                    ←
                                 </a>
                                 {{ isset($quotation) ? 'Edit Quotation' : 'Add Quotation' }}
                             </h4>
@@ -31,7 +31,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <label>Customer Code <span class="text-red">*</span></label>
-                                        <select name="customer_id" class="form-select">
+                                        <select name="customer_id" class="form-select js-example-basic-single">
                                             <option value="">Select</option>
                                             @foreach($codes as $c)
                                             <option value="{{ $c->id }}"
@@ -55,7 +55,7 @@
                                         </small>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label>Date <span class="text-red">*</span></label>
                                         <input type="date" name="date"
                                             value="{{ old('date', $quotation->date ?? '') }}"
@@ -65,7 +65,7 @@
                                         </small>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         <label>Project Name <span class="text-red">*</span></label>
                                         <input type="text" name="project_name" class="form-control"
                                             value="{{ old('project_name',$quotation->project_name ?? '') }}">
@@ -74,8 +74,8 @@
                                         </small>
                                     </div>
 
-                                    <hr class="mt-4">
-                                    <h5 class="mt-3">Item Details</h5>
+                                    <hr class="mt-3">
+                                    <h5 class="mt-1">Item Details</h5>
                                     <div id="itemBlocks">
                                         <!-- FIRST BLOCK -->
                                         <div class="item-block border p-3 mb-3 first-block">

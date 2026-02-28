@@ -6,29 +6,40 @@
 
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: Calibri, Arial, Helvetica, sans-serif;
             font-size: 9px;
             margin: 0;
+            padding: 0;
         }
 
+        /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
         }
 
+        /* CELL */
         th,
         td {
             border: 1px solid #000;
             padding: 3px;
             vertical-align: middle;
+            word-wrap: break-word;
         }
 
+        /* HEADER */
         th {
             font-weight: bold;
             text-align: center;
         }
 
+        /* HEADER BACKGROUND */
+        thead th {
+            background: #d9d9d9;
+        }
+
+        /* ALIGNMENT */
         .left {
             text-align: left;
         }
@@ -41,40 +52,68 @@
             text-align: center;
         }
 
+        /* FONT */
         .bold {
             font-weight: bold;
         }
 
+        /* TITLE */
         .title {
             font-size: 14px;
             font-weight: bold;
             text-align: center;
+            letter-spacing: 1px;
         }
 
+        /* ALTERNATE ROW */
         .gray {
-            background: #e6e6e6;
+            background: #f2f2f2;
         }
 
+        /* ROW HEIGHT */
+        td {
+            height: 18px;
+        }
+
+        /* REMOVE BORDER */
         .no-border td {
             border: none;
         }
 
+        /* COMPANY BOX */
         .company-box {
             display: flex;
             align-items: flex-start;
         }
 
-
-
+        /* LOGO */
         .company-logo {
-            /* width: 90px;
-            height: 90px; */
-            /* margin-right: 8px; */
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        .company-logo img {
+            max-width: 60px;
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+        /* HEADER TABLE */
+        .header-table td {
+            padding: 4px;
+        }
+
+        /* TOTAL SECTION */
+        .total-table th {
+            background: #d9d9d9;
+        }
+
+        .total-table td {
+            padding: 5px;
+        }
+
+        /* PRINT SETTINGS */
         @media print {
 
             @page {
@@ -93,6 +132,7 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+
         }
     </style>
 </head>
@@ -230,9 +270,9 @@
                 <td class="left">{{ $item->description }}</td>
 
                 <td class="center">{{ (int)$item->dia }}</td>
-                <td class="center">{{ (int)$item->length }}</td>
-                <td class="center">{{ (int)$item->width }}</td>
-                <td class="center">{{ (int)$item->height }}</td>
+                <td class="center">{{ number_format($item->length,2) }}</td>
+                <td class="center">{{ number_format($item->width,2) }}</td>
+                <td class="center">{{ number_format($item->height,2) }}</td>
 
                 <td class="right">{{$item->qty_in_kg }}</td>
                 <td class="center">MS</td>
@@ -261,7 +301,49 @@
         </tbody>
 
     </table>
+    <table>
 
+        <tr>
+            <td style="width:13%" class="center">EDM Sparking</td>
+            <td colspan="22"></td>
+        </tr>
+
+        <tr>
+            <td class="center">Polishing</td>
+            <td colspan="22"></td>
+        </tr>
+
+        <tr>
+            <td class="center">Texture</td>
+            <td colspan="22"></td>
+        </tr>
+
+        <tr>
+            <td class="center">Blackodising</td>
+            <td colspan="22"></td>
+        </tr>
+
+        <tr>
+            <td class="center">Design</td>
+            <td colspan="22"></td>
+        </tr>
+
+        <tr>
+            <td class="center">Spares</td>
+            <td colspan="22"></td>
+        </tr>
+
+        <tr>
+            <td class="center">Hardware</td>
+            <td colspan="22"></td>
+        </tr>
+
+        <tr>
+            <td class="center">Assembly</td>
+            <td colspan="22"></td>
+        </tr>
+
+    </table>
     <!--TERMS + TOTAL-->
     <table>
         <tr>
@@ -273,8 +355,6 @@
                 <br>
                 <strong>GST No :</strong> 27AAMFP5025G1Z6
             </td>
-
-            <td style="width:30%">
             <td style="width:30%; vertical-align:top;">
 
                 <table style="border:1.5px solid #000;">

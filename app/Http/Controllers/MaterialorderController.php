@@ -100,13 +100,19 @@ class MaterialorderController extends Controller
             ->where('admin_id', Auth::id())
             ->get();
 
+        $materialRequests = MaterialReq::where('customer_id', $record->customer_id)
+            ->orderBy('sr_no')
+            ->get();
+
         // load the MaterialReq linked to this order so form fields can be pre-filled
         $materialReq = null;
         if (!empty($record->material_req_id)) {
             $materialReq = MaterialReq::with('materialType')->find($record->material_req_id);
         }
 
-        return view('Materialorder.add', compact('record', 'codes', 'customers', 'materialReq'));
+        
+
+        return view('Materialorder.add', compact('record', 'codes', 'customers', 'materialReq', 'materialRequests'));
     }
     public function update(Request $request, $id)
     {

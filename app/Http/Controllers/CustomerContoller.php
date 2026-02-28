@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\FinancialYear;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -54,21 +55,43 @@ class CustomerContoller extends Controller
         ]);
 
         $customer_name_words = explode(' ', trim($request->input('name')));
+
         if (count($customer_name_words) == 1) {
             $code = strtoupper(Str::substr($customer_name_words[0], 0, 3));
         } elseif (count($customer_name_words) == 2) {
             $code = strtoupper(Str::substr($customer_name_words[0], 0, 2) . Str::substr($customer_name_words[1], 0, 1));
         } else {
-            $code = strtoupper(Str::substr($customer_name_words[0], 0, 1) .
-                Str::substr($customer_name_words[1], 0, 1) .
-                Str::substr($customer_name_words[2], 0, 1));
+            $code = strtoupper(
+                Str::substr($customer_name_words[0], 0, 1) .
+                    Str::substr($customer_name_words[1], 0, 1) .
+                    Str::substr($customer_name_words[2], 0, 1)
+            );
         }
+
         $adminId = Auth::id();
 
+        // Current Financial Year Calculate (April - March)
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+
+        if ($currentMonth < 4) {
+            $startYear = $currentYear - 1;
+        } else {
+            $startYear = $currentYear;
+        }
+
+        $endYear = $startYear + 1;
+
+        $startDateFY = $startYear . '-04-01 00:00:00';
+        $endDateFY   = $endYear . '-03-31 23:59:59';
+
+        // Financial Year wise serial
         $lastSerial = Customer::where('admin_id', $adminId)
+            ->whereBetween('created_at', [$startDateFY, $endDateFY])
             ->max('customer_srno');
 
         $nextSerial = $lastSerial ? $lastSerial + 1 : 1;
+
         Customer::create([
             'admin_id'        => $adminId,
             'login_id'        => 0,
@@ -80,13 +103,18 @@ class CustomerContoller extends Controller
             'gst_no'          => $request->gst_no,
             'address'         => $request->address,
             'status'          => 1,
-            'customer_srno' => $nextSerial,
+            'customer_srno'   => $nextSerial,
         ]);
 
         return redirect()->route('ViewCustomer')->with('success', 'Customer created successfully.');
     }
     public function ViewCustomer(Request $request)
     {
+        $financialYears = FinancialYear::where('admin_id', Auth::id())
+            ->where('status', 1)
+            ->orderBy('year', 'desc')
+            ->get();
+
         $query = Customer::where('admin_id', Auth::id())
             ->orderBy('id', 'desc');
 
@@ -110,7 +138,7 @@ class CustomerContoller extends Controller
 
         $customer = $query->get();
 
-        return view('Customer.view', compact('customer'));
+        return view('Customer.view', compact('customer', 'financialYears'));
     }
     public function edit(string $encryptedId)
     {
@@ -255,7 +283,24 @@ class CustomerContoller extends Controller
                 $gst_no = null;
             }
 
-            $nextSrNo = Customer::where('admin_id', $adminId)->max('customer_srno');
+            $currentYear = date('Y');
+            $currentMonth = date('m');
+
+            if ($currentMonth < 4) {
+                $startYear = $currentYear - 1;
+            } else {
+                $startYear = $currentYear;
+            }
+
+            $endYear = $startYear + 1;
+
+            $startDateFY = $startYear . '-04-01 00:00:00';
+            $endDateFY   = $endYear . '-03-31 23:59:59';
+
+            $nextSrNo = Customer::where('admin_id', $adminId)
+                ->whereBetween('created_at', [$startDateFY, $endDateFY])
+                ->max('customer_srno');
+
             $nextSrNo = $nextSrNo ? $nextSrNo + 1 : 1;
 
             // Insert

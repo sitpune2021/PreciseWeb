@@ -130,24 +130,31 @@ for ($m = 1; $m <= 12; $m++) {
 
     // ---------------- Machine Records ----------------
     $totalMachineRecords = MachineRecord::where('admin_id', Auth::id())->count();
+
     $newThisMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereMonth('created_at', Carbon::now()->month)
     ->whereYear('created_at', Carbon::now()->year)
     ->count();
+
     $lastMonthMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereMonth('created_at', Carbon::now()->subMonth()->month)
     ->whereYear('created_at', Carbon::now()->subMonth()->year)
     ->count();
+
     $thisYearMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereYear('created_at', Carbon::now()->year)
     ->count();
+
     $todayMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->whereDate('created_at', Carbon::today())
     ->count();
+
     $latestMachineRecords = MachineRecord::where('admin_id', Auth::id())
-    ->orderBy('created_at', 'desc')
+    ->latest()
     ->take(5)
     ->get();
+
+
 
     @endphp
 
@@ -268,45 +275,65 @@ for ($m = 1; $m <= 12; $m++) {
                         <div class="card-body">
                             <div class="d-flex flex-wrap gap-2">
 
+                                @if(hasPermission('Customer', 'add'))
                                 <a href="{{ route('AddCustomer') }}" class="btn btn-sm btn-info ">
                                     <i class="ri-group-line"></i> Add Customer
                                 </a>
+                                @endif
 
+                                @if(hasPermission('Vendors', 'add'))
                                 <a href="{{ route('AddVendor') }}" class="btn btn-sm btn-dark ">
                                     <i class="ri-store-line"></i> Add Vendor
                                 </a>
+                                @endif
 
+                                @if(hasPermission('Projects', 'add'))
                                 <a href="{{ route('AddProject') }}" class="btn btn-sm btn-success ">
                                     <i class="ri-folder-add-line"></i> Add Project
                                 </a>
+                                @endif
 
+                                @if(hasPermission('WorkOrders', 'add'))
                                 <a href="{{ route('AddWorkOrder') }}" class="btn btn-sm btn-warning ">
                                     <i class="ri-file-add-line"></i>Add Workorder
                                 </a>
+                                @endif
 
+                                @if(hasPermission('SetupSheet', 'add'))
                                 <a href="{{ route('AddSetupSheet') }}" class="btn btn-sm btn-secondary ">
                                     <i class="ri-settings-3-line"></i> Add Setup Sheet
                                 </a>
+                                @endif
 
+                                @if(hasPermission('MachineRecord', 'add'))
                                 <a href="{{ route('AddMachinerecord') }}" class="btn btn-sm btn-info ">
                                     <i class="ri-cpu-line"></i> Add Machine Rec
                                 </a>
+                                @endif
 
+                                @if(hasPermission('MaterialReq', 'add'))
                                 <a href="{{ route('AddMaterialReq') }}" class="btn btn-sm btn-danger ">
                                     <i class="ri-stack-line"></i> Add Material Req
                                 </a>
+                                @endif
 
+                                @if(hasPermission('MaterialOrder', 'add'))
                                 <a href="{{ route('AddMaterialorder') }}" class="btn btn-sm btn-warning ">
                                     <i class="ri-stack-line"></i> Add Material Order
                                 </a>
+                                @endif
 
+                                @if(hasPermission('Invoice', 'add'))
                                 <a href="{{ route('proforma.add') }}" class="btn btn-sm btn-primary ">
                                     <i class="ri-file-text-line"></i> Add Proforma Inv
                                 </a>
+                                @endif
 
+                                @if(hasPermission('Quotation', 'add'))
                                 <a href="{{ route('Addquotation') }}" class="btn btn-sm btn-info ">
                                     <i class="ri-folder-add-line"></i> Add Quotation
                                 </a>
+                                @endif
 
                             </div>
                         </div>
@@ -326,13 +353,12 @@ for ($m = 1; $m <= 12; $m++) {
                                     class="btn btn-sm btn-primary  me-2 shadow-sm btn-animate">
                                     <i class="ri-add-line"></i> Add New
                                 </a>
-                                <a href="{{ route('ViewProject') }}"
+                                <!-- <a href="{{ route('ViewProject') }}"
                                     class="btn btn-sm btn-success  shadow-sm btn-animate">
                                     View All <i class="ri-arrow-right-line ms-1"></i>
-                                </a>
+                                </a> -->
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table align-middle table-hover table-nowrap mb-0">
@@ -352,7 +378,7 @@ for ($m = 1; $m <= 12; $m++) {
                                             <td class="text-muted">{{ $loop->iteration }}</td>
                                             <td>
                                                 <span class="badge text-dark">
-                                                    {{ \Carbon\Carbon::parse($project->date)->format('d M, Y') }}
+                                                    {{ Carbon::parse($project->date)->format('d M, Y') }}
                                                 </span>
                                             </td>
                                             <td>
@@ -387,7 +413,7 @@ for ($m = 1; $m <= 12; $m++) {
                                 <small class="text-muted">
                                     Showing <span class="fw-semibold">{{ $projects->count() }}</span> of <span class="fw-semibold">{{ $totalProjects }}</span> Results
                                 </small>
-                                <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a>
+                                <!-- <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a> -->
                             </div>
                         </div>
                     </div>
@@ -407,10 +433,10 @@ for ($m = 1; $m <= 12; $m++) {
                                     class="btn btn-sm btn-primary  me-2 shadow-sm btn-animate">
                                     <i class="ri-add-line"></i> Add New
                                 </a>
-                                <a href="{{ route('ViewWorkOrder') }}"
+                                <!-- <a href="{{ route('ViewWorkOrder') }}"
                                     class="btn btn-sm btn-success  shadow-sm btn-animate">
                                     View All <i class="ri-arrow-right-line ms-1"></i>
-                                </a>
+                                </a> -->
                             </div>
                         </div>
 
@@ -436,7 +462,7 @@ for ($m = 1; $m <= 12; $m++) {
 
                                             <td>
                                                 <span class="badge text-dark">
-                                                    {{ \Carbon\Carbon::parse($work->date)->format('d M, Y') }}
+                                                    {{ Carbon::parse($work->date)->format('d M, Y') }}
                                                 </span>
                                             </td>
 
@@ -480,7 +506,7 @@ for ($m = 1; $m <= 12; $m++) {
                                     <span class="fw-semibold">{{ $totalWorkOrders }}</span> Results
                                 </small>
 
-                                <a href="{{ route('ViewWorkOrder') }}" class="btn btn-link btn-sm">View More</a>
+                                <!-- <a href="{{ route('ViewWorkOrder') }}" class="btn btn-link btn-sm">View More</a> -->
                             </div>
                         </div>
                     </div>
@@ -490,10 +516,10 @@ for ($m = 1; $m <= 12; $m++) {
                 <!-- ====== Latest Machine Records ====== -->
                 @if(hasPermission('Dashboard', 'view_machinerecord'))
                 <div class="row">
-                    <div class="col-xxl-8">
+                    <div class="col-xxl-9">
                         <div class="card">
                             <div class="card-header align-items-center d-flex">
-                                <h4 class="card-title mb-0 flex-grow-1">Latest Machine Records</h4>
+                                <h4 class="card-title mb-0 flex-grow-1"><i class="ri-tools-line me-2 text-primary"></i>Latest Machine Record </h4>
                                 <div class="flex-shrink-0">
                                     <a href="{{ route('AddMachinerecord') }}"
                                         class="btn btn-sm btn-primary  me-2 shadow-sm btn-animate">
@@ -508,9 +534,9 @@ for ($m = 1; $m <= 12; $m++) {
                             </div>
 
                             <div class="card-body">
-                                <div class="table-responsive table-card">
-                                    <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
-                                        <thead class="text-muted table-light">
+                                <div class="table-responsive">
+                                <table class="table align-middle table-hover table-nowrap mb-0">
+                                    <thead class="table-light text-center">
                                             <tr>
                                                 <th scope="col">SR NO.</th>
                                                 <th scope="col">Part No</th>
@@ -518,7 +544,8 @@ for ($m = 1; $m <= 12; $m++) {
                                                 <th scope="col">Date</th>
                                                 <th scope="col">Start Time</th>
                                                 <th scope="col">End Time</th>
-                                                <th scope="col">Total Run (Hrs)</th>
+                                                <th scope="col">Total Run (HRS)</th>
+                                                <th scope="col">IDL Time (HRS)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -527,35 +554,39 @@ for ($m = 1; $m <= 12; $m++) {
                                                 <td>
                                                     <a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a>
                                                 </td>
+
                                                 <td class="fw-bold">{{ $rec->part_no }}</td>
+
                                                 <td>{{ $rec->work_order }}</td>
 
                                                 <td>
-                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
+                                                    {{ $rec->start_time ? Carbon::parse($rec->start_time)->format('d M Y') : '-' }}
                                                 </td>
 
                                                 <td>
-                                                    {{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('h:i A') : '-' }}
+                                                    {{ $rec->start_time ? Carbon::parse($rec->start_time)->format('d-m-Y H:i') : '-' }}
                                                 </td>
 
                                                 <td>
-                                                    {{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('h:i A') : '-' }}
+                                                    {{ $rec->end_time ? Carbon::parse($rec->end_time)->format('d-m-Y H:i') : '-' }}
                                                 </td>
 
                                                 <td>
-                                                    @if($rec->start_time && $rec->end_time)
-                                                    @php
-                                                    $diffInMinutes = \Carbon\Carbon::parse($rec->start_time)
-                                                    ->diffInMinutes(\Carbon\Carbon::parse($rec->end_time));
-                                                    $hours = number_format($diffInMinutes / 60, 2);
-                                                    @endphp
-                                                    <span class="text-success">
-                                                        {{ $hours }} hr
-                                                    </span>
+                                                    @if($rec->end_time)
+                                                    <span class="text-success fw-bold">{{ $rec->hrs }} hr</span>
                                                     @else
-                                                    <span class="text-muted">Running...</span>
+                                                    <span class="text-warning fw-bold">Running...</span>
                                                     @endif
                                                 </td>
+
+                                                <td>
+                                                    @if($rec->idl_time)
+                                                    <span class="text-success fw-bold">{{ $rec->idl_time }} hr</span>
+                                                    @else
+                                                    <span class="text-warning fw-bold">0 hr</span>
+                                                    @endif
+                                                </td>
+
                                             </tr>
                                             @empty
                                             <tr>
@@ -566,12 +597,20 @@ for ($m = 1; $m <= 12; $m++) {
 
                                     </table>
                                 </div>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <small class="text-muted">
+                                        Showing <span class="fw-semibold">{{ $latestWorkOrders->count() }}</span> of
+                                        <span class="fw-semibold">{{ $totalWorkOrders }}</span> Results
+                                    </small>
+
+                                    <!-- <a href="{{ route('ViewWorkOrder') }}" class="btn btn-link btn-sm">View More</a> -->
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-xxl-4">
-                        <div class="card shadow-lg border-0 bg-light h-100">
+                    <div class="col-xxl-3">
+                        <div class="card shadow-lg border-0 bg-light h-75">
                             <div class="card-body d-flex flex-column justify-content-center text-center">
 
                                 <p class="text-muted">

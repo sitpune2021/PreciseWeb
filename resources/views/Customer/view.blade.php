@@ -25,9 +25,14 @@
                             <form action="{{ route('ViewCustomer') }}" method="GET" class="d-flex align-items-center gap-2">
                                 <select name="financial_year" class="form-control form-select form-select-sm">
                                     <option value="">Select Year</option>
-                                    <option value="2025-26" {{ request('financial_year') == '2025-26' ? 'selected' : '' }}>2025-26</option>
-                                    <option value="2026-27" {{ request('financial_year') == '2026-27' ? 'selected' : '' }}>2026-27</option>
-                                    <option value="2027-28" {{ request('financial_year') == '2027-28' ? 'selected' : '' }}>2027-28</option>
+
+                                    @foreach($financialYears as $year)
+                                    <option value="{{ $year->year }}"
+                                        {{ request('financial_year') == $year->year ? 'selected' : '' }}>
+                                        {{ $year->year }}
+                                    </option>
+                                    @endforeach
+
                                 </select>
 
                                 <input type="date" name="start_date" class="form-control form-control-sm" value="{{ request('start_date') }}">

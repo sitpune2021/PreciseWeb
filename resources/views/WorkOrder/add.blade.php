@@ -27,7 +27,7 @@
                                     @if(isset($workorder)) @method('PUT') @endif
 
                                     <div class="row">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2">
                                             <div class="mb-2">
                                                 <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single"
@@ -35,7 +35,7 @@
                                                     name="customer_id"
                                                     {{ isset($workorder) ? 'disabled' : '' }}>
 
-                                                    <option value="">Select Customer Code</option>
+                                                    <option value="">Select Code</option>
 
                                                     @foreach($codes as $c)
                                                     <option value="{{ $c->id }}"
@@ -56,7 +56,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="project_id" class="form-label">Project Name <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single" id="project_id" name="project_id">
@@ -91,7 +91,7 @@
                                             <div class="mb-2">
                                                 <label for="part" class="form-label">Part <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="part" name="part"
-                                                    placeholder="Enter New Part" value="{{ old('part', $workorder->part ?? '') }}">
+                                                    placeholder="Enter Part" value="{{ old('part', $workorder->part ?? '') }}">
                                                 @error('part')
                                                 <span class="text-red">{{ $message }}</span>
                                                 @enderror
@@ -321,7 +321,7 @@
                                                     <th>Height</th>
                                                     <th>Exp Time</th>
                                                     <th>Qty</th>
-                                                    <th width="12%">Action</th>                                                 
+                                                    <th width="12%">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
