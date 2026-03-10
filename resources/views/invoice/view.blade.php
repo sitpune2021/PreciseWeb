@@ -9,7 +9,7 @@
                  <div class="col-lg-12">
                      <div class="d-flex justify-content-between align-items-center">
                          <h5 class="mb-0">
-                             <i class="me-2"></i>Invoice List
+                             <i class="me-2"></i>Invoice List 
                          </h5>
 
                      </div>

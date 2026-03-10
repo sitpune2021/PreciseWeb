@@ -175,7 +175,7 @@
                 <div class="a4-portrait">
 
                     <!-- Sheet Header -->
-                    <div class="text-center mb-3">
+                    <div class="text-center mb-3" style="margin-top: 100px;">
                         <div id="sheet_image_container" class="mb-2"></div>
                         <!-- <h4>Setup Sheet</h4> -->
                         <h5 id="sheet_description_heading" class="mt-1 text-muted"></h5>
@@ -209,7 +209,7 @@
                                 <th>Size Y</th>
                                 <th>Size Z</th>
                                 <th>Setting</th>
-                                <th>E Time</th>
+                                <th>E T</th>
                             </tr>
                         </thead>
                         <tbody>

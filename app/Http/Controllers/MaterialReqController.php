@@ -36,7 +36,7 @@ class MaterialReqController extends Controller
     {
         $validated = $request->validate([
             'customer_id'   => 'required|exists:customers,id',
-            'code'          => 'required|string|max:50',
+            'code'          => 'nullable|string|max:50',
             'date'          => 'required|date',
             'description'   => 'nullable|string|max:255',
             'part_no' => 'nullable|string|max:100',

@@ -4,12 +4,12 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-            <h5 class="card-title mb-0">          
+            <h5 class="card-title mb-0">
                 <!-- Back Button ONLY on Edit -->
                 <a href="{{ route('proforma.index') }}" class="btn btn-sm btn-outline-success me-2">
-                    ← 
+                    ←
                 </a>
-                
+
                 {{ isset($data) ? 'Edit invoice' : 'Add invoice' }}
             </h5>
 
@@ -52,7 +52,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-3 mb-4">
+                            <div class="col-md-2 mb-4">
                                 <label class="form-label">Invoice Date</label>
                                 <input type="date" class="form-control"
                                     name="invoice_date"
@@ -62,6 +62,26 @@
                                 @enderror
                             </div>
 
+                            <!-- <div class="col-md-2 mb-4">
+                                <label class="form-label">Proforma No</label>
+                                <input type="text"
+                                    class="form-control"
+                                    name="invoice_no"
+                                    value="{{ old('invoice_no', $invoiceNo ?? '') }}"
+                                    readonly>
+
+                                @error('invoice_no')
+                                <span class="text-red small">{{ $message }}</span>
+                                @enderror
+                            </div> -->
+
+                            <div class="col-md-2 mb-4">
+                                <label class="form-label">Proforma No</label>
+                                <input type="text"
+                                    class="form-control"
+                                    name="invoice_no"
+                                    value="{{ old('invoice_no', $invoiceNo ?? '') }}">
+                            </div>
                         </div>
                     </div>
                     <div class="card mb-4 shadow-sm">
@@ -83,7 +103,7 @@
                                         <th>ADJ</th>
                                         <th>EST</th>
                                         <th>Action</th>
-                                    </tr> 
+                                    </tr>
                                 </thead>
 
                                 <tbody id="itemsTableBody">
@@ -157,9 +177,9 @@
                                 <label class="form-label fw-bold">IGST %</label>
                                 <input type="text" id="total_tax_percent" name="total_tax_percent" class="form-control" value="{{ old('total_tax_percent', $data->total_tax_percent ?? '') }}" readonly>
                             </div>
-                         
 
-                         
+
+
                             <div class="col-md-2">
                                 <label class="form-label fw-bold">Total Tax (₹)</label>
                                 <input type="text" id="total_tax" name="total_tax" class="form-control" value="{{ old('total_tax', $data->total_tax ?? '') }}" readonly>
@@ -341,7 +361,7 @@
         }
 
         function loadExistingInvoiceItems() {
-            let items = @json($data->items ?? []);
+            let items = @json($data ->items ?? []);
             console.log(items);
 
             if (!items || !Array.isArray(items)) items = [];

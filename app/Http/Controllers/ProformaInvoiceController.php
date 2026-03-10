@@ -66,7 +66,29 @@ class ProformaInvoiceController extends Controller
             ->with('customer')
             ->get(['id', 'customer_id', 'part_description', 'exp_time', 'quantity', 'material', 'date']);
 
-        return view('proforma.add', compact('customers', 'hsncodes', 'workOrders', 'adminSetting'));
+
+        $prefix = "";
+
+        $year = date('y');
+        $nextYear = date('y', strtotime('+1 year'));
+        $financialYear = $year . $nextYear;
+
+        $lastInvoice = ProformaInvoice::orderBy('id', 'desc')->first();
+
+        if ($lastInvoice) {
+
+            preg_match('/(\d+)$/', $lastInvoice->invoice_no, $matches);
+
+            $number = isset($matches[1]) ? (int)$matches[1] + 1 : 1;
+        } else {
+            $number = 1;
+        }
+
+        $newNumber = str_pad($number, 3, '0', STR_PAD_LEFT);
+
+        $invoiceNo = $prefix . $financialYear . "-G" . $newNumber;
+
+        return view('proforma.add', compact('customers', 'hsncodes', 'workOrders', 'adminSetting', 'invoiceNo'));
     }
     public function store(Request $request)
     {
@@ -88,29 +110,48 @@ class ProformaInvoiceController extends Controller
 
         $adminId = auth()->id();
         $customer = Customer::find($request->customer_id);
-        $words = explode(' ', $customer->customer_name);
-        $prefix = '';
+
+        $companyName = Auth::user()->name ?? 'AD';
+
+        $words = explode(' ', trim($companyName));
+        $adminCode = '';
+
         foreach ($words as $w) {
-            $prefix .= strtoupper(substr($w, 0, 1));
+            if (!empty($w)) {
+                $adminCode .= strtoupper(substr($w, 0, 1));
+            }
         }
+
+        $adminCode = substr($adminCode, 0, 2);
 
         $year = date('y');
         $financialYear = $year . ($year + 1);
 
         $lastInvoice = ProformaInvoice::where('admin_id', $adminId)
-            ->where('invoice_no', 'LIKE', $prefix . $financialYear . '%')
+            ->where('invoice_no', 'LIKE', $adminCode . $financialYear . '%')
             ->orderBy('id', 'DESC')
             ->first();
 
         if ($lastInvoice) {
-            $lastNumber = (int) substr($lastInvoice->invoice_no, -3);
+
+            preg_match('/(\d+)$/', $lastInvoice->invoice_no, $matches);
+            $lastNumber = isset($matches[1]) ? (int)$matches[1] : 0;
+
             $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         } else {
-            $newNumber = "001";
+
+
+            if ($request->invoice_no) {
+                $invoiceNo = $request->invoice_no;
+            } else {
+                $newNumber = "001";
+                $invoiceNo = $prefix . $financialYear . "-G" . $newNumber;
+            }
         }
 
-        $invoiceNo = $prefix . $financialYear . "-G" . $newNumber;
-
+        if (!isset($invoiceNo)) {
+            $invoiceNo = $prefix . $financialYear . "-G" . $newNumber;
+        }
         $invoice = ProformaInvoice::create([
             'customer_id'     => $request->customer_id,
             'sub_total'       => $request->sub_total,
@@ -276,7 +317,7 @@ class ProformaInvoiceController extends Controller
 
         $data = $records->map(function ($r) use ($materials, $machineRecords) {
 
-            // ✅ FIXED LINE
+            //  FIXED LINE
             $machine = $machineRecords->firstWhere('work_order_id', $r->id);
 
             $mat = $materials->firstWhere('material_type', $r->material);
@@ -287,7 +328,7 @@ class ProformaInvoiceController extends Controller
                 'part_description' => $r->part_description,
                 'quantity'         => $r->quantity,
                 'exp_time'         => $r->exp_time,
-                'vmc_hr'           => $machine->hrs ?? 0,   // ✅ EST now correct
+                'vmc_hr'           => $machine->hrs ?? 0,   //  EST now correct
                 'material_type'    => $r->material,
                 'material_rate'    => $mat->material_rate ?? 0,
                 'workorder_id'     => $r->id,
@@ -298,28 +339,79 @@ class ProformaInvoiceController extends Controller
         return response()->json($data);
     }
 
+    // public function convertToTax($id)
+    // {
+    //     $pro = ProformaInvoice::with('items')->findOrFail($id);
+    //     $adminId = Auth::id();
+
+    //     $year = date('y');
+    //     $financialYear = $year . ($year + 1);
+
+
+    //     $lastInvoice = Invoice::where('admin_id', $adminId)
+    //         ->where('invoice_no', 'LIKE',   $financialYear . '%')
+    //         ->orderBy('id', 'DESC')
+    //         ->first();
+
+    //     if ($lastInvoice) {
+    //         $lastNumber = (int) substr($lastInvoice->invoice_no, -3);
+    //         $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+    //     } else {
+    //         $newNumber = "001";
+    //     }
+
+    //     $invoiceNo =  $financialYear . "-G" . $newNumber;
+
+    //     $invoice = Invoice::create([
+    //         'customer_id'     => $pro->customer_id,
+    //         'sub_total'       => $pro->sub_total,
+    //         'total_tax'       => $pro->total_tax,
+    //         'adjustment'      => $pro->adjustment,
+    //         'round_off'       => $pro->round_off,
+    //         'grand_total'     => $pro->grand_total,
+    //         'total_hrs'       => $pro->total_hrs,
+    //         'total_vmc'       => $pro->total_vmc,
+    //         'declaration'     => $pro->declaration,
+    //         'note'            => $pro->note,
+    //         'bank_details'    => $pro->bank_details,
+    //         'amount_in_words' => $pro->amount_in_words,
+    //         'admin_id'        => $adminId,
+    //         'invoice_no'      => $invoiceNo,
+    //         'invoice_date'    => now(),
+    //     ]);
+
+    //     foreach ($pro->items as $item) {
+    //         $invoice->items()->create([
+    //             'part_name'   => $item->part_name,
+    //             'project_id'  => $item->project_id,
+    //             'work_order_id' => $item->work_order_id,
+    //             'hsn_code'    => $item->hsn_code,
+    //             'qty'         => $item->qty,
+    //             'rate'        => $item->rate,
+    //             'amount'      => $item->amount,
+    //             'hrs'         => $item->hrs,
+    //             'vmc'         => $item->vmc,
+    //             'adj'         => $item->adj,
+    //             'sgst'        => $item->sgst,
+    //             'cgst'        => $item->cgst,
+    //             'igst'        => $item->igst,
+    //         ]);
+    //     }
+
+    //     // return redirect()->route('invoice.print', $invoice->id)
+    //     //     ->with('success', 'TAX Invoice created successfully!');
+
+    //     return back()->with('success', 'Converted Successfully!');
+    // }
+
+
     public function convertToTax($id)
     {
         $pro = ProformaInvoice::with('items')->findOrFail($id);
         $adminId = Auth::id();
 
-        $year = date('y');
-        $financialYear = $year . ($year + 1);
-
-
-        $lastInvoice = Invoice::where('admin_id', $adminId)
-            ->where('invoice_no', 'LIKE',   $financialYear . '%')
-            ->orderBy('id', 'DESC')
-            ->first();
-
-        if ($lastInvoice) {
-            $lastNumber = (int) substr($lastInvoice->invoice_no, -3);
-            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-        } else {
-            $newNumber = "001";
-        }
-
-        $invoiceNo =  $financialYear . "-G" . $newNumber;
+        // SAME NUMBER AS PROFORMA
+        $invoiceNo = $pro->invoice_no;
 
         $invoice = Invoice::create([
             'customer_id'     => $pro->customer_id,
@@ -341,24 +433,21 @@ class ProformaInvoiceController extends Controller
 
         foreach ($pro->items as $item) {
             $invoice->items()->create([
-                'part_name'   => $item->part_name,
-                'project_id'  => $item->project_id,
+                'part_name'     => $item->part_name,
+                'project_id'    => $item->project_id,
                 'work_order_id' => $item->work_order_id,
-                'hsn_code'    => $item->hsn_code,
-                'qty'         => $item->qty,
-                'rate'        => $item->rate,
-                'amount'      => $item->amount,
-                'hrs'         => $item->hrs,
-                'vmc'         => $item->vmc,
-                'adj'         => $item->adj,
-                'sgst'        => $item->sgst,
-                'cgst'        => $item->cgst,
-                'igst'        => $item->igst,
+                'hsn_code'      => $item->hsn_code,
+                'qty'           => $item->qty,
+                'rate'          => $item->rate,
+                'amount'        => $item->amount,
+                'hrs'           => $item->hrs,
+                'vmc'           => $item->vmc,
+                'adj'           => $item->adj,
+                'sgst'          => $item->sgst,
+                'cgst'          => $item->cgst,
+                'igst'          => $item->igst,
             ]);
         }
-
-        // return redirect()->route('invoice.print', $invoice->id)
-        //     ->with('success', 'TAX Invoice created successfully!');
 
         return back()->with('success', 'Converted Successfully!');
     }

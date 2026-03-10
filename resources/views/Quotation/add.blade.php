@@ -82,40 +82,36 @@
 
                                             {{-- ROW 1 --}}
                                             <div class="row mb-2">
-                                                <div class="col-md-4">
+                                                <div class="col-md-5">
                                                     <label for="">Description <span class="text-red">*</span></label>
                                                     <input type="text" name="items[0][Description]" class="form-control" placeholder="Description"
                                                         value="{{ old('items.0.Description', isset($quotation->items[0]) ? $quotation->items[0]->description : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label for="">Dia</label>
                                                     <input type="text" name="items[0][dia]" class="form-control" placeholder="Dia"
                                                         value="{{ old('items.0.dia', isset($quotation->items[0]) ? $quotation->items[0]->dia : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label for="">Length</label>
                                                     <input type="text" name="items[0][length]" class="form-control" placeholder="Length"
                                                         value="{{ old('items.0.length', isset($quotation->items[0]) ? $quotation->items[0]->length : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label for="">Width</label>
                                                     <input type="text" name="items[0][WIDTH]" class="form-control" placeholder="Width"
                                                         value="{{ old('items.0.WIDTH', isset($quotation->items[0]) ? $quotation->items[0]->width : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label for="">Height</label>
                                                     <input type="number" name="items[0][HEIGHT]" class="form-control" placeholder="Height"
                                                         value="{{ old('items.0.HEIGHT', isset($quotation->items[0]) ? $quotation->items[0]->height : '') }}">
                                                 </div>
-                                            </div>
 
-                                            {{-- ROW 2 --}}
-                                            <div class="row mb-2">
-                                                <div class="col-md-2">
-                                                    <label>Qty in Kg</label>
-                                                    <input type="text" name="items[0][qty_in_kg]" class="form-control" placeholder="Qty in Kg"
-                                                        value="{{ old('items.0.qty_in_kg', isset($quotation->items[0]) ? $quotation->items[0]->qty_in_kg : '') }}">
-                                                </div>
+                                                <!-- <label>Qty in Kg</label> -->
+                                                <input type="hidden" name="items[0][qty_in_kg]" class="form-control" placeholder="Qty in Kg"
+                                                    value="{{ old('items.0.qty_in_kg', isset($quotation->items[0]) ? $quotation->items[0]->qty_in_kg : '') }}">
+
 
                                                 <div class="col-md-2">
                                                     <label>Material Type <span class="text-red">*</span></label>
@@ -137,8 +133,8 @@
                                                     </small>
                                                 </div>
 
-                                                <div class="col-md-2">
-                                                    <label>Material Rate</label>
+                                                <div class="col-md-1">
+                                                    <label>Mat Rate</label>
                                                     <input type="text" name="items[0][material_rate]" class="form-control mb-2 material_rate" placeholder="Material Rate"
                                                         value="{{ old('items.0.material_rate', isset($quotation->items[0]) ? $quotation->items[0]->material_rate : '') }}" readonly>
                                                 </div>
@@ -154,79 +150,81 @@
                                                     @enderror
                                                 </div>
 
-                                                <div class="col-md-2">
-                                                    <label>Material Cost</label>
+                                                <div class="col-md-1">
+                                                    <label>Mat Cost</label>
                                                     <input type="text" name="items[0][material_cost]" class="form-control" placeholder="Material Cost"
                                                         value="{{ old('items.0.material_cost', isset($quotation->items[0]) ? $quotation->items[0]->material_cost : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label>Lathe</label>
                                                     <input type="text" name="items[0][lathe]" class="form-control" placeholder="Lathe"
                                                         value="{{ old('items.0.lathe', isset($quotation->items[0]) ? $quotation->items[0]->lathe : '') }}">
                                                 </div>
-                                            </div>
 
-                                            {{-- ROW 3 --}}
-                                            <div class="row mb-2">
-                                                <div class="col-md-2">
+                                                {{-- ROW 3 --}}
+                                                <div class="col-md-1">
                                                     <label>MG</label>
                                                     <input type="text" name="items[0][mg]" class="form-control" placeholder="MG"
                                                         value="{{ old('items.0.mg', isset($quotation->items[0]) ? $quotation->items[0]->mg : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+
+
+                                                <div class="col-md-1">
                                                     <label>RG</label>
                                                     <input type="text" name="items[0][rg]" class="form-control" placeholder="RG"
                                                         value="{{ old('items.0.rg', isset($quotation->items[0]) ? $quotation->items[0]->rg : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label>CG</label>
                                                     <input type="text" name="items[0][cg]" class="form-control" placeholder="CG"
                                                         value="{{ old('items.0.cg', isset($quotation->items[0]) ? $quotation->items[0]->cg : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label>SG</label>
                                                     <input type="text" name="items[0][sg]" class="form-control" placeholder="SG"
                                                         value="{{ old('items.0.sg', isset($quotation->items[0]) ? $quotation->items[0]->sg : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label>Vmc Soft</label>
-                                                    <input type="text" name="items[0][vmc_soft]" class="form-control" placeholder="Vmc Soft"
+                                                    <input type="text" name="items[0][vmc_soft]" class="form-control" placeholder="Vmc S"
                                                         value="{{ old('items.0.vmc_soft', isset($quotation->items[0]) ? $quotation->items[0]->vmc_soft : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label>Vmc Hard</label>
-                                                    <input type="text" name="items[0][vmc_hard]" class="form-control" placeholder="Vmc Hard"
+                                                    <input type="text" name="items[0][vmc_hard]" class="form-control" placeholder="Vmc H"
                                                         value="{{ old('items.0.vmc_hard', isset($quotation->items[0]) ? $quotation->items[0]->vmc_hard : '') }}">
                                                 </div>
-                                            </div>
 
-                                            {{-- ROW 4 --}}
-                                            <div class="row">
-                                                <div class="col-md-2">
+
+                                                {{-- ROW 4 --}}
+                                                <div class="col-md-1">
                                                     <label>EDM Qty</label>
                                                     <input type="text" name="items[0][edm_qty]" class="form-control" placeholder="Qty"
                                                         value="{{ old('items.0.edm_qty', isset($quotation->items[0]) ? $quotation->items[0]->edm_qty : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+
+
+
+                                                <div class="col-md-1">
                                                     <label>EDM Hole</label>
-                                                    <input type="text" name="items[0][edm_hole]" class="form-control" placeholder="EDM Hole"
+                                                    <input type="text" name="items[0][edm_hole]" class="form-control" placeholder="EDM H"
                                                         value="{{ old('items.0.edm_hole', isset($quotation->items[0]) ? $quotation->items[0]->edm_hole : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label>H&T</label>
                                                     <input type="text" name="items[0][h_t]" class="form-control" placeholder="H&T"
                                                         value="{{ old('items.0.h_t', isset($quotation->items[0]) ? $quotation->items[0]->ht : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <label>Wirecut</label>
-                                                    <input type="text" name="items[0][wirecut]" class="form-control" placeholder="Wirecut"
+                                                    <input type="text" name="items[0][wirecut]" class="form-control" placeholder=""
                                                         value="{{ old('items.0.wirecut', isset($quotation->items[0]) ? $quotation->items[0]->wirecut : '') }}">
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <label>Material Gravity</label>
-                                                    <input type="text" name="items[0][gravity]" class="form-control material_gravity" readonly
-                                                        value="{{ old('items.0.gravity', isset($quotation->items[0]) ? $quotation->items[0]->material_gravity : '') }}">
-                                                </div>
+
+                                                <!-- <label>Material Gravity</label> -->
+                                                <input type="hidden" name="items[0][gravity]" class="form-control material_gravity" readonly
+                                                    value="{{ old('items.0.gravity', isset($quotation->items[0]) ? $quotation->items[0]->material_gravity : '') }}">
+
                                                 <div class="col-md-2">
                                                     <label>Machining Cost</label>
                                                     <input type="text" name="items[0][machining_cost]" class="form-control" placeholder="Machining Cost"
@@ -248,39 +246,40 @@
                                     </button>
 
                                     <hr class="mt-4">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>Total Manufacturing Cost</label>
+                                            <input type="text" name="total_manufacturing_cos" class="form-control" readonly
+                                                value="{{ old('total_manufacturing_cos', $quotation->total_manufacturing_cos ?? '') }}">
+                                        </div>
 
-                                    <div class="col-md-2">
-                                        <label>Total Manufacturing Cost</label>
-                                        <input type="text" name="total_manufacturing_cos" class="form-control" readonly
-                                            value="{{ old('total_manufacturing_cos', $quotation->total_manufacturing_cos ?? '') }}">
+                                        <div class="col-md-2">
+                                            <label>Profit (%)</label>
+                                            <input type="number" step="0.01" name="profit_percent"
+                                                class="form-control"
+                                                value="{{ old('profit_percent', $quotation->profit_percent ?? '') }}">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>Overhead (%)</label>
+                                            <input type="number" step="0.01" name="overhead_percent"
+                                                class="form-control"
+                                                value="{{ old('overhead_percent', $quotation->overhead_percent ?? '') }}">
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <label>Terms & Conditions</label>
+                                            <input type="text" name="terms_conditions" class="form-control"
+                                                value="{{ old('terms_conditions', $quotation->terms_conditions ?? '') }}">
+                                        </div>
+                                        <div class="col-12 text-end mt-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                {{ isset($quotation) ? 'Update' : 'Submit' }}
+                                            </button>
+                                        </div>
+
                                     </div>
-
-                                    <div class="col-md-2">
-                                        <label>Profit (%)</label>
-                                        <input type="number" step="0.01" name="profit_percent"
-                                            class="form-control"
-                                            value="{{ old('profit_percent', $quotation->profit_percent ?? '') }}">
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label>Overhead (%)</label>
-                                        <input type="number" step="0.01" name="overhead_percent"
-                                            class="form-control"
-                                            value="{{ old('overhead_percent', $quotation->overhead_percent ?? '') }}">
-                                    </div>
-
-
-                                    <div class="col-md-6">
-                                        <label>Terms & Conditions</label>
-                                        <input type="text" name="terms_conditions" class="form-control"
-                                            value="{{ old('terms_conditions', $quotation->terms_conditions ?? '') }}">
-                                    </div>
-                                    <div class="col-12 text-end mt-4">
-                                        <button type="submit" class="btn btn-primary">
-                                            {{ isset($quotation) ? 'Update' : 'Submit' }}
-                                        </button>
-                                    </div>
-
                                 </div>
                             </form>
 

@@ -145,10 +145,10 @@
                                     <th>Customer Code</th>
                                     <td id="mr_customer"></td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th>Code</th>
                                     <td id="mr_code"></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <th>Date</th>
                                     <td id="mr_date"></td>
@@ -197,7 +197,7 @@
                                     <th> Material cost</th>
                                     <td id="mr_cost"></td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th>Lathe</th>
                                     <td id="mr_lathe"></td>
                                 </tr>
@@ -244,7 +244,7 @@
                                 <tr>
                                     <th>CL</th>
                                     <td id="mr_cl"></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <th>Total Cost</th>
                                     <td id="mr_total_cost"></td>
@@ -260,7 +260,6 @@
                     document.querySelectorAll(".viewMaterialReqBtn").forEach(btn => {
                         btn.addEventListener("click", function() {
                             document.getElementById("mr_customer").textContent = this.dataset.customer;
-                            document.getElementById("mr_code").textContent = this.dataset.code;
                             document.getElementById("mr_date").textContent = this.dataset.date;
                             document.getElementById("mr_workorder").textContent = this.dataset.sr_no;
                             document.getElementById("mr_part_no").textContent = this.dataset.part_no;
@@ -274,19 +273,6 @@
                             document.getElementById("mr_qty").textContent = this.dataset.qty;
                             document.getElementById("mr_weight").textContent = this.dataset.weight;
                             document.getElementById("mr_cost").textContent = this.dataset.cost;
-
-                            document.getElementById("mr_lathe").textContent = this.dataset.lathe;
-                            document.getElementById("mr_mg4").textContent = this.dataset.mg4;
-                            document.getElementById("mr_mg2").textContent = this.dataset.mg2;
-                            document.getElementById("mr_rg2").textContent = this.dataset.rg2;
-                            document.getElementById("mr_sg4").textContent = this.dataset.sg4;
-                            document.getElementById("mr_sg2").textContent = this.dataset.sg2;
-                            document.getElementById("mr_vmc_hrs").textContent = this.dataset.vmc_hrs;
-                            document.getElementById("mr_vmc_cost").textContent = this.dataset.vmc_cost;
-                            document.getElementById("mr_hrc").textContent = this.dataset.hrc;
-                            document.getElementById("mr_edm_qty").textContent = this.dataset.edm_qty;
-                            document.getElementById("mr_edm_rate").textContent = this.dataset.edm_rate;
-                            document.getElementById("mr_cl").textContent = this.dataset.cl;
                             document.getElementById("mr_total_cost").textContent = this.dataset.total_cost;
 
                             let modal = new bootstrap.Modal(document.getElementById("viewMaterialReqModal"));

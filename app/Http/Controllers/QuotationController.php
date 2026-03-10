@@ -171,7 +171,7 @@ class QuotationController extends Controller
                     'edm_hole'      => (float)($item['edm_hole'] ?? 0),
                     'wirecut'       => (float)($item['wirecut'] ?? 0),
                     'ht'            => (float)($item['h_t'] ?? 0),
-                    'material_gravity'  => $item['material_gravity'] ?? null,
+                    'material_gravity' => $item['gravity'] ?? 0,
 
                     'machining_cost' => $machiningCost,
                 ]);

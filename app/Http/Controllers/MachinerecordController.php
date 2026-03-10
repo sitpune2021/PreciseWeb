@@ -34,9 +34,12 @@ class MachinerecordController extends Controller
 
         $machines = Machine::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
-        $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        // $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        $operators = Operator::where('admin_id', Auth::id())->where('status', 1)->orderBy('operator_name', 'asc')->get();
 
-        $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        // $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        $settings = Setting::where('admin_id', Auth::id())->orderBy('setting_name', 'asc')   // ABCD order
+            ->get();
 
         $projects = Project::where('admin_id', Auth::id())
             ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
@@ -57,7 +60,7 @@ class MachinerecordController extends Controller
     {
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
-            'code'        => 'required|string|max:100',
+            'code'        => 'nullable|string|max:100',
             'work_order'  => 'required',
             'first_set'   => 'nullable|string|max:100',
             'qty'         => 'required|integer|min:1',
@@ -150,7 +153,7 @@ class MachinerecordController extends Controller
 
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
-            'code'        => 'required|string|max:100',
+            'code'        => 'nullable|string|max:100',
             'work_order'  => 'required|string|max:100',
             'first_set'   => 'nullable|string|max:100',
             'qty'         => 'required|integer|min:1',

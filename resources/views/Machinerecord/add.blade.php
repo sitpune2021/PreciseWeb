@@ -66,15 +66,13 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <div class="">
-                                            <label for="code" class="form-label">Customer Code</label>
-                                            <input type="text" class="form-control" id="code" name="code" value="{{ old('code', $record->code ?? '') }}" readonly>
-                                            @error('code')
-                                            <span class="text-red small">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+
+                                    <!-- <label for="code" class="form-label">Customer Code</label> -->
+                                    <input type="hidden" class="form-control" id="code" name="code" value="{{ old('code', $record->code ?? '') }}" readonly>
+                                    @error('code')
+                                    <span class="text-red small">{{ $message }}</span>
+                                    @enderror
+
 
                                     <!-- Work Order No -->
                                     <div class="col-md-1">
@@ -126,6 +124,24 @@
                                         @error('operator') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
+                                    <!-- <div class="col-md-2">
+                                        <label class="form-label">Operator <span class="text-red">*</span></label>
+                                        <select name="operator" class="form-control form-select mt-1">
+                                            <option value="">Select Operator</option>
+
+                                            @foreach($operators as $operator)
+                                            <option value="{{ $operator->operator_name }}"
+                                                {{ old('operator', $record->operator ?? '') == $operator->operator_name ? 'selected' : '' }}>
+
+                                                {{ $operator->operator_name }}
+
+                                            </option>
+                                            @endforeach
+
+                                        </select>
+                                        @error('operator') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div> -->
+
                                     <div class="col-md-2">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
                                         <select name="setting_no" class="form-control form-select mt-1">
@@ -141,6 +157,28 @@
                                         </select>
                                         @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
+
+                                    <!-- <div class="col-md-2">
+                                        <label class="form-label">Setting <span class="text-red">*</span></label>
+
+                                        <select name="setting" class="form-control form-select mt-1">
+                                            <option value="">Select Setting</option>
+
+                                            @foreach($settings as $setting)
+                                            <option value="{{ $setting->setting_name }}"
+                                                {{ old('setting', $record->setting ?? '') == $setting->setting_name ? 'selected' : '' }}>
+
+                                                {{ $setting->setting_name }}
+
+                                            </option>
+                                            @endforeach
+
+                                        </select>
+
+                                        @error('setting')
+                                        <span class="text-red small">{{ $message }}</span>
+                                        @enderror
+                                    </div> -->
 
                                     <div class="col-md-2">
                                         <label for="material" class="form-label">Material type <span class="mandatory">*</span></label>
@@ -203,18 +241,17 @@
                                     </div> -->
                                     <!-- HRS -->
                                     <div class="col-md-2">
-                                        <label class="form-label">HRS <span class="text-red">*</span></label>
-                                        <input type="number" step="0.01" id="hrs" name="hrs" class="form-control"
-                                            value="{{ old('hrs', $record->hrs ?? '') }}">
-                                        @error('hrs') <span class="text-red small">{{ $message }}</span> @enderror
-                                    </div>
-
-
-                                    <div class="col-md-2">
                                         <label class="form-label">IDL Time<span class="text-red"></span></label>
                                         <input type="text" step="0.01" name="idl_time" id="idl_time" class="form-control"
                                             value="{{ old('idl_time', $record->idl_time ?? '') }}">
                                         @error('idl_time') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label">HRS <span class="text-red">*</span></label>
+                                        <input type="number" step="0.01" id="hrs" name="hrs" class="form-control"
+                                            value="{{ old('hrs', $record->hrs ?? '') }}">
+                                        @error('hrs') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- Time Taken -->
@@ -346,7 +383,7 @@
 
         let value = document.getElementById('idl_time').value.trim();
 
-         
+
         if (!value) {
             updateHrs(totalMinutesGlobal);
             document.getElementById('adjustment').value = '';

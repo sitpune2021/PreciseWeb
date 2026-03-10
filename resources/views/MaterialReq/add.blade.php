@@ -33,7 +33,7 @@
 
                                     <div class="row">
                                         <!-- Customer -->
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
                                             <select class="form-select js-example-basic-single  mt-1"
                                                 id="customer_id"
@@ -60,13 +60,13 @@
                                         </div>
 
                                         <!-- Customer Code -->
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <label for="code" class="form-label">Code</label>
                                             <input type="text" class="form-control" id="code" name="code"
                                                 value="{{ old('code', $materialReq->code ?? '') }}" readonly>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="form-label">Part No </label>
 
                                             <select name="part_no" id="part_no" class="form-control form-select mt-1 js-example-basic-single">
@@ -89,7 +89,7 @@
                                         </div>
 
                                         <!-- Description -->
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description </label>
                                                 <input type="text" name="description" id="description" class="form-control" value="{{ old('description', $materialReq->description ?? '') }}">
@@ -159,7 +159,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label for="material_type" class="form-label">
                                                 Material Type <span class="mandatory">*</span>
                                             </label>
@@ -237,100 +237,100 @@
 
                                         </div>
                                         <!-- Machine Processes -->
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="lathe" class="form-label">Lathe (hrs) </label>
                                                 <input type="number" step="0.01" name="lathe" id="lathe" placeholder="Turning" class="form-control mt-1" value="{{ old('lathe', $materialReq->lathe ?? '') }}">
                                                 @error('lathe') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="mg4" class="form-label">MG4 (hrs) </label>
                                                 <input type="number" step="0.01" name="mg4" id="mg4" placeholder="Milling (4 Sides)" class="form-control" value="{{ old('mg4', $materialReq->mg4 ?? '') }}">
                                                 @error('mg4') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="mg2" class="form-label">MG2 (hrs) </label>
                                                 <input type="number" step="0.01" name="mg2" id="mg2" placeholder="Milling (2 Sides)" class="form-control" value="{{ old('mg2', $materialReq->mg2 ?? '') }}">
                                                 @error('mg2') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="rg2" class="form-label">RG2 (hrs) </label>
                                                 <input type="number" step="0.01" name="rg2" id="rg2" placeholder="Rotary Granding (2 Sides)" class="form-control" value="{{ old('rg2', $materialReq->rg2 ?? '') }}">
                                                 @error('rg2') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="sg4" class="form-label">SG4 (hrs) </label>
                                                 <input type="number" step="0.01" name="sg4" id="sg4" placeholder="Surface Granding (4 Sides)" class="form-control" value="{{ old('sg4', $materialReq->sg4 ?? '') }}">
                                                 @error('sg4') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="sg2" class="form-label">SG2 (hrs) </label>
                                                 <input type="number" step="0.01" name="sg2" id="sg2" placeholder="Surface Granding (2 Sides)" class="form-control" value="{{ old('sg2', $materialReq->sg2 ?? '') }}">
                                                 @error('sg2') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="vmc_hrs" class="form-label">VMC Hours</label>
                                                 <input type="number" step="0.01" name="vmc_hrs" id="vmc_hrs" class="form-control" value="{{ old('vmc_hrs', $materialReq->vmc_hrs ?? '') }}">
                                                 @error('vmc_hrs') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="vmc_cost" class="form-label">VMC Cost </label>
                                                 <input type="number" step="0.01" name="vmc_cost" id="vmc_cost" class="form-control" value="{{ old('vmc_cost', $materialReq->vmc_cost ?? '') }}">
                                                 @error('vmc_cost') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <!-- EDM -->
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="edm_qty" class="form-label">EDM Qty </label>
                                                 <input type="number" name="edm_qty" id="edm_qty" class="form-control" value="{{ old('edm_qty', $materialReq->edm_qty ?? '') }}">
                                                 @error('edm_qty') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="edm_rate" class="form-label">EDM Rate </label>
                                                 <input type="number" step="0.01" name="edm_rate" id="edm_rate" class="form-control" value="{{ old('edm_rate', $materialReq->edm_rate ?? '') }}">
                                                 @error('edm_rate') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
-                                        <div class="col-md-2">
+                                        </div> -->
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="hrc" class="form-label">HRC </label>
                                                 <input type="number" step="0.01" name="hrc" id="hrc" placeholder="Hardening" class="form-control" value="{{ old('hrc', $materialReq->hrc ?? '') }}">
                                                 @error('hrc') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
-                                        <div class="col-md-2">
+                                        </div> -->
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="cl" class="form-label">CL </label>
                                                 <input type="text" name="cl" id="cl" class="form-control" placeholder="Wirecutting Length" value="{{ old('cl', $materialReq->cl ?? '') }}">
                                                 @error('cl') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <!-- Total Cost -->
                                         <div class="col-md-2">

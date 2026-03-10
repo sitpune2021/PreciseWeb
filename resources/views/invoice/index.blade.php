@@ -9,7 +9,7 @@
                  <div class="col-lg-12">
                      <div class="d-flex justify-content-between align-items-center">
                          <h5 class="mb-0">
-                             <i class="me-2"></i>Proforma Invoice
+                             <i class="me-2"></i>Proforma Invoice 
                          </h5>
 
                      </div>
@@ -39,7 +39,7 @@
                              </form>
 
                              <a href="{{ route('invoice.add') }}" class="btn btn-success shadow-sm">
-                                 </i> Add Invoice
+                                 </i> Add Invoice 
                              </a>
 
                          </div>
