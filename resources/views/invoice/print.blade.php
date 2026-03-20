@@ -234,24 +234,9 @@
             <td width="50%">
                 <table style="width:100%; border-collapse: collapse; font-size:12px;">
                     <tr>
-
-                        @php
-                        $companyName = Auth::user()->name ?? 'AD';
-                        $words = explode(' ', trim($companyName));
-                        $adminCode = '';
-
-                        foreach($words as $w){
-                        if(!empty($w)){
-                        $adminCode .= strtoupper(substr($w, 0, 1));
-                        }
-                        }
-
-                        $adminCode = substr($adminCode, 0, 2);
-                        @endphp
-
                         <td><strong>Invoice No. :</strong></td>
 
-                        <td>{{ $adminCode . $invoice->invoice_no }}</td>
+                        <td>{{ $invoice->invoice_no }}</td>
                         <td><strong>Date :</strong></td>
                         <td>{{ \Carbon\Carbon::parse($invoice->invoice_date ?? now())->format('d-M-Y') }}</td>
                     </tr>

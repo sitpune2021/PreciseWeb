@@ -41,8 +41,8 @@
                                                     {{ isset($setupSheet) ? 'disabled' : '' }}>
                                                     <option value="">Select Code</option>
                                                     @foreach($codes as $c)
-                                                    <option value="{{ $c->id }}" data-code="{{ $c->code }}"
-                                                        {{ old('customer_id', $setupSheet->customer_id ?? '') == $c->id ? 'selected' : '' }}>
+                                                    <option value="{{ $c->id }}"
+                                                        {{ old('customer_id', $setupSheet->customer_id ?? $lastCustomer ?? '') == $c->id ? 'selected' : '' }}>
                                                         {{ $c->code }}
                                                     </option>
 
@@ -97,7 +97,7 @@
                                                 <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="work_order_no"
                                                     name="work_order_no" readonly
-                                                    value="{{ old('work_order_no', $setupSheet->work_order_no ?? '') }}">
+                                                    value="{{ old('work_order_no', $setupSheet->work_order_no ?? $workorder->id ?? '') }}">
                                                 @error('work_order_no')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -108,7 +108,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
-                                                <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $setupSheet->date ?? '') }}">
+                                                <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $setupSheet->date ?? $workorder->date ?? '') }}">
                                                 @error('date')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -263,7 +263,7 @@
                                             <div class="mb-3">
                                                 <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
                                                 <input type="number" step="1" min="1" class="form-control" id="qty" name="qty"
-                                                    value="{{ old('qty', $setupSheet->qty ?? '') }}"
+                                                    value="{{ old('qty', $setupSheet->qty ?? $workorder->quantity ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
                                                 @error('qty')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -274,7 +274,7 @@
                                             <div class="mb-3">
                                                 <label for="part_description" class="form-label mt-1">Part Description</label>
                                                 <input type="text" class="form-control" id="part_description"
-                                                    name="description">
+                                                    value="{{ old('description', $setupSheet->description ?? $workorder->part_description ?? '') }}" name="description">
                                             </div>
                                         </div>
 
@@ -512,6 +512,24 @@
     setupCustomDropdown('y_refer', 'yOptions');
     setupCustomDropdown('z_refer', 'zOptions');
     setupCustomDropdown('clamping', 'clampingOptions');
+
+    $(document).ready(function() {
+
+        let customer_id = $("#customer_id").val();
+
+        if (customer_id) {
+            $("#customer_id").trigger("change");
+
+            setTimeout(function() {
+                let partCode = $("#part_code").data("selected");
+
+                if (partCode) {
+                    $("#part_code").val(partCode).trigger("change");
+                }
+            }, 500);
+        }
+
+    });
 </script>
 
 @endsection

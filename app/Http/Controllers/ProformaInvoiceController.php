@@ -28,23 +28,24 @@ class ProformaInvoiceController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $workOrders = WorkOrder::where('admin_id', $adminId)
-            ->where('status', 1)
-            ->with('customer')
-            ->get();
-
         $customerId = $request->input('customer_id');
 
         $invoices = ProformaInvoice::with(['customer', 'items'])
             ->where('admin_id', $adminId);
 
+        //  Filter
         if (!empty($customerId)) {
             $invoices->where('customer_id', $customerId);
         }
 
-        $invoices = $invoices->latest()->get();
+        //  Sorting + Pagination (recommended)
+        $invoices = $invoices->latest('id')->paginate(10);
 
-        return view('proforma.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
+        return view('proforma.index', compact(
+            'customers',
+            'invoices',
+            'customerId'
+        ));
     }
     public function create()
     {
@@ -64,21 +65,34 @@ class ProformaInvoiceController extends Controller
         $workOrders = WorkOrder::where('status', 1)
             ->where('admin_id', $adminId)
             ->with('customer')
-            ->get(['id', 'customer_id', 'part_description', 'exp_time', 'quantity', 'material', 'date']);
+            ->get([
+                'id',
+                'customer_id',
+                'part_description',
+                'exp_time',
+                'quantity',
+                'material',
+                'date'
+            ]);
 
+        //  Prefix (same logic, just defined)
+        $prefix = Auth::user()->name
+            ? strtoupper(substr(Auth::user()->name, 0, 2))
+            : 'AD';
 
-        $prefix = "";
-
+        //  Financial Year
         $year = date('y');
         $nextYear = date('y', strtotime('+1 year'));
         $financialYear = $year . $nextYear;
 
-        $lastInvoice = ProformaInvoice::orderBy('id', 'desc')->first();
+        //  Last Invoice (filtered by prefix + FY)
+        $lastInvoice = ProformaInvoice::where('admin_id', $adminId)
+            ->where('invoice_no', 'LIKE', $prefix . $financialYear . '%')
+            ->orderBy('id', 'desc')
+            ->first();
 
         if ($lastInvoice) {
-
             preg_match('/(\d+)$/', $lastInvoice->invoice_no, $matches);
-
             $number = isset($matches[1]) ? (int)$matches[1] + 1 : 1;
         } else {
             $number = 1;
@@ -88,13 +102,19 @@ class ProformaInvoiceController extends Controller
 
         $invoiceNo = $prefix . $financialYear . "-G" . $newNumber;
 
-        return view('proforma.add', compact('customers', 'hsncodes', 'workOrders', 'adminSetting', 'invoiceNo'));
+        return view('proforma.add', compact(
+            'customers',
+            'hsncodes',
+            'workOrders',
+            'adminSetting',
+            'invoiceNo'
+        ));
     }
     public function store(Request $request)
     {
         $validated = $request->validate([
             'customer_id' => 'required',
-            'invoice_date'        => 'required',
+            'invoice_date' => 'required',
             'desc.*'      => 'required|string',
             'hsn_code.*'  => 'required|string',
             'qty.*'       => 'required|numeric|min:1',
@@ -109,38 +129,35 @@ class ProformaInvoiceController extends Controller
         ]);
 
         $adminId = auth()->id();
-        $customer = Customer::find($request->customer_id);
 
+        //  Admin Code
         $companyName = Auth::user()->name ?? 'AD';
-
         $words = explode(' ', trim($companyName));
-        $adminCode = '';
 
+        $adminCode = '';
         foreach ($words as $w) {
             if (!empty($w)) {
                 $adminCode .= strtoupper(substr($w, 0, 1));
             }
         }
-
         $adminCode = substr($adminCode, 0, 2);
 
         $year = date('y');
         $financialYear = $year . ($year + 1);
 
+        $prefix = $adminCode; //  FIXED
+
+        //  Last Invoice
         $lastInvoice = ProformaInvoice::where('admin_id', $adminId)
-            ->where('invoice_no', 'LIKE', $adminCode . $financialYear . '%')
+            ->where('invoice_no', 'LIKE', $prefix . $financialYear . '%')
             ->orderBy('id', 'DESC')
             ->first();
 
         if ($lastInvoice) {
-
             preg_match('/(\d+)$/', $lastInvoice->invoice_no, $matches);
             $lastNumber = isset($matches[1]) ? (int)$matches[1] : 0;
-
             $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         } else {
-
-
             if ($request->invoice_no) {
                 $invoiceNo = $request->invoice_no;
             } else {
@@ -152,6 +169,8 @@ class ProformaInvoiceController extends Controller
         if (!isset($invoiceNo)) {
             $invoiceNo = $prefix . $financialYear . "-G" . $newNumber;
         }
+
+        //  Create Invoice
         $invoice = ProformaInvoice::create([
             'customer_id'     => $request->customer_id,
             'sub_total'       => $request->sub_total,
@@ -160,7 +179,7 @@ class ProformaInvoiceController extends Controller
             'round_off'       => $request->round_off ?? 0,
             'grand_total'     => $request->grand_total,
             'total_hrs'       => array_sum($request->hrs ?? []),
-            'total_vmc'       => array_sum($request->vmc ?? []),
+            'total_vmc'       => array_sum($request->vmc_hr ?? []), //  FIXED
             'declaration'     => $request->declaration,
             'note'            => $request->note,
             'bank_details'    => $request->bank_details,
@@ -168,29 +187,32 @@ class ProformaInvoiceController extends Controller
             'admin_id'        => $adminId,
             'invoice_no'      => $invoiceNo,
             'invoice_date'    => $request->invoice_date,
-
-
         ]);
 
+        //  Items
         foreach ($request->desc as $i => $desc) {
+
             $invoice->items()->create([
-                'part_name' => $desc ?? '',
-                'project_id'  => $request->project_id[$i] ?? null,
+                'part_name'     => $desc ?? '',
+                'project_id'    => $request->project_id[$i] ?? null,
                 'work_order_id' => $request->work_order_id[$i] ?? null,
-                'hsn_code' => $request->hsn_code[0] ?? null,
-                'material_rate'   => $request->material_rate[$i] ?? 0,
-                'qty'       => $request->qty[$i] ?? 0,
-                'rate'      => $request->rate[$i] ?? 0,
-                'amount'    => $request->amount[$i] ?? 0,
-                'hrs'       => isset($request->hrs[$i]) ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i])) : 0,
-                'vmc'       => $request->vmc_hr[$i] ?? 0,
-                'adj'       => $request->adj[$i] ?? 0,
-                'sgst'      => $request->sgst_percent ?? 0,
-                'cgst'      => $request->cgst_percent ?? 0,
-                'igst'      => $request->igst ?? 0,
-                'invoice_id' => $invoice->id,
+                'hsn_code'      => $request->hsn_code[$i] ?? null, //  FIXED
+                'material_rate' => $request->material_rate[$i] ?? 0,
+                'qty'           => $request->qty[$i] ?? 0,
+                'rate'          => $request->rate[$i] ?? 0,
+                'amount'        => $request->amount[$i] ?? 0,
+                'hrs'           => isset($request->hrs[$i])
+                    ? floatval(preg_replace('/[^0-9.\-]/', '', $request->hrs[$i]))
+                    : 0,
+                'vmc'           => $request->vmc_hr[$i] ?? 0,
+                'adj'           => $request->adj[$i] ?? 0,
+                'sgst'          => $request->sgst_percent ?? 0,
+                'cgst'          => $request->cgst_percent ?? 0,
+                'igst'          => $request->igst ?? 0,
+                'invoice_id'    => $invoice->id,
             ]);
 
+            //  WorkOrder lock
             if (!empty($request->work_order_id[$i])) {
                 $workOrder = WorkOrder::find($request->work_order_id[$i]);
                 if ($workOrder) {
@@ -199,7 +221,9 @@ class ProformaInvoiceController extends Controller
             }
         }
 
-        return redirect()->route('proforma.index')->with('success', 'Proforma created successfully! ' . $invoiceNo);
+        return redirect()
+            ->route('proforma.index')
+            ->with('success', 'Proforma created successfully! ' . $invoiceNo);
     }
     public function printInvoice($id)
     {
@@ -291,6 +315,7 @@ class ProformaInvoiceController extends Controller
     {
         $adminId = Auth::id();
 
+        // Get already used WorkOrders
         $usedWorkOrders = \DB::table('proforma_items')
             ->join('proforma_invoices', 'proforma_items.invoice_id', '=', 'proforma_invoices.id')
             ->where('proforma_invoices.customer_id', $customer_id)
@@ -298,29 +323,40 @@ class ProformaInvoiceController extends Controller
             ->pluck('proforma_items.work_order_id')
             ->toArray();
 
+        // Get available WorkOrders
         $records = WorkOrder::where('admin_id', $adminId)
             ->where('customer_id', $customer_id)
             ->where('status', 1)
             ->whereNotIn('id', $usedWorkOrders)
             ->orderBy('id', 'asc')
-            ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
+            ->get([
+                'id',
+                'project_id',
+                'part_description',
+                'exp_time',
+                'quantity',
+                'material'
+            ]);
 
         if ($records->isEmpty()) {
             return response()->json([]);
         }
 
+        // Get Machine Records (keyBy for fast lookup)
         $machineRecords = MachineRecord::where('admin_id', $adminId)
-            ->get(['id', 'work_order_id', 'hrs']);
+            ->get(['id', 'work_order_id', 'hrs'])
+            ->keyBy('work_order_id');
 
+        // Get Material Rates (keyBy for fast lookup)
         $materials = MaterialType::where('admin_id', $adminId)
-            ->get(['material_type', 'material_rate']);
+            ->get(['material_type', 'material_rate'])
+            ->keyBy('material_type');
 
+        // Map Data
         $data = $records->map(function ($r) use ($materials, $machineRecords) {
 
-            //  FIXED LINE
-            $machine = $machineRecords->firstWhere('work_order_id', $r->id);
-
-            $mat = $materials->firstWhere('material_type', $r->material);
+            $machine = $machineRecords[$r->id] ?? null;
+            $mat = $materials[$r->material] ?? null;
 
             return [
                 'id'               => $r->id,
@@ -328,7 +364,7 @@ class ProformaInvoiceController extends Controller
                 'part_description' => $r->part_description,
                 'quantity'         => $r->quantity,
                 'exp_time'         => $r->exp_time,
-                'vmc_hr'           => $machine->hrs ?? 0,   //  EST now correct
+                'vmc_hr'           => $machine->hrs ?? 0,
                 'material_type'    => $r->material,
                 'material_rate'    => $mat->material_rate ?? 0,
                 'workorder_id'     => $r->id,
@@ -457,22 +493,34 @@ class ProformaInvoiceController extends Controller
 
         $id = base64_decode($id);
 
-        $data = ProformaInvoice::with('items')->findOrFail($id);
+        // Secure fetch (VERY IMPORTANT)
+        $data = ProformaInvoice::with('items')
+            ->where('admin_id', $adminId)
+            ->findOrFail($id);
 
-        $customers = Customer::all();
-        $clients   = Client::all();
-        // $adminId = Auth::id();
+        // Only current admin data
+        $customers = Customer::where('admin_id', $adminId)->get();
+        $clients   = Client::where('admin_id', $adminId)->get();
 
         $hsncodes = Hsncode::where('admin_id', $adminId)
             ->where('is_active', 1)
             ->get();
 
+        // WorkOrders (you can later filter used ones if needed)
         $workOrders = WorkOrder::where('customer_id', $data->customer_id)
             ->where('admin_id', $adminId)
             ->get();
 
-        $adminSetting = AdminSetting::first();
-        return view('proforma.add', compact('data', 'customers', 'clients', 'hsncodes', 'workOrders', 'adminSetting'));
+        $adminSetting = AdminSetting::where('admin_id', $adminId)->first();
+
+        return view('proforma.add', compact(
+            'data',
+            'customers',
+            'clients',
+            'hsncodes',
+            'workOrders',
+            'adminSetting'
+        ));
     }
 
     // public function proformaUpdate(Request $request, $id)
@@ -610,17 +658,21 @@ class ProformaInvoiceController extends Controller
     {
         $adminId = Auth::id();
         $id = base64_decode($id);
-        $invoice = ProformaInvoice::findOrFail($id);
 
+        //  Secure fetch
+        $invoice = ProformaInvoice::where('admin_id', $adminId)
+            ->findOrFail($id);
+
+        // रोक जर printed असेल
         if ($invoice->is_proforma_printed == 1) {
             return back()->with('error', 'Proforma already printed. Cannot update.');
         }
 
-        // ✅ VALIDATION
+        //  VALIDATION
         $request->validate([
             'customer_id' => 'nullable',
             'desc.*'      => 'required|string',
-            'hsn_code.*'  => 'required|string',   // FIXED
+            'hsn_code.*'  => 'required|string',
             'qty.*'       => 'required|numeric|min:1',
             'rate.*'      => 'required|numeric|min:0',
             'amount.*'    => 'required|numeric|min:0',
@@ -629,7 +681,7 @@ class ProformaInvoiceController extends Controller
             'grand_total' => 'required|numeric|min:0',
         ]);
 
-        // ✅ UPDATE INVOICE
+        //  UPDATE INVOICE
         $invoice->update([
             'customer_id' => $request->customer_id,
             'sub_total'   => $request->sub_total,
@@ -639,16 +691,21 @@ class ProformaInvoiceController extends Controller
             'grand_total' => $request->grand_total,
             'invoice_no'  => $request->invoice_no,
             'invoice_date' => $request->invoice_date,
-            'hsn_code'    => $request->hsn_code[0] ?? null, // single column असल्यास
+            'hsn_code'    => $request->hsn_code[0] ?? null,
             'admin_id'    => $adminId,
         ]);
 
-        // ✅ LOOP ITEMS
+        //  Delete removed items (IMPORTANT)
+        $existingIds = array_filter($request->id ?? []);
+        ProformaItem::where('invoice_id', $invoice->id)
+            ->whereNotIn('id', $existingIds)
+            ->delete();
+
+        //  LOOP ITEMS
         foreach ($request->desc as $i => $desc) {
 
             $hsn = $request->hsn_code[$i] ?? null;
 
-            // HSN MASTER FETCH
             $hsnMaster = Hsncode::where('hsn_code', $hsn)
                 ->where('admin_id', $adminId)
                 ->first();
@@ -657,29 +714,34 @@ class ProformaInvoiceController extends Controller
             $sgst = $hsnMaster->sgst ?? 0;
             $igst = $hsnMaster->igst ?? 0;
 
-            // GST LOGIC
             if ($igst > 0) {
                 $cgst = 0;
                 $sgst = 0;
             }
 
             $data = [
-                'part_name' => $desc,
-                'project_id' => $request->project_id[$i] ?? null,
+                'part_name'    => $desc,
+                'project_id'   => $request->project_id[$i] ?? null,
                 'work_order_id' => $request->work_order_id[$i] ?? null,
-                'hsn_code'  => $hsn,
-                'qty'       => $request->qty[$i],
-                'rate'      => $request->rate[$i],
-                'amount'    => $request->amount[$i],
-                'sgst'      => $sgst,
-                'cgst'      => $cgst,
-                'igst'      => $igst,
+                'hsn_code'     => $hsn,
+                'qty'          => $request->qty[$i],
+                'rate'         => $request->rate[$i],
+                'amount'       => $request->amount[$i],
+                'sgst'         => $sgst,
+                'cgst'         => $cgst,
+                'igst'         => $igst,
             ];
 
             if (!empty($request->id[$i])) {
                 ProformaItem::where('id', $request->id[$i])->update($data);
             } else {
                 $invoice->items()->create($data);
+            }
+
+            //  WorkOrder status update (USED)
+            if (!empty($request->work_order_id[$i])) {
+                WorkOrder::where('id', $request->work_order_id[$i])
+                    ->update(['status' => 2]);
             }
         }
 

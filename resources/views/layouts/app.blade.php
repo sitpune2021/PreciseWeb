@@ -19,7 +19,15 @@
 </head>
 
 <body>
-
+    <style>
+        .tooltip .tooltip-inner {
+            background-color: #000;
+            color: #fff;
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+    </style>
     <div id="app">
 
 
@@ -28,5 +36,13 @@
         </main>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
 
 </html>

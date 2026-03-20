@@ -13,9 +13,25 @@ use Illuminate\Support\Facades\Auth;
 
 class WorkOrderController extends Controller
 {
-    public function addWorkOrder()
+    public function addWorkOrder($id = null)
     {
         $adminId = Auth::id();
+
+        $project = null; //  NEW
+        $lastCustomer = null;
+
+
+        if ($id) {
+            $projectId = base64_decode($id);
+ 
+            $project = Project::where('admin_id', $adminId)
+                ->where('id', $projectId)
+                ->first();
+
+            if ($project) {
+                $lastCustomer = $project->customer_id;
+            }
+        }
 
         $codes = Customer::where('status', 1)
             ->where('admin_id', $adminId)
@@ -38,14 +54,21 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        //  project  last customer (old logic)
+        if (!$lastCustomer) {
+            $lastCustomer = WorkOrder::where('admin_id', $adminId)
+                ->latest('id')
+                ->value('customer_id');
+        }
 
-        // LAST CUSTOMER CODE
-        $lastCustomer = WorkOrder::where('admin_id', $adminId)
-            ->latest('id')
-            ->value('customer_id');
-
-
-        return view('WorkOrder.add', compact('codes', 'projects', 'workorders', 'materialtype', 'lastCustomer'));
+        return view('WorkOrder.add', compact(
+            'codes',
+            'projects',
+            'workorders',
+            'materialtype',
+            'lastCustomer',
+            'project'
+        ));
     }
 
     public function ViewWorkOrder()

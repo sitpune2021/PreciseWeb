@@ -33,7 +33,7 @@
                                     <div class="col-md-2">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
-                                        <select name="part_no" id="part_no" class="form-control form-select"
+                                        <select name="part_no" id="part_no" class="form-control form-select js-example-basic-single"
                                             {{ isset($record) ? 'disabled' : '' }}>
                                             <option value="">Select Part No</option>
                                             @foreach($workorders as $wo)
@@ -203,7 +203,7 @@
                                         @error('est_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Start Time <span class="text-red">*</span></label>
                                         <input type="datetime-local" name="start_time" class="form-control"
                                             value="{{ old('start_time', isset($record->start_time) ? date('Y-m-d\TH:i', strtotime($record->start_time)) : '') }}">
@@ -211,15 +211,22 @@
                                     </div>
 
                                     <!-- End Time -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">End Time <span class="text-red">*</span></label>
                                         <input type="datetime-local" name="end_time" class="form-control"
                                             value="{{ old('end_time', isset($record->end_time) ? date('Y-m-d\TH:i', strtotime($record->end_time)) : '') }}">
                                         @error('end_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <label class="form-label">Adjustment</label>
+                                    <div class="col-md-1">
+                                        <label class="form-label">IDL Time<span class="text-red"></span></label>
+                                        <input type="text" step="0.01" name="idl_time" id="idl_time" class="form-control"
+                                            value="{{ old('idl_time', $record->idl_time ?? '') }}">
+                                        @error('idl_time') <span class="text-red small">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <label class="form-label">ADJ</label>
                                         <input type="text"
                                             name="adjustment"
                                             id="adjustment"
@@ -240,12 +247,6 @@
                                         @enderror
                                     </div> -->
                                     <!-- HRS -->
-                                    <div class="col-md-2">
-                                        <label class="form-label">IDL Time<span class="text-red"></span></label>
-                                        <input type="text" step="0.01" name="idl_time" id="idl_time" class="form-control"
-                                            value="{{ old('idl_time', $record->idl_time ?? '') }}">
-                                        @error('idl_time') <span class="text-red small">{{ $message }}</span> @enderror
-                                    </div>
 
                                     <div class="col-md-2">
                                         <label class="form-label">HRS <span class="text-red">*</span></label>
@@ -300,17 +301,26 @@
     </div>
 </div>
 <script>
-    //  PART NO CHANGE 
-    document.getElementById('part_no').addEventListener('change', function() {
+    $(document).ready(function() {
 
-        let selected = this.options[this.selectedIndex];
+        $('#part_no').on('select2:select', function() {
 
-        document.getElementById('work_order_id').value = selected.getAttribute('data-id') || '';
-        document.getElementById('code').value = selected.getAttribute('data-code') || '';
-        document.getElementById('work_order').value = selected.getAttribute('data-workorder') || '';
-        document.getElementById('first_set').value = selected.getAttribute('data-partdesc') || '';
-        document.getElementById('qty').value = selected.getAttribute('data-qty') || '';
-        document.getElementById('e_time').value = selected.getAttribute('data-e_time') || '';
+            let selected = $(this).find(':selected');
+
+            $('#work_order_id').val(selected.data('id') || '');
+            $('#code').val(selected.data('code') || '');
+            $('#work_order').val(selected.data('workorder') || '');
+            $('#first_set').val(selected.data('partdesc') || '');
+            $('#qty').val(selected.data('qty') || '');
+            $('#e_time').val(selected.data('e_time') || '');
+
+        });
+
+        // Edit mode auto-fill
+        if ($('#part_no').val()) {
+            $('#part_no').trigger('change');
+        }
+
     });
 
 
@@ -346,9 +356,49 @@
     // document.querySelector('[name="start_time"]').addEventListener('change', calculateHours);
     // document.querySelector('[name="end_time"]').addEventListener('change', calculateHours);
 
-
     let totalMinutesGlobal = 0;
 
+    //  Convert minutes → HH.MM (proper 60 min logic)
+    function formatToHours(minutes) {
+
+        let hrs = Math.floor(minutes / 60);
+        let mins = minutes % 60;
+
+        //  fix: 60 min handling
+        if (mins === 60) {
+            hrs += 1;
+            mins = 0;
+        }
+
+        return hrs + "." + (mins < 10 ? "0" + mins : mins);
+    }
+
+    //  Convert input (1:10 OR 30 OR 2:00)
+    function parseIdleTime(value) {
+
+        if (!value) return 0;
+
+        value = value.trim();
+
+        let hours = 0;
+        let minutes = 0;
+
+        if (value.includes(":")) {
+
+            let parts = value.split(":");
+
+            hours = parseInt(parts[0]) || 0;
+            minutes = parseInt(parts[1]) || 0;
+
+        } else {
+
+            minutes = parseInt(value) || 0;
+        }
+
+        return (hours * 60) + minutes;
+    }
+
+    //  Start-End difference
     function calculateHours() {
 
         let start = document.querySelector('[name="start_time"]').value;
@@ -361,87 +411,52 @@
 
             if (endTime >= startTime) {
 
-                let diffMinutes = (endTime - startTime) / (1000 * 60);
+                totalMinutesGlobal = Math.floor((endTime - startTime) / (1000 * 60));
 
-                totalMinutesGlobal = diffMinutes;
-
-                updateHrs(diffMinutes);
+                applyCalculation();
             }
         }
     }
 
-    function updateHrs(minutes) {
+    //  MAIN LOGIC (FIXED)
+    function applyCalculation() {
 
-        let hrs = Math.floor(minutes / 60);
-        let mins = minutes % 60;
+        let idleValue = document.getElementById('idl_time').value;
+        let adjValue = document.getElementById('adjustment').value;
 
-        document.getElementById('hrs').value =
-            hrs + "." + (mins < 10 ? "0" + mins : mins);
-    }
+        let idleMinutes = parseIdleTime(idleValue);
 
-    function calculateIdleAdjustment() {
-
-        let value = document.getElementById('idl_time').value.trim();
-
-
-        if (!value) {
-            updateHrs(totalMinutesGlobal);
-            document.getElementById('adjustment').value = '';
-            return;
-        }
-
-        let idleHours = 0;
-        let idleMinutes = 0;
-
-        if (value.includes(':')) {
-
-            let parts = value.split(':');
-            idleHours = parseInt(parts[0]) || 0;
-            idleMinutes = parseInt(parts[1]) || 0;
-
-        } else {
-
-            idleMinutes = parseInt(value) || 0;
-
-            if (idleMinutes >= 60) {
-                idleHours = Math.floor(idleMinutes / 60);
-                idleMinutes = idleMinutes % 60;
-            }
-        }
-
-        let idleTotalMinutes = (idleHours * 60) + idleMinutes;
-
-        let machineMinutes = totalMinutesGlobal - idleTotalMinutes;
+        //  Machine Time
+        let machineMinutes = totalMinutesGlobal - idleMinutes;
 
         if (machineMinutes < 0) machineMinutes = 0;
 
-        updateHrs(machineMinutes);
+        //  Adjustment %
+        let percent = 0;
 
-        if (totalMinutesGlobal > 0) {
-
-            let percent = (idleTotalMinutes / totalMinutesGlobal) * 100;
-
-            document.getElementById('adjustment').value =
-                percent.toFixed(2) + '%';
+        if (adjValue) {
+            percent = parseFloat(adjValue.replace('%', '')) || 0;
         }
+
+        //  FIXED CALCULATION
+        let finalMinutes = machineMinutes + ((machineMinutes * percent) / 100);
+
+        finalMinutes = Math.round(finalMinutes);
+
+        //  OUTPUT
+        document.getElementById('hrs').value = formatToHours(finalMinutes);
     }
 
-    document.getElementById('idl_time').addEventListener('keyup', calculateIdleAdjustment);
-    document.getElementById('idl_time').addEventListener('change', calculateIdleAdjustment);
+    //  Events
+    document.getElementById('idl_time').addEventListener('input', applyCalculation);
+    document.getElementById('adjustment').addEventListener('input', applyCalculation);
 
     document.querySelector('[name="start_time"]').addEventListener('change', calculateHours);
     document.querySelector('[name="end_time"]').addEventListener('change', calculateHours);
 
     window.addEventListener('load', function() {
-
         calculateHours();
-
-        if (document.getElementById('idl_time').value) {
-            calculateIdleAdjustment();
-        }
-
     });
-
     //  CUSTOMER CHANGE 
     document.getElementById('customer_id').addEventListener('change', function() {
 
@@ -458,21 +473,20 @@
 
                     data.forEach(part => {
 
-                        let option = document.createElement('option');
+                        let option = new Option(part.part_no, part.part_no, false, false);
 
-                        option.value = part.part_no;
-                        option.textContent = part.part_no;
+                        $(option).attr('data-id', part.id);
+                        $(option).attr('data-code', part.code);
+                        $(option).attr('data-workorder', part.project_id);
+                        $(option).attr('data-partdesc', part.part_description);
+                        $(option).attr('data-qty', part.quantity);
+                        $(option).attr('data-e_time', part.exp_time);
 
-                        option.setAttribute('data-id', part.id);
-                        option.setAttribute('data-code', part.code);
-                        option.setAttribute('data-workorder', part.project_id);
-                        option.setAttribute('data-partdesc', part.part_description);
-                        option.setAttribute('data-qty', part.quantity);
-                        option.setAttribute('data-e_time', part.exp_time);
-
-                        partSelect.appendChild(option);
-
+                        $('#part_no').append(option);
                     });
+
+                    // VERY IMPORTANT
+                    $('#part_no').trigger('change.select2');
 
                 });
 

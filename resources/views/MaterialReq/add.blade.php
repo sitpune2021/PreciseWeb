@@ -14,7 +14,7 @@
 
                                 <!-- Back Button ONLY on Edit -->
                                 <a href="{{ route('ViewMaterialReq') }}" class="btn btn-sm btn-outline-success me-2">
-                                    ← 
+                                    ←
                                 </a>
 
                                 <h4 class="mb-0 flex-grow-1">
@@ -33,7 +33,7 @@
 
                                     <div class="row">
                                         <!-- Customer -->
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <label for="customer_id" class="form-label">Customer Code <span class="text-red small">*</span></label>
                                             <select class="form-select js-example-basic-single  mt-1"
                                                 id="customer_id"
@@ -57,6 +57,36 @@
                                             @if(isset($materialReq))
                                             <input type="hidden" name="customer_id" value="{{ $materialReq->customer_id }}">
                                             @endif
+                                        </div> -->
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">Work Order <span class="mandatory">*</span></label>
+                                            <select name="work_order_id" id="work_order_id" class="form-control form-select js-example-basic-single">
+                                                <option value="">Select Work Order</option>
+                                                @foreach($parts as $wo)
+                                                <option value="{{ $wo->id }}"
+                                                    {{ old('work_order_id', $materialReq->work_order_id ?? '') == $wo->id ? 'selected' : '' }}
+
+                                                    data-project="{{ $wo->project?->project_no ?? '' }}"
+                                                    data-project-name="{{ $wo->project?->project_name ?? '' }}"
+                                                    data-part="{{ $wo->part }}"
+                                                    data-qty="{{ $wo->quantity }}"
+                                                    data-desc="{{ $wo->part_description }}"
+
+                                                    data-dia="{{ $wo->dimeter ?? '' }}"
+                                                    data-length="{{ $wo->length ?? '' }}"
+                                                    data-width="{{ $wo->width ?? '' }}"
+                                                    data-height="{{ $wo->height ?? '' }}">
+
+                                                    {{ ($wo->customer?->code ?? '') }}_{{ ($wo->project?->project_no ?? '') }}_{{ $wo->part }}_{{ $wo->quantity }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">Project No</label>
+                                            <input type="text" id="project_no" class="form-control mt-1" readonly>
                                         </div>
 
                                         <!-- Customer Code -->
@@ -66,16 +96,17 @@
                                                 value="{{ old('code', $materialReq->code ?? '') }}" readonly>
                                         </div> -->
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <label class="form-label">Part No </label>
-
                                             <select name="part_no" id="part_no" class="form-control form-select mt-1 js-example-basic-single">
                                                 <option value="">Select Part No</option>
                                             </select>
                                             @error('part_no')
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
-                                        </div>
+                                        </div> -->
+
+
                                         <input type="hidden" name="work_order_no" id="work_order_no"
                                             value="{{ old('work_order_no', $materialReq->work_order_no ?? '') }}">
 
@@ -92,13 +123,13 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description </label>
-                                                <input type="text" name="description" id="description" class="form-control" value="{{ old('description', $materialReq->description ?? '') }}">
+                                                <input type="text" name="description" id="description" class="form-control mt-1" value="{{ old('description', $materialReq->description ?? '') }}">
                                                 @error('description') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
 
                                         <!-- Dia -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="dia" class="form-label">Dia </label>
                                                 <input
@@ -113,7 +144,7 @@
                                         </div>
 
                                         <!-- Length -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="length" class="form-label">Length</label>
                                                 <input autocomplete="off"
@@ -129,7 +160,7 @@
                                         </div>
 
                                         <!-- Width -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="width" class="form-label">Width </label>
                                                 <input autocomplete="off"
@@ -145,7 +176,7 @@
                                         </div>
 
                                         <!-- Height -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="height" class="form-label">Height <span class="mandatory">*</span></label>
                                                 <input autocomplete="off"
@@ -183,22 +214,22 @@
                                         </div>
 
 
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <label for="material_gravity" class="form-label">Material Gravity</label>
                                             <input type="text" name="material_gravity" id="material_gravity"
                                                 class="form-control mt-1"
                                                 value="{{ old('material_gravity', $materialReq->material_gravity ?? '') }}" readonly>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="col-md-2">
-                                            <label for="material_rate" class="form-label">Material Rate</label>
+                                        <div class="col-md-1">
+                                            <label for="material_rate" class="form-label">M Rate</label>
                                             <input type="text" name="material_rate" id="material_rate"
                                                 class="form-control mt-1"
                                                 value="{{ old('material_rate', $materialReq->material_rate ?? '') }}" readonly>
                                         </div>
 
                                         <!-- Qty -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
                                                 <input
@@ -216,7 +247,7 @@
                                         </div>
 
                                         <!-- Weight -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="weight" class="form-label">Weight </label>
                                                 <input type="number" step="0.001" name="weight" id="weight" class="form-control mt-1" value="{{ old('weight', $materialReq->weight ?? '') }}">
@@ -225,8 +256,8 @@
                                         </div>
 
 
-                                        <div class="col-md-2">
-                                            <label for="material_cost" class="form-label">Material Cost</label>
+                                        <div class="col-md-1">
+                                            <label for="material_cost" class="form-label">M Cost</label>
                                             <input type="text"
                                                 name="material_cost"
                                                 id="material_cost"
@@ -336,7 +367,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="total_cost" class="form-label">Total Cost </label>
-                                                <input type="number" step="0.01" name="total_cost" id="total_cost" class="form-control" value="{{ old('total_cost', $materialReq->total_cost ?? '') }}">
+                                                <input type="number" step="0.01" name="total_cost" id="total_cost" class="form-control mt-1" value="{{ old('total_cost', $materialReq->total_cost ?? '') }}">
                                                 @error('total_cost') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -395,8 +426,8 @@
                 let len = parseFloat($("#length").val()) || 0;
                 let withs = parseFloat($("#width").val()) || 0;
                 let heigh = parseFloat($("#height").val()) || 0;
-                let sg = parseFloat($("#material_gravity").val()) || 0;
-                let rate = parseFloat($("#material_rate").val()) || 0;
+                let sg = parseFloat($("#material_type option:selected").data("gravity")) || 0;
+                let rate = parseFloat($("#material_type option:selected").data("rate")) || 0;
                 let qty = parseFloat($("#qty").val()) || 1;
 
                 let lathe = parseFloat($("#lathe").val()) || 0;
@@ -507,72 +538,54 @@
     <script>
         $(document).ready(function() {
 
-            let selectedPart = "{{ old('part_no', $materialReq->part_no ?? '') }}";
-            let selectedCustomer = "{{ old('customer_id', $materialReq->customer_id ?? '') }}";
+            let isEdit = "{{ isset($materialReq) ? 'true' : 'false' }}";
 
-            function loadWorkOrders(customerId, selectedPartId = null) {
+            function fillWorkOrderData(setDesc = false) {
 
-                if (!customerId) {
-                    $('#part_no').html('<option value="">Select Part No</option>');
-                    return;
+                let selected = $('#work_order_id').find(':selected');
+
+                if (!selected.val()) return;
+
+                // Basic fields
+                $('#project_no').val(selected.data('project') || '');
+                $('#qty').val(selected.data('qty') || '');
+
+                // ✅ Description logic (IMPORTANT)
+                if (setDesc === true) {
+                    // User manually change → always update
+                    $('#description').val(selected.data('desc') || '');
+                } else {
+                    // Page load → only if empty
+                    if (!$('#description').val()) {
+                        $('#description').val(selected.data('desc') || '');
+                    }
                 }
 
-                $('#part_no').html('<option value="">Loading...</option>');
+                // Dimensions
+                $('#dia').val(selected.data('dia') || '');
+                $('#length').val(selected.data('length') || '');
+                $('#width').val(selected.data('width') || '');
+                $('#height').val(selected.data('height') || '');
 
-                $.ajax({
-                    url: '/get-workorders-by-customer/' + customerId,
-                    type: 'GET',
-                    success: function(data) {
-
-                        let options = '<option value="">Select Part No</option>';
-
-                        $.each(data, function(index, wo) {
-
-                            let partNo =
-                                (wo.customer?.code ?? '') + '_' +
-                                (wo.project?.project_no ?? '') + '_' +
-                                (wo.part ?? '') + '_' +
-                                (wo.quantity ?? '');
-
-                            let selected = (selectedPartId == wo.id) ? 'selected' : '';
-
-                            options += `<option value="${wo.id}" ${selected}
-                                data-desc="${wo.part_description ?? ''}">
-                                ${partNo}
-                                </option>`;
-                        });
-
-                        $('#part_no').html(options);
-
-                        // Edit mode description auto fill
-                        if (selectedPartId) {
-                            let desc = $('#part_no option:selected').data('desc') || '';
-                            $('#description').val(desc);
-                        }
-                    }
-                });
+                // Trigger calculation
+                $('#dia, #length, #width, #height').trigger('input');
             }
 
-            // 🔹 Customer change
-            $('#customer_id').change(function() {
-                let customerId = $(this).val();
-                loadWorkOrders(customerId);
+            // ✅ IMPORTANT FIX: Select2 + Normal change दोन्ही handle
+            $('#work_order_id').on('change', function() {
+                fillWorkOrderData(true);
             });
 
-            // 🔹 Part change → description autofill
-            $('#part_no').on('change', function() {
-                let desc = $(this).find(':selected').data('desc') || '';
-                $('#description').val(desc);
+            $('#work_order_id').on('select2:select', function() {
+                fillWorkOrderData(true);
             });
 
-            // 🔹 Edit Mode Auto Load
-            if (selectedCustomer) {
-                loadWorkOrders(selectedCustomer, selectedPart);
-            }
+            // ✅ PAGE LOAD (Edit case)
+            setTimeout(function() {
+                fillWorkOrderData(false);
+            }, 200);
 
         });
     </script>
-
-
 
     @endsection

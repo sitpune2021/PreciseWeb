@@ -61,13 +61,12 @@
                                                 <label for="project_id" class="form-label">Project Name <span class="mandatory">*</span></label>
                                                 <select class="form-select js-example-basic-single" id="project_id" name="project_id">
                                                     <option value="">Select Project</option>
+
                                                     @foreach($projects as $p)
-                                                    @if(isset($workorder) && $p->customer_id == $workorder->customer_id)
                                                     <option value="{{ $p->id }}"
-                                                        {{ old('project_id', $workorder->project_id ?? '') == $p->id ? 'selected' : '' }}>
-                                                        {{ $p->project_no }} - {{ $p->project_name }}
+                                                        {{ old('project_id', $workorder->project_id ?? $project->id ?? '') == $p->id ? 'selected' : '' }}>
+                                                        {{ $p->project_name }}
                                                     </option>
-                                                    @endif
                                                     @endforeach
                                                 </select>
 
@@ -102,7 +101,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
-                                                <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $workorder->date ?? '') }}">
+                                                <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $workorder->date ?? $project->date ?? '') }}">
                                                 @error('date') <span class="text-red">{{ $message }}</span> @enderror
                                                 <span class="text-red date"></span>
                                             </div>
@@ -189,7 +188,7 @@
                                                         id="quantity"
                                                         name="quantity"
                                                         placeholder="Quantity"
-                                                        value="{{ old('quantity', $workorder->quantity ?? '') }}"
+                                                        value="{{ old('quantity', $workorder->quantity ?? $project->quantity ?? '') }}"
                                                         oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
                                                     @error('quantity')
                                                     <span class="text-red">{{ $message }}</span>
@@ -221,7 +220,7 @@
                                                 <label for="part_description" class="form-label">Part Description</label>
                                                 <input type="text" class="form-control  mt-1" id="part_description" name="part_description"
                                                     placeholder="Description"
-                                                    value="{{ old('part_description', $workorder->part_description ?? '') }}">
+                                                    value="{{ old('part_description', $workorder->part_description ?? $project->project_name ?? '') }}">
                                             </div>
                                         </div>
 
@@ -314,14 +313,15 @@
                                                     <!-- <th>Part<br>No.</th> -->
                                                     <th>Date</th>
                                                     <th>Part Code</th>
+                                                    <th>Project Name</th>
                                                     <th>Part Description</th>
                                                     <th>Dia</th>
                                                     <th>Length</th>
                                                     <th>Width</th>
                                                     <th>Height</th>
-                                                    <th>Exp Time</th>
+                                                    <th>Exp</br>Time</th>
                                                     <th>Qty</th>
-                                                    <th width="12%">Action</th>
+                                                    <th width="10%">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -336,6 +336,7 @@
                                                     <td>
                                                         {{ ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
                                                     </td>
+                                                    <td>{{ $wo->project->project_name ?? 'N/A' }}</td>
                                                     <td>{{ $wo->part_description }}</td>
                                                     <td>{{ $wo->dimeter }}</td>
                                                     <td>{{ $wo->length }}</td>
@@ -361,13 +362,13 @@
                                                         </a>
                                                         @endif
 
-                                                        @if(hasPermission('MachineRecord', 'add'))
+                                                        <!-- @if(hasPermission('MachineRecord', 'add'))
                                                         <a href="{{ route('AddMachinerecord', base64_encode($wo->id)) }}">
                                                             <button type="button" class="btn btn-info btn-sm btn-icon waves-effect waves-light">
                                                                 <i class="ri-add-circle-line">M</i>
                                                             </button>
                                                         </a>
-                                                        @endif
+                                                        @endif -->
 
                                                         @if(hasPermission('SetupSheet', 'add'))
                                                         <a href="{{ route('AddSetupSheet', base64_encode($wo->id)) }}">

@@ -42,40 +42,50 @@ class MaterialorderController extends Controller
     }
     public function storeMaterialorder(Request $request)
     {
+        // Validate inputs
         $request->validate([
-            'customer_id'      => 'required',
-            'work_order_no'    => 'required',
+            'customer_id'      => 'required|exists:customers,id',
+            'work_order_no'    => 'required|string|max:255',
             'date'             => 'required|date',
             'material_req_ids' => 'required|array|min:1',
             'work_order_desc'  => 'required|array',
             'material'         => 'required|array',
+            'material.*'       => 'required|string|max:255',
             'quantity'         => 'required|array',
+            'quantity.*'       => 'required|integer|min:1',
         ]);
 
-        foreach ($request->material_req_ids as $index => $reqId) {
+        // Remove duplicate material_req_ids
+        $uniqueIds = array_unique($request->material_req_ids);
 
-            // 🔥 GET SR NO FROM MATERIAL REQ
+        foreach ($uniqueIds as $index => $reqId) {
+
+            // Get material request details
             $materialReq = MaterialReq::find($reqId);
 
-            MaterialOrder::create([
-                'admin_id'        => Auth::id(),
-                'customer_id'     => $request->customer_id,
-                'material_req_id' => $reqId,
+            if (!$materialReq) {
+                continue; // skip invalid IDs
+            }
 
-                // ✅ SAVE SR NO
-                'sr_no'           => $materialReq->sr_no ?? null,
-
-                'work_order_no'   => $request->work_order_no,
-                'date'            => $request->date,
-
-                'work_order_desc' => $request->work_order_desc[$index] ?? null,
-                'r_diameter'      => $request->r_diameter[$index] ?? null,
-                'r_length'        => $request->r_length[$index] ?? null,
-                'r_width'         => $request->r_width[$index] ?? null,
-                'r_height'        => $request->r_height[$index] ?? null,
-                'material'        => $request->material[$index] ?? null,
-                'quantity'        => $request->quantity[$index] ?? 0,
-            ]);
+            // Prevent duplicate insert for same admin + material_req_id
+            MaterialOrder::firstOrCreate(
+                [
+                    'admin_id' => Auth::id(),
+                    'sr_no'    => $materialReq->sr_no, // use sr_no as unique check
+                ],
+                [
+                    'customer_id'     => $request->customer_id,
+                    'work_order_no'   => $request->work_order_no,
+                    'date'            => $request->date,
+                    'work_order_desc' => $request->work_order_desc[$index] ?? $materialReq->description,
+                    'r_diameter'      => $request->r_diameter[$index] ?? $materialReq->dia,
+                    'r_length'        => $request->r_length[$index] ?? $materialReq->length,
+                    'r_width'         => $request->r_width[$index] ?? $materialReq->width,
+                    'r_height'        => $request->r_height[$index] ?? $materialReq->height,
+                    'material'        => $request->material[$index] ?? $materialReq->materialType->material_type ?? 'N/A',
+                    'quantity'        => $request->quantity[$index] ?? $materialReq->qty ?? 0,
+                ]
+            );
         }
 
         return redirect()->route('ViewMaterialorder')
@@ -110,7 +120,7 @@ class MaterialorderController extends Controller
             $materialReq = MaterialReq::with('materialType')->find($record->material_req_id);
         }
 
-        
+
 
         return view('Materialorder.add', compact('record', 'codes', 'customers', 'materialReq', 'materialRequests'));
     }

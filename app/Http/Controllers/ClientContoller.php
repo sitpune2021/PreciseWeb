@@ -19,12 +19,41 @@ class ClientContoller extends Controller
     public function storeClient(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/', 'unique:clients,name',],
-            'phone_no' => ['required', 'numeric', 'digits:10'],
-            'email_id' => ['required', 'email', 'max:30', 'unique:users,email'],
-            'gst_no' => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', 'unique:customers,gst_no',],
-            'logo'        => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'address'     => 'required|string',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-z\s]+$/',
+                Rule::unique('clients', 'name')->where(function ($q) {
+                    return $q->where('login_id', Auth::id());
+                })
+            ],
+
+            'phone_no' => [
+                'required',
+                'numeric',
+                'digits:10',
+                Rule::unique('users', 'username')->where(function ($query) {
+                    return $query->where('admin_id', Auth::id());
+                }),
+            ],
+
+            'email_id' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->where(function ($q) {
+                    return $q->where('admin_id', Auth::id());
+                })
+            ],
+
+            'gst_no' => [
+                'required',
+                'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/'
+            ],
+
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'address' => 'required|string',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -93,7 +122,7 @@ class ClientContoller extends Controller
         $request->validate([
             'name'        => 'required|string|max:255',
             'phone_no'    => 'required|string|max:20',
-            'email_id'    => 'required|email|max:30',
+            'email_id'    => 'required|email|max:255',
             'gst_no'       => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
             'logo'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'address'     => 'required|string',

@@ -42,7 +42,7 @@
                                         <tr class="table-light">
                                             <th style="width:30px;">#</th>
                                             <th style="width: 30px;">Sr.No</th>
-                                            <th style="width:30px;">Customer Code</th>
+                                            <th style="width:30px;">Work Order</th>
                                             <!-- <th>Code</th> -->
                                             <th style="width:70px;">Date</th>
                                             <th style="width: 70px;">Description</th>
@@ -55,7 +55,14 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $req->sr_no }}</td>
-                                            <td>{{ $req->customer->code ?? 'N/A' }}</td>
+                                            <td>
+                                                {{
+                                                ($req->workOrder->customer->code ?? '') . '_' .
+                                                ($req->workOrder->project->project_no ?? '') . '_' .
+                                                ($req->workOrder->part ?? '') . '_' .
+                                                ($req->workOrder->quantity ?? '') 
+                                            }}
+                                            </td>
                                             <!-- <td>{{ $req->code }}</td> -->
                                             <td>{{ $req->date }}</td>
 
@@ -75,14 +82,12 @@
                                                         data-customer="{{ $req->customer->code ?? 'N/A' }}"
                                                         data-code="{{ $req->code }}"
                                                         data-date="{{ $req->date }}"
-                                                        data-sr_no="{{ $req->sr_no }}"
-                                                        data-part_no="{{ 
-                                                                $req->workorder?->customer?->code . '_' .
-                                                                $req->workorder?->project?->project_no . '_' .
-                                                                $req->workorder?->part . '_' .
-                                                                $req->workorder?->quantity 
-                                                            }}
-                                                            "
+                                                        data-workorder="{{ 
+                                                            ($req->workOrder->customer->code ?? '') . '_' .
+                                                            ($req->workOrder->project->project_no ?? '') . '_' .
+                                                            ($req->workOrder->part ?? '') . '_' .
+                                                            ($req->workOrder->quantity ?? '') 
+                                                        }}"
                                                         data-description="{{ $req->description }}"
                                                         data-dia="{{ $req->dia }}"
                                                         data-length="{{ $req->length }}"
@@ -92,19 +97,6 @@
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
                                                         data-cost="{{ $req->material_cost ?? 'N/A' }}"
-                                                        data-lathe="{{ $req->lathe }}"
-                                                        data-mg4="{{ $req->mg4 }}"
-                                                        data-mg2="{{ $req->mg2 }}"
-                                                        data-rg2="{{ $req->rg2 }}"
-                                                        data-sg4="{{ $req->sg4 }}"
-                                                        data-sg2="{{ $req->sg2 }}"
-                                                        data-vmc_hrs="{{ $req->vmc_hrs }}"
-                                                        data-vmc_cost="{{ $req->vmc_cost }}"
-                                                        data-hrc="{{ $req->hrc }}"
-                                                        data-edm_qty="{{ $req->edm_qty }}"
-                                                        data-edm_rate="{{ $req->edm_rate }}"
-                                                        data-cl="{{ $req->cl }}"
-
                                                         data-total_cost="{{ $req->total_cost }}">
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
@@ -154,13 +146,13 @@
                                     <td id="mr_date"></td>
                                 </tr>
                                 <tr>
-                                    <th>Sr.No</th>
+                                    <th>Work Order </th>
                                     <td id="mr_workorder"></td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th>Part No</th>
                                     <td id="mr_part_no"></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <th>Description</th>
                                     <td id="mr_description"></td>
@@ -259,10 +251,13 @@
                 document.addEventListener("DOMContentLoaded", function() {
                     document.querySelectorAll(".viewMaterialReqBtn").forEach(btn => {
                         btn.addEventListener("click", function() {
+
                             document.getElementById("mr_customer").textContent = this.dataset.customer;
                             document.getElementById("mr_date").textContent = this.dataset.date;
-                            document.getElementById("mr_workorder").textContent = this.dataset.sr_no;
-                            document.getElementById("mr_part_no").textContent = this.dataset.part_no;
+
+                            // ✅ NEW FORMAT
+                            document.getElementById("mr_workorder").textContent = this.dataset.workorder;
+
                             document.getElementById("mr_description").textContent = this.dataset.description;
                             document.getElementById("mr_dia").textContent = this.dataset.dia;
                             document.getElementById("mr_length").textContent = this.dataset.length;

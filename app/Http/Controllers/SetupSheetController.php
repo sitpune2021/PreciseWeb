@@ -12,39 +12,60 @@ use Illuminate\Support\Facades\Auth;
 
 class SetupSheetController extends Controller
 {
-    public function AddSetupSheet()
+    public function AddSetupSheet($id = null)
     {
+        $adminId = Auth::id();
+
+        $workorder = null;
+        $lastCustomer = null;
+
+        //  WorkOrder id
+        if ($id) {
+            $woId = base64_decode($id);
+
+            $workorder = WorkOrder::where('admin_id', $adminId)
+                ->where('id', $woId)
+                ->first();
+
+            if ($workorder) {
+                $lastCustomer = $workorder->customer_id;
+            }
+        }
+
         $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id())
+            ->where('admin_id', $adminId)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
-        $settings = Setting::where('admin_id', Auth::id())->get();
 
-        $xOptions = SetupSheet::select('x_refer')
-            ->whereNotNull('x_refer')
-            ->where('admin_id', Auth::id())
-            ->distinct()
-            ->pluck('x_refer');
+        $settings = Setting::where('admin_id', $adminId)->get();
 
-        $yOptions = SetupSheet::select('y_refer')
-            ->whereNotNull('y_refer')
-            ->where('admin_id', Auth::id())
-            ->distinct()
-            ->pluck('y_refer');
+        $xOptions = SetupSheet::whereNotNull('x_refer')
+            ->where('admin_id', $adminId)
+            ->distinct()->pluck('x_refer');
 
-        $zOptions = SetupSheet::select('z_refer')
-            ->whereNotNull('z_refer')
-            ->where('admin_id', Auth::id())
-            ->distinct()
-            ->pluck('z_refer');
+        $yOptions = SetupSheet::whereNotNull('y_refer')
+            ->where('admin_id', $adminId)
+            ->distinct()->pluck('y_refer');
 
-        $clampingOptions = SetupSheet::select('clamping')
-            ->whereNotNull('clamping')
-            ->where('admin_id', Auth::id())
-            ->distinct()
-            ->pluck('clamping');
-        return view('SetupSheet.add', compact('codes', 'settings', 'xOptions', 'yOptions', 'zOptions', 'clampingOptions'));
+        $zOptions = SetupSheet::whereNotNull('z_refer')
+            ->where('admin_id', $adminId)
+            ->distinct()->pluck('z_refer');
+
+        $clampingOptions = SetupSheet::whereNotNull('clamping')
+            ->where('admin_id', $adminId)
+            ->distinct()->pluck('clamping');
+
+        return view('SetupSheet.add', compact(
+            'codes',
+            'settings',
+            'xOptions',
+            'yOptions',
+            'zOptions',
+            'clampingOptions',
+            'workorder',
+            'lastCustomer'
+        ));
     }
 
     public function storeSetupSheet(Request $request)

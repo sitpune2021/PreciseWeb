@@ -108,6 +108,98 @@
 
                 </div>
 
+                <div class="d-flex flex-wrap gap-2">
+                    @if(hasPermission('Customer', 'add'))
+                    <a href="{{ route('AddCustomer') }}"
+                        class="btn btn-sm btn-info"
+                        data-bs-toggle="tooltip"
+                        title="Add Customer">
+                        <i class="ri-group-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('Vendors', 'add'))
+                    <a href="{{ route('AddVendor') }}"
+                        class="btn btn-sm btn-dark"
+                        data-bs-toggle="tooltip"
+                        title="Add Vendor">
+                        <i class="ri-store-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('Projects', 'add'))
+                    <a href="{{ route('AddProject') }}"
+                        class="btn btn-sm btn-success"
+                        data-bs-toggle="tooltip"
+                        title="Add Project">
+                        <i class="ri-folder-add-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('WorkOrders', 'add'))
+                    <a href="{{ route('AddWorkOrder') }}"
+                        class="btn btn-sm btn-warning"
+                        data-bs-toggle="tooltip"
+                        title="Add Work Order">
+                        <i class="ri-file-add-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('SetupSheet', 'add'))
+                    <a href="{{ route('AddSetupSheet') }}"
+                        class="btn btn-sm btn-secondary"
+                        data-bs-toggle="tooltip"
+                        title="Add Setup Sheet">
+                        <i class="ri-settings-3-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('MachineRecord', 'add'))
+                    <a href="{{ route('AddMachinerecord') }}"
+                        class="btn btn-sm btn-info"
+                        data-bs-toggle="tooltip"
+                        title="Add Machine Record">
+                        <i class="ri-cpu-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('MaterialReq', 'add'))
+                    <a href="{{ route('AddMaterialReq') }}"
+                        class="btn btn-sm btn-danger"
+                        data-bs-toggle="tooltip"
+                        title="Add Material Request">
+                        <i class="ri-stack-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('MaterialOrder', 'add'))
+                    <a href="{{ route('AddMaterialorder') }}"
+                        class="btn btn-sm btn-warning"
+                        data-bs-toggle="tooltip"
+                        title="Add Material Order">
+                        <i class="ri-stack-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('Invoice', 'add'))
+                    <a href="{{ route('proforma.add') }}"
+                        class="btn btn-sm btn-primary"
+                        data-bs-toggle="tooltip"
+                        title="Add Proforma Invoice">
+                        <i class="ri-file-text-line fs-5"></i>
+                    </a>
+                    @endif
+
+                    @if(hasPermission('Quotation', 'add'))
+                    <a href="{{ route('Addquotation') }}"
+                        class="btn btn-sm btn-info"
+                        data-bs-toggle="tooltip"
+                        title="Add Quotation">
+                        <i class="ri-folder-add-line fs-5"></i>
+                    </a>
+                    @endif
+
+                </div>
                 <div class="d-flex align-items-center">
 
                     <div class="dropdown d-md-none topbar-head-dropdown header-item">
@@ -421,7 +513,7 @@
                     @endif
 
                     <!-- Customers -->
-                    @if(hasPermission('Customer','view') || hasPermission('Customer','add'))
+                    <!-- @if(hasPermission('Customer','view') || hasPermission('Customer','add'))
                     <li class="menu-title">
                         <i class="ri-user-heart-line me-2 text-danger"></i><span>Customers</span>
                     </li>
@@ -445,10 +537,11 @@
                             </ul>
                         </div>
                     </li>
-                    @endif
+                    @endif -->
 
-                    @if(hasPermission('Vendors', 'view') || hasPermission('Vendors', 'add'))
-                    <!-- Vendors -->
+
+
+                    <!-- @if(hasPermission('Vendors', 'view') || hasPermission('Vendors', 'add'))
                     <li class="menu-title"><i class="ri-store-2-line me-2 text-info"></i><span>Vendors</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('ViewVendor') ? '' : 'collapsed' }}" href="#sidebarVendor" data-bs-toggle="collapse">
@@ -463,10 +556,40 @@
                             </ul>
                         </div>
                     </li>
+                    @endif -->
+
+                    <!-- Customers -->
+                    @if(hasPermission('Customer','view') || hasPermission('Customer','add'))
+                    <li class="menu-title">
+                        <i class="ri-user-heart-line me-2 text-danger"></i>
+                        <span>Customers</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewCustomer') ? 'active' : '' }}"
+                            href="{{ route('ViewCustomer') }}">
+                            <i class="ri-team-line"></i>
+                            <span>Customer Master</span>
+                        </a>
+                    </li>
                     @endif
 
-                    @if(hasPermission('Projects', 'view') || hasPermission('Projects', 'add'))
-                    <!-- Projects -->
+
+                    @if(hasPermission('Vendors', 'view') || hasPermission('Vendors', 'add'))
+                    <!-- Vendors -->
+                    <li class="menu-title">
+                        <i class="ri-store-2-line me-2 text-info"></i>
+                        <span>Vendors</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewVendor') ? 'active' : '' }}"
+                            href="{{ route('ViewVendor') }}">
+                            <i class="ri-truck-line"></i>
+                            <span>Vendor Master</span>
+                        </a>
+                    </li>
+                    @endif
+
+                    <!-- @if(hasPermission('Projects', 'view') || hasPermission('Projects', 'add'))
                     <li class="menu-title"><i class="ri-briefcase-line me-2 text-purple"></i><span>Projects</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('AddProject') ? '' : 'collapsed' }}" href="#sidebarProject" data-bs-toggle="collapse">
@@ -481,10 +604,25 @@
                             </ul>
                         </div>
                     </li>
+                    @endif -->
+
+                    @if(hasPermission('Projects', 'view') || hasPermission('Projects', 'add'))
+                    <!-- Projects -->
+                    <li class="menu-title">
+                        <i class="ri-briefcase-line me-2 text-purple"></i>
+                        <span>Projects</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('AddProject') ? 'active' : '' }}"
+                            href="{{ route('AddProject') }}">
+                            <i class="ri-task-line"></i>
+                            <span>Project Entry</span>
+                        </a>
+                    </li>
                     @endif
 
                     <!-- Work Order -->
-                    @if(hasPermission('WorkOrders', 'view') || hasPermission('WorkOrders', 'add'))
+                    <!-- @if(hasPermission('WorkOrders', 'view') || hasPermission('WorkOrders', 'add'))
                     <li class="menu-title"><i class="ri-file-list-2-line me-2 text-secondary"></i><span>Work Orders</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('AddWorkOrder') ? '' : 'collapsed' }}" href="#sidebarWorkOrder" data-bs-toggle="collapse">
@@ -499,10 +637,23 @@
                             </ul>
                         </div>
                     </li>
+                    @endif -->
+
+                    @if(hasPermission('WorkOrders', 'view') || hasPermission('WorkOrders', 'add'))
+                    <li class="menu-title">
+                        <i class="ri-file-list-2-line me-2 text-secondary"></i>
+                        <span>Work Orders</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('AddWorkOrder') ? 'active' : '' }}"
+                            href="{{ route('AddWorkOrder') }}">
+                            <i class="ri-clipboard-line"></i>
+                            <span>Work Order Entry</span>
+                        </a>
+                    </li>
                     @endif
 
-                    @if(hasPermission('SetupSheet', 'view') || hasPermission('SetupSheet', 'add'))
-                    <!-- Setup Sheet -->
+                    <!-- @if(hasPermission('SetupSheet', 'view') || hasPermission('SetupSheet', 'add'))
                     <li class="menu-title"><i class="ri-layout-4-line me-2 text-dark"></i><span>Setup Sheet</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('ViewSetupSheet') ? '' : 'collapsed' }}" href="#sidebarsetup" data-bs-toggle="collapse">
@@ -516,10 +667,25 @@
                             </ul>
                         </div>
                     </li>
+                    @endif -->
+
+                    @if(hasPermission('SetupSheet', 'view') || hasPermission('SetupSheet', 'add'))
+                    <!-- Setup Sheet -->
+                    <li class="menu-title">
+                        <i class="ri-layout-4-line me-2 text-dark"></i>
+                        <span>Setup Sheet</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewSetupSheet') ? 'active' : '' }}"
+                            href="{{ route('ViewSetupSheet') }}">
+                            <i class="ri-file-settings-line"></i>
+                            <span>Setup Sheet</span>
+                        </a>
+                    </li>
                     @endif
 
-                    @if(hasPermission('MachineRecord', 'view') || hasPermission('MachineRecord', 'add'))
-                    <!-- Machine Record -->
+                    <!-- @if(hasPermission('MachineRecord', 'view') || hasPermission('MachineRecord', 'add'))
+                     
                     <li class="menu-title"><i class="ri-cpu-line me-2 text-primary"></i><span>Machine Records</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('ViewMachinerecord') ? '' : 'collapsed' }}" href="#sidebarMrecord" data-bs-toggle="collapse">
@@ -533,9 +699,24 @@
                             </ul>
                         </div>
                     </li>
+                    @endif -->
+
+
+                    @if(hasPermission('MachineRecord', 'view') || hasPermission('MachineRecord', 'add'))
+                    <li class="menu-title">
+                        <i class="ri-cpu-line me-2 text-primary"></i>
+                        <span>Machine Records</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewMachinerecord') ? 'active' : '' }}"
+                            href="{{ route('ViewMachinerecord') }}">
+                            <i class="ri-database-line"></i>
+                            <span>Machine Record</span>
+                        </a>
+                    </li>
                     @endif
 
-                    @if(hasPermission('MaterialReq', 'view') || hasPermission('MaterialReq', 'add'))
+                    <!-- @if(hasPermission('MaterialReq', 'view') || hasPermission('MaterialReq', 'add'))
                     <li class="menu-title"><i class="ri-cpu-line me-2 text-primary"></i><span>Material Requirement</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('ViewMaterialReq') ? '' : 'collapsed' }}"
@@ -553,10 +734,24 @@
                             </ul>
                         </div>
                     </li>
+                    @endif -->
+
+                    @if(hasPermission('MaterialReq', 'view') || hasPermission('MaterialReq', 'add'))
+                    <li class="menu-title">
+                        <i class="ri-cpu-line me-2 text-primary"></i>
+                        <span>Material Requirement</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewMaterialReq') ? 'active' : '' }}"
+                            href="{{ route('ViewMaterialReq') }}">
+                            <i class="ri-apps-2-line"></i>
+                            <span>Material Requirement</span>
+                        </a>
+                    </li>
                     @endif
 
                     <!-- Material Order -->
-                    @if(hasPermission('MaterialOrder', 'view') || hasPermission('MaterialOrder', 'add'))
+                    <!-- @if(hasPermission('MaterialOrder', 'view') || hasPermission('MaterialOrder', 'add'))
                     <li class="menu-title"><i class="ri-shopping-bag-3-line me-2 text-success"></i><span>Material Orders</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('ViewMaterialorder') ? '' : 'collapsed' }}" href="#sidebarMaterial" data-bs-toggle="collapse">
@@ -571,6 +766,20 @@
 
                             </ul>
                         </div>
+                    </li>
+                    @endif -->
+
+                    @if(hasPermission('MaterialOrder', 'view') || hasPermission('MaterialOrder', 'add'))
+                    <li class="menu-title">
+                        <i class="ri-shopping-bag-3-line me-2 text-success"></i>
+                        <span>Material Orders</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('ViewMaterialorder') ? 'active' : '' }}"
+                            href="{{ route('ViewMaterialorder') }}">
+                            <i class="ri-shopping-cart-2-line"></i>
+                            <span>Material Order</span>
+                        </a>
                     </li>
                     @endif
 
@@ -620,7 +829,7 @@
                     @endif
 
                     <!-- Quotation Page -->
-                    @if(hasPermission('Quotation', 'view') || hasPermission('Quotation', 'add'))
+                    <!-- @if(hasPermission('Quotation', 'view') || hasPermission('Quotation', 'add'))
                     <li class="menu-title">
                         <i class="ri-shopping-bag-3-line me-2 text-success"></i>
                         <span>Quotation</span>
@@ -646,6 +855,21 @@
 
                             </ul>
                         </div>
+                    </li>
+                    @endif -->
+
+
+                    @if(hasPermission('Quotation', 'view') || hasPermission('Quotation', 'add'))
+                    <li class="menu-title">
+                        <i class="ri-shopping-bag-3-line me-2 text-success"></i>
+                        <span>Quotation</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('Viewquotation') ? 'active' : '' }}"
+                            href="{{ route('Viewquotation') }}">
+                            <i class="ri-shopping-cart-2-line"></i>
+                            <span>Quotation</span>
+                        </a>
                     </li>
                     @endif
 

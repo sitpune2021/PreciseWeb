@@ -78,7 +78,7 @@
                             <!-- SR -->
                             <div class="col-md-8">
                                 <label>Material Requests (SR)<span class="text-red">*</span></label>
-                                <select id="material_data_dropdown"name="material_req_ids[]"
+                                <select id="material_data_dropdown" name="material_req_ids[]"
                                     class="form-select js-example-basic-single select2-hidden"
                                     multiple>
                                     @if(isset($materialRequests))
@@ -196,33 +196,44 @@
 <script>
     $(document).ready(function() {
 
-        let allRequests = {};
-        let addedRows = {};
+        let allRequests = {}; // store all material requests for selected customer
+        let addedRows = {}; // track which rows are already added
+        let selectedIds = []; // currently selected SR ids
 
+        // Initialize Select2
         $('#material_data_dropdown').select2({
             placeholder: 'Select SR',
             width: '100%',
-            closeOnSelect: false
+            closeOnSelect: false,
+            allowClear: true
         });
 
-        // EDIT MODE SELECTED VALUE
+        // ===== EDIT MODE =====
         @if(isset($record))
+        // mark current SR as selected
         $('#material_data_dropdown').val(['{{ $record->material_req_id }}']).trigger('change');
+        $('#previewTable').removeClass('d-none');
+        addedRows['{{ $record->material_req_id }}'] = true;
+        selectedIds = ['{{ $record->material_req_id }}'];
         @endif
 
+        // ===== ADD MODE =====
         @if(!isset($record))
-        // CUSTOMER CHANGE (only in add mode)
+        // When customer changes, fetch material requests
         $('#customer_id').change(function() {
             let cid = $(this).val();
 
+            // reset
             $('#material_data_dropdown').empty().trigger('change');
             $('#previewTable tbody').empty();
             $('#previewTable').addClass('d-none');
             allRequests = {};
             addedRows = {};
+            selectedIds = [];
 
             if (!cid) return;
 
+            // Fetch material requests
             $.get('/get-material-requests/' + cid, function(res) {
                 if (res.status === 'success') {
                     res.data.forEach(item => {
@@ -234,160 +245,79 @@
                 }
             });
 
+            // Fetch latest work order no
             $.get('/get-customer-wo/' + cid, function(res) {
                 $('#work_order_no').val(res.work_order_no ?? '');
             });
         });
 
-        // ADD SR
-        // $('#addMaterialBtn').click(function() {
-        //     let ids = $('#material_data_dropdown').val();
-        //     if (!ids) return;
-
-        //     let tbody = $('#previewTable tbody');
-
-        //     ids.forEach(id => {
-        //         if (addedRows[id]) return;
-        //         addedRows[id] = true;
-
-        //         let d = allRequests[id];
-
-        //         tbody.append(`
-        //         <tr id="row_${id}">
-        //             <td>SR-${d.sr_no}</td>
-        //             <td><input type="text" name="work_order_desc[]" class="form-control" value="${d.description}"></td>
-        //             <td><input type="text" name="r_diameter[]" class="form-control" value="${d.dia ?? ''}"></td>
-        //             <td><input type="text" name="r_length[]" class="form-control" value="${d.length ?? ''}"></td>
-        //             <td><input type="text" name="r_width[]" class="form-control" value="${d.width ?? ''}"></td>
-        //             <td><input type="text" name="r_height[]" class="form-control" value="${d.height ?? ''}"></td>
-        //             <td><input type="text" name="material[]" class="form-control" value="${d.material_name}"></td>
-        //             <td><input type="number" name="quantity[]" class="form-control" value="${d.qty}"></td>
-        //             <td>
-        //                 <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">Remove</button>
-        //             </td>
-        //             <input type="hidden" name="material_req_ids[]" value="${id}">
-        //         </tr>
-        //         `);
-        //     });
-
-        //     $('#previewTable').removeClass('d-none');
-        // });
-
-
-        let selectedIds = [];
-
+        // Handle adding/removing rows when SR selected/unselected
         $('#material_data_dropdown').on('change', function() {
-
             let ids = $(this).val() || [];
             let tbody = $('#previewTable tbody');
 
-            // ADD NEW ROWS
+            // Add new rows
             ids.forEach(id => {
+                if (!addedRows[id] && $('#row_' + id).length === 0) {
+                    addedRows[id] = true;
+                    let d = allRequests[id];
 
-                if (addedRows[id]) return;
-
-                addedRows[id] = true;
-
-                let d = allRequests[id];
-
-                tbody.append(`
-        <tr id="row_${id}">
-            <td>SR-${d.sr_no}</td>
-
-            <td>
-                <input type="text" name="work_order_desc[]" 
-                class="form-control form-control-sm"
-                value="${d.description}">
-            </td>
-
-            <td>
-                <input type="number" step="0.01"
-                name="r_diameter[]" 
-                class="form-control form-control-sm"
-                value="${d.dia ?? ''}">
-            </td>
-
-            <td>
-                <input type="number" step="0.01"
-                name="r_length[]" 
-                class="form-control form-control-sm"
-                value="${d.length ?? ''}">
-            </td>
-
-            <td>
-                <input type="number" step="0.01"
-                name="r_width[]" 
-                class="form-control form-control-sm"
-                value="${d.width ?? ''}">
-            </td>
-
-            <td>
-                <input type="number" step="0.01"
-                name="r_height[]" 
-                class="form-control form-control-sm"
-                value="${d.height ?? ''}">
-            </td>
-
-            <td>
-                <input type="text"
-                name="material[]"
-                class="form-control form-control-sm"
-                value="${d.material_name}">
-            </td>
-
-            <td>
-                <input type="number"
-                name="quantity[]"
-                class="form-control form-control-sm"
-                value="${d.qty}">
-            </td>
-
-            <td>
-                <button type="button"
-                class="btn btn-sm btn-danger removeRow"
-                data-id="${id}">
-                <i class="fa fa-trash"></i>
-                </button>
-            </td>
-
-            <input type="hidden" name="material_req_ids[]" value="${id}">
-        </tr>
-        `);
-
+                    tbody.append(`
+<tr id="row_${id}">
+    <td>SR-${d.sr_no}</td>
+    <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description}"></td>
+    <td><input type="number" step="0.01" name="r_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
+    <td><input type="number" step="0.01" name="r_length[]" class="form-control form-control-sm" value="${d.length ?? ''}"></td>
+    <td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm" value="${d.width ?? ''}"></td>
+    <td><input type="number" step="0.01" name="r_height[]" class="form-control form-control-sm" value="${d.height ?? ''}"></td>
+    <td><input type="text" name="material[]" class="form-control form-control-sm" value="${d.material_name}"></td>
+    <td><input type="number" name="quantity[]" class="form-control form-control-sm" value="${d.qty}"></td>
+    <td>
+        <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">
+            <i class="fa fa-trash"></i>
+        </button>
+    </td>
+    <input type="hidden" name="material_req_ids[]" value="${id}">
+</tr>
+                `);
+                }
             });
 
-            // REMOVE UNSELECTED ROWS
+            // Remove rows that are no longer selected
             selectedIds.forEach(oldId => {
-
                 if (!ids.includes(oldId)) {
-
                     delete addedRows[oldId];
-
                     $('#row_' + oldId).remove();
                 }
             });
+
             selectedIds = ids;
-            $('#previewTable').removeClass('d-none');
 
+            // Show/hide preview table
+            if (selectedIds.length > 0) $('#previewTable').removeClass('d-none');
+            else $('#previewTable').addClass('d-none');
         });
-        // REMOVE
-        $(document).on('click', '.removeRow', function() {
 
+        // Remove row button click
+        $(document).on('click', '.removeRow', function() {
             let id = $(this).data('id');
 
+            // Remove from tracking objects
             delete addedRows[id];
+            selectedIds = selectedIds.filter(i => i != id);
 
+            // Remove row
             $('#row_' + id).remove();
 
-            // remove from select dropdown
-            let selected = $('#material_data_dropdown').val();
-
-            selected = selected.filter(function(item) {
-                return item != id;
-            });
-
+            // Remove from select2
+            let selected = $('#material_data_dropdown').val() || [];
+            selected = selected.filter(item => item != id);
             $('#material_data_dropdown').val(selected).trigger('change');
 
+            // Hide table if empty
+            if ($('#previewTable tbody tr').length == 0) {
+                $('#previewTable').addClass('d-none');
+            }
         });
         @endif
 

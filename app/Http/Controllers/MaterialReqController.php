@@ -34,35 +34,26 @@ class MaterialReqController extends Controller
     }
     public function storeMaterialReq(Request $request)
     {
+
         $validated = $request->validate([
-            'customer_id'   => 'required|exists:customers,id',
-            'code'          => 'nullable|string|max:50',
+            'work_order_id' => 'required|exists:work_orders,id',
             'date'          => 'required|date',
             'description'   => 'nullable|string|max:255',
-            'part_no' => 'nullable|string|max:100',
-            'work_order_no' => 'required|string|max:50',
             'dia'           => 'nullable|numeric|min:0',
             'length'        => 'nullable|numeric|min:0',
             'width'         => 'nullable|numeric|min:0',
             'height'        => 'required|numeric|min:0',
             'material'      => 'required|exists:material_types,id',
             'qty'           => 'required|numeric|min:1',
-            'lathe'         => 'nullable|numeric|min:0',
-            'mg4'           => 'nullable|numeric|min:0',
-            'mg2'           => 'nullable|numeric|min:0',
-            'rg2'           => 'nullable|numeric|min:0',
-            'sg4'           => 'nullable|numeric|min:0',
-            'sg2'           => 'nullable|numeric|min:0',
-            'vmc_cost'      => 'nullable|numeric|min:0',
-            'hrc'           => 'nullable|numeric|min:0',
-            'edm_qty'       => 'nullable|numeric|min:0',
-            'edm_rate'      => 'nullable|numeric|min:0',
-            'cl'            => 'nullable|string|max:50',
         ]);
+
+        // ✅ GET WORK ORDER FIRST
+        $workOrder = WorkOrder::with(['project', 'customer'])
+            ->findOrFail($request->work_order_id);
 
         $material = MaterialType::findOrFail($request->material);
 
-        // Volume & weight calculation
+        // ✅ Volume
         $volume = ($request->dia > 0)
             ? pi() * pow(($request->dia / 2), 2) * $request->height
             : $request->length * $request->width * $request->height;
@@ -71,36 +62,44 @@ class MaterialReqController extends Controller
         $weight = round($weight_per_piece * $request->qty, 3);
 
         $material_cost = round($weight_per_piece * $material->material_rate * $request->qty, 2);
-        $edm_cost = ($request->edm_qty * $request->edm_rate) * $request->qty;
-        $machine_cost = (
-            $request->lathe +
-            $request->mg4 +
-            $request->mg2 +
-            $request->rg2 +
-            $request->sg4 +
-            $request->sg2 +
-            $request->vmc_cost +
-            $request->hrc
-        ) * $request->qty;
 
-        $total_cost = round($material_cost + $edm_cost + $machine_cost, 2);
+        $total_cost = $material_cost; // simplify (बाकी add करू शकतोस)
 
-
+        // ✅ SR NO
         $lastSrNo = MaterialReq::where('admin_id', Auth::id())->max('sr_no');
-
         $sr_no = $lastSrNo ? $lastSrNo + 1 : 1;
 
-        $data = $validated;
-        $data['sr_no'] = $sr_no; // assign serial number
-        $data['material'] = $request->material;
-        $data['part_no'] = $request->part_no;
-        $data['material_gravity'] = $material->material_gravity;
-        $data['material_rate'] = $material->material_rate;
-        $data['weight'] = $weight;
-        $data['material_cost'] = $material_cost;
-        $data['total_cost'] = $total_cost;
-        $data['admin_id'] = Auth::id();
+        // ✅ FINAL DATA (IMPORTANT 🔥)
+        $data = [
+            'sr_no'            => $sr_no,
+            'admin_id'         => Auth::id(),
 
+            // 🔥 WorkOrder based
+            'work_order_id'    => $workOrder->id,
+            'customer_id'      => $workOrder->customer_id,
+            'project_id'       => $workOrder->project_id,
+            'part_no'          => $workOrder->part,
+            'work_order_no'    => $workOrder->id, // or wo_no
+
+            // form data
+            'date'             => $request->date,
+            'description'      => $request->description,
+            'dia'              => $request->dia,
+            'length'           => $request->length,
+            'width'            => $request->width,
+            'height'           => $request->height,
+            'material'         => $request->material,
+            'qty'              => $request->qty,
+
+            // calculated
+            'material_gravity' => $material->material_gravity,
+            'material_rate'    => $material->material_rate,
+            'weight'           => $weight,
+            'material_cost'    => $material_cost,
+            'total_cost'       => $total_cost,
+        ];
+
+        // ✅ SAVE AFTER ALL DATA READY
         MaterialReq::create($data);
 
         return redirect()->route('ViewMaterialReq')
@@ -144,11 +143,9 @@ class MaterialReqController extends Controller
             ->findOrFail($id);
 
         $request->validate([
-            'customer_id' => 'required',
+            'work_order_id' => 'required',
             'date' => 'required|date',
-            'work_order_no' => 'required',
             'description' => 'nullable',
-            'part_no' => 'nullable|string|max:100',
         ]);
 
         $materialReq->update($request->all());

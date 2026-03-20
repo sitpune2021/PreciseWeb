@@ -69,7 +69,7 @@ Route::get( 'vendor/trash'                      , [VendorContoller::class, 'tras
 Route::get( 'vendor/restore/{id}'               , [VendorContoller::class, 'restore'])->name('restoreVendor');
 
 // Workorder Routes
-Route::get( 'workorder/add'                     , [WorkOrderController::class, 'AddWorkOrder'])->name('AddWorkOrder');
+Route::get('/workorder/add/{id?}'               , [WorkOrderController::class, 'addWorkOrder'])->name('AddWorkOrder');
 Route::get( 'workorder/view'                    , [WorkOrderController::class, 'ViewWorkOrder'])->name('ViewWorkOrder');
 Route::post('WorkEntry/store'                   , [WorkOrderController::class, 'storeWorkEntry'])->name('storeWorkEntry');
 Route::get( 'workorder/edit/{id}'               , [WorkOrderController::class, 'edit'])->name('editWorkOrder');
@@ -83,6 +83,7 @@ Route::get( 'workorder/trash'                   , [WorkOrderController::class, '
 Route::get( 'workorder/restore/{id}'            , [WorkOrderController::class, 'restore'])->name('restoreWorkOrder');
 Route::get('/get-next-part/{customerId}/{projectId}', [WorkOrderController::class, 'getNextPart']);
 Route::get('/get-last-customer-code', [WorkOrderController::class,'getLastCustomerCode']);
+
 
 
 // Project Routes
@@ -157,7 +158,7 @@ Route::get( 'Financial-year/trash'              , [FinancialYearController::clas
 Route::get( 'Financial-year/restore/{id}'       , [FinancialYearController::class, 'restore'])->name('restoreFinancial');
 
 // Setupsheet Routes
-Route::get( 'setupsheet/add'                    , [SetupSheetController::class, 'AddSetupSheet'])->name('AddSetupSheet');
+Route::get('setupsheet/add/{id?}'               , [SetupSheetController::class, 'AddSetupSheet'])->name('AddSetupSheet');
 Route::post('setupsheet/store'                  , [SetupSheetController::class, 'storeSetupSheet'])->name('storeSetupSheet');
 Route::get( 'setupsheet/edit/{id}'              , [SetupSheetController::class, 'editSetupSheet'])->name('editSetupSheet');
 Route::get( 'setupsheet/delete/{id}'            , [SetupSheetController::class, 'destroy'])->name('deleteSetupSheet');

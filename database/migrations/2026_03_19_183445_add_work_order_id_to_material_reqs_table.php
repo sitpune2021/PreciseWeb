@@ -8,18 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('machine_records', function (Blueprint $table) {
-            $table->dropForeign(['work_order_id']);
+        Schema::table('material_reqs', function (Blueprint $table) {
+            $table->unsignedBigInteger('work_order_id')->nullable()->after('id');
+
+            $table->foreign('work_order_id')
+                ->references('id')
+                ->on('work_orders')
+                ->onDelete('set null');
         });
     }
 
     public function down(): void
     {
-        Schema::table('machine_records', function (Blueprint $table) {
-            $table->foreign('work_order_id')
-                ->references('id')
-                ->on('work_orders')
-                ->onDelete('set null');
+        Schema::table('material_reqs', function (Blueprint $table) {
+            $table->dropForeign(['work_order_id']);
+            $table->dropColumn('work_order_id');
         });
     }
 };

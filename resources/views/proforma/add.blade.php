@@ -10,7 +10,7 @@
                     ←
                 </a>
 
-                {{ isset($data) ? 'Edit invoice' : 'Add invoice' }}
+                {{ isset($data) ? 'Edit Proforma invoice' : 'Add  Proforma invoice' }}
             </h5>
 
             <div class="card-body">
@@ -80,7 +80,7 @@
                                 <input type="text"
                                     class="form-control"
                                     name="invoice_no"
-                                    value="{{ old('invoice_no', $invoiceNo ?? '') }}">
+                                    value="{{ old('invoice_no', $invoiceNo ?? '') }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                                         <th>Amount (₹)</th>
                                         <th>Material Rate</th>
                                         <th>Hrs</th>
-                                        <th>ADJ</th>
+                                        <th>Disc</th>
                                         <th>EST</th>
                                         <th>Action</th>
                                     </tr>

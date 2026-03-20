@@ -265,7 +265,7 @@ for ($m = 1; $m <= 12; $m++) {
                 @if(auth()->user()->user_type == 2 || auth()->user()->user_type==3 || auth()->user()->user_type==4 || auth()->user()->user_type==5 )
 
 
-                <div class="row g-2">
+                <!-- <div class="row g-2">
 
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
@@ -338,7 +338,7 @@ for ($m = 1; $m <= 12; $m++) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!--------------------- project page ---------------------------------->
                 @if(hasPermission('Dashboard', 'view_project'))
