@@ -80,7 +80,7 @@
                                 <input type="text"
                                     class="form-control"
                                     name="invoice_no"
-                                    value="{{ old('invoice_no', $invoiceNo ?? '') }}" readonly>
+                                    value="{{ old('invoice_no', $data->invoice_no ?? $invoiceNo ?? '') }}" readonly>
                             </div>
                         </div>
                     </div>

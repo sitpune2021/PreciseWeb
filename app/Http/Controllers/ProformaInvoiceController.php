@@ -500,7 +500,8 @@ class ProformaInvoiceController extends Controller
 
         // Only current admin data
         $customers = Customer::where('admin_id', $adminId)->get();
-        $clients   = Client::where('admin_id', $adminId)->get();
+        // $clients   = Client::where('admin_id', $adminId)->get();
+        $clients = Client::where('login_id', Auth::id())->get();
 
         $hsncodes = Hsncode::where('admin_id', $adminId)
             ->where('is_active', 1)

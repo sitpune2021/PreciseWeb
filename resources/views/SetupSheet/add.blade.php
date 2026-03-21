@@ -75,6 +75,7 @@
                                                     ->get();
                                                     @endphp
                                                     @foreach($parts as $wo)
+                                                    
                                                     @php
                                                     $partCode = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
                                                     @endphp
@@ -97,7 +98,7 @@
                                                 <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="work_order_no"
                                                     name="work_order_no" readonly
-                                                    value="{{ old('work_order_no', $setupSheet->work_order_no ?? $workorder->id ?? '') }}">
+                                                    value="{{ old('work_order_no', $setupSheet->work_order_no ?? $workorder->project_id ?? '') }}">
                                                 @error('work_order_no')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -164,7 +165,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="e_time" class="form-label">Expected Time<span class="mandatory">*</span></label>
-                                                <input type="text" class="form-control" id="e_time" name="e_time" value="{{ old('e_time', $setupSheet->e_time ?? '') }}">
+                                                <input type="text" class="form-control" id="e_time" name="e_time" value="{{ old('e_time',$setupSheet->e_time ?? $workorder->exp_time ?? '') }}">
                                                 @error('e_time')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -433,6 +434,7 @@
                 if (!isEditMode) {
                     $("#part_description").val(selected.data("description"));
                 }
+                //  project_no assign 
                 $("#work_order_no").val(selected.data("workorder"));
                 $("#size_in_x").val(selected.data("size_x"));
                 $("#size_in_y").val(selected.data("size_y"));

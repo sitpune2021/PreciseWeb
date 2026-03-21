@@ -15,46 +15,63 @@ class SetupSheetController extends Controller
     public function AddSetupSheet($id = null)
     {
         $adminId = Auth::id();
-
         $workorder = null;
         $lastCustomer = null;
 
-        //  WorkOrder id
         if ($id) {
+            
             $woId = base64_decode($id);
-
-            $workorder = WorkOrder::where('admin_id', $adminId)
+ 
+            $workorder = WorkOrder::with('project') // project relation eager load
+                ->where('admin_id', $adminId)
                 ->where('id', $woId)
                 ->first();
+           
 
             if ($workorder) {
                 $lastCustomer = $workorder->customer_id;
             }
         }
 
+        // Customers fetch
         $codes = Customer::where('status', 1)
             ->where('admin_id', $adminId)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
 
+        // Settings
         $settings = Setting::where('admin_id', $adminId)->get();
 
+        // Dropdown Options
         $xOptions = SetupSheet::whereNotNull('x_refer')
             ->where('admin_id', $adminId)
-            ->distinct()->pluck('x_refer');
+            ->distinct()
+            ->pluck('x_refer');
 
         $yOptions = SetupSheet::whereNotNull('y_refer')
             ->where('admin_id', $adminId)
-            ->distinct()->pluck('y_refer');
+            ->distinct()
+            ->pluck('y_refer');
 
         $zOptions = SetupSheet::whereNotNull('z_refer')
             ->where('admin_id', $adminId)
-            ->distinct()->pluck('z_refer');
+            ->distinct()
+            ->pluck('z_refer');
 
         $clampingOptions = SetupSheet::whereNotNull('clamping')
             ->where('admin_id', $adminId)
-            ->distinct()->pluck('clamping');
+            ->distinct()
+            ->pluck('clamping');
+
+        // Parts fetch for last selected customer (for Part Code dropdown)
+        $parts = [];
+        if ($lastCustomer) {
+            $parts = WorkOrder::with('project') // project relation for work_order_no
+                ->where('admin_id', $adminId)
+                ->where('customer_id', $lastCustomer)
+                ->get();
+        }
 
         return view('SetupSheet.add', compact(
             'codes',
@@ -64,7 +81,8 @@ class SetupSheetController extends Controller
             'zOptions',
             'clampingOptions',
             'workorder',
-            'lastCustomer'
+            'lastCustomer',
+            'parts' // add this for blade
         ));
     }
 
