@@ -40,28 +40,27 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
-                                            <th style="width:30px;">#</th>
-                                            <th style="width: 30px;">Sr.No</th>
+                                            <!-- <th style="width:30px;">#</th> -->
+                                            <th style="width:10px;">Sr.No</th>
                                             <th style="width:30px;">Work Order</th>
                                             <!-- <th>Code</th> -->
                                             <th style="width:70px;">Date</th>
-                                            <th style="width: 70px;">Description</th>
+                                            <th style="width: 100px;">Description</th>
                                             <th style="width: 70px;">Material Type</th>
                                             <th width="12%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($materialReq as $req)
+
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                            <!-- <td>{{ $loop->iteration }}</td> -->
                                             <td>{{ $req->sr_no }}</td>
                                             <td>
-                                                {{
-                                                ($req->workOrder->customer->code ?? '') . '_' .
-                                                ($req->workOrder->project->project_no ?? '') . '_' .
-                                                ($req->workOrder->part ?? '') . '_' .
-                                                ($req->workOrder->quantity ?? '') 
-                                            }}
+                                                {{ $req->workOrder?->customer?->code ?? '' }}_
+                                                {{ $req->workOrder?->project?->project_no ?? '' }}_
+                                                {{ $req->workOrder?->part ?? '' }}_
+                                                {{ $req->workOrder?->quantity ?? '' }}
                                             </td>
                                             <!-- <td>{{ $req->code }}</td> -->
                                             <td>{{ $req->date }}</td>
@@ -97,7 +96,7 @@
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
                                                         data-cost="{{ $req->material_cost ?? 'N/A' }}"
-                                                        data-total_cost="{{ $req->total_cost }}">
+                                                        >
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
 
@@ -237,10 +236,10 @@
                                     <th>CL</th>
                                     <td id="mr_cl"></td>
                                 </tr> -->
-                                <tr>
+                                <!-- <tr>
                                     <th>Total Cost</th>
                                     <td id="mr_total_cost"></td>
-                                </tr>
+                                </tr> -->
                             </table>
                         </div>
                     </div>
@@ -268,7 +267,7 @@
                             document.getElementById("mr_qty").textContent = this.dataset.qty;
                             document.getElementById("mr_weight").textContent = this.dataset.weight;
                             document.getElementById("mr_cost").textContent = this.dataset.cost;
-                            document.getElementById("mr_total_cost").textContent = this.dataset.total_cost;
+                            
 
                             let modal = new bootstrap.Modal(document.getElementById("viewMaterialReqModal"));
                             modal.show();

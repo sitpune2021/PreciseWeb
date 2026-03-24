@@ -8,6 +8,7 @@ use App\Models\MaterialType;
 use App\Models\WorkOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MaterialReqController extends Controller
 {
@@ -32,8 +33,10 @@ class MaterialReqController extends Controller
 
         return view('MaterialReq.add', compact('codes', 'materialtype', 'customers', 'parts'));
     }
+
     public function storeMaterialReq(Request $request)
     {
+        // 1️⃣ Validate input
         $validated = $request->validate([
             'work_order_id' => 'required|exists:work_orders,id',
             'date'          => 'required|date',
@@ -46,73 +49,87 @@ class MaterialReqController extends Controller
             'qty'           => 'required|numeric|min:1',
         ]);
 
-        // ✅ GET WORK ORDER AND RELATED DATA
-        $workOrder = WorkOrder::with(['project', 'customer'])
-            ->findOrFail($request->work_order_id);
+        $adminId = Auth::id();
+        $userId  = Auth::id(); // Logged-in user
 
-        $material = MaterialType::findOrFail($request->material);
+        // 2️⃣ Fetch work order & material
+        $workOrder = WorkOrder::with(['project', 'customer'])->findOrFail($request->work_order_id);
+        $material  = MaterialType::findOrFail($request->material);
 
-        // ✅ VOLUME CALCULATION
+        // 3️⃣ Calculate volume & weight
         $volume = ($request->dia > 0)
-            ? pi() * pow(($request->dia / 2), 2) * $request->height
-            : $request->length * $request->width * $request->height;
+            ? pi() * pow($request->dia / 2, 2) * $request->height   // Cylinder
+            : $request->length * $request->width * $request->height; // Block
 
-        $weight_per_piece = ($volume * $material->material_gravity) / 1000000;
-        $weight = round($weight_per_piece * $request->qty, 3);
+        $weightPerPiece = ($volume * $material->material_gravity) / 1000000;
+        $totalWeight    = round($weightPerPiece * $request->qty, 3);
+        $materialCost   = round($weightPerPiece * $material->material_rate * $request->qty, 2);
+        $totalCost      = $materialCost; // For now, can add machining later
 
-        $material_cost = round($weight_per_piece * $material->material_rate * $request->qty, 2);
-
-        $total_cost = $material_cost; // simple, बाकी processing नंतर add करू शकतो
-
-        // ✅ SR NO
-        $lastSrNo = MaterialReq::where('admin_id', Auth::id())->max('sr_no');
+        // 4️⃣ SR NO
+        $lastSrNo = MaterialReq::where('admin_id', $adminId)->max('sr_no');
         $sr_no = $lastSrNo ? $lastSrNo + 1 : 1;
 
-        // ✅ FINAL DATA
+        // 5️⃣ Prepare data
         $data = [
-            'sr_no'            => $sr_no,
-            'admin_id'         => Auth::id(),
-
-            // 🔥 WORK ORDER BASED FIELDS
-            'work_order_id'    => $workOrder->id,
-            'work_order_no'    => $workOrder->work_order_no ?? $workOrder->id, // proper Work Order No
-            'customer_id'      => $workOrder->customer_id,
-            'project_id'       => $workOrder->project_id,
-            'part_no'          => $workOrder->part,
-
-            // ✅ FORM FIELDS
-            'date'             => $request->date,
-            'description'      => $request->description,
-            'dia'              => $request->dia,
-            'length'           => $request->length,
-            'width'            => $request->width,
-            'height'           => $request->height,
-            'material'         => $request->material,
-            'qty'              => $request->qty,
-
-            // ✅ CALCULATED FIELDS
+            'sr_no'         => $sr_no,
+            'admin_id'      => $adminId,
+            'user_id'       => $userId,
+            'work_order_id' => $workOrder->id,
+            'work_order_no' => $workOrder->work_order_no ?? 'RMW_' . $workOrder->project_id . '_' . $workOrder->id,
+            'customer_id'   => $workOrder->customer_id,
+            'project_id'    => $workOrder->project_id,
+            'part_no'       => $workOrder->part,
+            'date'          => $request->date,
+            'description'   => $request->description,
+            'dia'           => $request->dia,
+            'length'        => $request->length,
+            'width'         => $request->width,
+            'height'        => $request->height,
+            'material'      => $request->material,
+            'qty'           => $request->qty,
             'material_gravity' => $material->material_gravity,
             'material_rate'    => $material->material_rate,
-            'weight'           => $weight,
-            'material_cost'    => $material_cost,
-            'total_cost'       => $total_cost,
+            'weight'        => $totalWeight,
+            'material_cost' => $materialCost,
+            'total_cost'    => $totalCost,
         ];
 
-        // ✅ SAVE TO DATABASE
-        MaterialReq::create($data);
+        // 6️⃣ Create record & log
+        try {
+            $materialReq = MaterialReq::create($data);
 
-        return redirect()->route('ViewMaterialReq')
-            ->with('success', 'Material Requirement Added Successfully!');
+            Log::info('Material Requirement created', [
+                'material_req_id' => $materialReq->id,
+                'user_id'         => $userId,
+                'admin_id'        => $adminId,
+                'work_order_id'   => $workOrder->id,
+                'material_id'     => $material->id,
+                'qty'             => $request->qty,
+                'material_cost'   => $materialCost,
+                'total_cost'      => $totalCost,
+            ]);
+
+            return redirect()->route('ViewMaterialReq')
+                ->with('success', 'Material Requirement Added Successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to create Material Requirement', [
+                'error' => $e->getMessage(),
+                'data'  => $data
+            ]);
+
+            return redirect()->back()->with('error', 'Failed to add Material Requirement. Please try again.');
+        }
     }
     public function ViewMaterialReq()
-    {
-        $materialReq = MaterialReq::with(['materialType', 'customer'])
-            ->where('admin_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+{
+    $materialReq = MaterialReq::with(['workOrder.customer', 'workOrder.project', 'materialType'])
+        ->where('admin_id', Auth::id())
+        ->orderBy('created_at')
+        ->get();
 
-        return view('MaterialReq.view', compact('materialReq'));
-    }
+    return view('MaterialReq.view', compact('materialReq'));
+}
     public function editMaterialReq(string $encryptedId)
     {
         $adminId = Auth::id();
@@ -164,7 +181,7 @@ class MaterialReqController extends Controller
         $weight_per_piece = ($volume * $material->material_gravity) / 1000000;
         $weight = round($weight_per_piece * $request->qty, 3);
         $material_cost = round($weight_per_piece * $material->material_rate * $request->qty, 2);
-        $total_cost = $material_cost; 
+        $total_cost = $material_cost;
 
         // ✅ UPDATE DATA
         $materialReq->update([

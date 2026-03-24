@@ -78,20 +78,16 @@ class MachinerecordController extends Controller
         ]);
 
         $validated['admin_id'] = Auth::id();
+       $validated['work_order_id'] = $request->work_order_id;
 
-        // record insert
-        $record = MachineRecord::create($validated);
-
-        // auto serial number set
-        $record->work_order_id = $record->id;
-        $record->save();
+        MachineRecord::create($validated);
 
         return redirect()->route('ViewMachinerecord')
             ->with('success', 'Machine Record Added Successfully');
     }
     public function ViewMachinerecord()
     {
-        $record = MachineRecord::where('admin_id', Auth::id())->latest()->get();
+        $record = MachineRecord::where('admin_id', Auth::id())->orderBy('id', 'asc')->get();
 
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 

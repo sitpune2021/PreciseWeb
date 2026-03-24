@@ -113,16 +113,32 @@
                         <div class="mt-4">
                             <table class="table table-bordered {{ isset($record) ? '' : 'd-none' }}" id="previewTable">
                                 <thead class="table-light text-center">
+                                    <!-- TOP HEADER -->
                                     <tr>
-                                        <th style="width:60px">SR</th>
-                                        <th style="width:35%">Description</th>
+                                        <th rowspan="2" style="width:60px">SR</th>
+                                        <th rowspan="2" style="width:25%">Description</th>
+
+                                        <th colspan="4">FINISH SIZE</th>
+                                        <th colspan="4">RAW SIZE</th>
+
+                                        <th rowspan="2" style="width:120px">Material</th>
+                                        <th rowspan="2" style="width:65px">Qty</th>
+                                        <th rowspan="2" style="width:20px">Action</th>
+                                    </tr>
+
+                                    <!-- SUB HEADER -->
+                                    <tr>
+                                        <!-- FINISH -->
                                         <th style="width:80px">Dia</th>
-                                        <th style="width:80px">Length</th>
-                                        <th style="width:80px">Width</th>
-                                        <th style="width:80px">Height</th>
-                                        <th style="width:120px">Material</th>
-                                        <th style="width:65px; text-align:center">Qty</th>
-                                        <th style="width:20px">Action</th>
+                                        <th style="width:80px">L</th>
+                                        <th style="width:80px">W</th>
+                                        <th style="width:80px">H</th>
+
+                                        <!-- RAW -->
+                                        <th style="width:80px">Dia</th>
+                                        <th style="width:80px">L</th>
+                                        <th style="width:80px">W</th>
+                                        <th style="width:80px">H</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -137,6 +153,28 @@
                                                 value="{{ $record->work_order_desc }}">
                                         </td>
 
+                                        <!-- ✅ FIELDS (F FIRST) -->
+                                        <td>
+                                            <input type="text" name="f_diameter[]" class="form-control"
+                                                value="{{ rtrim(rtrim($record->f_diameter, '0'), '.') }}">
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="f_length[]" class="form-control"
+                                                value="{{ rtrim(rtrim($record->f_length, '0'), '.') }}">
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="f_width[]" class="form-control"
+                                                value="{{ rtrim(rtrim($record->f_width, '0'), '.') }}">
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="f_height[]" class="form-control"
+                                                value="{{ rtrim(rtrim($record->f_height, '0'), '.') }}">
+                                        </td>
+
+                                        <!-- ✅ RAW (R) -->
                                         <td>
                                             <input type="text" name="r_diameter[]" class="form-control"
                                                 value="{{ rtrim(rtrim($record->r_diameter, '0'), '.') }}">
@@ -157,17 +195,19 @@
                                                 value="{{ rtrim(rtrim($record->r_height, '0'), '.') }}">
                                         </td>
 
-
-                                        <td><input type="text" name="material[]" class="form-control"
-                                                value="{{ $record->material }}"></td>
-
-                                        <td><input type="number" name="quantity[]" class="form-control"
-                                                value="{{ $record->quantity }}"></td>
-
+                                        <!-- MATERIAL -->
                                         <td>
-                                            {{-- No remove button in edit mode --}}
-                                            -
+                                            <input type="text" name="material[]" class="form-control"
+                                                value="{{ $record->material }}">
                                         </td>
+
+                                        <!-- QTY -->
+                                        <td>
+                                            <input type="number" name="quantity[]" class="form-control"
+                                                value="{{ $record->quantity }}">
+                                        </td>
+
+                                        <td>-</td>
 
                                         <input type="hidden" name="material_req_ids[]"
                                             value="{{ $record->material_req_id }}">
@@ -266,10 +306,21 @@
 <tr id="row_${id}">
     <td>SR-${d.sr_no}</td>
     <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description}"></td>
-    <td><input type="number" step="0.01" name="r_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
-    <td><input type="number" step="0.01" name="r_length[]" class="form-control form-control-sm" value="${d.length ?? ''}"></td>
-    <td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm" value="${d.width ?? ''}"></td>
-    <td><input type="number" step="0.01" name="r_height[]" class="form-control form-control-sm" value="${d.height ?? ''}"></td>
+
+<!-- ✅ FINISH SIZE (F FIRST) -->
+<td><input type="number" step="0.01" name="f_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
+<td><input type="number" step="0.01" name="f_length[]" class="form-control form-control-sm" value="${d.length ?? ''}"></td>
+<td><input type="number" step="0.01" name="f_width[]" class="form-control form-control-sm" value="${d.width ?? ''}"></td>
+<td><input type="number" step="0.01" name="f_height[]" class="form-control form-control-sm" value="${d.height ?? ''}"></td>
+
+<!-- ✅ RAW SIZE -->
+<td><input type="number" step="0.01" name="r_diameter[]" class="form-control form-control-sm"></td>
+<td><input type="number" step="0.01" name="r_length[]" class="form-control form-control-sm"></td>
+<td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm" ></td>
+<td><input type="number" step="0.01" name="r_height[]" class="form-control form-control-sm" ></td>
+
+
+    
     <td><input type="text" name="material[]" class="form-control form-control-sm" value="${d.material_name}"></td>
     <td><input type="number" name="quantity[]" class="form-control form-control-sm" value="${d.qty}"></td>
     <td>

@@ -700,7 +700,11 @@
             let qty = selectedOption.data('quantity');
             let selectedText = selectedOption.text();
 
-            loadNextPart(customerId, projectId);
+            // 🔥 FIX: Edit page ला next part call करू नको
+            if (!isEditPage) {
+                loadNextPart(customerId, projectId);
+            }
+
             loadParts(projectId);
 
             // description
@@ -752,23 +756,28 @@
 
                             projectDropdown.append(
                                 `<option value="${project.id}" 
-                                                                    data-quantity="${project.quantity || ''}" 
-                                                                    ${selected}>
-                                                                    ${projectNo} ${projectName}
-                                                                </option>`
+                            data-quantity="${project.quantity || ''}" 
+                            ${selected}>
+                            ${projectNo} ${projectName}
+                        </option>`
                             );
-
                         });
 
+                        // 🔥 NEW FIX
+                        if (selectedProjectId) {
+                            $('#project_id').val(selectedProjectId).trigger('change');
+
+
+                            if (!isEditPage) {
+                                loadNextPart(customerId, selectedProjectId);
+                            }
+                        }
+
                     } else {
-
                         projectDropdown.append('<option value="">No Project Found</option>');
-
                     }
-
                 }
             });
-
         }
 
         // LOAD PREVIOUS PARTS
@@ -845,6 +854,19 @@
 
     });
 </script>
+<script>
+    let defaultProjectId = "{{ $project->id ?? '' }}";
+    let defaultCustomerId = "{{ $lastCustomer ?? '' }}";
 
+    $(document).ready(function() {
+
+        let isEditPage = @json(isset($workorder));
+
+        if (defaultCustomerId && defaultProjectId && !isEditPage) {
+            loadProjects(defaultCustomerId, defaultProjectId);
+        }
+
+    });
+</script>
 
 @endsection

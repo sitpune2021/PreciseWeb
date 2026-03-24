@@ -19,14 +19,14 @@ class SetupSheetController extends Controller
         $lastCustomer = null;
 
         if ($id) {
-            
+
             $woId = base64_decode($id);
- 
+
             $workorder = WorkOrder::with('project') // project relation eager load
                 ->where('admin_id', $adminId)
                 ->where('id', $woId)
                 ->first();
-           
+
 
             if ($workorder) {
                 $lastCustomer = $workorder->customer_id;
@@ -67,7 +67,7 @@ class SetupSheetController extends Controller
         // Parts fetch for last selected customer (for Part Code dropdown)
         $parts = [];
         if ($lastCustomer) {
-            $parts = WorkOrder::with('project') // project relation for work_order_no
+            $parts = WorkOrder::with(['project', 'customer']) // 🔥 add customer also
                 ->where('admin_id', $adminId)
                 ->where('customer_id', $lastCustomer)
                 ->get();
@@ -139,9 +139,9 @@ class SetupSheetController extends Controller
 
     public function ViewSetupSheet()
     {
-        $sheets = SetupSheet::where('admin_id', Auth::id())
-            ->orderBy('updated_at', 'desc')
-            ->orderBy('id', 'desc')
+        $sheets = SetupSheet::with(['workorder.customer', 'workorder.project'])
+            ->where('admin_id', Auth::id())
+            ->orderBy('id', 'asc') // 🔥 change here
             ->get();
         return view('SetupSheet.view', compact('sheets'));
     }

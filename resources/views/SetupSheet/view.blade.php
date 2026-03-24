@@ -43,7 +43,7 @@
                                             <th>Sr No.</th>
                                             <th>Image</th>
                                             <th>Part Code</th>
-                                            <th>Work Order<br> No</th>
+                                            <th>Work No</th>
                                             <th>Date</th>
                                             <th>Size X</th>
                                             <th>Size Y</th>
@@ -64,7 +64,14 @@
                                                 <span class="text-muted">No Image</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $sheet->part_code }}</td>
+                                            <td>
+                                                {{
+                                            ($sheet->workorder->customer->code ?? '') . '_' .
+                                            ($sheet->workorder->project->project_no ?? '') . '_' .
+                                            ($sheet->workorder->part ?? '') . '_' .
+                                            ($sheet->workorder->quantity ?? '')
+                                        }}
+                                            </td>
                                             <td>{{ $sheet->work_order_no }}</td>
                                             <td>{{ $sheet->date }}</td>
                                             <td>{{ $sheet->size_in_x }}</td>

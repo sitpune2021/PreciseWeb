@@ -65,7 +65,7 @@
                                                 <option value="">Select Work Order</option>
                                                 @foreach($parts as $wo)
                                                 <option value="{{ $wo->id }}"
-                                                    {{ old('work_order_id', $materialReq->work_order_id ?? '') == $wo->id ? 'selected' : '' }}
+                                                    {{ (isset($materialReq) && $materialReq->work_order_id == $wo->id) ? 'selected' : (old('work_order_id') == $wo->id ? 'selected' : '') }}
 
                                                     data-project="{{ $wo->project?->project_no ?? '' }}"
                                                     data-project-name="{{ $wo->project?->project_name ?? '' }}"
@@ -256,7 +256,7 @@
                                         </div>
 
 
-                                        <div class="col-md-1">
+                                        <div class="col-md-2">
                                             <label for="material_cost" class="form-label">M Cost</label>
                                             <input type="text"
                                                 name="material_cost"
@@ -364,13 +364,13 @@
                                         </div> -->
 
                                         <!-- Total Cost -->
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="total_cost" class="form-label">Total Cost </label>
                                                 <input type="number" step="0.01" name="total_cost" id="total_cost" class="form-control mt-1" value="{{ old('total_cost', $materialReq->total_cost ?? '') }}">
                                                 @error('total_cost') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <!-- Submit -->
                                         <div class="col-12 text-end">
@@ -420,71 +420,41 @@
     <script>
         $(document).ready(function() {
 
-            function calculate(auto = true) {
+            function calculate() {
 
                 let dia = parseFloat($("#dia").val()) || 0;
                 let len = parseFloat($("#length").val()) || 0;
-                let withs = parseFloat($("#width").val()) || 0;
-                let heigh = parseFloat($("#height").val()) || 0;
+                let width = parseFloat($("#width").val()) || 0;
+                let height = parseFloat($("#height").val()) || 0;
+
                 let sg = parseFloat($("#material_type option:selected").data("gravity")) || 0;
                 let rate = parseFloat($("#material_type option:selected").data("rate")) || 0;
+
                 let qty = parseFloat($("#qty").val()) || 1;
 
-                let lathe = parseFloat($("#lathe").val()) || 0;
-                let vmc = parseFloat($("#vmc_cost").val()) || 0;
-                let edm = parseFloat($("#edm_rate").val()) || 0;
-                let cl = parseFloat($("#cl").val()) || 0;
 
-                let mg4 = parseFloat($("#mg4").val());
-                let mg2 = parseFloat($("#mg2").val());
-                let rg2 = parseFloat($("#rg2").val());
-                let sg4 = parseFloat($("#sg4").val());
-                let sg2 = parseFloat($("#sg2").val());
-                let hrcVal = parseFloat($("#hrc").val());
-
-                let material_wt =
-                    ((Math.PI * (dia / 2) * (dia / 2) * heigh / 1000000) * sg) +
-                    ((len * withs * heigh / 1000000) * sg);
-
-                let mt_cost = material_wt * rate;
-
-                if (auto && !$("#mg4").data("manual"))
-                    mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
-
-                if (auto && !$("#mg2").data("manual"))
-                    mg2 = ((len * withs) * 2 * 0.5 / 100);
-
-                if (auto && !$("#rg2").data("manual"))
-                    rg2 = ((len * withs) * 2 * 0.3 / 100);
-
-                if (auto && !$("#sg4").data("manual"))
-                    sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
-
-                if (auto && !$("#sg2").data("manual"))
-                    sg2 = ((len * withs) * 2 * 0.6 / 100);
-
-                if (auto && !$("#hrc").data("manual"))
-                    hrcVal = Math.round((material_wt * 70) * 10) / 10;
-
-                let total_per_piece =
-                    lathe +
-                    (mg4 || 0) + (mg2 || 0) + (rg2 || 0) + (sg4 || 0) + (sg2 || 0) +
-                    vmc + edm + (hrcVal || 0) + cl + mt_cost;
-
-                let total_cost = total_per_piece * qty;
-
-                $("#weight").val(material_wt.toFixed(3));
-                $("#material_cost").val(mt_cost.toFixed(2));
-                $("#total_cost").val(total_cost.toFixed(2));
-
-                if (auto) {
-                    if (!$("#mg4").data("manual")) $("#mg4").val((mg4 || 0).toFixed(2));
-                    if (!$("#mg2").data("manual")) $("#mg2").val((mg2 || 0).toFixed(2));
-                    if (!$("#rg2").data("manual")) $("#rg2").val((rg2 || 0).toFixed(2));
-                    if (!$("#sg4").data("manual")) $("#sg4").val((sg4 || 0).toFixed(2));
-                    if (!$("#sg2").data("manual")) $("#sg2").val((sg2 || 0).toFixed(2));
-                    if (!$("#hrc").data("manual")) $("#hrc").val((hrcVal || 0).toFixed(2));
+                if (!sg || !rate) {
+                    $("#weight").val('');
+                    $("#material_cost").val('');
+                    return;
                 }
+
+                // ✅ Volume
+                let volume = dia > 0 ?
+                    Math.PI * Math.pow(dia / 2, 2) * height :
+                    len * width * height;
+
+                // ✅ Weight (per piece)
+                let weight_per_piece = (volume * sg) / 1000000;
+
+                // ✅ Total Weight
+                let total_weight = weight_per_piece * qty;
+
+                // ✅ FINAL MATERIAL COST
+                let material_cost = weight_per_piece * rate * qty;
+
+                $("#weight").val(total_weight.toFixed(3));
+                $("#material_cost").val(material_cost.toFixed(2));
             }
 
             $("#material_type").on("change", function() {
@@ -538,53 +508,25 @@
     <script>
         $(document).ready(function() {
 
-            let isEdit = "{{ isset($materialReq) ? 'true' : 'false' }}";
-
-            function fillWorkOrderData(setDesc = false) {
-
+            function fillWorkOrderData() {
                 let selected = $('#work_order_id').find(':selected');
-
                 if (!selected.val()) return;
 
-                // Basic fields
+                $('#description').val(selected.data('desc') || '');
                 $('#project_no').val(selected.data('project') || '');
                 $('#qty').val(selected.data('qty') || '');
-
-                // ✅ Description logic (IMPORTANT)
-                if (setDesc === true) {
-                    // User manually change → always update
-                    $('#description').val(selected.data('desc') || '');
-                } else {
-                    // Page load → only if empty
-                    if (!$('#description').val()) {
-                        $('#description').val(selected.data('desc') || '');
-                    }
-                }
-
-                // Dimensions
                 $('#dia').val(selected.data('dia') || '');
                 $('#length').val(selected.data('length') || '');
                 $('#width').val(selected.data('width') || '');
                 $('#height').val(selected.data('height') || '');
-
-                // Trigger calculation
-                $('#dia, #length, #width, #height').trigger('input');
             }
 
-            // ✅ IMPORTANT FIX: Select2 + Normal change दोन्ही handle
-            $('#work_order_id').on('change', function() {
-                fillWorkOrderData(true);
+            $('#work_order_id').on('change select2:select', function() {
+                fillWorkOrderData();
             });
 
-            $('#work_order_id').on('select2:select', function() {
-                fillWorkOrderData(true);
-            });
-
-            // ✅ PAGE LOAD (Edit case)
-            setTimeout(function() {
-                fillWorkOrderData(false);
-            }, 200);
-
+            // Page load
+            fillWorkOrderData();
         });
     </script>
 

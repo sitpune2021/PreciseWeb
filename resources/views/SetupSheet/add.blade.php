@@ -65,26 +65,35 @@
                                                 <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span></label>
                                                 <select id="part_code"
                                                     name="part_code"
-                                                    class="form-control form-select js-example-basic-single"
-                                                    data-selected="{{ old('part_code', $setupSheet->part_code ?? '') }}">
+                                                    class="form-control form-select js-example-basic-single">
+
                                                     <option value="">Select Part Code</option>
-                                                    @if(isset($setupSheet) && $setupSheet->customer_id)
-                                                    @php
-                                                    $parts = \App\Models\WorkOrder::where('customer_id', $setupSheet->customer_id)
-                                                    ->with('customer:id,code')
-                                                    ->get();
-                                                    @endphp
+
                                                     @foreach($parts as $wo)
-                                                    
+
                                                     @php
-                                                    $partCode = ($wo->customer?->code ?? '') . '_' . ($wo->customer_id ?? '') . '_' . ($wo->part ?? '');
+                                                    $full_code = ($wo->customer?->code ?? '') . '_' .
+                                                    ($wo->project?->project_no ?? '') . '_' .
+                                                    ($wo->part ?? '') . '_' .
+                                                    ($wo->quantity ?? '');
                                                     @endphp
-                                                    <option value="{{ $partCode }}"
-                                                        {{ old('part_code', $setupSheet->part_code ?? '') == $partCode ? 'selected' : '' }}>
-                                                        {{ $partCode }}
+
+                                                    <option value="{{ $wo->id }}"
+                                                        data-code="{{ $full_code }}"
+                                                        data-description="{{ $wo->part_description }}"
+                                                        data-workorder="{{ $wo->project?->project_no }}"
+                                                        data-size_x="{{ $wo->length }}"
+                                                        data-size_y="{{ $wo->width }}"
+                                                        data-size_z="{{ $wo->height }}"
+                                                        data-qty="{{ $wo->quantity }}"
+                                                        data-etime="{{ $wo->exp_time }}"
+
+                                                        {{ old('work_order_id', $setupSheet->work_order_id ?? $workorder->id ?? '') == $wo->id ? 'selected' : '' }}>
+
+                                                        {{ $full_code }}
                                                     </option>
+
                                                     @endforeach
-                                                    @endif
                                                 </select>
                                                 @error('part_code')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -98,7 +107,7 @@
                                                 <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
                                                 <input type="text" class="form-control" id="work_order_no"
                                                     name="work_order_no" readonly
-                                                    value="{{ old('work_order_no', $setupSheet->work_order_no ?? $workorder->project_id ?? '') }}">
+                                                    value="{{ old('work_order_no', $setupSheet->work_order_no ?? $workorder->project?->project_no ?? '') }}">
                                                 @error('work_order_no')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -120,7 +129,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_x" class="form-label">Size In X </label>
-                                                <input type="text" class="form-control mt-1" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? '') }}">
+                                                <input type="text" class="form-control mt-1" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? $workorder->length ?? '') }}">
                                                 @error('size_in_x')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -130,7 +139,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_y" class="form-label">Size In Y </label>
-                                                <input type="text" class="form-control  mt-1" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? '') }}">
+                                                <input type="text" class="form-control  mt-1" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? $workorder->width ?? '') }}">
                                                 @error('size_in_y')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -140,7 +149,7 @@
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_z" class="form-label">Size In Z </span></label>
-                                                <input type="text" class="form-control  mt-1" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? '') }}">
+                                                <input type="text" class="form-control  mt-1" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? $workorder->height ?? '') }}">
                                                 @error('size_in_z')
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
@@ -385,8 +394,14 @@
 
 <script>
     $(document).ready(function() {
-        let isEditMode = $("#setup_id").val() ? true : false;
+
+        let isEditMode = "{{ isset($setupSheet) ? true : false }}";
+        let selectedCustomer = $("#customer_id").data("selected");
+        let selectedPart = "{{ old('work_order_id', $setupSheet->work_order_id ?? $workorder->id ?? '') }}";
+
+        // 👉 Customer change
         $("#customer_id").on("change", function() {
+
             let customer_id = $(this).val();
 
             if (customer_id) {
@@ -394,47 +409,46 @@
                     url: "/get-customer-parts/" + customer_id,
                     type: "GET",
                     success: function(response) {
-                        let $partCode = $("#part_code");
 
+                        let $partCode = $("#part_code");
                         $partCode.empty().append('<option value="">Select Part Code</option>');
 
                         response.forEach(function(item) {
-                            $partCode.append(
-                                `<option value="${item.part_code}"
-                                     data-description="${item.part_description}"
-                                     data-workorder="${item.work_order_no}"
-                                     data-size_x="${item.size_in_x}"
-                                     data-size_y="${item.size_in_y}"
-                                     data-size_z="${item.size_in_z}"
-                                     data-qty="${item.qty}"
-                                     data-etime="${item.e_time}">
-                                 ${item.part_code}
-                             </option>`
-                            );
+                            $partCode.append(`
+                            <option value="${item.id}"
+                                data-description="${item.part_description}"
+                                data-workorder="${item.work_order_no}"
+                                data-size_x="${item.size_in_x}"
+                                data-size_y="${item.size_in_y}"
+                                data-size_z="${item.size_in_z}"
+                                data-qty="${item.qty}"
+                                data-etime="${item.e_time}">
+                                ${item.part_code}
+                            </option>
+                        `);
                         });
 
-                        let oldPart = $("#part_code").data("selected");
-                        if (oldPart) {
-                            $partCode.val(oldPart).trigger("change");
+                        // 👉 Auto select part after load
+                        if (selectedPart) {
+                            $partCode.val(selectedPart).trigger("change");
                         }
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                        alert("Something went wrong while fetching parts");
-                    },
+
+                    }
                 });
-            } else {
-                $("#part_code").empty().append('<option value="">Select Part Code</option>');
             }
         });
 
+        // 👉 Part change
         $(document).on("change", "#part_code", function() {
+
             let selected = $(this).find(":selected");
+
             if (selected.val()) {
+
                 if (!isEditMode) {
                     $("#part_description").val(selected.data("description"));
                 }
-                //  project_no assign 
+
                 $("#work_order_no").val(selected.data("workorder"));
                 $("#size_in_x").val(selected.data("size_x"));
                 $("#size_in_y").val(selected.data("size_y"));
@@ -442,13 +456,14 @@
                 $("#qty").val(selected.data("qty"));
                 $("#e_time").val(selected.data("etime"));
             }
+
         });
 
-
-        let editCustomer = $("#customer_id").data("selected");
-        if (editCustomer) {
-            $("#customer_id").val(editCustomer).trigger("change");
+        //  Initial trigger ONLY ONCE
+        if (selectedCustomer) {
+            $("#customer_id").val(selectedCustomer).trigger("change");
         }
+
     });
 </script>
 <script>

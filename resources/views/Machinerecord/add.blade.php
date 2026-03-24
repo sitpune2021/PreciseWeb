@@ -226,7 +226,7 @@
                                     </div>
 
                                     <div class="col-md-1">
-                                        <label class="form-label">ADJ</label>
+                                        <label class="form-label">Discount</label>
                                         <input type="text"
                                             name="adjustment"
                                             id="adjustment"
@@ -358,22 +358,7 @@
 
     let totalMinutesGlobal = 0;
 
-    //  Convert minutes → HH.MM (proper 60 min logic)
-    function formatToHours(minutes) {
-
-        let hrs = Math.floor(minutes / 60);
-        let mins = minutes % 60;
-
-        //  fix: 60 min handling
-        if (mins === 60) {
-            hrs += 1;
-            mins = 0;
-        }
-
-        return hrs + "." + (mins < 10 ? "0" + mins : mins);
-    }
-
-    //  Convert input (1:10 OR 30 OR 2:00)
+    // 🔹 Convert input (1:10 OR 30 OR 2:00) → minutes
     function parseIdleTime(value) {
 
         if (!value) return 0;
@@ -398,7 +383,12 @@
         return (hours * 60) + minutes;
     }
 
-    //  Start-End difference
+    // 🔹 Convert minutes → decimal hours (28.8 format)
+    function formatToDecimal(minutes) {
+        return (minutes / 60).toFixed(1); // change to .toFixed(2) if needed
+    }
+
+    // 🔹 Start-End difference
     function calculateHours() {
 
         let start = document.querySelector('[name="start_time"]').value;
@@ -418,7 +408,7 @@
         }
     }
 
-    //  MAIN LOGIC (FIXED)
+    // 🔥 MAIN CALCULATION
     function applyCalculation() {
 
         let idleValue = document.getElementById('idl_time').value;
@@ -426,28 +416,28 @@
 
         let idleMinutes = parseIdleTime(idleValue);
 
-        //  Machine Time
+        // Step 1: Machine Time
         let machineMinutes = totalMinutesGlobal - idleMinutes;
 
         if (machineMinutes < 0) machineMinutes = 0;
 
-        //  Adjustment %
+        // Step 2: Adjustment %
         let percent = 0;
 
         if (adjValue) {
             percent = parseFloat(adjValue.replace('%', '')) || 0;
         }
 
-        //  FIXED CALCULATION
-        let finalMinutes = machineMinutes + ((machineMinutes * percent) / 100);
+        // Step 3: Add Adjustment
+        let adjustmentMinutes = (machineMinutes * percent) / 100;
 
-        finalMinutes = Math.round(finalMinutes);
+        let finalMinutes = machineMinutes + adjustmentMinutes;
 
-        //  OUTPUT
-        document.getElementById('hrs').value = formatToHours(finalMinutes);
+        // Step 4: Convert to decimal hours
+        document.getElementById('hrs').value = formatToDecimal(finalMinutes);
     }
 
-    //  Events
+    // 🔹 Events
     document.getElementById('idl_time').addEventListener('input', applyCalculation);
     document.getElementById('adjustment').addEventListener('input', applyCalculation);
 

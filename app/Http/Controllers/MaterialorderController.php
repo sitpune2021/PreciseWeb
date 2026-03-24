@@ -60,30 +60,35 @@ class MaterialorderController extends Controller
 
         foreach ($uniqueIds as $index => $reqId) {
 
-            // Get material request details
             $materialReq = MaterialReq::find($reqId);
+            if (!$materialReq) continue;
 
-            if (!$materialReq) {
-                continue; // skip invalid IDs
-            }
-
-            // Prevent duplicate insert for same admin + material_req_id
             MaterialOrder::firstOrCreate(
                 [
                     'admin_id' => Auth::id(),
-                    'sr_no'    => $materialReq->sr_no, // use sr_no as unique check
+                    'sr_no'    => $materialReq->sr_no,
                 ],
                 [
                     'customer_id'     => $request->customer_id,
                     'work_order_no'   => $request->work_order_no,
                     'date'            => $request->date,
+
                     'work_order_desc' => $request->work_order_desc[$index] ?? $materialReq->description,
-                    'r_diameter'      => $request->r_diameter[$index] ?? $materialReq->dia,
-                    'r_length'        => $request->r_length[$index] ?? $materialReq->length,
-                    'r_width'         => $request->r_width[$index] ?? $materialReq->width,
-                    'r_height'        => $request->r_height[$index] ?? $materialReq->height,
-                    'material'        => $request->material[$index] ?? $materialReq->materialType->material_type ?? 'N/A',
-                    'quantity'        => $request->quantity[$index] ?? $materialReq->qty ?? 0,
+
+                    // ✅ FINISH SIZE (ADD THIS)
+                    'f_diameter' => $request->f_diameter[$index] ?? $materialReq->dia,
+                    'f_length'   => $request->f_length[$index] ?? $materialReq->length,
+                    'f_width'    => $request->f_width[$index] ?? $materialReq->width,
+                    'f_height'   => $request->f_height[$index] ?? $materialReq->height,
+
+                    // ✅ RAW SIZE
+                    'r_diameter' => $request->r_diameter[$index] ?? null,
+                    'r_length'   => $request->r_length[$index] ?? null,
+                    'r_width'    => $request->r_width[$index] ?? null,
+                    'r_height'   => $request->r_height[$index] ?? null,
+
+                    'material'   => $request->material[$index] ?? $materialReq->materialType->material_type ?? 'N/A',
+                    'quantity'   => $request->quantity[$index] ?? $materialReq->qty ?? 0,
                 ]
             );
         }
@@ -189,17 +194,22 @@ class MaterialorderController extends Controller
             'customer_id'     => $validated['customer_id'],
             'date'            => $validated['date'],
             'work_order_no'   => $validated['work_order_no'],
+
             'work_order_desc' => $validated['work_order_desc'][0] ?? null,
-            'f_diameter'      => $validated['f_diameter'][0] ?? null,
-            'f_length'        => $validated['f_diameter'][1] ?? null, // if needed
-            'f_width'         => $validated['f_diameter'][2] ?? null, // etc.
-            'f_height'        => $validated['f_diameter'][3] ?? null,
-            'r_diameter'      => $validated['r_diameter'][0] ?? null,
-            'r_length'        => $validated['r_length'][0] ?? null,
-            'r_width'         => $validated['r_width'][0] ?? null,
-            'r_height'        => $validated['r_height'][0] ?? null,
-            'material'        => $validated['material'][0] ?? null,
-            'quantity'        => $validated['quantity'][0] ?? null,
+
+            // ✅ FIXED
+            'f_diameter' => $validated['f_diameter'][0] ?? null,
+            'f_length'   => $validated['f_length'][0] ?? null,
+            'f_width'    => $validated['f_width'][0] ?? null,
+            'f_height'   => $validated['f_height'][0] ?? null,
+
+            'r_diameter' => $validated['r_diameter'][0] ?? null,
+            'r_length'   => $validated['r_length'][0] ?? null,
+            'r_width'    => $validated['r_width'][0] ?? null,
+            'r_height'   => $validated['r_height'][0] ?? null,
+
+            'material'   => $validated['material'][0] ?? null,
+            'quantity'   => $validated['quantity'][0] ?? null,
         ]);
 
         // Log after update

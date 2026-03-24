@@ -49,4 +49,9 @@ class SetupSheet extends Model
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
+
+    public function workorder()
+{
+    return $this->belongsTo(WorkOrder::class, 'part_code');
+}
 }
