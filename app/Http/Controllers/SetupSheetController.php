@@ -67,7 +67,7 @@ class SetupSheetController extends Controller
         // Parts fetch for last selected customer (for Part Code dropdown)
         $parts = [];
         if ($lastCustomer) {
-            $parts = WorkOrder::with(['project', 'customer']) // 🔥 add customer also
+            $parts = WorkOrder::with(['project', 'customer']) //  add customer also
                 ->where('admin_id', $adminId)
                 ->where('customer_id', $lastCustomer)
                 ->get();
@@ -148,11 +148,15 @@ class SetupSheetController extends Controller
 
     public function editSetupSheet(string $encryptedId)
     {
+
         $id = base64_decode($encryptedId);
+
         $record = SetupSheet::where('admin_id', Auth::id())->findOrFail($id);
         $setupSheet = $record;
+
         $settings = Setting::where('admin_id', Auth::id())->get();
 
+        // Customers
         $codes = Customer::where(function ($q) use ($setupSheet) {
             $q->where('status', 1)
                 ->where('admin_id', Auth::id())
@@ -162,6 +166,7 @@ class SetupSheetController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        // Dropdown Options
         $xOptions = SetupSheet::select('x_refer')
             ->whereNotNull('x_refer')
             ->where('admin_id', Auth::id())
@@ -186,7 +191,46 @@ class SetupSheetController extends Controller
             ->distinct()
             ->pluck('clamping');
 
-        return view('SetupSheet.add', compact('setupSheet', 'codes', 'settings', 'record', 'xOptions', 'yOptions', 'zOptions', 'clampingOptions'));
+        $adminId = Auth::id();
+        $workorder = null;
+        $lastCustomer = null;
+
+        // ✅ FIXED LOGIC (same structure, correct data)
+        if ($id) {
+
+            $woId = $setupSheet->work_order_id; // 🔥 FIX
+
+            $workorder = WorkOrder::with('project')
+                ->where('admin_id', $adminId)
+                ->where('id', $woId)
+                ->first();
+
+            if ($workorder) {
+                $lastCustomer = $workorder->customer_id;
+            }
+        }
+
+        // Parts fetch
+        $parts = [];
+        if ($lastCustomer) {
+            $parts = WorkOrder::with(['project', 'customer'])
+                ->where('admin_id', $adminId)
+                ->where('customer_id', $lastCustomer)
+                ->get();
+        }
+
+        return view('SetupSheet.add', compact(
+            'setupSheet',
+            'codes',
+            'settings',
+            'record',
+            'xOptions',
+            'yOptions',
+            'zOptions',
+            'clampingOptions',
+            'parts',
+            'workorder'
+        ));
     }
 
     public function update(Request $request, string $encryptedId)

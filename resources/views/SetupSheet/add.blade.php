@@ -88,7 +88,7 @@
                                                         data-qty="{{ $wo->quantity }}"
                                                         data-etime="{{ $wo->exp_time }}"
 
-                                                        {{ old('work_order_id', $setupSheet->work_order_id ?? $workorder->id ?? '') == $wo->id ? 'selected' : '' }}>
+                                                        {{ old('part_code', $setupSheet->part_code ?? $workorder->id ?? '') == $wo->id ? 'selected' : '' }}>
 
                                                         {{ $full_code }}
                                                     </option>
@@ -397,7 +397,7 @@
 
         let isEditMode = "{{ isset($setupSheet) ? true : false }}";
         let selectedCustomer = $("#customer_id").data("selected");
-        let selectedPart = "{{ old('work_order_id', $setupSheet->work_order_id ?? $workorder->id ?? '') }}";
+        let selectedPart = "{{ old('part_code', $setupSheet->part_code ?? $workorder->id ?? '') }}";
 
         // 👉 Customer change
         $("#customer_id").on("change", function() {
