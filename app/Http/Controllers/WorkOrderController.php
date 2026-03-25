@@ -75,11 +75,7 @@ class WorkOrderController extends Controller
     {
         $adminId = Auth::id();
 
-        $workorders = WorkOrder::with(['customer', 'project'])
-            ->where('admin_id', $adminId)
-            ->orderBy('id', 'desc')
-            ->get();
-
+        $workorders = WorkOrder::with(['customer', 'project'])->where('admin_id', Auth::id())->latest()->get();
 
         return view('WorkOrder.view', compact('workorders'));
     }

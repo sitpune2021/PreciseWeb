@@ -147,10 +147,7 @@ class SetupSheetController extends Controller
 
     public function ViewSetupSheet()
     {
-        $sheets = SetupSheet::with(['workorder.customer', 'workorder.project'])
-            ->where('admin_id', Auth::id())
-            ->orderBy('id', 'asc') // id ascending
-            ->get();
+        $sheets = SetupSheet::with(['workorder.customer', 'workorder.project'])->where('admin_id', Auth::id())->latest()->get(); // id ascending
 
         return view('SetupSheet.view', compact('sheets'));
     }

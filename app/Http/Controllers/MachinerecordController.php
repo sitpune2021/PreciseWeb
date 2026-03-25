@@ -87,7 +87,7 @@ class MachinerecordController extends Controller
     }
     public function ViewMachinerecord()
     {
-        $record = MachineRecord::where('admin_id', Auth::id())->orderBy('id', 'asc')->get();
+        $record = MachineRecord::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 

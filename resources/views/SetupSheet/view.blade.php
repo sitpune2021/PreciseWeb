@@ -37,11 +37,11 @@
                         @if(hasPermission('SetupSheet', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                <table id="buttons-datatables-decs" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
-                                            <!-- <th>Sr No.</th> -->
-                                            <th>ID</th>
+                                            <th>Sr No.</th>
+                                            <!-- <th>ID</th> -->
                                             <th>Image</th>
                                             <th>Part Code</th>
                                             <th>Work No</th>
@@ -54,10 +54,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       @foreach($sheets->reverse() as $sheet)
+                                       @foreach($sheets as $sheet)
                                         <tr> 
-                                            <!-- <td>{{ $loop->iteration }}</td> -->
-                                            <td>{{ $sheet->id }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <!-- <td>{{ $sheet->id }}</td> -->
                                             <td>
                                                 @if($sheet->setup_image)
                                                 <img src="{{ asset('setup_images/'.$sheet->setup_image) }}"

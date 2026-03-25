@@ -16,23 +16,28 @@ class ProjectController extends Controller
     {
         $adminId = Auth::id();
 
+        // Customer Codes
         $codes = Customer::where('status', 1)
             ->where('admin_id', $adminId)
             ->select('id', 'code', 'name')
             ->orderBy('id', 'desc')
             ->get();
 
+        // Customers List
         $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
             ->orderBy('id', 'desc')
             ->get();
 
+        // Projects (Latest First - by project_no ✅)
         $projects = Project::with('customer')
             ->where('admin_id', $adminId)
-            ->orderBy('id', 'desc')
+            ->orderBy('project_no', 'desc') // 🔥 important change
             ->get();
 
-        $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
+        // Next Project Number (Safe)
+        $maxProjectNo = Project::where('admin_id', $adminId)->max('project_no');
+        $nextProjectNo = $maxProjectNo ? $maxProjectNo + 1 : 1;
 
         return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo'));
     }
@@ -82,10 +87,7 @@ class ProjectController extends Controller
     {
         $adminId = Auth::id();
 
-        $projects = Project::with('customer')
-            ->where('admin_id', $adminId)
-            ->orderBy('id', 'desc')
-            ->get();
+        $projects = Project::with('customer')->where('admin_id', Auth::id())->latest()->get();
 
         return view('Project.view', compact('projects'));
     }
