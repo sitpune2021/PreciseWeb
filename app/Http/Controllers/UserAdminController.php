@@ -49,15 +49,15 @@ class UserAdminController extends Controller
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users')->where(fn($query) => $query->where('admin_id', Auth::id())),     
+                Rule::unique('users')->where(fn($query) => $query->where('admin_id', Auth::id())),
             ],
 
 
             'mobile' => [
                 'required',
                 'digits:10',
-             Rule::unique('users')->where(fn($query) => $query->where('admin_id', Auth::id())), 
-               
+                Rule::unique('users')->where(fn($query) => $query->where('admin_id', Auth::id())),
+
             ],
 
             'user_type' => 'required|in:1,2,3,4,5',

@@ -23,7 +23,7 @@ class WorkOrderController extends Controller
 
         if ($id) {
             $projectId = base64_decode($id);
- 
+
             $project = Project::where('admin_id', $adminId)
                 ->where('id', $projectId)
                 ->first();
@@ -45,7 +45,7 @@ class WorkOrderController extends Controller
             ->get();
 
         $projects = Project::where('admin_id', $adminId)
-            ->select('id', 'project_name', 'customer_id', 'quantity')
+            ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
             ->orderBy('project_name')
             ->get();
 
@@ -204,9 +204,8 @@ class WorkOrderController extends Controller
         $adminId = Auth::id();
 
         $projects = Project::where('customer_id', $customerId)
-            ->where('admin_id', $adminId)
-            ->select('id', 'project_name', 'quantity')
-            ->orderBy('id', 'desc')
+            ->select('id', 'project_no', 'project_name', 'quantity')
+            ->orderBy('project_no', 'asc')
             ->get();
 
         return response()->json($projects);

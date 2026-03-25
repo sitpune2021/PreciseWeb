@@ -43,24 +43,31 @@ class SetupSheetController extends Controller
         // Settings
         $settings = Setting::where('admin_id', $adminId)->get();
 
-        // Dropdown Options
-        $xOptions = SetupSheet::whereNotNull('x_refer')
-            ->where('admin_id', $adminId)
+        // X
+        $xOptions = SetupSheet::where('admin_id', $adminId)
+            ->whereNotNull('x_refer')
+            ->where('x_refer', '!=', '')
             ->distinct()
             ->pluck('x_refer');
 
-        $yOptions = SetupSheet::whereNotNull('y_refer')
-            ->where('admin_id', $adminId)
+        // Y
+        $yOptions = SetupSheet::where('admin_id', $adminId)
+            ->whereNotNull('y_refer')
+            ->where('y_refer', '!=', '')
             ->distinct()
             ->pluck('y_refer');
 
-        $zOptions = SetupSheet::whereNotNull('z_refer')
-            ->where('admin_id', $adminId)
+        // Z
+        $zOptions = SetupSheet::where('admin_id', $adminId)
+            ->whereNotNull('z_refer')
+            ->where('z_refer', '!=', '')
             ->distinct()
             ->pluck('z_refer');
 
-        $clampingOptions = SetupSheet::whereNotNull('clamping')
-            ->where('admin_id', $adminId)
+        // Clamping
+        $clampingOptions = SetupSheet::where('admin_id', $adminId)
+            ->whereNotNull('clamping')
+            ->where('clamping', '!=', '')
             ->distinct()
             ->pluck('clamping');
 
@@ -137,12 +144,14 @@ class SetupSheetController extends Controller
         return redirect()->route('ViewSetupSheet')->with('success', 'SetupSheet created successfully.');
     }
 
+
     public function ViewSetupSheet()
     {
         $sheets = SetupSheet::with(['workorder.customer', 'workorder.project'])
             ->where('admin_id', Auth::id())
-            ->orderBy('id', 'asc') // 🔥 change here
+            ->orderBy('id', 'asc') // id ascending
             ->get();
+
         return view('SetupSheet.view', compact('sheets'));
     }
 

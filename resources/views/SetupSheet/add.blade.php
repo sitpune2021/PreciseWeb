@@ -125,7 +125,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Sizes -->
+                                        <!-- Sizes In X-->
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_x" class="form-label">Size In X </label>
@@ -136,6 +136,7 @@
                                             </div>
                                         </div>
 
+                                        <!-- Sizes In X-->
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_y" class="form-label">Size In Y </label>
@@ -145,7 +146,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-
+                                        <!-- Sizes In z-->
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="size_in_z" class="form-label">Size In Z </span></label>
@@ -269,6 +270,7 @@
                                                 @enderror
                                             </div>
                                         </div>
+                                        
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
@@ -443,16 +445,16 @@
 
             if (selected.val()) {
                 // **Only auto-fill in Add mode**
-                if (!isEditMode) {
-                    $("#part_description").val(selected.data("description"));
-                    $("#work_order_no").val(selected.data("workorder"));
-                    $("#size_in_x").val(selected.data("size_x"));
-                    $("#size_in_y").val(selected.data("size_y"));
-                    $("#size_in_z").val(selected.data("size_z"));
-                    $("#qty").val(selected.data("qty"));
-                    $("#e_time").val(selected.data("etime"));
-                }
+
+                $("#part_description").val(selected.data("description"));
+                $("#work_order_no").val(selected.data("workorder"));
+                $("#size_in_x").val(selected.data("size_x"));
+                $("#size_in_y").val(selected.data("size_y"));
+                $("#size_in_z").val(selected.data("size_z"));
+                $("#qty").val(selected.data("qty"));
+                $("#e_time").val(selected.data("etime"));
             }
+
         });
 
         // Initial trigger ONLY ONCE

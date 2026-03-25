@@ -65,7 +65,7 @@
                                                     @foreach($projects as $p)
                                                     <option value="{{ $p->id }}"
                                                         {{ old('project_id', $workorder->project_id ?? $project->id ?? '') == $p->id ? 'selected' : '' }}>
-                                                        {{ $p->project_name }}
+                                                        {{ $p->project_no ?? '' }} - {{ $p->project_name }}
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -312,8 +312,8 @@
                                                     <!-- <th>Customer <br>Code</th> -->
                                                     <!-- <th>Part<br>No.</th> -->
                                                     <th>Date</th>
-                                                    <th>Part Code</th>
                                                     <th>Project Name</th>
+                                                    <th>Part Code</th>
                                                     <th>Part Description</th>
                                                     <th>Dia</th>
                                                     <th>Length</th>
@@ -333,10 +333,10 @@
                                                     <!-- <td>{{ $wo->customer?->code ?? '' }}</td> -->
                                                     <!-- <td>{{ $wo->part }}</td> -->
                                                     <td>{{ $wo->date }}</td>
+                                                    <td>{{ $wo->project->project_name ?? 'N/A' }}</td>
                                                     <td>
                                                         {{ ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
                                                     </td>
-                                                    <td>{{ $wo->project->project_name ?? 'N/A' }}</td>
                                                     <td>{{ $wo->part_description }}</td>
                                                     <td>{{ $wo->dimeter }}</td>
                                                     <td>{{ $wo->length }}</td>
@@ -700,7 +700,7 @@
             let qty = selectedOption.data('quantity');
             let selectedText = selectedOption.text();
 
-            // 🔥 FIX: Edit page ला next part call करू नको
+            // 🔥 FIX: Edit page ला next part call 
             if (!isEditPage) {
                 loadNextPart(customerId, projectId);
             }
@@ -742,35 +742,32 @@
                     projectDropdown.append('<option value="">Select Project</option>');
 
                     if (data.length > 0) {
-
+ 
                         $.each(data, function(index, project) {
 
-                            let selected = '';
+                            let selected = (selectedProjectId && selectedProjectId == project.id) ? 'selected' : '';
 
-                            if (selectedProjectId && selectedProjectId == project.id) {
-                                selected = 'selected';
-                            }
-
-                            let projectNo = project.project_no ?? '';
+                            let project_no = project.project_no ?? '';
                             let projectName = project.project_name ?? '';
 
                             projectDropdown.append(
                                 `<option value="${project.id}" 
-                            data-quantity="${project.quantity || ''}" 
-                            ${selected}>
-                            ${projectNo} ${projectName}
-                        </option>`
+                                data-quantity="${project.quantity || ''}" 
+                                ${selected}>
+                                ${project_no} - ${projectName}
+                            </option>`
                             );
                         });
 
-                        // 🔥 NEW FIX
+                        // 🔥 FIXED TIMING
                         if (selectedProjectId) {
-                            $('#project_id').val(selectedProjectId).trigger('change');
+                            setTimeout(function() {
+                                $('#project_id').val(selectedProjectId).trigger('change.select2');
 
-
-                            if (!isEditPage) {
-                                loadNextPart(customerId, selectedProjectId);
-                            }
+                                if (!isEditPage) {
+                                    loadNextPart(customerId, selectedProjectId);
+                                }
+                            }, 100);
                         }
 
                     } else {

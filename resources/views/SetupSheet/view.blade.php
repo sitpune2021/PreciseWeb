@@ -40,7 +40,8 @@
                                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
-                                            <th>Sr No.</th>
+                                            <!-- <th>Sr No.</th> -->
+                                            <th>ID</th>
                                             <th>Image</th>
                                             <th>Part Code</th>
                                             <th>Work No</th>
@@ -53,9 +54,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($sheets as $sheet)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                       @foreach($sheets->reverse() as $sheet)
+                                        <tr> 
+                                            <!-- <td>{{ $loop->iteration }}</td> -->
+                                            <td>{{ $sheet->id }}</td>
                                             <td>
                                                 @if($sheet->setup_image)
                                                 <img src="{{ asset('setup_images/'.$sheet->setup_image) }}"
@@ -311,7 +313,11 @@
         </div>`;
             }
 
-            document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
+           document.getElementById('sheet_part_code').textContent = 
+    ((data.customer?.code ?? '') + '_' +
+    (data.work_order_no ?? '') + '_' +
+    (data.part_code ?? '') + '_' +
+    (data.qty ?? ''));
             document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
             document.getElementById('sheet_date').textContent = data.date ?? '';
             document.getElementById('sheet_description').textContent = data.description ?? '';
