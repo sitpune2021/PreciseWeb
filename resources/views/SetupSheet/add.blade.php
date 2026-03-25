@@ -399,7 +399,7 @@
         let selectedCustomer = $("#customer_id").data("selected");
         let selectedPart = "{{ old('part_code', $setupSheet->part_code ?? $workorder->id ?? '') }}";
 
-        // 👉 Customer change
+        //  Customer change
         $("#customer_id").on("change", function() {
 
             let customer_id = $(this).val();
@@ -428,38 +428,34 @@
                         `);
                         });
 
-                        // 👉 Auto select part after load
+                        // Auto select part AFTER load
                         if (selectedPart) {
                             $partCode.val(selectedPart).trigger("change");
                         }
-
                     }
                 });
             }
         });
 
-        // 👉 Part change
+        // Part change
         $(document).on("change", "#part_code", function() {
-
             let selected = $(this).find(":selected");
 
             if (selected.val()) {
-
+                // **Only auto-fill in Add mode**
                 if (!isEditMode) {
                     $("#part_description").val(selected.data("description"));
+                    $("#work_order_no").val(selected.data("workorder"));
+                    $("#size_in_x").val(selected.data("size_x"));
+                    $("#size_in_y").val(selected.data("size_y"));
+                    $("#size_in_z").val(selected.data("size_z"));
+                    $("#qty").val(selected.data("qty"));
+                    $("#e_time").val(selected.data("etime"));
                 }
-
-                $("#work_order_no").val(selected.data("workorder"));
-                $("#size_in_x").val(selected.data("size_x"));
-                $("#size_in_y").val(selected.data("size_y"));
-                $("#size_in_z").val(selected.data("size_z"));
-                $("#qty").val(selected.data("qty"));
-                $("#e_time").val(selected.data("etime"));
             }
-
         });
 
-        //  Initial trigger ONLY ONCE
+        // Initial trigger ONLY ONCE
         if (selectedCustomer) {
             $("#customer_id").val(selectedCustomer).trigger("change");
         }

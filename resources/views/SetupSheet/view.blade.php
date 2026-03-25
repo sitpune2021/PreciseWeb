@@ -66,10 +66,10 @@
                                             </td>
                                             <td>
                                                 {{
-                                            ($sheet->workorder->customer->code ?? '') . '_' .
-                                            ($sheet->workorder->project->project_no ?? '') . '_' .
-                                            ($sheet->workorder->part ?? '') . '_' .
-                                            ($sheet->workorder->quantity ?? '')
+                                            ($sheet->customer->code ?? '') . '_' .
+                                            ($sheet->work_order_no ?? '') . '_' .
+                                            ($sheet->part_code ?? '') . '_' .
+                                            ($sheet->qty ?? '')
                                         }}
                                             </td>
                                             <td>{{ $sheet->work_order_no }}</td>
