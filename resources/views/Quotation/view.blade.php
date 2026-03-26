@@ -24,7 +24,7 @@
                         @if(hasPermission('Quotation', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                <table id="buttons-datatables-decs" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
                                             <th>Sr.No</th>
@@ -37,9 +37,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($quotations as $index => $q)
+                                        @foreach($quotations->reverse() as $q)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $q->quotation_no }}</td>
                                             <td>{{ $q->customer->code ?? '-' }}</td>
                                             <td>{{ $q->project_name }}</td>

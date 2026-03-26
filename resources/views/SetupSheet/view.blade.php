@@ -54,7 +54,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       @foreach($sheets as $sheet)
+                                       @foreach($sheets->reverse() as $sheet)
                                         <tr> 
                                             <td>{{ $loop->iteration }}</td>
                                             <!-- <td>{{ $sheet->id }}</td> -->

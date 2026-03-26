@@ -36,7 +36,7 @@ class MaterialReqController extends Controller
 
     public function storeMaterialReq(Request $request)
     {
-        // 1️⃣ Validate input
+        // 1️ Validate input
         $validated = $request->validate([
             'work_order_id' => 'required|exists:work_orders,id',
             'date'          => 'required|date',
@@ -52,11 +52,11 @@ class MaterialReqController extends Controller
         $adminId = Auth::id();
         $userId  = Auth::id(); // Logged-in user
 
-        // 2️⃣ Fetch work order & material
+        // 2️ Fetch work order & material
         $workOrder = WorkOrder::with(['project', 'customer'])->findOrFail($request->work_order_id);
         $material  = MaterialType::findOrFail($request->material);
 
-        // 3️⃣ Calculate volume & weight
+        // 3️ Calculate volume & weight
         $volume = ($request->dia > 0)
             ? pi() * pow($request->dia / 2, 2) * $request->height   // Cylinder
             : $request->length * $request->width * $request->height; // Block
@@ -66,11 +66,11 @@ class MaterialReqController extends Controller
         $materialCost   = round($weightPerPiece * $material->material_rate * $request->qty, 2);
         $totalCost      = $materialCost; // For now, can add machining later
 
-        // 4️⃣ SR NO
+        // 4️ SR NO
         $lastSrNo = MaterialReq::where('admin_id', $adminId)->max('sr_no');
         $sr_no = $lastSrNo ? $lastSrNo + 1 : 1;
 
-        // 5️⃣ Prepare data
+        // 5️ Prepare data
         $data = [
             'sr_no'         => $sr_no,
             'admin_id'      => $adminId,
@@ -95,7 +95,7 @@ class MaterialReqController extends Controller
             'total_cost'    => $totalCost,
         ];
 
-        // 6️⃣ Create record & log
+        // 6️ Create record & log
         try {
             $materialReq = MaterialReq::create($data);
 
@@ -122,14 +122,14 @@ class MaterialReqController extends Controller
         }
     }
     public function ViewMaterialReq()
-{
-    $materialReq = MaterialReq::with(['workOrder.customer', 'workOrder.project', 'materialType'])
-        ->where('admin_id', Auth::id())
-        ->orderBy('created_at')
-        ->get();
+    {
+        $materialReq = MaterialReq::with(['workOrder.customer', 'workOrder.project', 'materialType'])
+            ->where('admin_id', Auth::id())
+            ->orderBy('created_at')
+            ->get();
 
-    return view('MaterialReq.view', compact('materialReq'));
-}
+        return view('MaterialReq.view', compact('materialReq'));
+    }
     public function editMaterialReq(string $encryptedId)
     {
         $adminId = Auth::id();
@@ -145,7 +145,7 @@ class MaterialReqController extends Controller
             ->where('admin_id', $adminId)
             ->get();
 
-        // ✅ Add $parts
+        // Add $parts
         $parts = WorkOrder::where('admin_id', $adminId)->get();
 
         return view('MaterialReq.add', compact('codes', 'materialtype', 'materialReq', 'parts'));
@@ -169,11 +169,11 @@ class MaterialReqController extends Controller
             'qty'           => 'required|numeric|min:1',
         ]);
 
-        // ✅ GET WORK ORDER & MATERIAL
+        // GET WORK ORDER & MATERIAL
         $workOrder = WorkOrder::with(['project', 'customer'])->findOrFail($request->work_order_id);
         $material = MaterialType::findOrFail($request->material);
 
-        // ✅ CALCULATE VOLUME & WEIGHT
+        // CALCULATE VOLUME & WEIGHT
         $volume = ($request->dia > 0)
             ? pi() * pow(($request->dia / 2), 2) * $request->height
             : $request->length * $request->width * $request->height;
@@ -183,7 +183,7 @@ class MaterialReqController extends Controller
         $material_cost = round($weight_per_piece * $material->material_rate * $request->qty, 2);
         $total_cost = $material_cost;
 
-        // ✅ UPDATE DATA
+        // UPDATE DATA
         $materialReq->update([
             'work_order_id'    => $workOrder->id,
             'work_order_no'    => $workOrder->work_order_no ?? $workOrder->id,

@@ -78,7 +78,6 @@ class MachineController extends Controller
 
         return redirect()->route('AddMachine')->with('success', 'Machine updated successfully.');
     }
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);

@@ -37,7 +37,7 @@
                         @if(hasPermission('MaterialReq', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                <table id="buttons-datatables-decs" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
                                             <!-- <th style="width:30px;">#</th> -->
@@ -51,7 +51,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($materialReq as $req)
+                                        @foreach($materialReq->reverse() as $req)
 
                                         <tr>
                                             <!-- <td>{{ $loop->iteration }}</td> -->
@@ -95,8 +95,7 @@
                                                         data-material="{{ $req->materialType->material_type ?? 'N/A' }}"
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
-                                                        data-cost="{{ $req->material_cost ?? 'N/A' }}"
-                                                        >
+                                                        data-cost="{{ $req->material_cost ?? 'N/A' }}">
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
 
@@ -267,7 +266,7 @@
                             document.getElementById("mr_qty").textContent = this.dataset.qty;
                             document.getElementById("mr_weight").textContent = this.dataset.weight;
                             document.getElementById("mr_cost").textContent = this.dataset.cost;
-                            
+
 
                             let modal = new bootstrap.Modal(document.getElementById("viewMaterialReqModal"));
                             modal.show();

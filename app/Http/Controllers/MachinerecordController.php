@@ -78,7 +78,7 @@ class MachinerecordController extends Controller
         ]);
 
         $validated['admin_id'] = Auth::id();
-       $validated['work_order_id'] = $request->work_order_id;
+        $validated['work_order_id'] = $request->work_order_id;
 
         MachineRecord::create($validated);
 

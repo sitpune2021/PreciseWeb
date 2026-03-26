@@ -325,7 +325,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($workorders as $wo)
+                                                @foreach($workorders->reverse() as $wo)
 
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
@@ -698,9 +698,9 @@
             let customerId = $('#customer_id').val();
 
             let qty = selectedOption.data('quantity');
-            let selectedText = selectedOption.text();
+            let selectedText = $(this).find(':selected').text().trim();
 
-            // 🔥 FIX: Edit page ला next part call 
+            //  FIX: Edit page next part call 
             if (!isEditPage) {
                 loadNextPart(customerId, projectId);
             }
@@ -709,7 +709,7 @@
 
             // description
             if (selectedText && selectedText !== "Select Project") {
-                $('#part_description').val(selectedText).prop('readonly', true);
+                $('#part_description').val(selectedText).prop('readonly', true); // optional: make readonly
             } else {
                 $('#part_description').val('').prop('readonly', false);
             }
@@ -742,7 +742,7 @@
                     projectDropdown.append('<option value="">Select Project</option>');
 
                     if (data.length > 0) {
- 
+
                         $.each(data, function(index, project) {
 
                             let selected = (selectedProjectId && selectedProjectId == project.id) ? 'selected' : '';
@@ -759,7 +759,7 @@
                             );
                         });
 
-                        // 🔥 FIXED TIMING
+                        //  FIXED TIMING
                         if (selectedProjectId) {
                             setTimeout(function() {
                                 $('#project_id').val(selectedProjectId).trigger('change.select2');

@@ -32,7 +32,7 @@
                                     View Trash
                                 </a>
                             </div>
-                        </div>j
+                        </div>
                          @if(hasPermission('MachineRecord', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
@@ -60,7 +60,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($record as $rec)
+                                        @foreach($record->reverse() as $rec)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $rec->part_no }}</td>

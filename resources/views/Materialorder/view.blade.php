@@ -37,7 +37,7 @@
                         @if(hasPermission('MaterialOrder', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                <table id="buttons-datatables-decs" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
                                             <th>#</th>
@@ -53,7 +53,7 @@
                                     </thead>
 
                                     <tbody>
-                                        @forelse($orders as $order)
+                                        @forelse($orders->reverse() as $order)
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">

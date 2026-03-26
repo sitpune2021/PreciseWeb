@@ -154,7 +154,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($projects as $project)
+                                                @foreach($projects->reverse() as $project)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}</td>

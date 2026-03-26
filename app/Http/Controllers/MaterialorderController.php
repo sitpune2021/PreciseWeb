@@ -75,13 +75,13 @@ class MaterialorderController extends Controller
 
                     'work_order_desc' => $request->work_order_desc[$index] ?? $materialReq->description,
 
-                    // ✅ FINISH SIZE (ADD THIS)
+                    // FINISH SIZE (ADD THIS)
                     'f_diameter' => $request->f_diameter[$index] ?? $materialReq->dia,
                     'f_length'   => $request->f_length[$index] ?? $materialReq->length,
                     'f_width'    => $request->f_width[$index] ?? $materialReq->width,
                     'f_height'   => $request->f_height[$index] ?? $materialReq->height,
 
-                    // ✅ RAW SIZE
+                    // RAW SIZE
                     'r_diameter' => $request->r_diameter[$index] ?? null,
                     'r_length'   => $request->r_length[$index] ?? null,
                     'r_width'    => $request->r_width[$index] ?? null,
@@ -101,7 +101,7 @@ class MaterialorderController extends Controller
         $decodedId = base64_decode($id);
 
         $record = MaterialOrder::withTrashed()
-            ->with('materialReq') // 🔥 IMPORTANT
+            ->with('materialReq') // IMPORTANT
             ->where('admin_id', Auth::id())
             ->findOrFail($decodedId);
 
@@ -197,7 +197,7 @@ class MaterialorderController extends Controller
 
             'work_order_desc' => $validated['work_order_desc'][0] ?? null,
 
-            // ✅ FIXED
+            // FIXED
             'f_diameter' => $validated['f_diameter'][0] ?? null,
             'f_length'   => $validated['f_length'][0] ?? null,
             'f_width'    => $validated['f_width'][0] ?? null,

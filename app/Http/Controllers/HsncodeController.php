@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\Hsncode;
@@ -33,7 +35,7 @@ class HsncodeController extends Controller
             ],
             [],
             [
-                'invoice_desc' => 'HSN Description',    
+                'invoice_desc' => 'HSN Description',
                 'hsn_code'     => 'HSN Code',
                 'sgst'         => 'SGST',
                 'cgst'         => 'CGST',
@@ -81,9 +83,9 @@ class HsncodeController extends Controller
                 'hsn_code' => [
                     'required',
                     Rule::unique('hsncodes', 'hsn_code')
-                        ->ignore($hsn->id)                
-                        ->where('admin_id', Auth::id())   
-                        ->whereNull('deleted_at'),         
+                        ->ignore($hsn->id)
+                        ->where('admin_id', Auth::id())
+                        ->whereNull('deleted_at'),
                 ],
                 'invoice_desc' => 'required|string|max:255',
                 'sgst'         => 'nullable|numeric',
