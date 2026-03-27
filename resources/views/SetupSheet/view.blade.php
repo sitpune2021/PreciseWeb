@@ -54,8 +54,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       @foreach($sheets->reverse() as $sheet)
-                                        <tr> 
+                                        @foreach($sheets->reverse() as $sheet)
+                                        <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <!-- <td>{{ $sheet->id }}</td> -->
                                             <td>
@@ -67,12 +67,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                {{
-                                            ($sheet->customer->code ?? '') . '_' .
-                                            ($sheet->work_order_no ?? '') . '_' .
-                                            ($sheet->part_code ?? '') . '_' .
-                                            ($sheet->qty ?? '')
-                                        }}
+                                                {{($sheet->part_code ?? '') }}
                                             </td>
                                             <td>{{ $sheet->work_order_no }}</td>
                                             <td>{{ $sheet->date }}</td>
@@ -313,11 +308,8 @@
         </div>`;
             }
 
-           document.getElementById('sheet_part_code').textContent = 
-    ((data.customer?.code ?? '') + '_' +
-    (data.work_order_no ?? '') + '_' +
-    (data.part_code ?? '') + '_' +
-    (data.qty ?? ''));
+ 
+            document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
             document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
             document.getElementById('sheet_date').textContent = data.date ?? '';
             document.getElementById('sheet_description').textContent = data.description ?? '';

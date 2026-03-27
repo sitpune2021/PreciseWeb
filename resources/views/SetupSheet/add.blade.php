@@ -78,8 +78,8 @@
                                                     ($wo->quantity ?? '');
                                                     @endphp
 
-                                                    <option value="{{ $wo->id }}"
-                                                        data-code="{{ $full_code }}"
+                                                    <option value="{{ $full_code }}"
+                                                        data-id="{{ $wo->id }}"
                                                         data-description="{{ $wo->part_description }}"
                                                         data-workorder="{{ $wo->project?->project_no }}"
                                                         data-size_x="{{ $wo->length }}"
@@ -270,7 +270,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-md-2">
                                             <div class="mb-3">
                                                 <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
@@ -417,7 +417,7 @@
 
                         response.forEach(function(item) {
                             $partCode.append(`
-                            <option value="${item.id}"
+                            <option value="${item.part_code}"
                                 data-description="${item.part_description}"
                                 data-workorder="${item.work_order_no}"
                                 data-size_x="${item.size_in_x}"
