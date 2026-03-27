@@ -17,19 +17,26 @@ class SetupSheetController extends Controller
         $adminId = Auth::id();
         $workorder = null;
         $lastCustomer = null;
+        $selectedPartCode = ''; // ← add this
 
         if ($id) {
 
             $woId = base64_decode($id);
 
-            $workorder = WorkOrder::with('project') // project relation eager load
+            $workorder = WorkOrder::with('project', 'customer') // project + customer eager load
                 ->where('admin_id', $adminId)
                 ->where('id', $woId)
                 ->first();
 
-
             if ($workorder) {
                 $lastCustomer = $workorder->customer_id;
+
+                // ← create selected part code
+                $selectedPartCode =
+                    ($workorder->customer?->code ?? '') . '_' .
+                    ($workorder->project?->project_no ?? '') . '_' .
+                    ($workorder->part ?? '') . '_' .
+                    ($workorder->quantity ?? '');
             }
         }
 
@@ -74,7 +81,7 @@ class SetupSheetController extends Controller
         // Parts fetch for last selected customer (for Part Code dropdown)
         $parts = [];
         if ($lastCustomer) {
-            $parts = WorkOrder::with(['project', 'customer']) //  add customer also
+            $parts = WorkOrder::with(['project', 'customer'])
                 ->where('admin_id', $adminId)
                 ->where('customer_id', $lastCustomer)
                 ->get();
@@ -89,7 +96,8 @@ class SetupSheetController extends Controller
             'clampingOptions',
             'workorder',
             'lastCustomer',
-            'parts' // add this for blade
+            'parts',
+            'selectedPartCode' // ← pass to blade
         ));
     }
 

@@ -88,8 +88,7 @@
                                                         data-qty="{{ $wo->quantity }}"
                                                         data-etime="{{ $wo->exp_time }}"
 
-                                                        {{ old('part_code', $setupSheet->part_code ?? $workorder->id ?? '') == $wo->id ? 'selected' : '' }}>
-
+                                                         {{ old('part_code', $setupSheet->part_code ?? $selectedPartCode ?? '') == $full_code ? 'selected' : '' }}>
                                                         {{ $full_code }}
                                                     </option>
 
@@ -396,27 +395,28 @@
 
 <script>
     $(document).ready(function() {
+    let selectedCustomer = "{{ old('customer_id', $setupSheet->customer_id ?? $lastCustomer ?? '') }}";
+    let selectedPart = "{{ old('part_code', $setupSheet->part_code ?? $selectedPartCode ?? '') }}";
 
-        let isEditMode = "{{ isset($setupSheet) ? true : false }}";
-        let selectedCustomer = $("#customer_id").data("selected");
-        let selectedPart = "{{ old('part_code', $setupSheet->part_code ?? $workorder->id ?? '') }}";
+    // Trigger customer change once on load
+    if (selectedCustomer) {
+        $("#customer_id").val(selectedCustomer).trigger("change");
+    }
 
-        //  Customer change
-        $("#customer_id").on("change", function() {
+    // Customer change AJAX
+    $("#customer_id").on("change", function() {
+        let customer_id = $(this).val();
 
-            let customer_id = $(this).val();
+        let $partCode = $("#part_code");
+        $partCode.empty().append('<option value="">Select Part Code</option>');
 
-            if (customer_id) {
-                $.ajax({
-                    url: "/get-customer-parts/" + customer_id,
-                    type: "GET",
-                    success: function(response) {
-
-                        let $partCode = $("#part_code");
-                        $partCode.empty().append('<option value="">Select Part Code</option>');
-
-                        response.forEach(function(item) {
-                            $partCode.append(`
+        if (customer_id) {
+            $.ajax({
+                url: "/get-customer-parts/" + customer_id,
+                type: "GET",
+                success: function(response) {
+                    response.forEach(function(item) {
+                        $partCode.append(`
                             <option value="${item.part_code}"
                                 data-description="${item.part_description}"
                                 data-workorder="${item.work_order_no}"
@@ -428,41 +428,32 @@
                                 ${item.part_code}
                             </option>
                         `);
-                        });
+                    });
 
-                        // Auto select part AFTER load
-                        if (selectedPart) {
-                            $partCode.val(selectedPart).trigger("change");
-                        }
+                    // Auto select part code AFTER options loaded
+                    if (selectedPart) {
+                        $partCode.val(selectedPart).trigger("change");
                     }
-                });
-            }
-        });
-
-        // Part change
-        $(document).on("change", "#part_code", function() {
-            let selected = $(this).find(":selected");
-
-            if (selected.val()) {
-                // **Only auto-fill in Add mode**
-
-                $("#part_description").val(selected.data("description"));
-                $("#work_order_no").val(selected.data("workorder"));
-                $("#size_in_x").val(selected.data("size_x"));
-                $("#size_in_y").val(selected.data("size_y"));
-                $("#size_in_z").val(selected.data("size_z"));
-                $("#qty").val(selected.data("qty"));
-                $("#e_time").val(selected.data("etime"));
-            }
-
-        });
-
-        // Initial trigger ONLY ONCE
-        if (selectedCustomer) {
-            $("#customer_id").val(selectedCustomer).trigger("change");
+                }
+            });
         }
-
     });
+
+    // Part change auto-fill
+    $(document).on("change", "#part_code", function() {
+        let selected = $(this).find(":selected");
+
+        if (selected.val()) {
+            $("#part_description").val(selected.data("description"));
+            $("#work_order_no").val(selected.data("workorder"));
+            $("#size_in_x").val(selected.data("size_x"));
+            $("#size_in_y").val(selected.data("size_y"));
+            $("#size_in_z").val(selected.data("size_z"));
+            $("#qty").val(selected.data("qty"));
+            $("#e_time").val(selected.data("etime"));
+        }
+    });
+});
 </script>
 <script>
     $(document).ready(function() {
