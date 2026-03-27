@@ -446,8 +446,42 @@ class ProformaInvoiceController extends Controller
         $pro = ProformaInvoice::with('items')->findOrFail($id);
         $adminId = Auth::id();
 
-        // SAME NUMBER AS PROFORMA
-        $invoiceNo = $pro->invoice_no;
+
+        $adminId = auth()->id();
+
+        //  Admin Code
+        $companyName = Auth::user()->name ?? 'AD';
+        $words = explode(' ', trim($companyName));
+
+        $adminCode = '';
+        foreach ($words as $w) {
+            if (!empty($w)) {
+                $adminCode .= strtoupper(substr($w, 0, 1));
+            }
+        }
+        $adminCode = substr($adminCode, 0, 2);
+
+        $year = date('y');
+        $financialYear = $year . ($year + 1);
+
+        $prefix = $adminCode;
+
+        //  Last TAX Invoice (NOTE: Invoice model)
+        $lastInvoice = Invoice::where('admin_id', $adminId)
+            ->where('invoice_no', 'LIKE', $prefix . $financialYear . '%')
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        if ($lastInvoice) {
+            preg_match('/(\d+)$/', $lastInvoice->invoice_no, $matches);
+            $lastNumber = isset($matches[1]) ? (int)$matches[1] : 0;
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = "001";
+        }
+
+        //  FINAL TAX INVOICE NO
+        $invoiceNo = $prefix . $financialYear . "-T" . $newNumber;
 
         $invoice = Invoice::create([
             'customer_id'     => $pro->customer_id,

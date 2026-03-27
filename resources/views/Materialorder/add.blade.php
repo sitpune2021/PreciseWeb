@@ -307,13 +307,13 @@
     <td>SR-${d.sr_no}</td>
     <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description}"></td>
 
-<!-- ✅ FINISH SIZE (F FIRST) -->
+<!--  FINISH SIZE (F FIRST) -->
 <td><input type="number" step="0.01" name="f_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
 <td><input type="number" step="0.01" name="f_length[]" class="form-control form-control-sm" value="${d.length ?? ''}"></td>
 <td><input type="number" step="0.01" name="f_width[]" class="form-control form-control-sm" value="${d.width ?? ''}"></td>
 <td><input type="number" step="0.01" name="f_height[]" class="form-control form-control-sm" value="${d.height ?? ''}"></td>
 
-<!-- ✅ RAW SIZE -->
+<!--  RAW SIZE -->
 <td><input type="number" step="0.01" name="r_diameter[]" class="form-control form-control-sm"></td>
 <td><input type="number" step="0.01" name="r_length[]" class="form-control form-control-sm"></td>
 <td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm" ></td>
