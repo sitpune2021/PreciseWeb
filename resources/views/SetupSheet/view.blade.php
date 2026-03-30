@@ -44,7 +44,8 @@
                                             <!-- <th>ID</th> -->
                                             <th>Image</th>
                                             <th>Part Code</th>
-                                            <th>Work No</th>
+                                            <!-- <th>Work No</th> -->
+                                            <th>Description</th>
                                             <th>Date</th>
                                             <th>Size X</th>
                                             <th>Size Y</th>
@@ -69,7 +70,8 @@
                                             <td>
                                                 {{($sheet->part_code ?? '') }}
                                             </td>
-                                            <td>{{ $sheet->work_order_no }}</td>
+                                            <!-- <td>{{ $sheet->work_order_no }}</td> -->
+                                            <td>{{ $sheet->description }}</td>
                                             <td>{{ $sheet->date }}</td>
                                             <td>{{ $sheet->size_in_x }}</td>
                                             <td>{{ $sheet->size_in_y }}</td>
@@ -308,7 +310,7 @@
         </div>`;
             }
 
- 
+
             document.getElementById('sheet_part_code').textContent = data.part_code ?? '';
             document.getElementById('sheet_work_order_no').textContent = data.work_order_no ?? '';
             document.getElementById('sheet_date').textContent = data.date ?? '';

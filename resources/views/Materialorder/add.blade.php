@@ -26,7 +26,9 @@
 
                     <form action="{{ isset($record) ? route('updateMaterialorder', base64_encode($record->id)) : route('storeMaterialorder') }}" method="POST">
                         @csrf
-                        @if(isset($record)) @method('PUT') @endif
+                        @if(isset($record))
+                        @method('PUT')
+                        @endif
 
                         <div class="row g-3">
 
@@ -84,7 +86,7 @@
                                     @if(isset($materialRequests))
                                     @foreach($materialRequests as $mr)
                                     <option value="{{ $mr->id }}"
-                                        @if(isset($record) && in_array($mr->id, [$record->material_req_id])) selected @endif>
+                                        @if(isset($selectedIds) && in_array($mr->id, $selectedIds)) selected @endif>
                                         SR-{{ $mr->sr_no }}
                                     </option>
                                     @endforeach
@@ -100,13 +102,13 @@
                         </div>
 
                         <!-- ADD BUTTON (only for add mode) -->
-                        @if(!isset($record))
+                        <!-- @if(!isset($record))
                         <div class="text-start mt-3">
                             <button type="button" id="addMaterialBtn" class="btn btn-success">
                                 Add
                             </button>
                         </div>
-                        @endif
+                        @endif -->
 
                         <h6 class="mt-4">Material Requests detils</h6>
                         <!-- TABLE -->
@@ -144,74 +146,46 @@
                                 <tbody>
 
                                     {{-- EDIT MODE --}}
-                                    @if(isset($record))
-                                    <tr id="row_{{ $record->material_req_id }}">
-                                        <td>{{ $record->sr_no ?? '' }}</td>
+                                    @if(isset($records))
+                                    @foreach($records as $rec)
+                                    <tr id="row_{{ $rec->material_req_id }}">
+
+                                        <td>{{ $rec->sr_no }}</td>
 
                                         <td>
                                             <input type="text" name="work_order_desc[]" class="form-control"
-                                                value="{{ $record->work_order_desc }}">
+                                                value="{{ $rec->work_order_desc }}">
                                         </td>
 
-                                        <!-- ✅ FIELDS (F FIRST) -->
-                                        <td>
-                                            <input type="text" name="f_diameter[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->f_diameter, '0'), '.') }}">
-                                        </td>
+                                        <!-- FINISH -->
+                                        <td><input type="text" name="f_diameter[]" class="form-control" value="{{ $rec->f_diameter }}"></td>
+                                        <td><input type="text" name="f_length[]" class="form-control" value="{{ $rec->f_length }}"></td>
+                                        <td><input type="text" name="f_width[]" class="form-control" value="{{ $rec->f_width }}"></td>
+                                        <td><input type="text" name="f_height[]" class="form-control" value="{{ $rec->f_height }}"></td>
 
-                                        <td>
-                                            <input type="text" name="f_length[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->f_length, '0'), '.') }}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" name="f_width[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->f_width, '0'), '.') }}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" name="f_height[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->f_height, '0'), '.') }}">
-                                        </td>
-
-                                        <!-- ✅ RAW (R) -->
-                                        <td>
-                                            <input type="text" name="r_diameter[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->r_diameter, '0'), '.') }}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" name="r_length[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->r_length, '0'), '.') }}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" name="r_width[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->r_width, '0'), '.') }}">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" name="r_height[]" class="form-control"
-                                                value="{{ rtrim(rtrim($record->r_height, '0'), '.') }}">
-                                        </td>
+                                        <!-- RAW -->
+                                        <td><input type="text" name="r_diameter[]" class="form-control" value="{{ $rec->r_diameter }}"></td>
+                                        <td><input type="text" name="r_length[]" class="form-control" value="{{ $rec->r_length }}"></td>
+                                        <td><input type="text" name="r_width[]" class="form-control" value="{{ $rec->r_width }}"></td>
+                                        <td><input type="text" name="r_height[]" class="form-control" value="{{ $rec->r_height }}"></td>
 
                                         <!-- MATERIAL -->
                                         <td>
                                             <input type="text" name="material[]" class="form-control"
-                                                value="{{ $record->material }}">
+                                                value="{{ $rec->material }}">
                                         </td>
 
                                         <!-- QTY -->
                                         <td>
                                             <input type="number" name="quantity[]" class="form-control"
-                                                value="{{ $record->quantity }}">
+                                                value="{{ $rec->quantity }}">
                                         </td>
 
                                         <td>-</td>
 
-                                        <input type="hidden" name="material_req_ids[]"
-                                            value="{{ $record->material_req_id }}">
+                                        <input type="hidden" name="material_req_ids[]" value="{{ $rec->material_req_id }}">
                                     </tr>
+                                    @endforeach
                                     @endif
 
                                 </tbody>
@@ -250,11 +224,20 @@
 
         // ===== EDIT MODE =====
         @if(isset($record))
-        // mark current SR as selected
-        $('#material_data_dropdown').val(['{{ $record->material_req_id }}']).trigger('change');
+
+        // already selected SR
+        let existingId = '{{ $record->material_req_id }}';
+
+        // mark as selected
+        addedRows[existingId] = true;
+        selectedIds = [existingId];
+
+        // set select2 value
+        $('#material_data_dropdown').val([existingId]).trigger('change');
+
+        // show table
         $('#previewTable').removeClass('d-none');
-        addedRows['{{ $record->material_req_id }}'] = true;
-        selectedIds = ['{{ $record->material_req_id }}'];
+
         @endif
 
         // ===== ADD MODE =====
@@ -291,50 +274,46 @@
             });
         });
 
-        // Handle adding/removing rows when SR selected/unselected
+        // ✅ ALWAYS RUN (ADD + EDIT)
         $('#material_data_dropdown').on('change', function() {
             let ids = $(this).val() || [];
             let tbody = $('#previewTable tbody');
 
-            // Add new rows
             ids.forEach(id => {
                 if (!addedRows[id] && $('#row_' + id).length === 0) {
                     addedRows[id] = true;
-                    let d = allRequests[id];
+                    let d = allRequests[id] || {}; // fallback
 
                     tbody.append(`
 <tr id="row_${id}">
-    <td>SR-${d.sr_no}</td>
-    <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description}"></td>
+    <td>SR-${d.sr_no ?? id}</td>
+    <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description ?? ''}"></td>
 
-<!--  FINISH SIZE (F FIRST) -->
 <td><input type="number" step="0.01" name="f_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
 <td><input type="number" step="0.01" name="f_length[]" class="form-control form-control-sm" value="${d.length ?? ''}"></td>
 <td><input type="number" step="0.01" name="f_width[]" class="form-control form-control-sm" value="${d.width ?? ''}"></td>
 <td><input type="number" step="0.01" name="f_height[]" class="form-control form-control-sm" value="${d.height ?? ''}"></td>
 
-<!--  RAW SIZE -->
 <td><input type="number" step="0.01" name="r_diameter[]" class="form-control form-control-sm"></td>
 <td><input type="number" step="0.01" name="r_length[]" class="form-control form-control-sm"></td>
-<td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm" ></td>
-<td><input type="number" step="0.01" name="r_height[]" class="form-control form-control-sm" ></td>
+<td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm"></td>
+<td><input type="number" step="0.01" name="r_height[]" class="form-control form-control-sm"></td>
 
+<td><input type="text" name="material[]" class="form-control form-control-sm" value="${d.material_name ?? ''}"></td>
+<td><input type="number" name="quantity[]" class="form-control form-control-sm" value="${d.qty ?? ''}"></td>
 
-    
-    <td><input type="text" name="material[]" class="form-control form-control-sm" value="${d.material_name}"></td>
-    <td><input type="number" name="quantity[]" class="form-control form-control-sm" value="${d.qty}"></td>
-    <td>
-        <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">
-            <i class="fa fa-trash"></i>
-        </button>
-    </td>
-    <input type="hidden" name="material_req_ids[]" value="${id}">
+<td>
+    <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">
+        <i class="fa fa-trash"></i>
+    </button>
+</td>
+
+<input type="hidden" name="material_req_ids[]" value="${id}">
 </tr>
-                `);
+            `);
                 }
             });
 
-            // Remove rows that are no longer selected
             selectedIds.forEach(oldId => {
                 if (!ids.includes(oldId)) {
                     delete addedRows[oldId];
@@ -344,7 +323,6 @@
 
             selectedIds = ids;
 
-            // Show/hide preview table
             if (selectedIds.length > 0) $('#previewTable').removeClass('d-none');
             else $('#previewTable').addClass('d-none');
         });

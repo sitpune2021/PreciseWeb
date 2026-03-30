@@ -27,7 +27,8 @@ class MaterialOrder extends Model
         'quantity',
         'material',
         'qty',
-        'sr_no'
+        'sr_no',
+        'material_req_id'
     ];
 
     public function customer()
@@ -45,7 +46,8 @@ class MaterialOrder extends Model
     {
         return $this->belongsTo(MaterialReq::class, 'material_req_id', 'id');
     }
-// App/Models/MaterialOrder.php
+
+    // App/Models/MaterialOrder.php
 
 
 

@@ -55,42 +55,39 @@ class MaterialorderController extends Controller
             'quantity.*'       => 'required|integer|min:1',
         ]);
 
-        // Remove duplicate material_req_ids
-        $uniqueIds = array_unique($request->material_req_ids);
+        $uniqueIds = array_values(array_unique($request->material_req_ids));
 
         foreach ($uniqueIds as $index => $reqId) {
 
             $materialReq = MaterialReq::find($reqId);
             if (!$materialReq) continue;
 
-            MaterialOrder::firstOrCreate(
-                [
-                    'admin_id' => Auth::id(),
-                    'sr_no'    => $materialReq->sr_no,
-                ],
-                [
-                    'customer_id'     => $request->customer_id,
-                    'work_order_no'   => $request->work_order_no,
-                    'date'            => $request->date,
+            MaterialOrder::create([   // 👈 change this also (explained below)
 
-                    'work_order_desc' => $request->work_order_desc[$index] ?? $materialReq->description,
+                'admin_id'       => Auth::id(),
+                'sr_no'          => $materialReq->sr_no,
+                'material_req_id' => $materialReq->id,
+                'customer_id'    => $request->customer_id,
+                'work_order_no'  => $request->work_order_no,
+                'date'           => $request->date,
 
-                    // FINISH SIZE (ADD THIS)
-                    'f_diameter' => $request->f_diameter[$index] ?? $materialReq->dia,
-                    'f_length'   => $request->f_length[$index] ?? $materialReq->length,
-                    'f_width'    => $request->f_width[$index] ?? $materialReq->width,
-                    'f_height'   => $request->f_height[$index] ?? $materialReq->height,
+                'work_order_desc' => $request->work_order_desc[$index] ?? $materialReq->description,
 
-                    // RAW SIZE
-                    'r_diameter' => $request->r_diameter[$index] ?? null,
-                    'r_length'   => $request->r_length[$index] ?? null,
-                    'r_width'    => $request->r_width[$index] ?? null,
-                    'r_height'   => $request->r_height[$index] ?? null,
+                // FINISH
+                'f_diameter' => $request->f_diameter[$index] ?? $materialReq->dia,
+                'f_length'   => $request->f_length[$index] ?? $materialReq->length,
+                'f_width'    => $request->f_width[$index] ?? $materialReq->width,
+                'f_height'   => $request->f_height[$index] ?? $materialReq->height,
 
-                    'material'   => $request->material[$index] ?? $materialReq->materialType->material_type ?? 'N/A',
-                    'quantity'   => $request->quantity[$index] ?? $materialReq->qty ?? 0,
-                ]
-            );
+                // RAW
+                'r_diameter' => $request->r_diameter[$index] ?? null,
+                'r_length'   => $request->r_length[$index] ?? null,
+                'r_width'    => $request->r_width[$index] ?? null,
+                'r_height'   => $request->r_height[$index] ?? null,
+
+                'material'   => $request->material[$index] ?? 'N/A',
+                'quantity'   => $request->quantity[$index] ?? 0,
+            ]);
         }
 
         return redirect()->route('ViewMaterialorder')
@@ -100,16 +97,16 @@ class MaterialorderController extends Controller
     {
         $decodedId = base64_decode($id);
 
-        $record = MaterialOrder::withTrashed()
-            ->with('materialReq') // IMPORTANT
-            ->where('admin_id', Auth::id())
+        $record = MaterialOrder::where('admin_id', Auth::id())
             ->findOrFail($decodedId);
 
-        // Load customers for this admin (so dropdown shows only admin's customers)
-        $codes = Customer::where('status', 1)
-            ->where('admin_id', Auth::id())
-            ->select('id', 'code', 'name')
-            ->get();
+
+        // $records = MaterialOrder::where('work_order_no', $record->work_order_no)->get();
+
+        // ONLY SINGLE RECORD
+        $records = collect([$record]); // table sathi ekach row
+
+        $selectedIds = [$record->material_req_id]; // single select
 
         $customers = Customer::where('status', 1)
             ->where('admin_id', Auth::id())
@@ -119,107 +116,41 @@ class MaterialorderController extends Controller
             ->orderBy('sr_no')
             ->get();
 
-        // load the MaterialReq linked to this order so form fields can be pre-filled
-        $materialReq = null;
-        if (!empty($record->material_req_id)) {
-            $materialReq = MaterialReq::with('materialType')->find($record->material_req_id);
-        }
-
-
-
-        return view('Materialorder.add', compact('record', 'codes', 'customers', 'materialReq', 'materialRequests'));
+        return view('Materialorder.add', compact(
+            'record',
+            'records',
+            'selectedIds',
+            'customers',
+            'materialRequests'
+        ));
     }
     public function update(Request $request, $id)
     {
         $decodedId = base64_decode($id);
 
-        $record = MaterialOrder::withTrashed()
-            ->where('admin_id', Auth::id())
-            ->findOrFail($decodedId);
+        $record = MaterialOrder::findOrFail($decodedId);
 
-        if ($record->trashed()) {
-            $record->restore();
-        }
-
-        // Validate array inputs
-        $validated = $request->validate([
-            'customer_id'     => 'required|exists:customers,id',
-            'date'            => 'required|date',
-            'work_order_no'   => 'required|string|max:255',
-
-            'work_order_desc' => 'required|array',
-            'work_order_desc.*' => 'nullable|string|max:255',
-
-            'f_diameter' => 'nullable|array',
-            'f_diameter.*' => 'nullable|numeric|min:0',
-
-            'f_length' => 'nullable|array',
-            'f_length.*' => 'nullable|numeric|min:0',
-
-            'f_width' => 'nullable|array',
-            'f_width.*' => 'nullable|numeric|min:0',
-
-            'f_height' => 'nullable|array',
-            'f_height.*' => 'nullable|numeric|min:0',
-
-            'r_diameter' => 'nullable|array',
-            'r_diameter.*' => 'nullable|numeric|min:0',
-
-            'r_length' => 'nullable|array',
-            'r_length.*' => 'nullable|numeric|min:0',
-
-            'r_width' => 'nullable|array',
-            'r_width.*' => 'nullable|numeric|min:0',
-
-            'r_height' => 'nullable|array',
-            'r_height.*' => 'nullable|numeric|min:0',
-
-            'material' => 'required|array',
-            'material.*' => 'required|string|max:255',
-
-            'quantity' => 'required|array',
-            'quantity.*' => 'required|integer|min:1',
-        ]);
-
-
-        // Log before update
-        Log::info('Material Order Update Start', [
-            'id' => $decodedId,
-            'old_record' => $record->toArray(),
-            'request_data' => $request->all(),
-        ]);
-
-        // Since table has single columns, pick first element from arrays
         $record->update([
-            'customer_id'     => $validated['customer_id'],
-            'date'            => $validated['date'],
-            'work_order_no'   => $validated['work_order_no'],
+            'customer_id'     => $request->customer_id,
+            'date'            => $request->date,
+            'work_order_desc' => $request->work_order_desc[0] ?? $record->work_order_desc,
 
-            'work_order_desc' => $validated['work_order_desc'][0] ?? null,
+            'f_diameter' => $request->f_diameter[0] ?? null,
+            'f_length'   => $request->f_length[0] ?? null,
+            'f_width'    => $request->f_width[0] ?? null,
+            'f_height'   => $request->f_height[0] ?? null,
 
-            // FIXED
-            'f_diameter' => $validated['f_diameter'][0] ?? null,
-            'f_length'   => $validated['f_length'][0] ?? null,
-            'f_width'    => $validated['f_width'][0] ?? null,
-            'f_height'   => $validated['f_height'][0] ?? null,
+            'r_diameter' => $request->r_diameter[0] ?? null,
+            'r_length'   => $request->r_length[0] ?? null,
+            'r_width'    => $request->r_width[0] ?? null,
+            'r_height'   => $request->r_height[0] ?? null,
 
-            'r_diameter' => $validated['r_diameter'][0] ?? null,
-            'r_length'   => $validated['r_length'][0] ?? null,
-            'r_width'    => $validated['r_width'][0] ?? null,
-            'r_height'   => $validated['r_height'][0] ?? null,
-
-            'material'   => $validated['material'][0] ?? null,
-            'quantity'   => $validated['quantity'][0] ?? null,
-        ]);
-
-        // Log after update
-        Log::info('Material Order Updated', [
-            'id' => $decodedId,
-            'updated_record' => $record->fresh()->toArray(),
+            'material'   => $request->material[0] ?? null,
+            'quantity'   => $request->quantity[0] ?? null,
         ]);
 
         return redirect()->route('ViewMaterialorder')
-            ->with('success', "Material Order '{$record->work_order_desc}' updated successfully.");
+            ->with('success', 'Material Order updated successfully');
     }
     public function destroy($id)
     {

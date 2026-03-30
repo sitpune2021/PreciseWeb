@@ -62,12 +62,12 @@ class MaterialReq extends Model
 
     public function materialOrders()
     {
-        return $this->hasMany(MaterialOrder::class);
+        return $this->hasMany(MaterialOrder::class, 'material_req_id');
     }
- 
+
 
     public function workOrder()
-{
-    return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id','part_no');
-}
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id', 'part_no');
+    }
 }

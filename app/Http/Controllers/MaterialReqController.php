@@ -15,7 +15,7 @@ class MaterialReqController extends Controller
     public function AddMaterialReq()
     {
         $adminId = Auth::id();
-        $parts = WorkOrder::where('admin_id', $adminId)->get();
+        $parts = WorkOrder::where('admin_id', $adminId)->orderBy('id', 'desc')->get();
         $codes = Customer::where('status', 1)
             ->whereNotNull('admin_id')
             ->where('admin_id', $adminId)
@@ -33,7 +33,6 @@ class MaterialReqController extends Controller
 
         return view('MaterialReq.add', compact('codes', 'materialtype', 'customers', 'parts'));
     }
-
     public function storeMaterialReq(Request $request)
     {
         // 1️ Validate input
