@@ -771,8 +771,8 @@
                         <span>Material Orders</span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('ViewMaterialorder') ? 'active' : '' }}"
-                            href="{{ route('ViewMaterialorder') }}">
+                        <a class="nav-link menu-link {{ request()->routeIs('AddMaterialorder') ? 'active' : '' }}"
+                            href="{{ route('AddMaterialorder') }}">
                             <i class="ri-shopping-cart-2-line"></i>
                             <span>Material Order</span>
                         </a>

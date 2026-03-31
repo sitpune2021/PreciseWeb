@@ -46,7 +46,7 @@ class WorkOrderController extends Controller
 
         $projects = Project::where('admin_id', $adminId)
             ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
-            ->orderBy('project_name')
+            ->latest()
             ->get();
 
         $workorders = WorkOrder::with(['customer', 'project'])
@@ -201,7 +201,7 @@ class WorkOrderController extends Controller
 
         $projects = Project::where('customer_id', $customerId)
             ->select('id', 'project_no', 'project_name', 'quantity')
-            ->orderBy('project_no', 'asc')
+            ->orderBy('id', 'desc') // ✅ LATEST FIRST
             ->get();
 
         return response()->json($projects);

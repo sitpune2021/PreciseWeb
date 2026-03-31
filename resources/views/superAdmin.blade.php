@@ -39,14 +39,28 @@ $renewalsThisMonth = Client::whereYear('updated_at', Carbon::now()->year)
 $renewalPercentage = $renewalsThisMonth; // count = percentage
 
 // ---------------- Projects ----------------
-$projects = Project::with('customer')
+$projects = Project::with(['customer', 'workOrders'])
 ->where('admin_id', Auth::id())
-->orderBy('id', 'desc')
-->take(5)
-->get();
+->latest()
+->paginate(5, ['*'], 'projects_page') // ✅ close paginate properly
+->through(function ($project) {
 
-$totalProjects = Project::where('admin_id', Auth::id())->count();
+$workOrderNos = $project->workOrders->map(function ($wo) {
+return collect([
+$wo->customer?->code,
+$wo->project?->project_no,
+$wo->part,
+$wo->quantity
+])->filter()->implode('_');
+});
 
+$project->has_material_order = DB::table('material_orders')
+->where('admin_id', Auth::id())
+->whereIn('work_order_no', $workOrderNos)
+->exists();
+
+return $project;
+});
 // ---------------- Operators ----------------
 $totalOperators = Operator::where('admin_id', Auth::id())->count();
 $activeOperators = Operator::where('admin_id', Auth::id())->where('status', 1)->count();
@@ -122,10 +136,27 @@ for ($m = 1; $m <= 12; $m++) {
     ->whereYear('created_at', Carbon::now()->year)
     ->count();
     // For Work Orders table (limit 5)
-    $latestWorkOrders = WorkOrder::where('admin_id', Auth::id())
+    // ✅ Latest Work Orders (Pagination Proper)
+    $latestWorkOrders = WorkOrder::with(['project','customer','invoices'])
+    ->where('admin_id', Auth::id())
     ->latest()
-    ->take(5)
-    ->get();
+    ->paginate(5, ['*'], 'workorders_page')
+    ->through(function ($work) {
+
+    $workOrderNo = collect([
+    $work->customer?->code,
+    $work->project?->project_no,
+    $work->part,
+    $work->quantity
+    ])->filter()->implode('_');
+
+    $work->has_material_order = DB::table('material_orders')
+    ->where('admin_id', Auth::id())
+    ->where('work_order_no', $workOrderNo)
+    ->exists();
+
+    return $work;
+    });
 
 
     // ---------------- Machine Records ----------------
@@ -154,8 +185,6 @@ for ($m = 1; $m <= 12; $m++) {
     ->take(5)
     ->get();
 
-
-
     @endphp
 
     @extends('layouts.header')
@@ -183,6 +212,15 @@ for ($m = 1; $m <= 12; $m++) {
         .btn:hover {
             transform: translateY(-2px);
             transition: 0.2s;
+        }
+
+
+        .highlight-row td {
+            background-color: #faecbc !important;
+        }
+
+        .table-hover tbody tr.highlight-row:hover td {
+            background-color: #fad464 !important;
         }
     </style>
 
@@ -374,7 +412,7 @@ for ($m = 1; $m <= 12; $m++) {
                                     </thead>
                                     <tbody>
                                         @forelse($projects as $project)
-                                        <tr class="align-middle text-center">
+                                        <tr class="align-middle text-center {{ $project->has_material_order ? 'highlight-row' : '' }}">
                                             <td class="text-muted">{{ $loop->iteration }}</td>
                                             <td>
                                                 <span class="badge text-dark">
@@ -408,12 +446,8 @@ for ($m = 1; $m <= 12; $m++) {
                                     </tbody>
                                 </table>
                             </div>
-
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <small class="text-muted">
-                                    Showing <span class="fw-semibold">{{ $projects->count() }}</span> of <span class="fw-semibold">{{ $totalProjects }}</span> Results
-                                </small>
-                                <!-- <a href="{{ route('ViewProject') }}" class="btn btn-link btn-sm">View More</a> -->
+                            <div class="d-flex justify-content-end align-items-center mt-3">
+                                {{ $projects->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
@@ -457,7 +491,7 @@ for ($m = 1; $m <= 12; $m++) {
 
                                     <tbody>
                                         @forelse($latestWorkOrders as $work)
-                                        <tr class="align-middle text-center">
+                                        <tr class="{{ $work->has_material_order ? 'highlight-row' : '' }}">
                                             <td class="text-muted">{{ $loop->iteration }}</td>
 
                                             <td>
@@ -500,13 +534,8 @@ for ($m = 1; $m <= 12; $m++) {
                                 </table>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <small class="text-muted">
-                                    Showing <span class="fw-semibold">{{ $latestWorkOrders->count() }}</span> of
-                                    <span class="fw-semibold">{{ $totalWorkOrders }}</span> Results
-                                </small>
-
-                                <!-- <a href="{{ route('ViewWorkOrder') }}" class="btn btn-link btn-sm">View More</a> -->
+                            <div class="d-flex justify-content-end align-items-center mt-3">
+                                {{ $latestWorkOrders->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
@@ -535,8 +564,8 @@ for ($m = 1; $m <= 12; $m++) {
 
                             <div class="card-body">
                                 <div class="table-responsive">
-                                <table class="table align-middle table-hover table-nowrap mb-0">
-                                    <thead class="table-light text-center">
+                                    <table class="table align-middle table-hover table-nowrap mb-0">
+                                        <thead class="table-light text-center">
                                             <tr>
                                                 <th scope="col">SR NO.</th>
                                                 <th scope="col">Part No</th>

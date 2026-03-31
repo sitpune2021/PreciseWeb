@@ -209,7 +209,7 @@ Route::get( '/get-material-req/{customer_id}'   , [MaterialorderController::clas
 Route::get( '/get-material-req-details/{id}'    , [MaterialorderController::class, 'getMaterialRequestDetails']);
 Route::get( '/mate-req/by-cust/{customer_id}'   , [MaterialorderController::class, 'getByCustomer']);
 Route::get('/get-material-requests/{customer_id}', [MaterialorderController::class, 'getMaterialRequests']);
-Route::get('/get-customer-wo/{id}', [MaterialorderController::class, 'getCustomerWo']);
+Route::get('/get-customer-wo/{id}'              , [MaterialorderController::class, 'getCustomerWo']);
 
 //invoice Routes
 Route::get( 'invoice/index'                     , [InvoiceController::class, 'index'])->name('invoice.index');

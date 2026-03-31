@@ -27,10 +27,14 @@ class MaterialorderController extends Controller
             ->orderBy('name')
             ->get();
 
+        $orders = MaterialOrder::where('admin_id', Auth::id())
+            ->latest()
+            ->get();
+
         // $materialReq is null for add form
         $materialReq = null;
 
-        return view('Materialorder.add', compact('codes', 'customers', 'materialReq'));
+        return view('Materialorder.add', compact('codes', 'customers', 'materialReq', 'orders'));
     }
     public function ViewMaterialorder()
     {
@@ -62,7 +66,7 @@ class MaterialorderController extends Controller
             $materialReq = MaterialReq::find($reqId);
             if (!$materialReq) continue;
 
-            MaterialOrder::create([   // 👈 change this also (explained below)
+            MaterialOrder::create([   //  change this also (explained below)
 
                 'admin_id'       => Auth::id(),
                 'sr_no'          => $materialReq->sr_no,
@@ -90,7 +94,7 @@ class MaterialorderController extends Controller
             ]);
         }
 
-        return redirect()->route('ViewMaterialorder')
+        return redirect()->route('AddMaterialorder')
             ->with('success', 'Material Order saved successfully');
     }
     public function editMaterialorder($id)
@@ -116,12 +120,17 @@ class MaterialorderController extends Controller
             ->orderBy('sr_no')
             ->get();
 
+         $orders = MaterialOrder::where('admin_id', Auth::id())
+            ->latest()
+            ->get();    
+
         return view('Materialorder.add', compact(
             'record',
             'records',
             'selectedIds',
             'customers',
-            'materialRequests'
+            'materialRequests',
+            'orders'
         ));
     }
     public function update(Request $request, $id)
@@ -149,7 +158,7 @@ class MaterialorderController extends Controller
             'quantity'   => $request->quantity[0] ?? null,
         ]);
 
-        return redirect()->route('ViewMaterialorder')
+        return redirect()->route('AddMaterialorder')
             ->with('success', 'Material Order updated successfully');
     }
     public function destroy($id)

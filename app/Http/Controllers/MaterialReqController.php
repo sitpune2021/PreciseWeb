@@ -75,7 +75,13 @@ class MaterialReqController extends Controller
             'admin_id'      => $adminId,
             'user_id'       => $userId,
             'work_order_id' => $workOrder->id,
-            'work_order_no' => $workOrder->work_order_no ?? 'RMW_' . $workOrder->project_id . '_' . $workOrder->id,
+
+            //  FIXED HERE
+            'work_order_no' => ($workOrder->customer?->code ?? '') . '_' .
+                ($workOrder->project?->project_no ?? '') . '_' .
+                ($workOrder->part ?? '') . '_' .
+                ($workOrder->quantity ?? ''),
+
             'customer_id'   => $workOrder->customer_id,
             'project_id'    => $workOrder->project_id,
             'part_no'       => $workOrder->part,
