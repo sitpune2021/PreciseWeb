@@ -77,169 +77,220 @@
                                     <hr class="mt-3">
                                     <h5 class="mt-1">Item Details</h5>
                                     <div id="itemBlocks">
-                                        <!-- FIRST BLOCK -->
-                                        <div class="item-block border p-3 mb-3 first-block">
 
-                                            {{-- ROW 1 --}}
+                                        @php
+                                        $items = old('items', isset($quotation) ? $quotation->items->toArray() : [[]]);
+                                        @endphp
+
+                                        @foreach($items as $index => $item)
+
+                                        <div class="item-block border p-3 mb-3 {{ $loop->first ? 'first-block' : '' }}">
+
                                             <div class="row mb-2">
+
+                                                {{-- Description --}}
                                                 <div class="col-md-5">
-                                                    <label for="">Description <span class="text-red">*</span></label>
-                                                    <input type="text" name="items[0][Description]" class="form-control" placeholder="Description"
-                                                        value="{{ old('items.0.Description', isset($quotation->items[0]) ? $quotation->items[0]->description : '') }}">
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label for="">Dia</label>
-                                                    <input type="text" name="items[0][dia]" class="form-control" placeholder="Dia"
-                                                        value="{{ old('items.0.dia', isset($quotation->items[0]) ? $quotation->items[0]->dia : '') }}">
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label for="">Length</label>
-                                                    <input type="text" name="items[0][length]" class="form-control" placeholder="Length"
-                                                        value="{{ old('items.0.length', isset($quotation->items[0]) ? $quotation->items[0]->length : '') }}">
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label for="">Width</label>
-                                                    <input type="text" name="items[0][WIDTH]" class="form-control" placeholder="Width"
-                                                        value="{{ old('items.0.WIDTH', isset($quotation->items[0]) ? $quotation->items[0]->width : '') }}">
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label for="">Height</label>
-                                                    <input type="number" name="items[0][HEIGHT]" class="form-control" placeholder="Height"
-                                                        value="{{ old('items.0.HEIGHT', isset($quotation->items[0]) ? $quotation->items[0]->height : '') }}">
+                                                    <label>Description <span class="text-red">*</span></label>
+                                                    <input type="text"
+                                                        name="items[{{ $index }}][Description]"
+                                                        class="form-control"
+                                                        value="{{ $item['description'] ?? $item->description ?? '' }}">
                                                 </div>
 
-                                                <!-- <label>Qty in Kg</label> -->
-                                                <input type="hidden" name="items[0][qty_in_kg]" class="form-control" placeholder="Qty in Kg"
-                                                    value="{{ old('items.0.qty_in_kg', isset($quotation->items[0]) ? $quotation->items[0]->qty_in_kg : '') }}">
+                                                {{-- Dia --}}
+                                                <div class="col-md-1">
+                                                    <label>Dia</label>
+                                                    <input type="text" name="items[{{ $index }}][dia]" class="form-control"
+                                                        value="{{ $item['dia'] ?? $item->dia ?? '' }}">
+                                                </div>
 
+                                                {{-- Length --}}
+                                                <div class="col-md-1">
+                                                    <label>Length</label>
+                                                    <input type="text" name="items[{{ $index }}][length]" class="form-control"
+                                                        value="{{ $item['length'] ?? $item->length ?? '' }}">
+                                                </div>
 
+                                                {{-- Width --}}
+                                                <div class="col-md-1">
+                                                    <label>Width</label>
+                                                    <input type="text" name="items[{{ $index }}][width]" class="form-control"
+                                                        value="{{ $item['width'] ?? $item->width ?? '' }}">
+                                                </div>
+
+                                                {{-- Height --}}
+                                                <div class="col-md-1">
+                                                    <label>Height</label>
+                                                    <input type="number" name="items[{{ $index }}][height]" class="form-control"
+                                                        value="{{ $item['height'] ?? $item->height ?? '' }}">
+                                                </div>
+
+                                                {{-- Hidden Qty KG --}}
+                                                <input type="hidden" name="items[{{ $index }}][qty_in_kg]"
+                                                    value="{{ $item['qty_in_kg'] ?? $item->qty_in_kg ?? '' }}">
+
+                                                {{-- Material Type --}}
                                                 <div class="col-md-2">
                                                     <label>Material Type <span class="text-red">*</span></label>
-                                                    <select name="items[0][material_type_id]" class="form-select material_type">
-                                                        <option value="">Select Material</option>
+                                                    <select name="items[{{ $index }}][material_type_id]" class="form-select material_type">
+                                                        <option value="">Select</option>
                                                         @foreach($materialtype as $m)
                                                         <option value="{{ $m->id }}"
                                                             data-rate="{{ $m->material_rate }}"
                                                             data-gravity="{{ $m->material_gravity }}"
-                                                            {{ (isset($quotation->items[0]) && $quotation->items[0]->material_type_id == $m->id) ? 'selected' : '' }}>
+                                                            {{ (isset($item['material_type_id']) && $item['material_type_id'] == $m->id) 
+                    || (isset($item->material_type_id) && $item->material_type_id == $m->id) ? 'selected' : '' }}>
                                                             {{ $m->material_type }}
                                                         </option>
                                                         @endforeach
                                                     </select>
-                                                    <small class="text-red">
-                                                        @error('items.0.material_type_id')
-                                                        <small class="text-red">{{ $message }}</small>
-                                                        @enderror
-                                                    </small>
-                                                </div>
 
-                                                <div class="col-md-1">
-                                                    <label>Mat Rate</label>
-                                                    <input type="text" name="items[0][material_rate]" class="form-control mb-2 material_rate" placeholder="Material Rate"
-                                                        value="{{ old('items.0.material_rate', isset($quotation->items[0]) ? $quotation->items[0]->material_rate : '') }}" readonly>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label>Qty <span class="text-red">*</span></label>
-                                                    <input type="number"
-                                                        name="items[0][qty]"
-                                                        class="form-control @error('items.0.qty') is-invalid @enderror"
-                                                        placeholder="Qty"
-                                                        value="{{ old('items.0.qty', isset($quotation->items[0]) ? $quotation->items[0]->qty : '') }}">
-                                                    @error('items.0.qty')
-                                                    <small class="text-red">{{ $message }}</small>
+                                                    @error('items.' . $index . '.material_type_id')
+                                                    <small class="text-danger">{{ $message }}</small>
                                                     @enderror
                                                 </div>
 
+                                                {{-- Material Rate --}}
+                                                <div class="col-md-1">
+                                                    <label>Rate</label>
+                                                    <input type="text" name="items[{{ $index }}][material_rate]"
+                                                        class="form-control material_rate"
+                                                        value="{{ $item['material_rate'] ?? $item->material_rate ?? '' }}" readonly>
+                                                </div>
+
+                                                {{-- Qty --}}
+                                                <div class="col-md-2">
+                                                    <label>Qty</label>
+                                                    <input type="number" name="items[{{ $index }}][qty]"
+                                                        class="form-control"
+                                                        value="{{ $item['qty'] ?? $item->qty ?? '' }}">
+
+                                                    @error('items.' . $index . '.qty')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
+                                                </div>
+
+                                                {{-- Material Cost --}}
                                                 <div class="col-md-1">
                                                     <label>Mat Cost</label>
-                                                    <input type="text" name="items[0][material_cost]" class="form-control" placeholder="Material Cost"
-                                                        value="{{ old('items.0.material_cost', isset($quotation->items[0]) ? $quotation->items[0]->material_cost : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][material_cost]"
+                                                        class="form-control"
+                                                        value="{{ $item['material_cost'] ?? $item->material_cost ?? '' }}">
                                                 </div>
+
+                                                {{-- Lathe --}}
                                                 <div class="col-md-1">
                                                     <label>Lathe</label>
-                                                    <input type="text" name="items[0][lathe]" class="form-control" placeholder="Lathe"
-                                                        value="{{ old('items.0.lathe', isset($quotation->items[0]) ? $quotation->items[0]->lathe : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][lathe]"
+                                                        class="form-control"
+                                                        value="{{ $item['lathe'] ?? $item->lathe ?? '' }}">
                                                 </div>
 
-                                                {{-- ROW 3 --}}
+                                                {{-- MG --}}
                                                 <div class="col-md-1">
                                                     <label>MG</label>
-                                                    <input type="text" name="items[0][mg]" class="form-control" placeholder="MG"
-                                                        value="{{ old('items.0.mg', isset($quotation->items[0]) ? $quotation->items[0]->mg : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][mg]"
+                                                        class="form-control"
+                                                        value="{{ $item['mg'] ?? $item->mg ?? '' }}">
                                                 </div>
 
-
+                                                {{-- RG --}}
                                                 <div class="col-md-1">
                                                     <label>RG</label>
-                                                    <input type="text" name="items[0][rg]" class="form-control" placeholder="RG"
-                                                        value="{{ old('items.0.rg', isset($quotation->items[0]) ? $quotation->items[0]->rg : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][rg]"
+                                                        class="form-control"
+                                                        value="{{ $item['rg'] ?? $item->rg ?? '' }}">
                                                 </div>
+
+                                                {{-- CG --}}
                                                 <div class="col-md-1">
                                                     <label>CG</label>
-                                                    <input type="text" name="items[0][cg]" class="form-control" placeholder="CG"
-                                                        value="{{ old('items.0.cg', isset($quotation->items[0]) ? $quotation->items[0]->cg : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][cg]"
+                                                        class="form-control"
+                                                        value="{{ $item['cg'] ?? $item->cg ?? '' }}">
                                                 </div>
+
+                                                {{-- SG --}}
                                                 <div class="col-md-1">
                                                     <label>SG</label>
-                                                    <input type="text" name="items[0][sg]" class="form-control" placeholder="SG"
-                                                        value="{{ old('items.0.sg', isset($quotation->items[0]) ? $quotation->items[0]->sg : '') }}">
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label>Vmc Soft</label>
-                                                    <input type="text" name="items[0][vmc_soft]" class="form-control" placeholder="Vmc S"
-                                                        value="{{ old('items.0.vmc_soft', isset($quotation->items[0]) ? $quotation->items[0]->vmc_soft : '') }}">
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label>Vmc Hard</label>
-                                                    <input type="text" name="items[0][vmc_hard]" class="form-control" placeholder="Vmc H"
-                                                        value="{{ old('items.0.vmc_hard', isset($quotation->items[0]) ? $quotation->items[0]->vmc_hard : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][sg]"
+                                                        class="form-control"
+                                                        value="{{ $item['sg'] ?? $item->sg ?? '' }}">
                                                 </div>
 
+                                                {{-- VMC Soft --}}
+                                                <div class="col-md-1">
+                                                    <label>VMC S</label>
+                                                    <input type="text" name="items[{{ $index }}][vmc_soft]"
+                                                        class="form-control"
+                                                        value="{{ $item['vmc_soft'] ?? $item->vmc_soft ?? '' }}">
+                                                </div>
 
-                                                {{-- ROW 4 --}}
+                                                {{-- VMC Hard --}}
+                                                <div class="col-md-1">
+                                                    <label>VMC H</label>
+                                                    <input type="text" name="items[{{ $index }}][vmc_hard]"
+                                                        class="form-control"
+                                                        value="{{ $item['vmc_hard'] ?? $item->vmc_hard ?? '' }}">
+                                                </div>
+
+                                                {{-- EDM --}}
                                                 <div class="col-md-1">
                                                     <label>EDM Qty</label>
-                                                    <input type="text" name="items[0][edm_qty]" class="form-control" placeholder="Qty"
-                                                        value="{{ old('items.0.edm_qty', isset($quotation->items[0]) ? $quotation->items[0]->edm_qty : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][edm_qty]"
+                                                        class="form-control"
+                                                        value="{{ $item['edm_qty'] ?? $item->edm_qty ?? '' }}">
                                                 </div>
-
-
 
                                                 <div class="col-md-1">
                                                     <label>EDM Hole</label>
-                                                    <input type="text" name="items[0][edm_hole]" class="form-control" placeholder="EDM H"
-                                                        value="{{ old('items.0.edm_hole', isset($quotation->items[0]) ? $quotation->items[0]->edm_hole : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][edm_hole]"
+                                                        class="form-control"
+                                                        value="{{ $item['edm_hole'] ?? $item->edm_hole ?? '' }}">
                                                 </div>
+
                                                 <div class="col-md-1">
                                                     <label>H&T</label>
-                                                    <input type="text" name="items[0][h_t]" class="form-control" placeholder="H&T"
-                                                        value="{{ old('items.0.h_t', isset($quotation->items[0]) ? $quotation->items[0]->ht : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][h_t]"
+                                                        class="form-control"
+                                                        value="{{ $item['h_t'] ?? $item->ht ?? '' }}">
                                                 </div>
+
                                                 <div class="col-md-1">
                                                     <label>Wirecut</label>
-                                                    <input type="text" name="items[0][wirecut]" class="form-control" placeholder=""
-                                                        value="{{ old('items.0.wirecut', isset($quotation->items[0]) ? $quotation->items[0]->wirecut : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][wirecut]"
+                                                        class="form-control"
+                                                        value="{{ $item['wirecut'] ?? $item->wirecut ?? '' }}">
                                                 </div>
 
-                                                <!-- <label>Material Gravity</label> -->
-                                                <input type="hidden" name="items[0][gravity]" class="form-control material_gravity" readonly
-                                                    value="{{ old('items.0.gravity', isset($quotation->items[0]) ? $quotation->items[0]->material_gravity : '') }}">
+                                                {{-- Hidden Gravity --}}
+                                                <input type="hidden" name="items[{{ $index }}][gravity]"
+                                                    class="material_gravity"
+                                                    value="{{ $item['gravity'] ?? $item->material_gravity ?? '' }}">
 
+                                                {{-- Machining Cost --}}
                                                 <div class="col-md-2">
                                                     <label>Machining Cost</label>
-                                                    <input type="text" name="items[0][machining_cost]" class="form-control" placeholder="Machining Cost"
-                                                        value="{{ old('items.0.machining_cost', isset($quotation->items[0]) ? $quotation->items[0]->machining_cost : '') }}">
+                                                    <input type="text" name="items[{{ $index }}][machining_cost]"
+                                                        class="form-control"
+                                                        value="{{ $item['machining_cost'] ?? $item->machining_cost ?? '' }}">
                                                 </div>
+
                                             </div>
+
+                                            {{-- Remove Button --}}
                                             <div class="row">
-                                                <div class="col-md-2 d-flex align-items-end">
-                                                    <button type="button" class="btn btn-danger btn-sm removeBlock mt-2 {{ count($quotation->items ?? []) > 1 ? '' : 'd-none' }}">
+                                                <div class="col-md-2">
+                                                    <button type="button"
+                                                        class="btn btn-danger btn-sm removeBlock {{ $loop->first ? 'd-none' : '' }}">
                                                         Remove
                                                     </button>
                                                 </div>
                                             </div>
 
                                         </div>
+
+                                        @endforeach
                                     </div>
                                     <button type="button" id="addBlock" class="btn btn-success btn-sm " style="width: 10%;">
                                         + Add Row
@@ -315,6 +366,15 @@
             block.find('.removeBlock').removeClass('d-none');
 
             $('#itemBlocks').append(block);
+
+            // default qty
+            block.find('[name$="[qty]"]').val(1);
+
+            // delayed calculation
+            setTimeout(() => {
+                calculateBlock(block, true);
+            }, 100);
+
             blockIndex++;
         });
 
@@ -343,7 +403,7 @@
         /* DIMENSION CHANGE (AUTO ALLOWED)*/
 
         $(document).on('input',
-            '[name$="[dia]"],[name$="[length]"],[name$="[WIDTH]"],[name$="[HEIGHT]"]',
+            '[name$="[dia]"],[name$="[length]"],[name$="[width]"],[name$="[height]"]',
             function() {
                 let block = $(this).closest('.item-block');
                 calculateBlock(block, true);
@@ -356,24 +416,29 @@
             calculateBlock(block, false);
         });
 
+        // function formatNumber(val) {
+        //     val = parseFloat(val) || 0;
+
+        //     // If decimal part is zero remove it
+        //     if (val % 1 === 0) {
+        //         return val.toString();
+        //     } else {
+        //         return val.toFixed(2);
+        //     }
+        // }
+
         function formatNumber(val) {
             val = parseFloat(val) || 0;
 
-            // If decimal part is zero remove it
-            if (val % 1 === 0) {
-                return val.toString();
-            } else {
-                return val.toFixed(2);
-            }
+            return val.toFixed(1).replace(/\.0$/, '.0').replace(/\.?0+$/, '');
         }
         /* MAIN CALCULATION */
 
         function calculateBlock(block, allowAuto = false) {
-
             let die = parseFloat(block.find('[name$="[dia]"]').val()) || 0;
             let length = parseFloat(block.find('[name$="[length]"]').val()) || 0;
-            let width = parseFloat(block.find('[name$="[WIDTH]"]').val()) || 0;
-            let height = parseFloat(block.find('[name$="[HEIGHT]"]').val()) || 0;
+            let width = parseFloat(block.find('[name$="[width]"]').val()) || 0;
+            let height = parseFloat(block.find('[name$="[height]"]').val()) || 0;
             let qty = parseFloat(block.find('[name$="[qty]"]').val()) || 1;
 
             let rate = parseFloat(block.find('.material_rate').val()) || 0;
@@ -386,38 +451,23 @@
             let wirecutInput = parseFloat(block.find('[name$="[wirecut]"]').val()) || 0;
             let cg = parseFloat(block.find('[name$="[cg]"]').val()) || 0;
 
-            /*QTY IN KG*/
-
+            // QTY in KG calculation
             let cylWt = (Math.PI * Math.pow(die / 2, 2) * height / 1000000) * gravity;
             let boxWt = (length * width * height / 1000000) * gravity;
             let qtyKg = cylWt + boxWt;
-
             block.find('[name$="[qty_in_kg]"]').val(formatNumber(qtyKg));
 
-            /* MATERIAL COST */
-
+            // MATERIAL COST
             let materialCost = (qtyKg * rate) * 1.30;
-
             block.find('[name$="[material_cost]"]').val(formatNumber(materialCost));
 
-
-
-            /*AUTO FORMULA (Excel Match)*/
-
-            let autoMG =
-                (((length * height + width * height) * 2 * 0.5) / 100) +
-                ((length * width) * 2 * 0.5 / 100);
-
+            // AUTO FORMULA (Excel Match)
+            let autoMG = (((length * height + width * height) * 2 * 0.5) / 100) + ((length * width) * 2 * 0.5 / 100);
             let autoRG = (length * width) * 2 * 0.3 / 100;
-
-            let autoSG =
-                (((length * height + width * height) * 2) / 100) +
-                ((length * width) * 2 / 100);
-
+            let autoSG = (((length * height + width * height) * 2) / 100) + ((length * width) * 2 / 100);
             let autoHT = qtyKg * 80;
 
-            /*APPLY AUTO ONLY IF DIMENSION CHANGE*/
-
+            // APPLY AUTO ONLY ON DIMENSION CHANGE
             if (allowAuto) {
                 block.find('[name$="[mg]"]').val(formatNumber(autoMG));
                 block.find('[name$="[rg]"]').val(formatNumber(autoRG));
@@ -425,8 +475,7 @@
                 block.find('[name$="[h_t]"]').val(formatNumber(autoHT));
             }
 
-            /* INAL VALUES (Manual Override Allowed)*/
-
+            // Use manual values if user has entered them
             let mg = parseFloat(block.find('[name$="[mg]"]').val()) || 0;
             let rg = parseFloat(block.find('[name$="[rg]"]').val()) || 0;
             let sg = parseFloat(block.find('[name$="[sg]"]').val()) || 0;
@@ -437,47 +486,32 @@
             let edmCost = height * edmQty * 6;
             let wirecutCost = wirecutInput * height * 0.25;
 
-            /*MACHINING COST*/
-
-            let machiningCost =
-                (
-                    materialCost +
-                    lathe +
-                    mg +
-                    rg +
-                    cg +
-                    sg +
-                    vmcSoft +
-                    vmcHard +
-                    edmCost +
-                    ht +
-                    wirecutCost
-                ) * qty;
-
+            // MACHINING COST
+            let machiningCost = (materialCost + lathe + mg + rg + cg + sg + vmcSoft + vmcHard + edmCost + ht + wirecutCost) * qty;
             block.find('[name$="[machining_cost]"]').val(formatNumber(machiningCost));
 
+            // GRAND TOTAL
             calculateGrandTotal();
         }
 
-        /*GRAND TOTAL*/
-
         function calculateGrandTotal() {
-
             let total = 0;
-
             $('.item-block').each(function() {
                 total += parseFloat($(this).find('[name$="[machining_cost]"]').val()) || 0;
             });
-
             $('input[name="total_manufacturing_cos"]').val(formatNumber(total));
-            // $('input[name="profit"]').val(formatNumber(total * 0.10));
-            // $('input[name="overhead"]').val(formatNumber(total * 0.05));
         }
 
         /*  INITIAL LOAD (EDIT MODE FIX) */
 
         $('.item-block').each(function() {
-            calculateBlock($(this), false);
+
+            let matCost = $(this).find('[name$="[material_cost]"]').val();
+            let machiningCost = $(this).find('[name$="[machining_cost]"]').val();
+
+            if (!matCost || matCost == 0) {
+                calculateBlock($(this), false);
+            }
         });
 
     });

@@ -275,7 +275,7 @@
                 <td class="center">{{ number_format($item->height,2) }}</td>
 
                 <td class="right">{{$item->qty_in_kg }}</td>
-                <td class="center">MS</td>
+                <td class="center">{{$item->material }}</td>
                 <td class="right">{{ (int)$item->material_rate }}</td>
                 <td class="center">{{ (int)$item->qty }}</td>
                 <td class="right">Rs. {{ number_format($item->material_cost,0) }}</td>

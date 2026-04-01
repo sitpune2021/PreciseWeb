@@ -48,12 +48,12 @@
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                                    <!-- @if(hasPermission('Quotation', 'edit'))
+                                                    @if(hasPermission('Quotation', 'edit'))
                                                     <a href="{{ route('editquotation', base64_encode($q->id)) }}"
                                                         class="btn btn-success btn-icon">
                                                         <i class="ri-pencil-fill align-bottom"></i>
                                                     </a>
-                                                    @endif -->
+                                                    @endif
 
                                                     @if(hasPermission('Quotation', 'delete'))
                                                     <a href="{{ route('deletequotation', base64_encode($q->id)) }}"
