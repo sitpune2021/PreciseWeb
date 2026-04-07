@@ -55,15 +55,15 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
-            ->whereNull('deleted_at')  // soft deleted ignore
+        $latestMaterialOrderNo = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
             ->latest('id')
             ->value('work_order_no');
 
         $highlightProjectId = null;
 
-        if (!empty($latestProjectId) && str_contains($latestProjectId, '_')) {
-            $parts = explode('_', $latestProjectId);
+        if (!empty($latestMaterialOrderNo) && str_contains($latestMaterialOrderNo, '_')) {
+            $parts = explode('_', $latestMaterialOrderNo);
             $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // cast to int
         }
 

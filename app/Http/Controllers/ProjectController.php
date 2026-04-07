@@ -36,22 +36,25 @@ class ProjectController extends Controller
             ->orderBy('project_no', 'desc') //  important change
             ->get();
 
-        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
-            ->whereNull('deleted_at')  // soft deleted ignore
+        $latestMaterialOrderNo = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
             ->latest('id')
             ->value('work_order_no');
 
         $highlightProjectId = null;
+        $highlightProjectPrefix = null;
 
-        if (!empty($latestProjectId) && str_contains($latestProjectId, '_')) {
-            $parts = explode('_', $latestProjectId);
-            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // cast to int
+        if (!empty($latestMaterialOrderNo) && str_contains($latestMaterialOrderNo, '_')) {
+            $parts = explode('_', $latestMaterialOrderNo);
+            $highlightProjectPrefix = $parts[0] ?? null; // SHM
+            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // 2
         }
+
         // Next Project Number (Safe)
         $maxProjectNo = Project::where('admin_id', $adminId)->max('project_no');
         $nextProjectNo = $maxProjectNo ? $maxProjectNo + 1 : 1;
 
-        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId'));
+        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId','highlightProjectPrefix'));
     }
     public function storeProject(Request $request)
     {

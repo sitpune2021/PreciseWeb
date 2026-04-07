@@ -61,11 +61,10 @@
                                     </thead>
                                     <tbody>
                                         @foreach($record->reverse() as $rec)
-                            
-                                        @php
-                                        $highlightClass = ((int)$rec->id === (int)$highlightProjectId) ? 'table-warning' : '';
-                                        @endphp
 
+                                        @php
+                                        $highlightClass = ($rec->part_no === $highlightPartNo) ? 'table-warning' : '';
+                                        @endphp
                                         <tr class="{{ $highlightClass }}">
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $rec->part_no }}</td>

@@ -46,18 +46,19 @@ $projects = Project::with('customer')
 ->take(5)
 ->get();
 
-/* 🔥 Highlight latest order project */
+/* Highlight latest order project */
 $latestOrder = MaterialOrder::where('admin_id', Auth::id())
 ->whereNull('deleted_at')
-->latest('created_at') // safer than latest('id')
+->latest('created_at') // correct
 ->first();
 
 $highlightProjectId = null;
 
-if ($latestOrder && !empty($latestOrder->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
+if (!empty($latestOrder?->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
 $parts = explode('_', $latestOrder->work_order_no);
 $highlightProjectId = isset($parts[1]) ? (int)$parts[1] : null;
 }
+
 /* Total count */
 $totalProjects = Project::where('admin_id', Auth::id())->count();
 
@@ -132,14 +133,15 @@ for ($m = 1; $m <= 12; $m++) {
 
     /* Highlight latest order project */
     $latestOrder = MaterialOrder::where('admin_id', Auth::id())
-    ->latest('id')
+    ->whereNull('deleted_at') // ✅ important
+    ->latest('created_at') // ✅ safer
     ->first();
 
     $highlightProjectId = null;
 
-    if ($latestOrder && $latestOrder->work_order_no) {
+    if (!empty($latestOrder?->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
     $parts = explode('_', $latestOrder->work_order_no);
-    $highlightProjectId = $parts[1] ?? null;
+    $highlightProjectId = isset($parts[1]) ? (int)$parts[1] : null; // ✅ cast to int
     }
 
     $newWorkOrders = WorkOrder::where('admin_id', Auth::id())
@@ -175,21 +177,23 @@ for ($m = 1; $m <= 12; $m++) {
     ->count();
 
     $latestOrder = MaterialOrder::where('admin_id', Auth::id())
-    ->latest('id')
+    ->whereNull('deleted_at')
+    ->latest('created_at')
     ->first();
 
-    $highlightProjectId = null;
+    $highlightPartNo = null;
 
-    if ($latestOrder && $latestOrder->work_order_no) {
+    if (!empty($latestOrder?->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
     $parts = explode('_', $latestOrder->work_order_no);
-    $highlightProjectId = $parts[1] ?? null;
+
+    // SHM_2_1
+    $highlightPartNo = implode('_', array_slice($parts, 0, 3));
     }
 
     $latestMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->latest()
     ->take(5)
     ->get();
-
 
 
     @endphp
@@ -496,9 +500,8 @@ for ($m = 1; $m <= 12; $m++) {
 
                                     <tbody>
                                         @forelse($latestWorkOrders as $work)
-
                                         @php
-                                        $highlightClass = ($work->id == $highlightProjectId) ? 'table-warning' : '';
+                                        $highlightClass = ((int)$work->id === (int)$highlightProjectId) ? 'table-warning' : '';
                                         @endphp
 
                                         <tr class="{{ $highlightClass }} align-middle text-center">
@@ -595,7 +598,7 @@ for ($m = 1; $m <= 12; $m++) {
                                         <tbody>
                                             @forelse($latestMachineRecords as $rec)
                                             @php
-                                            $highlightClass = ($rec->id == $highlightProjectId) ? 'table-warning' : '';
+                                            $highlightClass = ($rec->part_no === $highlightPartNo) ? 'table-warning' : '';
                                             @endphp
 
                                             <tr class="{{ $highlightClass }}">
