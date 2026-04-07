@@ -48,16 +48,16 @@ $projects = Project::with('customer')
 
 /* 🔥 Highlight latest order project */
 $latestOrder = MaterialOrder::where('admin_id', Auth::id())
-->latest('id')
+->whereNull('deleted_at')
+->latest('created_at') // safer than latest('id')
 ->first();
 
 $highlightProjectId = null;
 
-if ($latestOrder && $latestOrder->work_order_no) {
+if ($latestOrder && !empty($latestOrder->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
 $parts = explode('_', $latestOrder->work_order_no);
-$highlightProjectId = $parts[1] ?? null;
+$highlightProjectId = isset($parts[1]) ? (int)$parts[1] : null;
 }
-
 /* Total count */
 $totalProjects = Project::where('admin_id', Auth::id())->count();
 
@@ -413,7 +413,7 @@ for ($m = 1; $m <= 12; $m++) {
                                         @forelse($projects as $project)
 
                                         @php
-                                        $highlightClass = ($project->id == $highlightProjectId) ? 'table-warning' : '';
+                                        $highlightClass = ((int)$project->id === (int)$highlightProjectId) ? 'table-warning' : '';
                                         @endphp
 
                                         <tr class="{{ $highlightClass }} align-middle text-center">
@@ -599,9 +599,10 @@ for ($m = 1; $m <= 12; $m++) {
                                             @endphp
 
                                             <tr class="{{ $highlightClass }}">
-                                                <td>
+                                                <!-- <td>
                                                     <a href="#!" class="fw-medium link-primary">{{ $rec->id }}</a>
-                                                </td>
+                                                </td> -->
+                                                <td class="text-muted">{{ $loop->iteration }}</td>
 
                                                 <td class="fw-bold">{{ $rec->part_no }}</td>
 

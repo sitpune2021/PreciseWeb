@@ -417,7 +417,7 @@ class QuotationController extends Controller
 
             $quotation = Quotation::with('items')->findOrFail($id);
 
-            // ✅ GET RATES (IMPORTANT)
+            // GET RATES (IMPORTANT)
             $rates = Rate::where('admin_id', Auth::id())
                 ->where('is_active', 1)
                 ->pluck('rate', 'name');
@@ -428,8 +428,8 @@ class QuotationController extends Controller
                 'quotation_no'     => $request->quotation_no,
                 'project_name'     => $request->project_name,
                 'date'             => $request->date,
-                'profit'           => $request->profit ?? 0,
-                'overhead'         => $request->overhead ?? 0,
+                'profit_percent'   => $request->profit_percent ?? 0,
+                'overhead_percent' => $request->overhead_percent ?? 0,
                 'terms_conditions' => $request->terms_conditions,
             ]);
 
@@ -441,26 +441,32 @@ class QuotationController extends Controller
             /*  INSERT ITEMS  */
             foreach ($request->items as $item) {
 
-                // ✅ HOURS INPUT
+                // HOURS INPUT
                 $vmcSoftHours = floatval($item['vmc_soft'] ?? 0);
                 $vmcHardHours = floatval($item['vmc_hard'] ?? 0);
 
-                // ✅ RATE FROM DB
+                // RATE FROM DB
                 $vmcSoftRate = $rates['Vmc Soft'] ?? 0;
                 $vmcHardRate = $rates['Vmc Hard'] ?? 0;
 
-                // ✅ FINAL COST
+                // FINAL COST
                 $vmcSoftCost = $vmcSoftHours * $vmcSoftRate;
                 $vmcHardCost = $vmcHardHours * $vmcHardRate;
 
-                // ✅ MACHINING COST
+                // MACHINING COST
                 $machiningCost = floatval($item['machining_cost'] ?? 0);
                 $grandTotal += $machiningCost;
 
+                $material = MaterialType::find($item['material_type_id'] ?? null);
+
+                if (!$material) {
+                    DB::rollBack();
+                    return back()->with('error', 'Invalid Material');
+                }
+
                 $quotation->items()->create([
                     'description'    => $item['Description'] ?? null,
-                    'material_type_id' => $item['material_type_id'] ?? null,
-
+                    
                     'dia'            => floatval($item['dia'] ?? 0),
                     'length'         => floatval($item['length'] ?? 0),
                     'width'          => floatval($item['width'] ?? 0),
@@ -468,6 +474,11 @@ class QuotationController extends Controller
 
                     'qty'            => floatval($item['qty'] ?? 1),
                     'qty_in_kg'      => floatval($item['qty_in_kg'] ?? 0),
+
+                    'material_gravity' => (float)($item['gravity'] ?? 0),
+
+                    'material_type_id' => $material->id,
+                    'material' => $material->material_type,
 
                     'material_rate'  => floatval($item['material_rate'] ?? 0),
                     'material_cost'  => floatval($item['material_cost'] ?? 0),
@@ -478,13 +489,13 @@ class QuotationController extends Controller
                     'cg'             => floatval($item['cg'] ?? 0),
                     'sg'             => floatval($item['sg'] ?? 0),
 
-                    // ✅ FIXED (MAIN LOGIC)
+                    // FIXED (MAIN LOGIC)
                     'vmc_soft'       => $vmcSoftCost,
                     'vmc_hard'       => $vmcHardCost,
 
                     'edm_qty'        => floatval($item['edm_qty'] ?? 0),
                     'edm_hole'       => floatval($item['edm_hole'] ?? 0),
-                    'ht'             => floatval($item['h_t'] ?? 0),
+                    'ht'             => (float)($item['ht'] ?? 0),
                     'wirecut'        => floatval($item['wirecut'] ?? 0),
 
                     'machining_cost' => $machiningCost,
@@ -492,8 +503,18 @@ class QuotationController extends Controller
             }
 
             /*  UPDATE TOTAL  */
+            /*  PROFIT + OVERHEAD CALCULATION */
+            $profit = ($grandTotal * ($request->profit_percent ?? 0)) / 100;
+            $overhead = ($grandTotal * ($request->overhead_percent ?? 0)) / 100;
+
+            $total = $grandTotal + $profit + $overhead;
+
+            /*  UPDATE TOTAL  */
             $quotation->update([
-                'total_manufacturing_cos' => $grandTotal
+                'total_manufacturing_cos' => round($grandTotal, 2),
+                'profit' => round($profit, 2),
+                'overhead' => round($overhead, 2),
+                'total_tool_cost' => round($total, 2),
             ]);
 
             DB::commit();

@@ -96,14 +96,15 @@ class MachinerecordController extends Controller
 
         // hightlight entry order
         $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')  // soft deleted ignore
             ->latest('id')
             ->value('work_order_no');
 
         $highlightProjectId = null;
 
-        if ($latestProjectId) {
+        if (!empty($latestProjectId) && str_contains($latestProjectId, '_')) {
             $parts = explode('_', $latestProjectId);
-            $highlightProjectId = $parts[1] ?? null; // project_id
+            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // cast to int
         }
 
         return view('Machinerecord.view', compact('record', 'workorders', 'highlightProjectId'));

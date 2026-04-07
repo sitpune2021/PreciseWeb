@@ -600,7 +600,7 @@
             block.find('.removeBlock').removeClass('d-none');
 
             $('#itemBlocks').append(block);
-            block.find('[name$="[qty]"]').val(1);
+            block.find('[name$="[qty]"]').val(0);
 
             calculateBlock(block);
 

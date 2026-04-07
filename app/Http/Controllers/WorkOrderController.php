@@ -55,18 +55,16 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $latestWorkOrderNo = MaterialOrder::where('admin_id', $adminId)
+        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')  // soft deleted ignore
             ->latest('id')
             ->value('work_order_no');
 
+        $highlightProjectId = null;
 
-        $highlightWorkOrderId = null;
-
-        if ($latestWorkOrderNo) {
-            $parts = explode('_', $latestWorkOrderNo);
-
-
-            $highlightWorkOrderId = $parts[2] ?? null;   // work_order_id
+        if (!empty($latestProjectId) && str_contains($latestProjectId, '_')) {
+            $parts = explode('_', $latestProjectId);
+            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // cast to int
         }
 
         //  project  last customer (old logic)
@@ -83,7 +81,7 @@ class WorkOrderController extends Controller
             'materialtype',
             'lastCustomer',
             'project',
-            'highlightWorkOrderId'
+            'highlightProjectId'
         ));
     }
 
@@ -172,21 +170,19 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $latestWorkOrderNo = MaterialOrder::where('admin_id', $adminId)
+        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')  // soft deleted ignore
             ->latest('id')
             ->value('work_order_no');
 
+        $highlightProjectId = null;
 
-        $highlightWorkOrderId = null;
-
-        if ($latestWorkOrderNo) {
-            $parts = explode('_', $latestWorkOrderNo);
-
-
-            $highlightWorkOrderId = $parts[2] ?? null;   // work_order_id
+        if (!empty($latestProjectId) && str_contains($latestProjectId, '_')) {
+            $parts = explode('_', $latestProjectId);
+            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // cast to int
         }
 
-        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer', 'workorders','highlightWorkOrderId'));
+        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer', 'workorders', 'highlightProjectId'));
     }
 
     public function update(Request $request, string $encryptedId)
