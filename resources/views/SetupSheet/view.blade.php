@@ -27,7 +27,6 @@
                                     <i class="ri-add-line align-middle"></i> Add Setup Sheets
                                 </a>
                                 @endif
-
                                 <!-- View Trash Button -->
                                 <a href="{{ route('trashSetupSheet') }}" class="btn btn-warning btn-sm">
                                     View Trash
@@ -56,7 +55,11 @@
                                     </thead>
                                     <tbody>
                                         @foreach($sheets->reverse() as $sheet)
-                                        <tr>
+                                        @php
+                                        $highlightClass = ($sheet->work_order_no == $highlightProjectId) ? 'table-warning' : '';
+                                        @endphp
+
+                                        <tr class="{{ $highlightClass }}">
                                             <td>{{ $loop->iteration }}</td>
                                             <!-- <td>{{ $sheet->id }}</td> -->
                                             <td>

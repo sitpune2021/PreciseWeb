@@ -327,7 +327,11 @@
                                             <tbody>
                                                 @foreach($workorders->reverse() as $wo)
 
-                                                <tr>
+                                                @php
+                                                $highlightClass = ($wo->id == $highlightWorkOrderId) ? 'table-warning' : '';
+                                                @endphp
+
+                                                <tr class="{{ $highlightClass }}">
                                                     <td>{{ $loop->iteration }}</td>
                                                     <!-- <td>{{ $wo->project?->project_no ?? '' }}</td> -->
                                                     <!-- <td>{{ $wo->customer?->code ?? '' }}</td> -->

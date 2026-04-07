@@ -155,7 +155,11 @@
                                             </thead>
                                             <tbody>
                                                 @foreach($projects->reverse() as $project)
-                                                <tr>
+                                                @php
+                                                $highlightClass = ($project->id == $highlightProjectId) ? 'table-warning' : '';
+                                                @endphp
+
+                                                <tr class="{{ $highlightClass }}">
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}</td>
                                                     <td>{{ $project->project_no }}</td>

@@ -33,7 +33,7 @@
                                 </a>
                             </div>
                         </div>
-                         @if(hasPermission('MachineRecord', 'view'))
+                        @if(hasPermission('MachineRecord', 'view'))
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="buttons-datatables-decs" class="display table table-bordered table-sm" style="width:100%">
@@ -61,7 +61,11 @@
                                     </thead>
                                     <tbody>
                                         @foreach($record->reverse() as $rec)
-                                        <tr>
+                                        @php
+                                        $highlightClass = ($rec->id == $highlightProjectId) ? 'table-warning' : '';
+                                        @endphp
+
+                                        <tr class="{{ $highlightClass }}">
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $rec->part_no }}</td>
                                             <!-- <td>{{ $rec->code}}</td> -->
@@ -85,7 +89,7 @@
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </a>
                                                 @endif
-                                               
+
                                                 <button type="button" class="btn btn-primary btn-sm viewBtn"
                                                     data-id="{{ $rec->id }}"
                                                     data-part="{{ $rec->part_no }}"

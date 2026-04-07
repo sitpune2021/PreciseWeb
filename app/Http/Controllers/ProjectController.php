@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Customer;
+use App\Models\MaterialOrder;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -29,17 +30,29 @@ class ProjectController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        // Projects (Latest First - by project_no ✅)
+        // Projects (Latest First - by project_no )
         $projects = Project::with('customer')
             ->where('admin_id', $adminId)
-            ->orderBy('project_no', 'desc') // 🔥 important change
+            ->orderBy('project_no', 'desc') //  important change
             ->get();
+
+        // hightlight entry order
+        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('work_order_no');
+
+        $highlightProjectId = null;
+
+        if ($latestProjectId) {
+            $parts = explode('_', $latestProjectId);
+            $highlightProjectId = $parts[1] ?? null; // project_id
+        }
 
         // Next Project Number (Safe)
         $maxProjectNo = Project::where('admin_id', $adminId)->max('project_no');
         $nextProjectNo = $maxProjectNo ? $maxProjectNo + 1 : 1;
 
-        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo'));
+        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId'));
     }
     public function storeProject(Request $request)
     {
@@ -109,9 +122,21 @@ class ProjectController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        // hightlight entry order
+        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('work_order_no');
+
+        $highlightProjectId = null;
+
+        if ($latestProjectId) {
+            $parts = explode('_', $latestProjectId);
+            $highlightProjectId = $parts[1] ?? null; // project_id
+        }
+
         $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
 
-        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo'));
+        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectId'));
     }
     public function update(Request $request, string $encryptedId)
     {

@@ -11,6 +11,7 @@ use App\Models\Setting;
 use App\Models\SetupSheet;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\MaterialOrder;
 use App\Models\MaterialType;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
@@ -87,11 +88,25 @@ class MachinerecordController extends Controller
     }
     public function ViewMachinerecord()
     {
+        $adminId = Auth::id();
+
         $record = MachineRecord::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 
-        return view('Machinerecord.view', compact('record', 'workorders'));
+        // hightlight entry order
+        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('work_order_no');
+
+        $highlightProjectId = null;
+
+        if ($latestProjectId) {
+            $parts = explode('_', $latestProjectId);
+            $highlightProjectId = $parts[1] ?? null; // project_id
+        }
+
+        return view('Machinerecord.view', compact('record', 'workorders', 'highlightProjectId'));
     }
     public function edit(string $encryptedId)
     {

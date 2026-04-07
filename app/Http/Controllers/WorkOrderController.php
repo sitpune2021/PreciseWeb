@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\WorkOrder;
 use App\Models\Customer;
+use App\Models\MaterialOrder;
 use App\Models\Project;
 use App\Models\MaterialType;
 use Carbon\Carbon;
@@ -54,6 +55,20 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        $latestWorkOrderNo = MaterialOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('work_order_no');
+
+
+        $highlightWorkOrderId = null;
+
+        if ($latestWorkOrderNo) {
+            $parts = explode('_', $latestWorkOrderNo);
+
+
+            $highlightWorkOrderId = $parts[2] ?? null;   // work_order_id
+        }
+
         //  project  last customer (old logic)
         if (!$lastCustomer) {
             $lastCustomer = WorkOrder::where('admin_id', $adminId)
@@ -67,7 +82,8 @@ class WorkOrderController extends Controller
             'workorders',
             'materialtype',
             'lastCustomer',
-            'project'
+            'project',
+            'highlightWorkOrderId'
         ));
     }
 
@@ -156,7 +172,21 @@ class WorkOrderController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer', 'workorders'));
+        $latestWorkOrderNo = MaterialOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('work_order_no');
+
+
+        $highlightWorkOrderId = null;
+
+        if ($latestWorkOrderNo) {
+            $parts = explode('_', $latestWorkOrderNo);
+
+
+            $highlightWorkOrderId = $parts[2] ?? null;   // work_order_id
+        }
+
+        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer', 'workorders','highlightWorkOrderId'));
     }
 
     public function update(Request $request, string $encryptedId)

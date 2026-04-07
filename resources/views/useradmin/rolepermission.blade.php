@@ -60,7 +60,7 @@
                                 @endphp
 
                                 @foreach([
-                                'Dashboard','Operator','Machine','Setting','Hsncode','MaterialType',
+                                'Dashboard','Operator','Machine','Setting','Hsncode','MaterialType','VmcRate',
                                 'FinancialYear','Customer','Vendors','Projects','WorkOrders',
                                 'SetupSheet','MachineRecord','MaterialReq','MaterialOrder','Invoice','Subscription','Quotation'
                                 ] as $module)

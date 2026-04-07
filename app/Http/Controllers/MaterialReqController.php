@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MaterialReq;
 use App\Models\Customer;
+use App\Models\MaterialOrder;
 use App\Models\MaterialType;
 use App\Models\WorkOrder;
 use Illuminate\Http\Request;
@@ -128,12 +129,18 @@ class MaterialReqController extends Controller
     }
     public function ViewMaterialReq()
     {
+        $adminId = Auth::id();
+
         $materialReq = MaterialReq::with(['workOrder.customer', 'workOrder.project', 'materialType'])
             ->where('admin_id', Auth::id())
             ->orderBy('created_at')
             ->get();
 
-        return view('MaterialReq.view', compact('materialReq'));
+       $latestWorkOrderNo = MaterialOrder::where('admin_id', $adminId)
+    ->latest('id')
+    ->value('work_order_no');
+
+        return view('MaterialReq.view', compact('materialReq', 'latestWorkOrderNo'));
     }
     public function editMaterialReq(string $encryptedId)
     {

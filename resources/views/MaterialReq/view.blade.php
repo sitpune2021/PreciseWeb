@@ -52,8 +52,11 @@
                                     </thead>
                                     <tbody>
                                         @foreach($materialReq->reverse() as $req)
+                                        @php
+                                        $highlightClass = ($req->work_order_no == $latestWorkOrderNo) ? 'table-warning' : '';
+                                        @endphp
 
-                                        <tr>
+                                        <tr class="{{ $highlightClass }}">
                                             <!-- <td>{{ $loop->iteration }}</td> -->
                                             <td>{{ $req->sr_no }}</td>
                                             <td>

@@ -17,6 +17,7 @@ class RolePermissionSeeder extends Seeder
             'Setting',
             'Hsncode',
             'MaterialType',
+            'VmcRate',           //new add
             'FinancialYear',
             'UserAdmin',
             'Customer',
@@ -32,11 +33,8 @@ class RolePermissionSeeder extends Seeder
             'Quotation'
         ];
 
-        /**
-         * ==========================
-         * SUPER ADMIN (role_id = 1)
-         * ==========================
-         */
+        //  SUPER ADMIN (role_id = 1)
+
         $superPermissions = [];
 
         foreach ($modules as $module) {
@@ -49,29 +47,27 @@ class RolePermissionSeeder extends Seeder
                 ];
             } else {
                 $superPermissions[$module] = [
-                    'add', 'view', 'edit', 'delete'
+                    'add',
+                    'view',
+                    'edit',
+                    'delete'
                 ];
             }
         }
 
         RolePermission::updateOrCreate(
             [
-                'admin_id' => 1,   // 🔥 Super Admin user id
+                'admin_id' => 1,   //  Super Admin user id
                 'role_id'  => 1,
             ],
             [
                 'permissions' => $superPermissions
             ]
         );
-
-        /**
-         * ==========================
-         * ADMIN (role_id = 2)
-         * ==========================
-         */
+        //   ADMIN (role_id = 2)
         RolePermission::updateOrCreate(
             [
-                'admin_id' => 1,   // 🔥 Admin belongs to Super Admin
+                'admin_id' => 1,   //Admin belongs to Super Admin
                 'role_id'  => 2,
             ],
             [
@@ -80,5 +76,3 @@ class RolePermissionSeeder extends Seeder
         );
     }
 }
-
-

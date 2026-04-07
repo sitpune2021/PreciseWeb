@@ -26,6 +26,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\ProformaInvoiceController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\RateController;
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Artisan;
 
@@ -288,6 +289,16 @@ Route::get( 'quotation/delete/{id}'                       , [QuotationController
 // Route::put( 'quotation/update/{id}'                       , [QuotationController::class, 'update'])->name('updatequotation');
 Route::put('quotation/update/{id}'                        , [QuotationController::class, 'update'])->name('updatequotation');
 Route::get('printquotation/{id}'                          , [QuotationController::class, 'printquotation'])->name('printquotation');
+
+// quotation-rate Routes
+Route::get( 'rate/add'                                    , [RateController::class, 'Addrate'])->name('Addrate');
+Route::post('rate/store'                                  , [RateController::class, 'storerate'])->name('storerate');
+Route::get( 'rate/edit/{id}'                              , [RateController::class, 'editrate'])->name('editrate');
+Route::put( 'rate/update/{id}'                            , [RateController::class, 'updaterate'])->name('updaterate');
+Route::get( 'rate/delete/{id}'                            , [RateController::class, 'destroy'])->name('deleterate');
+Route::post('rate/updateStatus'                           , [RateController::class, 'updateratestatus'])->name('updateratestatus');
+Route::get( 'rate/trash'                                  , [RateController::class, 'trash'])->name('trashrate');
+Route::get( 'rate/restore/{id}'                           , [RateController::class, 'restore'])->name('restorerate');
  
 });
 Route::get('/clear-app-cache', function () {

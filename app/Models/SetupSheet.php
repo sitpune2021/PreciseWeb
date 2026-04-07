@@ -54,4 +54,5 @@ class SetupSheet extends Model
 {
     return $this->belongsTo(WorkOrder::class, 'part_code');
 }
+
 }

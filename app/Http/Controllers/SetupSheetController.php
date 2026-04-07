@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use PDF;
 use App\Models\SetupSheet;
 use App\Models\Customer;
+use App\Models\MaterialOrder;
 use App\Models\WorkOrder;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -18,7 +19,6 @@ class SetupSheetController extends Controller
         $workorder = null;
         $lastCustomer = null;
         $selectedPartCode = ''; // ← add this
-
         if ($id) {
 
             $woId = base64_decode($id);
@@ -39,7 +39,6 @@ class SetupSheetController extends Controller
                     ($workorder->quantity ?? '');
             }
         }
-
         // Customers fetch
         $codes = Customer::where('status', 1)
             ->where('admin_id', $adminId)
@@ -151,13 +150,28 @@ class SetupSheetController extends Controller
 
         return redirect()->route('ViewSetupSheet')->with('success', 'SetupSheet created successfully.');
     }
-
-
     public function ViewSetupSheet()
     {
-        $sheets = SetupSheet::with(['workorder.customer', 'workorder.project'])->where('admin_id', Auth::id())->latest()->get(); // id ascending
+        $adminId = Auth::id();
 
-        return view('SetupSheet.view', compact('sheets'));
+        $sheets = SetupSheet::with(['workorder.customer', 'workorder.project'])
+            ->where('admin_id', $adminId)
+            ->latest()
+            ->get();
+
+        // hightlight entry order
+        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('work_order_no');
+
+        $highlightProjectId = null;
+
+        if ($latestProjectId) {
+            $parts = explode('_', $latestProjectId);
+            $highlightProjectId = $parts[1] ?? null; // project_id
+        }
+
+        return view('SetupSheet.view', compact('sheets', 'highlightProjectId'));
     }
 
     public function editSetupSheet(string $encryptedId)

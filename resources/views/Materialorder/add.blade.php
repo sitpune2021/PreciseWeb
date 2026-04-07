@@ -214,6 +214,18 @@
                 #previewTable thead th.bg-raw {
                     background-color: #dadad7 !important;
                     color: #333333;
+
+                }
+
+                /* Table border fix */
+                #previewTable {
+                    border-collapse: collapse;
+                }
+
+                #previewTable,
+                #previewTable th,
+                #previewTable td {
+                    border: 1px solid #797878 !important;
                 }
             </style>
             <div class="row">

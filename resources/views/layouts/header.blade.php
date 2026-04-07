@@ -470,6 +470,14 @@
                                 <li><a href="{{ route('AddMaterialType') }}" class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Material Type</a></li>
                                 @endif
 
+                               @if(hasPermission('VmcRate','add') || hasPermission('VmcRate','view'))  
+                                <li>
+                                    <a href="{{ route('Addrate') }}" class="nav-link {{ request()->routeIs('Addrate') ? 'active' : '' }}">
+                                        <i class="ri-add-circle-line me-1"></i> VMC Rate
+                                    </a>
+                                </li>
+                                @endif
+
                                 @if(hasPermission('FinancialYear','add') || hasPermission('FinancialYear','view'))
                                 <li><a href="{{ route('AddFinancialYear') }}" class="nav-link {{ request()->routeIs('AddFinancialYear') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Financial Year</a></li>
                                 @endif

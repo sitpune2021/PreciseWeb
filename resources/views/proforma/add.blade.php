@@ -127,8 +127,11 @@
 
                                         <td><input type="number" name="material_rate[]" class="form-control material_rate" value="{{ $item->material_rate ?? 0 }}" readonly></td>
                                         <td><input type="text" name="hrs[]" class="form-control hrs" value="{{ $item->hrs }}" readonly></td>
-                                        <td><input type="number" name="adj[]" class="form-control adj" value="{{ $item->adj ?? 0 }}"></td>
-                                        <td><input type="text" name="vmc_hr[]" class="form-control vmc_hr" value="{{ $item->vmc ?? 0 }}" readonly></td>
+                                        <td>
+                                            <input type="number" name="adj[]" class="form-control adj"
+                                                value="{{ $item->adjustment ?? 0 }}" step="0.01">
+                                        </td>
+                                        <input type="text" name="vmc_hr[]" class="form-control vmc_hr" value="{{ is_numeric($item->vmc) ? $item->vmc : 0 }}" readonly>
 
                                         <td><button type="button" class="btn btn-danger btn-sm removeItem">X</button></td>
                                     </tr>
@@ -224,7 +227,7 @@
                     </div>
 
                     <div class="col-lg-12 text-end">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="Submit" class="btn btn-primary">
                             {{ isset($data) ? 'Update' : 'Submit' }}
                         </button>
                         &nbsp;
@@ -301,8 +304,6 @@
                 }
             });
         }
-
-
         $('#addItemBtn').on('click', function() {
             const options = $('#machineSelectTemplate').html();
 
@@ -361,7 +362,7 @@
         }
 
         function loadExistingInvoiceItems() {
-            let items = @json($data ->items ?? []);
+            let items = @json($data -> items ?? []);
             console.log(items);
 
             if (!items || !Array.isArray(items)) items = [];
@@ -471,8 +472,6 @@
 
         function calculateTotals() {
 
-
-
             let sub = 0;
             $('#itemsTable tbody tr').each(function() {
                 const qty = parseFloat($(this).find('.qty').val()) || 0;
@@ -494,9 +493,12 @@
             const igstAmt = (sub * (globalIGST || 0)) / 100;
 
             const totalTax = sgstAmt + cgstAmt + igstAmt;
-
             const beforeRound = sub + totalTax;
-            const roundOff = Math.round(beforeRound) - beforeRound;
+
+            // फक्त manual round off वापरू
+            let roundOff = parseFloat($('#round_off').val()) || 0;
+            $('#round_off').data('manual', true); // always manual
+
             const grand = beforeRound + roundOff;
 
             $('#sub_total').val(sub.toFixed(2));
@@ -504,11 +506,15 @@
             $('#cgst_amt').val(cgstAmt.toFixed(2));
             $('#igst_amt').val(igstAmt.toFixed(2));
             $('#total_tax').val(totalTax.toFixed(2));
-            $('#round_off').val(roundOff.toFixed(2));
             $('#grand_total').val(grand.toFixed(2));
-            $('#amount_words').val(numberToWords(Math.round(grand)) + " only");
 
+            $('#amount_words').val(numberToWords(Math.round(grand)) + " only");
         }
+
+        $(document).on('input', '#round_off', function() {
+            $(this).data('manual', true); // ✅ mark as manual
+            calculateTotals();
+        });
 
         // ---------- numberToWords ----------
         function numberToWords(num) {
