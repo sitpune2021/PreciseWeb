@@ -61,7 +61,6 @@
                                     </thead>
                                     <tbody>
                                         @foreach($record->reverse() as $rec)
-
                                         @php
                                         $highlightClass = ($rec->part_no === $highlightPartNo) ? 'table-warning' : '';
                                         @endphp
@@ -107,7 +106,7 @@
                                                     data-time_taken="{{ $rec->time_taken }}"
                                                     data-hrs="{{ $rec->hrs }}"
                                                     data-adjustment="{{ $rec->adjustment }}"
-                                                    data-invoice_no="{{ $rec->invoice_no }}">
+                                                    >
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
 
@@ -208,10 +207,10 @@
                                     <th>Actual Hrs</th>
                                     <td id="view_actual_hrs"></td>
                                 </tr> -->
-                                <tr>
+                                <!-- <tr>
                                     <th>Invoice No</th>
                                     <td id="view_invoice"></td>
-                                </tr>
+                                </tr> -->
                             </table>
                         </div>
                     </div>
@@ -238,7 +237,7 @@
                             document.getElementById("view_hrs").textContent = this.dataset.hrs;
                             // document.getElementById("view_time_taken").textContent = this.dataset.time_taken;
                             // document.getElementById("view_actual_hrs").textContent = this.dataset.actual_hrs;
-                            document.getElementById("view_invoice").textContent = this.dataset.invoice_no;
+                            // document.getElementById("view_invoice").textContent = this.dataset.invoice_no;
 
                             let modal = new bootstrap.Modal(document.getElementById("viewRecordModal"));
                             modal.show();

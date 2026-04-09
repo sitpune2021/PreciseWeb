@@ -133,15 +133,15 @@ for ($m = 1; $m <= 12; $m++) {
 
     /* Highlight latest order project */
     $latestOrder = MaterialOrder::where('admin_id', Auth::id())
-    ->whereNull('deleted_at') // ✅ important
-    ->latest('created_at') // ✅ safer
+    ->whereNull('deleted_at')
+    ->latest('created_at')
     ->first();
 
     $highlightProjectId = null;
 
     if (!empty($latestOrder?->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
     $parts = explode('_', $latestOrder->work_order_no);
-    $highlightProjectId = isset($parts[1]) ? (int)$parts[1] : null; // ✅ cast to int
+    $highlightProjectId = isset($parts[1]) ? (int)$parts[1] : null;
     }
 
     $newWorkOrders = WorkOrder::where('admin_id', Auth::id())
@@ -153,7 +153,6 @@ for ($m = 1; $m <= 12; $m++) {
     ->latest()
     ->take(5)
     ->get();
-
 
     // ---------------- Machine Records ----------------
     $totalMachineRecords = MachineRecord::where('admin_id', Auth::id())->count();
@@ -500,8 +499,9 @@ for ($m = 1; $m <= 12; $m++) {
 
                                     <tbody>
                                         @forelse($latestWorkOrders as $work)
+
                                         @php
-                                        $highlightClass = ((int)$work->id === (int)$highlightProjectId) ? 'table-warning' : '';
+                                        $highlightClass = ((int)$work->project_id === (int)$highlightProjectId) ? 'table-warning' : '';
                                         @endphp
 
                                         <tr class="{{ $highlightClass }} align-middle text-center">

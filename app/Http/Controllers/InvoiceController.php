@@ -228,63 +228,77 @@ class InvoiceController extends Controller
         }
         return response()->json(['error' => 'Not Found'], 404);
     }
-    public function getMachineRecords($customer_id)
+      public function getMachineRecords($customer_id)
     {
         $adminId = Auth::id();
 
-        $usedWorkOrders = \DB::table('invoice_items')
-            ->join('invoices', 'invoice_items.invoice_id', '=', 'invoices.id')
-            ->where('invoices.customer_id', $customer_id)
-            ->where('invoices.admin_id', $adminId)
-            ->pluck('invoice_items.work_order_id')
+        //  Already used machine IDs (NULL avoid)
+        $usedMachines = \DB::table('proforma_items')
+            ->join('proforma_invoices', 'proforma_items.invoice_id', '=', 'proforma_invoices.id')
+            ->where('proforma_invoices.customer_id', $customer_id)
+            ->where('proforma_invoices.admin_id', $adminId)
+            ->whereNotNull('proforma_items.machine_id') //  FIX
+            ->pluck('proforma_items.machine_id')
             ->toArray();
 
-        $records = WorkOrder::where('admin_id', $adminId)
+        //  WorkOrders FIRST (for filtering machine records properly)
+        $workOrders = WorkOrder::where('admin_id', $adminId)
             ->where('customer_id', $customer_id)
-            ->where('status', 1)
-            ->whereNotIn('id', $usedWorkOrders)
-            ->orderBy('id', 'asc')
-            ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
+            ->get()
+            ->keyBy('id');
 
-        if ($records->isEmpty()) {
+        //  Only pending + unused + valid workorder machine records
+        $machineRecords = MachineRecord::where('admin_id', $adminId)
+            ->where('status', 'pending')
+            ->whereIn('work_order_id', $workOrders->keys()) //  IMPORTANT FIX
+            ->whereNotIn('id', $usedMachines)
+            ->get();
+
+        if ($machineRecords->isEmpty()) {
             return response()->json([]);
         }
 
-
-        $machineRecords = MachineRecord::where('admin_id', $adminId)
-            ->get(['id', 'work_order_id', 'hrs']);
-
-
+        //  Materials
         $materials = MaterialType::where('admin_id', $adminId)
             ->get(['material_type', 'material_rate']);
 
+        //  FINAL DATA (Your same logic)
+        $data = $machineRecords
+            ->groupBy(function ($m) {
+                
+                return $m->work_order_id . '|' . $m->part_no . '|' . $m->material;
+            })
+            ->map(function ($group) use ($materials, $workOrders) {
 
-        $data = $records->map(function ($r) use ($materials, $machineRecords) {
+                $first = $group->first(); //  reference record
 
-            $machine = $machineRecords->first(function ($m) use ($r) {
+                $workOrder = $workOrders[$first->work_order_id] ?? null;
+                $mat = $materials->firstWhere('material_type', $first->material);
 
-                if (!empty($m->work_order_id) && $m->work_order_id == $r->id) {
-                    return true;
-                }
+                return [
+                    'id'               => $first->id, // optional (or null)
+                    'project_id'       => $workOrder->project_id ?? null,
 
-                return trim(strtolower($m->work_order)) === trim(strtolower($r->project_id));
-            });
+                    //  same description
+                    'part_description' => $first->first_set ?? 'N/A',
 
-            $mat = $materials->firstWhere('material_type', $r->material);
+                    //  WorkOrder
+                    'quantity'         => $workOrder->quantity ?? 0,
+                    'exp_time'         => $workOrder->exp_time ?? 0,
 
-            return [
-                'id'               => $r->id,
-                'project_id'       => $r->project_id,
-                'part_description' => $r->part_description,
-                'quantity'         => $r->quantity,
-                'exp_time'         => $r->exp_time,
-                'vmc_hr'           => $machine->hrs ?? 0,
-                'material_type'    => $r->material,
-                'material_rate'    => $mat->material_rate ?? 0,
-                'workorder_id'     => $r->id,
-                'machine_id'       => $machine->id ?? null,
-            ];
-        });
+                    //  TOTAL HOURS SUM
+                    'vmc_hr'           => $group->sum('hrs'),
+
+                    'material_type'    => $first->material,
+                    'material_rate'    => $mat->material_rate ?? 0,
+
+                    'workorder_id'     => $first->work_order_id,
+
+                    // IMPORTANT: multiple machine IDs
+                    'machine_ids'      => $group->pluck('id')->toArray(),
+                ];
+            })
+            ->values();
 
         return response()->json($data);
     }

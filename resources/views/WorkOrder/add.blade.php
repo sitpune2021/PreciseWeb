@@ -327,7 +327,7 @@
                                             <tbody>
                                                 @foreach($workorders->reverse() as $wo)
                                                 @php
-                                                $highlightClass = ($wo->project_id == $highlightProjectId) ? 'table-warning' : '';
+                                                $highlightClass = ((int)$wo->project_id === (int)$highlightProjectId) ? 'table-warning' : '';
                                                 @endphp
 
                                                 <tr class="{{ $highlightClass }}">

@@ -13,7 +13,7 @@ class InvoiceItem extends Model
         'invoice_id',
         'work_order_id',
         'project_id',
-        'work_order_id ',
+        'machine_id',
         'part_name',
         'hsn_code',
         'qty',
@@ -45,6 +45,11 @@ class InvoiceItem extends Model
     {
         return $this->belongsTo(WorkOrder::class, 'work_order_id');
     }
+
+    public function machine()
+{
+    return $this->belongsTo(MachineRecord::class, 'machine_id');
+}
 
  
 

@@ -12,6 +12,7 @@ class ProformaItem extends Model
     protected $fillable = [
         'invoice_id',
         'work_order_id',
+        'machine_id',
         'project_id',
         'work_order_id',
         'part_name',
@@ -48,4 +49,9 @@ class ProformaItem extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function machine()
+{
+    return $this->belongsTo(MachineRecord::class, 'machine_id');
+}
 }

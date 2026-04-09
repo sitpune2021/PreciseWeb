@@ -54,7 +54,7 @@ class ProjectController extends Controller
         $maxProjectNo = Project::where('admin_id', $adminId)->max('project_no');
         $nextProjectNo = $maxProjectNo ? $maxProjectNo + 1 : 1;
 
-        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId','highlightProjectPrefix'));
+        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId', 'highlightProjectPrefix'));
     }
     public function storeProject(Request $request)
     {
@@ -125,20 +125,24 @@ class ProjectController extends Controller
             ->get();
 
         // hightlight entry order
-        $latestProjectId = MaterialOrder::where('admin_id', $adminId)
+        $latestMaterialOrderNo = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
             ->latest('id')
             ->value('work_order_no');
 
         $highlightProjectId = null;
+        $highlightProjectPrefix = null;
 
-        if ($latestProjectId) {
-            $parts = explode('_', $latestProjectId);
-            $highlightProjectId = $parts[1] ?? null; // project_id
+        if (!empty($latestMaterialOrderNo) && str_contains($latestMaterialOrderNo, '_')) {
+            $parts = explode('_', $latestMaterialOrderNo);
+            $highlightProjectPrefix = $parts[0] ?? null; // SHM
+            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // 2
         }
+
 
         $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
 
-        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectId'));
+        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectId', 'highlightProjectPrefix'));
     }
     public function update(Request $request, string $encryptedId)
     {

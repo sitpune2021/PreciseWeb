@@ -329,7 +329,7 @@
 
                 <td class="center">{{ $i + 1 }}</td>
                 <td class="center">
-                    {{ $item->workOrder->project->project_no }}
+                    {{ $item->machine->id ?? '-' }}
                 </td>
 
                 <td>{{ $item->part_name ?? '' }}</td>

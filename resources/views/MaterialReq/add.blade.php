@@ -439,18 +439,18 @@
                     return;
                 }
 
-                // ✅ Volume
+                //  Volume
                 let volume = dia > 0 ?
                     Math.PI * Math.pow(dia / 2, 2) * height :
                     len * width * height;
 
-                // ✅ Weight (per piece)
+                //  Weight (per piece)
                 let weight_per_piece = (volume * sg) / 1000000;
 
-                // ✅ Total Weight
+                //  Total Weight
                 let total_weight = weight_per_piece * qty;
 
-                // ✅ FINAL MATERIAL COST
+                //  FINAL MATERIAL COST
                 let material_cost = weight_per_piece * rate * qty;
 
                 $("#weight").val(total_weight.toFixed(3));

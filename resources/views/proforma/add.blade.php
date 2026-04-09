@@ -127,11 +127,8 @@
 
                                         <td><input type="number" name="material_rate[]" class="form-control material_rate" value="{{ $item->material_rate ?? 0 }}" readonly></td>
                                         <td><input type="text" name="hrs[]" class="form-control hrs" value="{{ $item->hrs }}" readonly></td>
-                                        <td>
-                                            <input type="number" name="adj[]" class="form-control adj"
-                                                value="{{ $item->adjustment ?? 0 }}" step="0.01">
-                                        </td>
-                                        <input type="text" name="vmc_hr[]" class="form-control vmc_hr" value="{{ is_numeric($item->vmc) ? $item->vmc : 0 }}" readonly>
+                                        <td><input type="number" name="adj[]" class="form-control adj" value="{{ $item->adj ?? 0 }}"></td>
+                                        <td><input type="text" name="vmc_hr[]" class="form-control vmc_hr" value="{{ $item->vmc ?? 0 }}" readonly></td>
 
                                         <td><button type="button" class="btn btn-danger btn-sm removeItem">X</button></td>
                                     </tr>
@@ -227,7 +224,7 @@
                     </div>
 
                     <div class="col-lg-12 text-end">
-                        <button type="Submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
                             {{ isset($data) ? 'Update' : 'Submit' }}
                         </button>
                         &nbsp;
@@ -280,16 +277,17 @@
 
                 machineData.forEach(item => {
                     options += `
-                <option value="${item.part_description}"
-                    data-project-id="${item.project_id}"
-                    data-workorder-id="${item.workorder_id}"
-                    data-hsn="${item.hsn_code ?? ''}"
-                    data-qty="${item.quantity}"
-                    data-exp="${item.exp_time}"
-                    data-vmc="${item.vmc_hr}"
-                    data-material_rate="${item.material_rate}">
-                    ${item.part_description}
-                </option>`;
+                    <option value="${item.part_description}"
+                        data-machine-ids='${JSON.stringify(item.machine_ids)}'
+                        data-project-id="${item.project_id}"
+                        data-workorder-id="${item.workorder_id}"
+                        data-hsn="${item.hsn_code ?? ''}"
+                        data-qty="${item.quantity}"
+                        data-exp="${item.exp_time}"
+                        data-vmc="${item.vmc_hr}"
+                        data-material_rate="${item.material_rate}">
+                        ${item.part_description}
+                    </option>`;
                 });
 
                 $('#machineSelectTemplate').html(options);
@@ -304,22 +302,21 @@
                 }
             });
         }
+
         $('#addItemBtn').on('click', function() {
             const options = $('#machineSelectTemplate').html();
-
             const row = `
-<tr>
+ <tr>
     <td>
-        <select name="desc[]" class="form-select machineSelect" required>${options}</select>
-        <input type="hidden" name="work_order_id[]" class="work_order_id">
+        <select name="desc[]" class="form-select machineSelect" required>${options}</select>  
     </td>
     <td><input type="number" name="qty[]" class="form-control qty" step="1" min="1" readonly></td>
     <td><input type="number" name="rate[]" class="form-control rate" step="0.01" readonly></td>
     <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
     <td><input type="number" name="material_rate[]" class="form-control material_rate" step="0.01" readonly></td>
-    <td><input type="text" name="hrs[]" class="form-control hrs" readonly></td>
-    <td><input type="number" name="adj[]" class="form-control adj" value="0"></td>
     <td><input type="text" name="vmc_hr[]" class="form-control vmc_hr" readonly></td>
+    <td><input type="number" name="adj[]" class="form-control adj" value="0"></td>
+    <td><input type="text" name="hrs[]" class="form-control hrs" readonly></td>
     <td><button type="button" class="btn btn-danger btn-sm removeItem">X</button></td>
 </tr>`;
             $('#itemsTable tbody').append(row);
@@ -386,6 +383,7 @@
                     <input type="hidden" name="work_order_id[]" value="${inv.work_order_id}">
                      <input type="hidden" name="project_id[]" value="${inv.project_id}">
                      <input type="hidden" name="id[]" value="${inv.id}">
+                     <input type="hidden" name="machine_ids[]" value='${JSON.stringify(inv.machine_id ? [inv.machine_id] : [])}'>
                     
                 </td>              
                 <td><input type="number" name="qty[]" class="form-control qty" value="${inv.qty}" readonly></td>
@@ -395,6 +393,7 @@
                 <td><input type="text" name="hrs[]" class="form-control hrs" value="${inv.hrs}" readonly></td>
                 <td><input type="number" name="adj[]" class="form-control adj" value="${inv.adj ?? 0}"></td>
                 <td><input type="text" name="vmc_hr[]" class="form-control vmc_hr" value="${inv.vmc ?? 0}" readonly></td>
+
                 <td><button type="button" class="btn btn-danger btn-sm removeItem">X</button></td>
             </tr>`;
                 $('#itemsTable tbody').append(row);
@@ -408,42 +407,53 @@
             tryCalculate();
         }
 
-        $(document).on('change', '.machineSelect', function() {
-            const selected = $(this).find('option:selected');
-            const row = $(this).closest('tr');
+       $(document).on('change', '.machineSelect', function() {
+    const selected = $(this).find('option:selected');
+    const row = $(this).closest('tr');
 
-            row.find('.qty').val(selected.data('qty') || 1);
-            row.find('.hrs').val(selected.data('exp') || 0);
-            row.find('.material_rate').val(selected.data('material_rate') || 0);
-            row.find('.vmc_hr').val(selected.data('vmc') || 0);
+    const totalMachineHrs = parseFloat(selected.data('vmc')) || 0;
 
-            if (!row.find('input[name="project_id[]"]').length) {
-                row.append(`<input type="hidden" name="project_id[]" value="${selected.data('project-id') || ''}">`);
-            } else {
-                row.find('input[name="project_id[]"]').val(selected.data('project-id') || '');
-            }
+    row.find('.qty').val(selected.data('qty') || 1);
 
-            if (!row.find('input[name="work_order_id[]"]').length) {
-                row.append(`<input type="hidden" name="work_order_id[]" value="${selected.data('workorder-id') || ''}">`);
-            } else {
-                row.find('input[name="work_order_id[]"]').val(selected.data('workorder-id') || '');
-            }
+    // 👉 HRS = WorkOrder exp_time
+    row.find('.hrs').val(selected.data('exp') || 0);
 
-            (function calcRowNow(r) {
-                const qty = parseFloat(r.find('.qty').val()) || 0;
-                const exp = parseFloat(r.find('.hrs').val()) || 0;
-                const adj = parseFloat(r.find('.adj').val()) || 0;
-                const materialRate = parseFloat(r.find('.material_rate').val()) || 0;
+    row.find('.material_rate').val(selected.data('material_rate') || 0);
 
-                const rate = qty > 0 ? ((exp + adj) * materialRate) / qty : 0;
-                const amount = rate * qty;
+    // 👉 VMC HR separate ठेव
+    row.find('.vmc_hr').val(totalMachineHrs);
 
-                r.find('.rate').val(rate.toFixed(2));
-                r.find('.amount').val(amount.toFixed(2));
-            })(row);
+    // hidden fields (same)
+    if (!row.find('input[name="project_id[]"]').length) {
+        row.append(`<input type="hidden" name="project_id[]" value="${selected.data('project-id') || ''}">`);
+    } else {
+        row.find('input[name="project_id[]"]').val(selected.data('project-id') || '');
+    }
 
-            if (gstLoaded) calculateTotals();
-        });
+    let machineIds = selected.data('machine-ids') || [];
+
+    row.find('input[name="machine_ids[]"]').remove();
+
+    row.append(`
+        <input type="hidden" name="machine_ids[]" value='${JSON.stringify(machineIds)}'>
+    `);
+
+    // calculation
+    (function calcRowNow(r) {
+        const qty = parseFloat(r.find('.qty').val()) || 0;
+        const exp = parseFloat(r.find('.vmc_hr').val()) || 0; // now exp_time
+        const adj = parseFloat(r.find('.adj').val()) || 0;
+        const materialRate = parseFloat(r.find('.material_rate').val()) || 0;
+
+        const rate = qty > 0 ? ((exp + adj) * materialRate) / qty : 0;
+        const amount = rate * qty;
+
+        r.find('.rate').val(rate.toFixed(2));
+        r.find('.amount').val(amount.toFixed(2));
+    })(row);
+
+    if (gstLoaded) calculateTotals();
+});
 
         $('#hsnSelect').on('change', function() {
             const selected = $(this).find('option:selected');
@@ -472,6 +482,8 @@
 
         function calculateTotals() {
 
+
+
             let sub = 0;
             $('#itemsTable tbody tr').each(function() {
                 const qty = parseFloat($(this).find('.qty').val()) || 0;
@@ -493,12 +505,9 @@
             const igstAmt = (sub * (globalIGST || 0)) / 100;
 
             const totalTax = sgstAmt + cgstAmt + igstAmt;
+
             const beforeRound = sub + totalTax;
-
-            // फक्त manual round off वापरू
-            let roundOff = parseFloat($('#round_off').val()) || 0;
-            $('#round_off').data('manual', true); // always manual
-
+            const roundOff = Math.round(beforeRound) - beforeRound;
             const grand = beforeRound + roundOff;
 
             $('#sub_total').val(sub.toFixed(2));
@@ -506,15 +515,11 @@
             $('#cgst_amt').val(cgstAmt.toFixed(2));
             $('#igst_amt').val(igstAmt.toFixed(2));
             $('#total_tax').val(totalTax.toFixed(2));
+            $('#round_off').val(roundOff.toFixed(2));
             $('#grand_total').val(grand.toFixed(2));
-
             $('#amount_words').val(numberToWords(Math.round(grand)) + " only");
-        }
 
-        $(document).on('input', '#round_off', function() {
-            $(this).data('manual', true); // ✅ mark as manual
-            calculateTotals();
-        });
+        }
 
         // ---------- numberToWords ----------
         function numberToWords(num) {

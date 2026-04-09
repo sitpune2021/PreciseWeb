@@ -272,12 +272,12 @@
                                     </div> -->
 
                                     <!-- Invoice No -->
-                                    <div class="col-md-2">
+                                    <!-- <div class="col-md-2">
                                         <label class="form-label">Invoice No</label>
                                         <input type="text" name="invoice_no" class="form-control"
                                             value="{{ old('invoice_no', $record->invoice_no ?? '') }}">
                                         @error('invoice_no') <span class="text-red small">{{ $message }}</span> @enderror
-                                    </div>
+                                    </div> -->
                                     <!-- Buttons -->
                                     <div class="col-lg-12 text-end">
                                         <button type="submit" class="btn btn-primary">
