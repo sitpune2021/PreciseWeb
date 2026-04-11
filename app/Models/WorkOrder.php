@@ -24,6 +24,7 @@ class WorkOrder extends Model
         'quantity',
         'material',
         'project_no',
+        'material_id'
     ];
 
     public function customer()
@@ -66,4 +67,9 @@ class WorkOrder extends Model
     {
         return $this->belongsTo(MaterialType::class, 'material');
     }
+
+    public function materialData()
+{
+    return $this->belongsTo(MaterialType::class, 'material_id');
+}
 }

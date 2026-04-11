@@ -200,19 +200,19 @@
 
                                         <div class="col-md-3">
                                             <label for="material" class="form-label">Material Type <span class="mandatory">*</span></label>
-                                            <select name="material" id="material" class="form-control form-select">
+                                            <select name="material_id" id="material" class="form-control form-select">
                                                 <option value="">Select Material</option>
                                                 @foreach($materialtype as $mat)
-                                                <option value="{{ $mat->material_type }}"
-                                                    {{ (isset($workorder) && $workorder->material == $mat->material_type) || old('material') == $mat->material_type ? 'selected' : '' }}>
+                                                <option value="{{ $mat->id }}"
+                                                    {{ (isset($workorder) && $workorder->material_id == $mat->id) || old('material_id') == $mat->id ? 'selected' : '' }}>
                                                     {{ $mat->material_type }}
                                                 </option>
                                                 @endforeach
                                             </select>
-                                            @error('material')
+                                            @error('material_id')
                                             <span class="text-red small">{{ $message }}</span>
                                             @enderror
-                                            <span class="text-red small material"></span>
+                                            <span class="text-red small material_id"></span>
                                         </div>
 
                                         <div class="col-md-6">
@@ -321,6 +321,7 @@
                                                     <th>Height</th>
                                                     <th>Exp</br>Time</th>
                                                     <th>Qty</th>
+                                                    <th>material</th>
                                                     <th width="10%">Action</th>
                                                 </tr>
                                             </thead>
@@ -347,6 +348,7 @@
                                                     <td>{{ $wo->height }}</td>
                                                     <td>{{ $wo->exp_time }}</td>
                                                     <td>{{ $wo->quantity }}</td>
+                                                    <td>{{ $wo->materialData->material_type ?? '-' }}</td>
                                                     <td>
                                                         @if(hasPermission('WorkOrders', 'edit'))
                                                         <a href="{{ route('editWorkOrder', base64_encode($wo->id)) }}">
@@ -473,7 +475,7 @@
             hasError = true;
         }
         if (!material) {
-            $(".material").text("The Material field is required");
+            $(".material_id").text("The Material field is required");
             hasError = true;
         }
 
@@ -523,7 +525,10 @@
                                                 <td>${rowCount}</td>
                                                 <td><input type="hidden" name="rows[${rowCount}][customer_id]" value="${customerVal}">${customer}</td>
                                                 <td><input type="hidden" name="rows[${rowCount}][part]" value="${part}">${part}</td>
-                                                <td><input type="hidden" name="rows[${rowCount}][material]" value="${material}">${material_name}</td>
+                                                <td>
+<input type="hidden" name="rows[${rowCount}][material_id]" value="${material}">
+${material_name}
+</td>
                                                 <td><input type="hidden" name="rows[${rowCount}][project_id]" value="${project_id}">${project_name}</td>
                                                 <td><input type="hidden" name="rows[${rowCount}][date]" value="${date}">${date}</td>
                                                 <td><input type="hidden" name="rows[${rowCount}][dimeter]" value="${dimeter}">${dimeter}</td>

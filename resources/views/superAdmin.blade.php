@@ -625,7 +625,7 @@ for ($m = 1; $m <= 12; $m++) {
 
                                                 <td>
                                                     @if($rec->end_time)
-                                                    <span class="text-success fw-bold">{{ $rec->hrs }} hr</span>
+                                                    <span class="text-success fw-bold">{{ $rec->hrs }}</span>
                                                     @else
                                                     <span class="text-warning fw-bold">Running...</span>
                                                     @endif
@@ -633,9 +633,9 @@ for ($m = 1; $m <= 12; $m++) {
 
                                                 <td>
                                                     @if($rec->idl_time)
-                                                    <span class="text-success fw-bold">{{ $rec->idl_time }} hr</span>
+                                                    <span class="text-success fw-bold">{{ $rec->idl_time }}</span>
                                                     @else
-                                                    <span class="text-warning fw-bold">0 hr</span>
+                                                    <span class="text-warning fw-bold">-</span>
                                                     @endif
                                                 </td>
 

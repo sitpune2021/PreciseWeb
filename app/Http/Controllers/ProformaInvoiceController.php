@@ -421,7 +421,8 @@ class ProformaInvoiceController extends Controller
 
         //  Materials
         $materials = MaterialType::where('admin_id', $adminId)
-            ->get(['material_type', 'material_rate']);
+            ->get()
+            ->keyBy('id');
 
         //  FINAL DATA (Your same logic)
         $data = $machineRecords
@@ -434,8 +435,8 @@ class ProformaInvoiceController extends Controller
                 $first = $group->first(); //  reference record
 
                 $workOrder = $workOrders[$first->work_order_id] ?? null;
-                $mat = $materials->firstWhere('material_type', $first->material);
-
+                $mat = $materials[$first->material_id] ?? null;
+ 
                 return [
                     'id'               => $first->id, // optional (or null)
                     'project_id'       => $workOrder->project_id ?? null,

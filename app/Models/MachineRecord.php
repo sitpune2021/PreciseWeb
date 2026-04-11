@@ -19,10 +19,14 @@ class MachineRecord extends Model
         'work_order',
         'first_set',
         'qty',
-        'machine',
-        'operator',
-        'setting_no',
-        'material',
+        // 'machine',
+        // 'operator',
+        // 'setting_no',
+        // 'material',
+        'machine_id',
+        'operator_id',
+        'setting_id',
+        'material_id',
         'est_time',
         'start_time',
         'end_time',
@@ -32,7 +36,8 @@ class MachineRecord extends Model
         'idl_time',
         // 'time_taken',
         // 'actual_hrs',
-        'invoice_no'
+        'invoice_no',
+
 
     ];
 
@@ -55,5 +60,25 @@ class MachineRecord extends Model
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id', 'id');
+    }
+
+    public function machineData()
+{
+    return $this->belongsTo(Machine::class, 'machine_id');
+}
+
+public function operatorData()
+{
+    return $this->belongsTo(Operator::class, 'operator_id');
+}
+
+    public function setting()
+    {
+        return $this->belongsTo(Setting::class, 'setting_id');
+    }
+
+    public function materialData()
+    {
+        return $this->belongsTo(MaterialType::class, 'material_id');
     }
 }

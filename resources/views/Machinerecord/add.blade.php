@@ -98,30 +98,30 @@
 
                                     <div class="col-md-2">
                                         <label class="form-label">Machine <span class="text-red">*</span></label>
-                                        <select name="machine" class="form-control form-select mt-1">
+                                        <select name="machine_id" class="form-control form-select mt-1">
                                             <option value=""> Select Machine </option>
                                             @foreach($machines->where('status', 1) as $machine)
-                                            <option value="{{ $machine->machine_name }}"
-                                                {{ old('machine', $record->machine ?? '') == $machine->machine_name ? 'selected' : '' }}>
+                                            <option value="{{ $machine->id }}"
+                                                {{ old('machine', $record->machine_id ?? '') == $machine->id ? 'selected' : '' }}>
                                                 {{ $machine->machine_name }}
                                             </option>
                                             @endforeach
                                         </select>
-                                        @error('machine') <span class="text-red small">{{ $message }}</span> @enderror
+                                        @error('machine_id') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div class="col-md-2">
                                         <label class="form-label">Operator <span class="text-red">*</span></label>
-                                        <select name="operator" class="form-control form-select mt-1">
+                                        <select name="operator_id" class="form-control form-select mt-1">
                                             <option value="">Select Operator</option>
                                             @foreach($operators->where('status', 1) as $operator)
-                                            <option value="{{ $operator->operator_name }}"
-                                                {{ old('operator', $record->operator ?? '') == $operator->operator_name ? 'selected' : '' }}>
+                                            <option value="{{ $operator->id }}"
+                                                {{ old('operator_id', $record->operator_id ?? '') == $operator->id ? 'selected' : '' }}>
                                                 {{ $operator->operator_name }}
                                             </option>
                                             @endforeach
                                         </select>
-                                        @error('operator') <span class="text-red small">{{ $message }}</span> @enderror
+                                        @error('operator_id') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- <div class="col-md-2">
@@ -144,18 +144,18 @@
 
                                     <div class="col-md-2">
                                         <label class="form-label">Setting <span class="text-red">*</span></label>
-                                        <select name="setting_no" class="form-control form-select mt-1">
+                                        <select name="setting_id" class="form-control form-select mt-1">
                                             <option value="">Select Setting</option>
 
                                             @foreach($settings->where('status', 1) as $setting)
-                                            <option value="{{ $setting->setting_name }}"
-                                                {{ old('setting_no', $record->setting_no ?? '') == $setting->setting_name ? 'selected' : '' }}>
+                                            <option value="{{ $setting->id }}"
+                                                {{ old('setting_id', $record->setting_id ?? '') == $setting->id ? 'selected' : '' }}>
                                                 {{ $setting->setting_name }}
                                             </option>
                                             @endforeach
 
                                         </select>
-                                        @error('setting_no') <span class="text-red small">{{ $message }}</span> @enderror
+                                        @error('setting_id') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- <div class="col-md-2">
@@ -182,17 +182,17 @@
 
                                     <div class="col-md-2">
                                         <label for="material" class="form-label">Material type <span class="mandatory">*</span></label>
-                                        <select name="material" id="material" class="form-control form-select">
+                                        <select name="material_id" id="material" class="form-control form-select">
                                             <option value="">Select Material</option>
                                             @foreach($materialtype->where('status', 1) as $mat)
-                                            <option value="{{ $mat->material_type }}"
-                                                {{ old('material', $record->material ?? '') == $mat->material_type ? 'selected' : '' }}>
+                                            <option value="{{ $mat->id }}"
+                                                {{ old('material', $record->material_id ?? '') == $mat->id ? 'selected' : '' }}>
                                                 {{ $mat->material_type }}
                                             </option>
                                             @endforeach
 
                                         </select>
-                                        @error('material') <span class="text-red small">{{ $message }}</span> @enderror
+                                        @error('material_id') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div class="col-md-2">

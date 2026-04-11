@@ -61,6 +61,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($record->reverse() as $rec)
+
                                         @php
                                         $highlightClass = ($rec->part_no === $highlightPartNo) ? 'table-warning' : '';
                                         @endphp
@@ -71,9 +72,9 @@
                                             <!-- <td>{{ $rec->work_order }}</td> -->
                                             <td>{{ $rec->first_set }}</td>
                                             <td>{{ $rec->qty }}</td>
-                                            <td>{{ $rec->machine }}</td>
-                                            <td>{{ $rec->operator }}</td>
-                                            <td>{{ $rec->setting_no }}</td>
+                                            <td>{{ $rec->machineData->machine_name ?? '-' }}</td>
+                                            <td>{{ $rec->operatorData->operator_name ?? '-' }}</td>
+                                            <td>{{ $rec->setting->setting_name ?? '-' }}</td>
                                             <td>{{ $rec->est_time }}</td>
                                             <td>{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : '' }}</td>
                                             <td>{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : '' }}</td>
@@ -95,18 +96,17 @@
                                                     data-first_set="{{ $rec->first_set }}"
                                                     data-code="{{ $rec->customer?->code ?? '' }}"
                                                     data-workorder="{{ $rec->work_order }}"
-                                                    data-machine="{{ $rec->machine }}"
-                                                    data-operator="{{ $rec->operator }}"
-                                                    data-setting="{{ $rec->setting_no }}"
-                                                    data-material="{{ $rec->material }}"
+                                                    data-machine="{{ $rec->machineData->machine_name ?? '' }}"
+                                                    data-operator="{{ $rec->operatorData->operator_name ?? '' }}"
+                                                    data-setting="{{ $rec->setting->setting_name ?? '' }}"
+                                                    data-material="{{ $rec->materialData->material_type ?? '' }}"
                                                     data-qty="{{ $rec->qty }}"
                                                     data-est_time="{{ $rec->est_time }}"
                                                     data-start="{{ $rec->start_time ? \Carbon\Carbon::parse($rec->start_time)->format('d-m-Y h:i A') : ''}}"
                                                     data-end="{{ $rec->end_time ? \Carbon\Carbon::parse($rec->end_time)->format('d-m-Y h:i A') : ''}}"
                                                     data-time_taken="{{ $rec->time_taken }}"
                                                     data-hrs="{{ $rec->hrs }}"
-                                                    data-adjustment="{{ $rec->adjustment }}"
-                                                    >
+                                                    data-adjustment="{{ $rec->adjustment }}">
                                                     <i class="ri-eye-fill align-bottom"></i>
                                                 </button>
 

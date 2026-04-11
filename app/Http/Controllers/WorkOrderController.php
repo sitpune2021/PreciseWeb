@@ -120,7 +120,7 @@ if (!empty($latestMaterialOrderNo)) {
             'rows.*.height'           => ['nullable', 'regex:/^\d+(\.\d{1,2})?$/'],
             'rows.*.exp_time'         => 'nullable|string|max:50',
             'rows.*.quantity'         => 'required|integer|min:1',
-            'rows.*.material'         => 'required|string|max:200',
+            'rows.*.material_id' => 'required|exists:material_types,id',
         ]);
 
         $adminId = Auth::id();
@@ -140,7 +140,8 @@ if (!empty($latestMaterialOrderNo)) {
                 'exp_time'         => $row['exp_time'],
                 'quantity'         => $row['quantity'],
                 'part_description' => $row['part_description'],
-                'material'         => $row['material'],
+                // 'material'         => $row['material'],
+                'material_id'        => $row['material_id'],
                 'admin_id'         => $adminId,
                 'status'           => 1,
             ]);
@@ -212,7 +213,7 @@ if (!empty($latestMaterialOrderNo)) {
             'height'           => 'nullable|numeric',
             'exp_time'         => 'nullable|string|max:50',
             'quantity'         => 'required|integer|min:1',
-            'material'         => 'required|string|max:200',
+            'material_id' => 'required|exists:material_types,id',
         ]);
 
         $workOrder = WorkOrder::where('admin_id', $adminId)->findOrFail($id);

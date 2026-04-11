@@ -9,7 +9,6 @@ use Illuminate\Validation\Rule;
 
 class RateController extends Controller
 {
-    // Show all active rates
     public function Addrate()
     {
         $rates = Rate::where('is_active', 1)
@@ -20,7 +19,6 @@ class RateController extends Controller
         return view('Rate.add', compact('rates'));
     }
 
-    // Store new rate
     public function storeRate(Request $request)
     {
         $request->validate([
@@ -58,7 +56,6 @@ class RateController extends Controller
         return redirect()->route('Addrate')->with('success', 'Rate added successfully');
     }
 
-    // Edit rate
     public function editRate(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -75,7 +72,6 @@ class RateController extends Controller
         return view('Rate.add', compact('rates', 'rate'));
     }
 
-    // Update rate
     public function updateRate(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -133,7 +129,6 @@ class RateController extends Controller
         return back()->with('success', 'Status updated!');
     }
 
-    // Soft delete rate
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -149,7 +144,6 @@ class RateController extends Controller
         return redirect()->route('Addrate')->with('success', 'Rate deleted successfully.');
     }
 
-    // Show trashed rates
     public function trash()
     {
         $trashedRates = Rate::onlyTrashed()
@@ -165,7 +159,6 @@ class RateController extends Controller
         return view('Rate.trash', compact('trashedRates', 'rates'));
     }
 
-    // Restore trashed rate
     public function restore(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -188,7 +181,7 @@ class RateController extends Controller
             $rate->touch();
             $rate->save();
 
-            return redirect()->route('editRate', base64_encode($rate->id))
+            return redirect()->route('editrate', base64_encode($rate->id))
                 ->with('success', "Rate '{$rate->name}' already exists. Redirected to Edit Page.");
         }
 

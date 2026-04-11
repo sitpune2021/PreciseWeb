@@ -18,28 +18,78 @@ use Illuminate\Support\Facades\Auth;
 
 class MachinerecordController extends Controller
 {
+    // public function AddMachinerecord()
+    // {
+    //     $codes = Customer::where('status', 1)->where('admin_id', Auth::id())
+    //         ->select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+
+    //     $materialtype = MaterialType::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+
+    //     $workorders = WorkOrder::with(['customer', 'project'])
+    //         ->where('admin_id', Auth::id())
+    //         ->whereHas('customer', function ($q) {
+    //             $q->where('status', 1)
+    //                 ->where('admin_id', Auth::id());
+    //         })->latest()->get();
+
+
+    //     $machines = Machine::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+
+    //     // $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+    //     $operators = Operator::where('admin_id', Auth::id())->where('status', 1)->orderBy('operator_name', 'asc')->get();
+
+    //     // $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+    //     $settings = Setting::where('admin_id', Auth::id())->orderBy('setting_name', 'asc')   // ABCD order
+    //         ->get();
+
+    //     $projects = Project::where('admin_id', Auth::id())
+    //         ->select('id', 'project_no', 'project_name', 'customer_id', 'quantity')
+    //         ->orderBy('project_no', 'asc')
+    //         ->get();
+
+    //     return view('Machinerecord.add', compact(
+    //         'workorders',
+    //         'machines',
+    //         'operators',
+    //         'settings',
+    //         'codes',
+    //         'materialtype',
+    //         'projects'
+    //     ));
+    // }
+
     public function AddMachinerecord()
     {
-        $codes = Customer::where('status', 1)->where('admin_id', Auth::id())
-            ->select('id', 'code', 'name')->orderBy('id', 'desc')->get();
+        $codes = Customer::where('status', 1)
+            ->where('admin_id', Auth::id())
+            ->select('id', 'code', 'name')
+            ->orderBy('id', 'desc')
+            ->get();
 
-        $materialtype = MaterialType::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        $materialtype = MaterialType::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
 
         $workorders = WorkOrder::with(['customer', 'project'])
             ->where('admin_id', Auth::id())
             ->whereHas('customer', function ($q) {
                 $q->where('status', 1)
                     ->where('admin_id', Auth::id());
-            })->latest()->get();
+            })
+            ->latest()
+            ->get();
 
+        $machines = Machine::where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
 
-        $machines = Machine::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        $operators = Operator::where('admin_id', Auth::id())
+            ->where('status', 1)
+            ->orderBy('operator_name', 'asc')
+            ->get();
 
-        // $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
-        $operators = Operator::where('admin_id', Auth::id())->where('status', 1)->orderBy('operator_name', 'asc')->get();
-
-        // $settings = Setting::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
-        $settings = Setting::where('admin_id', Auth::id())->orderBy('setting_name', 'asc')   // ABCD order
+        $settings = Setting::where('admin_id', Auth::id())
+            ->orderBy('setting_name', 'asc')
             ->get();
 
         $projects = Project::where('admin_id', Auth::id())
@@ -57,21 +107,56 @@ class MachinerecordController extends Controller
             'projects'
         ));
     }
+    // public function StoreMachinerecord(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'part_no'     => 'required|string|max:100',
+    //         'code'        => 'nullable|string|max:100',
+    //         'work_order'  => 'required',
+    //         'first_set'   => 'nullable|string|max:100',
+    //         'qty'         => 'required|integer|min:1',
+    //         'machine'     => 'required|string|max:100',
+    //         'operator_id' => 'required|integer',
+    //         'setting_no'  => 'required|string|max:100',
+    //         'est_time'    => 'required|string|max:100',
+    //         'material'    => 'required|string|max:200',
+    //         'start_time'  => 'required|date',
+    //         'end_time'    => 'required|date|after_or_equal:start_time',
+    //         'adjustment'  => 'nullable|string|max:100',
+    //         'hrs'         => 'required|numeric|min:0',
+    //         'idl_time'    => 'nullable|string|max:100',
+    //         'invoice_no'  => 'nullable|string|max:100',
+    //     ]);
+
+    //     $validated['admin_id'] = Auth::id();
+    //     $validated['work_order_id'] = $request->work_order_id;
+
+    //     MachineRecord::create($validated);
+
+    //     return redirect()->route('ViewMachinerecord')
+    //         ->with('success', 'Machine Record Added Successfully');
+    // }
+
+
     public function StoreMachinerecord(Request $request)
     {
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
             'code'        => 'nullable|string|max:100',
-            'work_order'  => 'required',
+
+            'work_order'  => 'required|integer',
             'first_set'   => 'nullable|string|max:100',
             'qty'         => 'required|integer|min:1',
-            'machine'     => 'required|string|max:100',
-            'operator'    => 'required|string|max:100',
-            'setting_no'  => 'required|string|max:100',
+
+            'machine_id'  => 'required|integer',
+            'operator_id' => 'required|integer',
+            'setting_id'  => 'required|integer',
+            'material_id' => 'required|integer',
+
             'est_time'    => 'required|string|max:100',
-            'material'    => 'required|string|max:200',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
+
             'adjustment'  => 'nullable|string|max:100',
             'hrs'         => 'required|numeric|min:0',
             'idl_time'    => 'nullable|string|max:100',
@@ -79,7 +164,9 @@ class MachinerecordController extends Controller
         ]);
 
         $validated['admin_id'] = Auth::id();
-        $validated['work_order_id'] = $request->work_order_id;
+
+        // 🔥 Work order fix
+        $validated['work_order_id'] = $request->work_order;
 
         MachineRecord::create($validated);
 
@@ -90,7 +177,10 @@ class MachinerecordController extends Controller
     {
         $adminId = Auth::id();
 
-        $record = MachineRecord::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
+        $record = MachineRecord::with(['machineData', 'operatorData', 'setting', 'materialData'])
+            ->where('admin_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
 
         $workorders = WorkOrder::with('customer')->where('admin_id', Auth::id())->latest()->get(); // Only current admin
 
@@ -170,10 +260,16 @@ class MachinerecordController extends Controller
             'work_order'  => 'required|string|max:100',
             'first_set'   => 'nullable|string|max:100',
             'qty'         => 'required|integer|min:1',
-            'machine'     => 'required|string|max:100',
-            'operator'    => 'required|string|max:100',
-            'setting_no'  => 'required|string|max:100',
-            'material'    => 'required|string|max:200',
+            // 'machine'     => 'required|string|max:100',
+            // 'operator'    => 'required|string|max:100',
+            // 'setting_no'  => 'required|string|max:100',
+            // 'material'    => 'required|string|max:200',
+
+            'machine_id'  => 'required|integer',
+            'operator_id' => 'required|integer',
+            'setting_id'  => 'required|integer',
+            'material_id' => 'required|integer',
+
             'est_time'    => 'required|string|max:100',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',

@@ -407,41 +407,73 @@
             tryCalculate();
         }
 
-       $(document).on('change', '.machineSelect', function() {
-    const selected = $(this).find('option:selected');
-    const row = $(this).closest('tr');
+        $(document).on('change', '.machineSelect', function() {
+            const selected = $(this).find('option:selected');
+            const row = $(this).closest('tr');
 
-    const totalMachineHrs = parseFloat(selected.data('vmc')) || 0;
+            const totalMachineHrs = parseFloat(selected.data('vmc')) || 0;
 
-    row.find('.qty').val(selected.data('qty') || 1);
+            row.find('.qty').val(selected.data('qty') || 1);
 
-    // 👉 HRS = WorkOrder exp_time
-    row.find('.hrs').val(selected.data('exp') || 0);
+            //  HRS = WorkOrder exp_time
+            row.find('.hrs').val(selected.data('exp') || 0);
 
-    row.find('.material_rate').val(selected.data('material_rate') || 0);
+            row.find('.material_rate').val(selected.data('material_rate') || 0);
 
-    // 👉 VMC HR separate ठेव
-    row.find('.vmc_hr').val(totalMachineHrs);
+            //  VMC HR separate 
+            row.find('.vmc_hr').val(totalMachineHrs);
 
-    // hidden fields (same)
-    if (!row.find('input[name="project_id[]"]').length) {
-        row.append(`<input type="hidden" name="project_id[]" value="${selected.data('project-id') || ''}">`);
-    } else {
-        row.find('input[name="project_id[]"]').val(selected.data('project-id') || '');
-    }
+            // hidden fields (same)
+            if (!row.find('input[name="project_id[]"]').length) {
+                row.append(`<input type="hidden" name="project_id[]" value="${selected.data('project-id') || ''}">`);
+            } else {
+                row.find('input[name="project_id[]"]').val(selected.data('project-id') || '');
+            }
 
-    let machineIds = selected.data('machine-ids') || [];
+            let machineIds = selected.data('machine-ids') || [];
 
-    row.find('input[name="machine_ids[]"]').remove();
+            row.find('input[name="machine_ids[]"]').remove();
 
-    row.append(`
+            row.append(`
         <input type="hidden" name="machine_ids[]" value='${JSON.stringify(machineIds)}'>
     `);
 
-    // calculation
-    (function calcRowNow(r) {
+            // calculation
+            (function calcRowNow(r) {
+                const qty = parseFloat(r.find('.qty').val()) || 0;
+                const exp = parseFloat(r.find('.vmc_hr').val()) || 0; // now exp_time
+                const adj = parseFloat(r.find('.adj').val()) || 0;
+                const materialRate = parseFloat(r.find('.material_rate').val()) || 0;
+
+                const rate = qty > 0 ? ((exp + adj) * materialRate) / qty : 0;
+                const amount = rate * qty;
+
+                r.find('.rate').val(rate.toFixed(2));
+                r.find('.amount').val(amount.toFixed(2));
+            })(row);
+
+            if (gstLoaded) calculateTotals();
+        });
+
+        $('#hsnSelect').on('change', function() {
+    const selected = $(this).find('option:selected');
+
+    globalSGST = parseFloat(selected.data('sgst')) || 0;
+    globalCGST = parseFloat(selected.data('cgst')) || 0;
+    globalIGST = parseFloat(selected.data('igst')) || 0;
+
+    $('#sgst_percent').val(globalSGST);
+    $('#cgst_percent').val(globalCGST);
+    $('#total_tax_percent').val(globalIGST);
+
+    gstLoaded = true;
+
+    // 🔥 FIX: use SAME calculation logic as machineSelect
+    $('#itemsTable tbody tr').each(function() {
+        const r = $(this);
+
         const qty = parseFloat(r.find('.qty').val()) || 0;
-        const exp = parseFloat(r.find('.vmc_hr').val()) || 0; // now exp_time
+        const exp = parseFloat(r.find('.vmc_hr').val()) || 0;
         const adj = parseFloat(r.find('.adj').val()) || 0;
         const materialRate = parseFloat(r.find('.material_rate').val()) || 0;
 
@@ -450,26 +482,10 @@
 
         r.find('.rate').val(rate.toFixed(2));
         r.find('.amount').val(amount.toFixed(2));
-    })(row);
+    });
 
-    if (gstLoaded) calculateTotals();
+    calculateTotals(); // 👈 direct call (important)
 });
-
-        $('#hsnSelect').on('change', function() {
-            const selected = $(this).find('option:selected');
-
-            globalSGST = parseFloat(selected.data('sgst')) || 0;
-            globalCGST = parseFloat(selected.data('cgst')) || 0;
-            globalIGST = parseFloat(selected.data('igst')) || 0;
-
-            $('#sgst_percent').val(globalSGST);
-            $('#cgst_percent').val(globalCGST);
-            $('#total_tax_percent').val(globalIGST);
-
-            gstLoaded = true;
-
-            tryCalculate();
-        });
 
         let selectedHSN = $("#hsnSelect").val();
         if (selectedHSN) {
@@ -487,7 +503,7 @@
             let sub = 0;
             $('#itemsTable tbody tr').each(function() {
                 const qty = parseFloat($(this).find('.qty').val()) || 0;
-                const exp = parseFloat($(this).find('.hrs').val()) || 0;
+                const exp = parseFloat($(this).find('.vmc_hr').val()) || 0;
                 const adj = parseFloat($(this).find('.adj').val()) || 0;
                 const materialRate = parseFloat($(this).find('.material_rate').val()) || 0;
 
