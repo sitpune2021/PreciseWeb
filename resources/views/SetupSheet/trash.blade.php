@@ -56,7 +56,7 @@
                                     <td>{{ $sheet->size_in_x }}</td>
                                     <td>{{ $sheet->size_in_y }}</td>
                                     <td>{{ $sheet->size_in_z }}</td>
-                                    <td>{{ $sheet->setting }}</td>
+                                    <td>{{ $sheet->settingData->setting_name ?? 'N/A' }}</td>
                                     <td class="text-center">
                                         @if($sheet->deleted_at)
                                         {{ $sheet->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}

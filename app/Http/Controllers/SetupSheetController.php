@@ -158,7 +158,7 @@ class SetupSheetController extends Controller
         $sheets = SetupSheet::with([
             'workorder.customer',
             'workorder.project',
-            'settingData'  
+            'settingData'
         ])
             ->where('admin_id', $adminId)
             ->latest()
@@ -386,6 +386,7 @@ class SetupSheetController extends Controller
     public function trash()
     {
         $trashedSheets = SetupSheet::onlyTrashed()
+            ->with('settingData') //  relation load
             ->where('admin_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
