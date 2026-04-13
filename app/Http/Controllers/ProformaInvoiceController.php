@@ -440,42 +440,27 @@ class ProformaInvoiceController extends Controller
             ->keyBy('id');
 
         //  FINAL DATA (Your same logic)
-        $data = $machineRecords
-            ->groupBy(function ($m) {
+        $data = $machineRecords->map(function ($first) use ($materials, $workOrders) {
 
-                return $m->work_order_id . '|' . $m->part_no . '|' . $m->material;
-            })
-            ->map(function ($group) use ($materials, $workOrders) {
+            $workOrder = $workOrders[$first->work_order_id] ?? null;
 
-                $first = $group->first(); //  reference record
+            $materialRate = 0;
+            if ($workOrder && isset($materials[$workOrder->material_id])) {
+                $materialRate = $materials[$workOrder->material_id]->material_rate;
+            }
 
-                $workOrder = $workOrders[$first->work_order_id] ?? null;
-                $mat = $materials[$first->material_id] ?? null;
-
-                return [
-                    'id'               => $first->id, // optional (or null)
-                    'project_id'       => $workOrder->project_id ?? null,
-
-                    //  same description
-                    'part_description' => $first->first_set ?? 'N/A',
-
-                    //  WorkOrder
-                    'quantity'         => $workOrder->quantity ?? 0,
-                    'exp_time'         => $workOrder->exp_time ?? 0,
-
-                    //  TOTAL HOURS SUM
-                    'vmc_hr'           => $group->sum('hrs'),
-
-                    'material_type'    => $first->material,
-                    'material_rate'    => $mat->material_rate ?? 0,
-
-                    'workorder_id'     => $first->work_order_id,
-
-                    // IMPORTANT: multiple machine IDs
-                    'machine_ids'      => $group->pluck('id')->toArray(),
-                ];
-            })
-            ->values();
+            return [
+                'id'               => $first->id,
+                'project_id'       => $workOrder->project_id ?? null,
+                'part_description' => $first->first_set ?? 'N/A',
+                'quantity'         => $workOrder->quantity ?? 0,
+                'exp_time'         => $workOrder->exp_time ?? 0,
+                'vmc_hr'           => $first->hrs ?? 0,
+                'material_rate'    => $materialRate,
+                'workorder_id'     => $first->work_order_id,
+                'machine_ids'      => [$first->id],
+            ];
+        })->values();
 
         return response()->json($data);
     }
