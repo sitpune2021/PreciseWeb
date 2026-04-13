@@ -204,18 +204,29 @@ class ProformaInvoiceController extends Controller
 
             foreach ($machineIds as $machineId) {
 
+                //  safer way (fail if not found)
                 $machine = MachineRecord::find($machineId);
 
-                //  use user input hrs if provided
-                $hrs = isset($request->hrs[$i]) && $request->hrs[$i] !== ''
+                if (!$machine) {
+                    continue; // skip invalid ID
+                }
+
+                //  hrs logic
+                $hrs = (!empty($request->hrs[$i]))
                     ? floatval($request->hrs[$i])
                     : ($machine->hrs ?? 0);
 
                 $invoice->items()->create([
                     'part_name'     => $desc ?? '',
-                    'project_id'    => $request->project_id[$i] ?? null,
-                    'work_order_id' => $request->work_order_id[$i] ?? null,
+
+                    // better: take from DB instead of request
+                    'project_id'    => $machine->project_id ?? ($request->project_id[$i] ?? null),
+
+                    // ✅ correct (from machine_records)
+                    'work_order_id' => $machine->work_order_id ?? null,
+
                     'machine_id'    => $machineId,
+
                     'hsn_code'      => $request->hsn_code[$i] ?? null,
                     'hrs'           => $hrs,
                     'vmc'           => $request->vmc_hr[$i] ?? 0,
@@ -224,14 +235,18 @@ class ProformaInvoiceController extends Controller
                     'amount'        => $request->amount[$i] ?? 0,
                     'material_rate' => $request->material_rate[$i] ?? 0,
                     'adj'           => $request->adj[$i] ?? 0,
+
                     'sgst'          => $request->sgst_percent ?? 0,
                     'cgst'          => $request->cgst_percent ?? 0,
                     'igst'          => $request->igst ?? 0,
+
                     'invoice_id'    => $invoice->id,
                 ]);
 
-                MachineRecord::where('id', $machineId)
-                    ->update(['status' => 'complete']);
+                //  update status
+                $machine->update([
+                    'status' => 'complete'
+                ]);
             }
         }
         return redirect()
@@ -793,25 +808,36 @@ class ProformaInvoiceController extends Controller
 
             // Loop through machine IDs and create/update ProformaItems
             foreach ($machineIds as $mid) {
+
+                $machine = MachineRecord::find($mid);
+
+                if (!$machine) {
+                    continue;
+                }
+
                 $itemData = [
                     'part_name'     => $desc,
-                    'project_id'    => !empty($request->project_id[$i]) ? intval($request->project_id[$i]) : null,
-                    'work_order_id' => !empty($request->work_order_id[$i]) ? intval($request->work_order_id[$i]) : null,
+
+                    // ✅ safer
+                    'project_id'    => $machine->project_id ?? (!empty($request->project_id[$i]) ? intval($request->project_id[$i]) : null),
+
+                    // ✅ MAIN FIX
+                    'work_order_id' => $machine->work_order_id ?? null,
+
                     'hsn_code'      => $hsn,
                     'qty'           => $request->qty[$i] ?? 0,
                     'rate'          => $request->rate[$i] ?? 0,
                     'amount'        => $request->amount[$i] ?? 0,
-                    'hrs'           => $request->hrs[$i] ?? 0,
+                    'hrs'           => $request->hrs[$i] ?? ($machine->hrs ?? 0),
                     'vmc'           => $request->vmc_hr[$i] ?? 0,
                     'adj'           => $request->adj[$i] ?? 0,
                     'sgst'          => $sgst,
                     'cgst'          => $cgst,
                     'igst'          => $igst,
-                    'machine_id'    => !empty($mid) ? intval($mid) : null,
+                    'machine_id'    => $mid,
                 ];
 
                 if (!empty($request->id[$i])) {
-                    // UPDATE existing item
                     $item = ProformaItem::find($request->id[$i]);
                     if ($item) {
                         $item->update($itemData);
@@ -819,12 +845,11 @@ class ProformaInvoiceController extends Controller
                         $invoice->items()->create($itemData);
                     }
                 } else {
-                    // CREATE new item
                     $invoice->items()->create($itemData);
                 }
 
-                // Optionally mark machine as complete
-                MachineRecord::where('id', $mid)->update(['status' => 'complete']);
+                // ✅ update status
+                $machine->update(['status' => 'complete']);
             }
 
             return redirect()

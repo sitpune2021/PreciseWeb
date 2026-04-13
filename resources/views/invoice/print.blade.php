@@ -320,7 +320,7 @@
         <tbody> @foreach($invoice->items as $i => $item) <tr>
                 <td class="center">{{ $i + 1 }}</td>
                 <td class="center">
-                    {{ $item->machine_id ?? '-' }}
+                    {{ $item->workOrder->project->project_no }}
                 </td>
                 <td>{{ $item->part_name ?? '' }}</td>
                 <td class="center">{{ $item->hsn_code ?? '' }}</td>
