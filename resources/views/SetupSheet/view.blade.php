@@ -79,7 +79,8 @@
                                             <td>{{ $sheet->size_in_x }}</td>
                                             <td>{{ $sheet->size_in_y }}</td>
                                             <td>{{ $sheet->size_in_z }}</td>
-                                            <td>{{ $sheet->setting }}</td>
+                                            <td>{{ $sheet->settingData->setting_name ?? 'N/A' }}</td>
+
                                             <td>
                                                 <div class="d-flex gap-2">
                                                     @if(hasPermission('SetupSheet', 'edit'))
@@ -95,7 +96,7 @@
                                                     </a>
                                                     @endif
                                                     <button type="button" class="btn btn-warning btn-icon printSetupSheet"
-                                                        data-sheet='@json($sheet)'>
+                                                        data-sheet='@json($sheet->load("settingData"))'>
                                                         <i class="fas fa-print"></i>
                                                     </button>
                                                 </div>
@@ -323,7 +324,8 @@
             document.getElementById('sheet_size_x').textContent = data.size_in_x ?? '';
             document.getElementById('sheet_size_y').textContent = data.size_in_y ?? '';
             document.getElementById('sheet_size_z').textContent = data.size_in_z ?? '';
-            document.getElementById('sheet_setting').textContent = data.setting ?? '';
+            document.getElementById('sheet_setting').textContent =
+                data.setting_data?.setting_name ?? data.setting ?? '';
             document.getElementById('sheet_e_time').textContent = data.e_time ?? '';
 
             document.getElementById('sheet_x_refer').textContent = data.x_refer ?? '';

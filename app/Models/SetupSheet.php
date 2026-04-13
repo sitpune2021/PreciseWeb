@@ -19,7 +19,8 @@ class SetupSheet extends Model
         'size_in_x',
         'size_in_y',
         'size_in_z',
-        'setting',
+        // 'setting',
+        'setting_id',
         'e_time',
         'x_refer',
         'y_refer',
@@ -51,8 +52,12 @@ class SetupSheet extends Model
     }
 
     public function workorder()
-{
-    return $this->belongsTo(WorkOrder::class, 'part_code');
-}
+    {
+        return $this->belongsTo(WorkOrder::class, 'part_code');
+    }
 
+    public function settingData()
+    {
+        return $this->belongsTo(Setting::class, 'setting_id', 'id');
+    }
 }

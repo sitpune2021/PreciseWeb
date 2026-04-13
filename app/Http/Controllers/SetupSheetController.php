@@ -113,7 +113,8 @@ class SetupSheetController extends Controller
             'size_in_y' => 'nullable|numeric|min:0',
             'size_in_z' => 'nullable|numeric|min:0',
 
-            'setting'   => 'required|string|max:255',
+            // 'setting'   => 'required|string|max:255',
+            'setting_id' => 'required|exists:settings,id',
             'e_time'    => 'required|string|max:255',
 
             'x_refer'  => 'required|string|max:255',
@@ -154,7 +155,11 @@ class SetupSheetController extends Controller
     {
         $adminId = Auth::id();
 
-        $sheets = SetupSheet::with(['workorder.customer', 'workorder.project'])
+        $sheets = SetupSheet::with([
+            'workorder.customer',
+            'workorder.project',
+            'settingData'  
+        ])
             ->where('admin_id', $adminId)
             ->latest()
             ->get();
@@ -277,7 +282,8 @@ class SetupSheetController extends Controller
             'size_in_y' => 'nullable|numeric|min:0',
             'size_in_z' => 'nullable|numeric|min:0',
 
-            'setting'   => 'required|string|max:255',
+            // 'setting'   => 'required|string|max:255',
+            'setting_id' => 'required|exists:settings,id',
             'e_time'    => 'required|string|max:255',
 
             'x_refer'  => 'required|string|max:255',

@@ -32,13 +32,14 @@
                                     <th class="text-center">Part No</th>
                                     <th class="text-center">Code</th>
                                     <th class="text-center">Work Order</th>
+                                    <th class="text-center">Machine</th>
                                     <th class="text-center">Operator</th>
                                     <th class="text-center">Setting No</th>
                                     <th class="text-center">Material</th>
                                     <th class="text-center">Qty</th>
                                     <th class="text-center">Start Time</th>
                                     <th class="text-center">End Time</th>
-                                    <th class="text-center">Invoice No</th>
+                                    <!-- <th class="text-center">Invoice No</th> -->
                                     <th class="text-center">Deleted At</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -50,13 +51,14 @@
                                     <td>{{ $m->part_no }}</td>
                                     <td>{{ $m->code }}</td>
                                     <td>{{ $m->work_order }}</td>
-                                    <td>{{ $m->operator }}</td>
-                                    <td>{{ $m->setting_no }}</td>
-                                    <td>{{ $m->material }}</td>
+                                    <td>{{ $m->machineData->machine_name ?? '-' }}</td>
+                                    <td>{{ $m->operatorData->operator_name ?? '-' }}</td>
+                                    <td>{{ $m->setting->setting_name ?? '-' }}</td>
+                                    <td>{{ $m->materialData->material_type ?? '-' }}</td>
                                     <td>{{ $m->qty }}</td>
                                     <td>{{ $m->start_time ? \Carbon\Carbon::parse($m->start_time)->format('d-m-Y h:i A') : '' }}</td>
                                     <td>{{ $m->end_time ? \Carbon\Carbon::parse($m->end_time)->format('d-m-Y h:i A') : '' }}</td>
-                                    <td>{{ $m->invoice_no }}</td>
+                                    <!-- <td>{{ $m->invoice_no }}</td> -->
                                     <td class="text-center">
                                         @if($m->deleted_at)
                                         {{ $m->deleted_at->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}

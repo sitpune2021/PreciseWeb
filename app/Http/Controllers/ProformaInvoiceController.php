@@ -436,7 +436,7 @@ class ProformaInvoiceController extends Controller
 
                 $workOrder = $workOrders[$first->work_order_id] ?? null;
                 $mat = $materials[$first->material_id] ?? null;
- 
+
                 return [
                     'id'               => $first->id, // optional (or null)
                     'project_id'       => $workOrder->project_id ?? null,
@@ -826,10 +826,10 @@ class ProformaInvoiceController extends Controller
                 // Optionally mark machine as complete
                 MachineRecord::where('id', $mid)->update(['status' => 'complete']);
             }
-        }
 
-        return redirect()
-            ->route('proforma.index')
-            ->with('success', 'Proforma Invoice Updated Successfully.');
+            return redirect()
+                ->route('proforma.index')
+                ->with('success', 'Proforma Invoice Updated Successfully.');
+        }
     }
 }

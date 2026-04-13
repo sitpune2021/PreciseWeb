@@ -58,7 +58,6 @@
                                             </div>
                                         </div>
 
-
                                         <!-- Part Code -->
                                         <div class="col-md-2">
                                             <div class="mb-3">
@@ -88,7 +87,7 @@
                                                         data-qty="{{ $wo->quantity }}"
                                                         data-etime="{{ $wo->exp_time }}"
 
-                                                         {{ old('part_code', $setupSheet->part_code ?? $selectedPartCode ?? '') == $full_code ? 'selected' : '' }}>
+                                                        {{ old('part_code', $setupSheet->part_code ?? $selectedPartCode ?? '') == $full_code ? 'selected' : '' }}>
                                                         {{ $full_code }}
                                                     </option>
 
@@ -158,11 +157,11 @@
 
                                         <div class="col-md-2">
                                             <label class="form-label">Setting <span class="text-red">*</span></label>
-                                            <select name="setting" class="form-control form-select  mt-1">
+                                            <select name="setting_id" class="form-control form-select mt-1">
                                                 <option value="">Select Setting</option>
                                                 @foreach($settings as $setting)
-                                                <option value="{{ $setting->setting_name }}"
-                                                    {{ old('setting', $record->setting ?? '') == $setting->setting_name ? 'selected' : '' }}>
+                                                <option value="{{ $setting->id }}"
+                                                    {{ old('setting_id', $record->setting_id ?? '') == $setting->id ? 'selected' : '' }}>
                                                     {{ $setting->setting_name }}
                                                 </option>
                                                 @endforeach
@@ -395,28 +394,28 @@
 
 <script>
     $(document).ready(function() {
-    let selectedCustomer = "{{ old('customer_id', $setupSheet->customer_id ?? $lastCustomer ?? '') }}";
-    let selectedPart = "{{ old('part_code', $setupSheet->part_code ?? $selectedPartCode ?? '') }}";
+        let selectedCustomer = "{{ old('customer_id', $setupSheet->customer_id ?? $lastCustomer ?? '') }}";
+        let selectedPart = "{{ old('part_code', $setupSheet->part_code ?? $selectedPartCode ?? '') }}";
 
-    // Trigger customer change once on load
-    if (selectedCustomer) {
-        $("#customer_id").val(selectedCustomer).trigger("change");
-    }
+        // Trigger customer change once on load
+        if (selectedCustomer) {
+            $("#customer_id").val(selectedCustomer).trigger("change");
+        }
 
-    // Customer change AJAX
-    $("#customer_id").on("change", function() {
-        let customer_id = $(this).val();
+        // Customer change AJAX
+        $("#customer_id").on("change", function() {
+            let customer_id = $(this).val();
 
-        let $partCode = $("#part_code");
-        $partCode.empty().append('<option value="">Select Part Code</option>');
+            let $partCode = $("#part_code");
+            $partCode.empty().append('<option value="">Select Part Code</option>');
 
-        if (customer_id) {
-            $.ajax({
-                url: "/get-customer-parts/" + customer_id,
-                type: "GET",
-                success: function(response) {
-                    response.forEach(function(item) {
-                        $partCode.append(`
+            if (customer_id) {
+                $.ajax({
+                    url: "/get-customer-parts/" + customer_id,
+                    type: "GET",
+                    success: function(response) {
+                        response.forEach(function(item) {
+                            $partCode.append(`
                             <option value="${item.part_code}"
                                 data-description="${item.part_description}"
                                 data-workorder="${item.work_order_no}"
@@ -428,32 +427,32 @@
                                 ${item.part_code}
                             </option>
                         `);
-                    });
+                        });
 
-                    // Auto select part code AFTER options loaded
-                    if (selectedPart) {
-                        $partCode.val(selectedPart).trigger("change");
+                        // Auto select part code AFTER options loaded
+                        if (selectedPart) {
+                            $partCode.val(selectedPart).trigger("change");
+                        }
                     }
-                }
-            });
-        }
-    });
+                });
+            }
+        });
 
-    // Part change auto-fill
-    $(document).on("change", "#part_code", function() {
-        let selected = $(this).find(":selected");
+        // Part change auto-fill
+        $(document).on("change", "#part_code", function() {
+            let selected = $(this).find(":selected");
 
-        if (selected.val()) {
-            $("#part_description").val(selected.data("description"));
-            $("#work_order_no").val(selected.data("workorder"));
-            $("#size_in_x").val(selected.data("size_x"));
-            $("#size_in_y").val(selected.data("size_y"));
-            $("#size_in_z").val(selected.data("size_z"));
-            $("#qty").val(selected.data("qty"));
-            $("#e_time").val(selected.data("etime"));
-        }
+            if (selected.val()) {
+                $("#part_description").val(selected.data("description"));
+                $("#work_order_no").val(selected.data("workorder"));
+                $("#size_in_x").val(selected.data("size_x"));
+                $("#size_in_y").val(selected.data("size_y"));
+                $("#size_in_z").val(selected.data("size_z"));
+                $("#qty").val(selected.data("qty"));
+                $("#e_time").val(selected.data("etime"));
+            }
+        });
     });
-});
 </script>
 <script>
     $(document).ready(function() {

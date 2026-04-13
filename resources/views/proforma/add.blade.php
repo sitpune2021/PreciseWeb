@@ -456,36 +456,36 @@
         });
 
         $('#hsnSelect').on('change', function() {
-    const selected = $(this).find('option:selected');
+            const selected = $(this).find('option:selected');
 
-    globalSGST = parseFloat(selected.data('sgst')) || 0;
-    globalCGST = parseFloat(selected.data('cgst')) || 0;
-    globalIGST = parseFloat(selected.data('igst')) || 0;
+            globalSGST = parseFloat(selected.data('sgst')) || 0;
+            globalCGST = parseFloat(selected.data('cgst')) || 0;
+            globalIGST = parseFloat(selected.data('igst')) || 0;
 
-    $('#sgst_percent').val(globalSGST);
-    $('#cgst_percent').val(globalCGST);
-    $('#total_tax_percent').val(globalIGST);
+            $('#sgst_percent').val(globalSGST);
+            $('#cgst_percent').val(globalCGST);
+            $('#total_tax_percent').val(globalIGST);
 
-    gstLoaded = true;
+            gstLoaded = true;
 
-    // 🔥 FIX: use SAME calculation logic as machineSelect
-    $('#itemsTable tbody tr').each(function() {
-        const r = $(this);
+            //  FIX: use SAME calculation logic as machineSelect
+            $('#itemsTable tbody tr').each(function() {
+                const r = $(this);
 
-        const qty = parseFloat(r.find('.qty').val()) || 0;
-        const exp = parseFloat(r.find('.vmc_hr').val()) || 0;
-        const adj = parseFloat(r.find('.adj').val()) || 0;
-        const materialRate = parseFloat(r.find('.material_rate').val()) || 0;
+                const qty = parseFloat(r.find('.qty').val()) || 0;
+                const exp = parseFloat(r.find('.vmc_hr').val()) || 0;
+                const adj = parseFloat(r.find('.adj').val()) || 0;
+                const materialRate = parseFloat(r.find('.material_rate').val()) || 0;
 
-        const rate = qty > 0 ? ((exp + adj) * materialRate) / qty : 0;
-        const amount = rate * qty;
+                const rate = qty > 0 ? ((exp + adj) * materialRate) / qty : 0;
+                const amount = rate * qty;
 
-        r.find('.rate').val(rate.toFixed(2));
-        r.find('.amount').val(amount.toFixed(2));
-    });
+                r.find('.rate').val(rate.toFixed(2));
+                r.find('.amount').val(amount.toFixed(2));
+            });
 
-    calculateTotals(); // 👈 direct call (important)
-});
+            calculateTotals(); //  direct call (important)
+        });
 
         let selectedHSN = $("#hsnSelect").val();
         if (selectedHSN) {
