@@ -180,21 +180,49 @@ class InvoiceController extends Controller
 
         return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
+    // public function printInvoice($id)
+    // {
+    //     $invoice = Invoice::with('items')->findOrFail($id);
+    //     $adminSetting = AdminSetting::first();
+    //     $adminId = Auth::id();
+    //     $c = Client::where('login_id', $adminId)->first([
+    //         'name',
+    //         'phone_no',
+    //         'email_id',
+    //         'gst_no',
+    //         'logo',
+    //         'address'
+    //     ]);
+    //     return view('invoice.print', compact('invoice', 'c', 'adminSetting'));
+    // }
+
     public function printInvoice($id)
     {
-        $invoice = Invoice::with('items')->findOrFail($id);
-        $adminSetting = AdminSetting::first();
-        $adminId = Auth::id();
-        $c = Client::where('login_id', $adminId)->first([
-            'name',
-            'phone_no',
-            'email_id',
-            'gst_no',
-            'logo',
-            'address'
-        ]);
-        return view('invoice.print', compact('invoice', 'c', 'adminSetting'));
+        $invoice = Invoice::with([
+            'items.workOrder.project'
+        ])->findOrFail($id);
+
+        $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
+        $c = Client::where('login_id', Auth::id())->first();
+
+        // ✅ Machine records cache (performance)
+        $machineRecords = MachineRecord::pluck('part_no', 'id');
+
+        // ✅ GROUPING LOGIC
+        $items = $invoice->items->groupBy(function ($item) use ($machineRecords) {
+
+            $ids = json_decode($item->machine_id, true);
+
+            return collect($ids)
+                ->map(fn($id) => $machineRecords[$id] ?? '')
+                ->unique()   // ✅ IMPORTANT FIX
+                ->implode(',');
+        });
+
+        // ✅ PASS grouped items
+        return view('invoice.print', compact('invoice', 'items', 'c', 'adminSetting'));
     }
+
     public function proprint($id)
     {
         $invoice = Invoice::with('items')->findOrFail($id);
@@ -228,7 +256,7 @@ class InvoiceController extends Controller
         }
         return response()->json(['error' => 'Not Found'], 404);
     }
-      public function getMachineRecords($customer_id)
+    public function getMachineRecords($customer_id)
     {
         $adminId = Auth::id();
 
@@ -265,7 +293,7 @@ class InvoiceController extends Controller
         //  FINAL DATA (Your same logic)
         $data = $machineRecords
             ->groupBy(function ($m) {
-                
+
                 return $m->work_order_id . '|' . $m->part_no . '|' . $m->material;
             })
             ->map(function ($group) use ($materials, $workOrders) {

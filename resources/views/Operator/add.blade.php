@@ -147,13 +147,13 @@
                                         </a>
                                         @endif
 
-                                        @if(hasPermission('Operator', 'delete'))
+                                        <!-- @if(hasPermission('Operator', 'delete'))
                                         <a href="{{ route('deleteOperator', base64_encode($o->id)) }}"
                                             onclick="return confirm('Are you sure you want to delete this record?')"
                                             class="btn btn-danger btn-sm">
                                             <i class="ri-delete-bin-fill align-bottom"></i>
                                         </a>
-                                        @endif
+                                        @endif -->
                                     </td>
                                 </tr>
                                 @empty

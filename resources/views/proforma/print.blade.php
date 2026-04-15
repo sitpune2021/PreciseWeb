@@ -324,19 +324,31 @@
             </tr>
         </thead>
 
-        <tbody> @foreach($invoice->items as $i => $item) <tr>
+        <tbody>
+            @foreach($items as $partNo => $group)
+            @php
+            $first = $group->first();
+            $totalQty = $group->sum('qty');
 
+            // ✅ IMPORTANT CHANGE
+            $totalAmount = $group->sum('total_cost');
+            @endphp
 
-                <td class="center">{{ $i + 1 }}</td>
-                <td class="center">
-                    {{ $item->workOrder->project->project_no }}
-                </td>
+            <tr>
+                <td class="center">{{ $loop->iteration }}</td>
 
-                <td>{{ $item->part_name ?? '' }}</td>
-                <td class="center">{{ $item->hsn_code ?? '' }}</td>
-                <td class="center">{{ $item->qty ?? 1 }}</td>
-                <td class="right">{{ number_format($item->rate ?? 0, 2) }}</td>
-                <td class="right">{{ number_format($item->amount ?? 0, 2) }}</td>
+                <!-- ✅ UNIQUE PART NO -->
+                <td class="center">{{ $partNo }}</td>
+
+                <td>{{ $first->part_name ?? '' }}</td>
+                <td class="center">{{ $first->hsn_code ?? '' }}</td>
+
+                <td class="center">{{ $totalQty }}</td>
+
+                <td class="right">{{ number_format($first->rate ?? 0, 2) }}</td>
+
+                <!-- ✅ CORRECT AMOUNT -->
+                <td class="right">{{ number_format($totalAmount, 2) }}</td>
             </tr>
             @endforeach
         </tbody>

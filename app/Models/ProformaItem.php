@@ -28,6 +28,8 @@ class ProformaItem extends Model
         'cgst',
         'igst',
         'vo_no',
+        'material_cost',   // ✅ add
+        'total_cost',
     ];
 
     public function invoice()
@@ -51,7 +53,7 @@ class ProformaItem extends Model
     }
 
     public function machine()
-{
-    return $this->belongsTo(MachineRecord::class, 'machine_id');
-}
+    {
+        return $this->belongsTo(MachineRecord::class, 'machine_id');
+    }
 }

@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Hsncode;
 use App\Models\InvoiceItem;
 use App\Models\MachineRecord;
+use App\Models\MaterialReq;
 use App\Models\WorkOrder;
 use App\Models\MaterialType;
 use App\Models\ProformaInvoice;
@@ -192,78 +193,110 @@ class ProformaInvoiceController extends Controller
 
         foreach ($request->desc as $i => $desc) {
 
-            //  JSON decode (IMPORTANT)
+            //  JSON decode
             $machineIds = isset($request->machine_ids[$i])
                 ? json_decode($request->machine_ids[$i], true)
                 : [];
 
-            // fallback (single support)
+            // fallback
             if (empty($machineIds) && !empty($request->machine_id[$i])) {
                 $machineIds = [$request->machine_id[$i]];
             }
 
-            foreach ($machineIds as $machineId) {
-
-                //  safer way (fail if not found)
-                $machine = MachineRecord::find($machineId);
-
-                if (!$machine) {
-                    continue; // skip invalid ID
-                }
-
-                //  hrs logic
-                $hrs = (!empty($request->hrs[$i]))
-                    ? floatval($request->hrs[$i])
-                    : ($machine->hrs ?? 0);
-
-                $invoice->items()->create([
-                    'part_name'     => $desc ?? '',
-
-                    // better: take from DB instead of request
-                    'project_id'    => $machine->project_id ?? ($request->project_id[$i] ?? null),
-
-                    // ✅ correct (from machine_records)
-                    'work_order_id' => $machine->work_order_id ?? null,
-
-                    'machine_id'    => $machineId,
-
-                    'hsn_code'      => $request->hsn_code[$i] ?? null,
-                    'hrs'           => $hrs,
-                    'vmc'           => $request->vmc_hr[$i] ?? 0,
-                    'qty'           => $request->qty[$i] ?? 0,
-                    'rate'          => $request->rate[$i] ?? 0,
-                    'amount'        => $request->amount[$i] ?? 0,
-                    'material_rate' => $request->material_rate[$i] ?? 0,
-                    'adj'           => $request->adj[$i] ?? 0,
-
-                    'sgst'          => $request->sgst_percent ?? 0,
-                    'cgst'          => $request->cgst_percent ?? 0,
-                    'igst'          => $request->igst ?? 0,
-
-                    'invoice_id'    => $invoice->id,
-                ]);
-
-                //  update status
-                $machine->update([
-                    'status' => 'complete'
-                ]);
+            if (empty($machineIds)) {
+                continue;
             }
+
+            //  GET ALL MACHINES IN ONE GO
+            $machines = MachineRecord::whereIn('id', $machineIds)->get();
+
+            if ($machines->isEmpty()) {
+                continue;
+            }
+
+            //  TOTAL HRS (SUM OF ALL)
+            $totalHrs = $machines->sum('hrs');
+
+            //  FIRST MACHINE (for common data)
+            $firstMachine = $machines->first();
+
+            //  INSERT ONLY ONE ROW (IMPORTANT)
+            $invoice->items()->create([
+                'part_name'     => $desc ?? '',
+
+                // correct mapping
+                'project_id'    => $firstMachine->project_id ?? null,
+                'work_order_id' => $firstMachine->work_order_id ?? null,
+
+                //  STORE ALL IDS (JSON)
+                'machine_id'    => json_encode($machineIds),
+
+                'hsn_code'      => $request->hsn_code[$i] ?? null,
+
+                // SUM hrs
+                // 'hrs'           => $totalHrs,
+                // 'vmc'           => $request->vmc_hr[$i] ?? 0,
+
+                'hrs'           => $request->hrs[$i] ?? 0,   // ✅ EST time
+                'vmc'           => $totalHrs,                // ✅ machine hrs
+                'qty'           => $request->qty[$i] ?? 0,
+                'rate'          => $request->rate[$i] ?? 0,
+                'amount'        => $request->amount[$i] ?? 0,
+
+                'material_rate' => $request->material_rate[$i] ?? 0,
+                'material_cost' => $request->material_cost[$i] ?? 0,
+                'total_cost'    => $request->total_cost[$i] ?? 0,
+
+                'adj'           => $request->adj[$i] ?? 0,
+
+                'sgst'          => $request->sgst_percent ?? 0,
+                'cgst'          => $request->cgst_percent ?? 0,
+                'igst'          => $request->igst ?? 0,
+
+                'invoice_id'    => $invoice->id,
+            ]);
+
+            //  UPDATE ALL MACHINES AT ONCE
+            MachineRecord::whereIn('id', $machineIds)->update([
+                'status'     => 'complete',
+                'invoice_no' => $invoice->id
+            ]);
+
+            \Log::info('Machines Updated', [
+                'ids' => $machineIds,
+                'count' => count($machineIds)
+            ]);
         }
         return redirect()
             ->route('proforma.index')
             ->with('success', 'Proforma created successfully! ' . $invoiceNo);
     }
-    public function printInvoice($id)
-    {
-        $invoice = ProformaInvoice::with([
-            'items.workOrder.project'
-        ])->findOrFail($id);
+ public function printInvoice($id)
+{
+    $invoice = ProformaInvoice::with([
+        'items.workOrder.project'
+    ])->findOrFail($id);
 
-        $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
-        $c = Client::where('login_id', Auth::id())->first();
+    $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
+    $c = Client::where('login_id', Auth::id())->first();
 
-        return view('proforma.print', compact('invoice', 'c', 'adminSetting'));
-    }
+    // ✅ Machine records cache (performance)
+    $machineRecords = MachineRecord::pluck('part_no', 'id');
+
+    // ✅ GROUPING LOGIC
+    $items = $invoice->items->groupBy(function ($item) use ($machineRecords) {
+
+    $ids = json_decode($item->machine_id, true);
+
+    return collect($ids)
+        ->map(fn($id) => $machineRecords[$id] ?? '')
+        ->unique()   // ✅ IMPORTANT FIX
+        ->implode(',');
+});
+
+    // ✅ PASS grouped items
+    return view('proforma.print', compact('invoice', 'items', 'c', 'adminSetting'));
+}
     public function getHsnDetails($id)
     {
         $hsn_code = Hsncode::where('id', $id)
@@ -281,62 +314,6 @@ class ProformaInvoiceController extends Controller
 
         return response()->json(['error' => 'Not Found'], 404);
     }
-
-    // public function getMachineRecords($customer_id)
-    // {
-    //     $adminId = Auth::id();
-
-    //     $usedWorkOrders = \DB::table('proforma_items')
-    //         ->join('proforma_invoices', 'proforma_items.invoice_id', '=', 'proforma_invoices.id')
-    //         ->where('proforma_invoices.customer_id', $customer_id)
-    //         ->where('proforma_invoices.admin_id', $adminId)
-    //         ->pluck('proforma_items.work_order_id')
-    //         ->toArray();
-
-
-    //     $records = WorkOrder::where('admin_id', $adminId)
-    //         ->where('customer_id', $customer_id)
-    //         ->where('status', 1)
-    //         ->whereNotIn('id', $usedWorkOrders)
-    //         ->orderBy('id', 'asc')
-    //         ->get(['id', 'project_id', 'part_description', 'exp_time', 'quantity', 'material']);
-
-    //     if ($records->isEmpty()) {
-    //         return response()->json([]);
-    //     }
-
-    //     $machineRecords = MachineRecord::where('admin_id', $adminId)
-    //         ->get(['id', 'work_order_id', 'hrs']);
-
-
-    //     $materials = MaterialType::where('admin_id', $adminId)
-    //         ->get(['material_type', 'material_rate']);
-
-
-    //     $data = $records->map(function ($r) use ($materials, $machineRecords) {
-
-    //         $machine = $machineRecords->first(function ($m) use ($r) {
-    //             return !empty($m->work_order_id) && $m->work_order_id == $r->workorder_id;
-    //         });
-
-    //         $mat = $materials->firstWhere('material_type', $r->material);
-
-    //         return [
-    //             'id'               => $r->id,
-    //             'project_id'       => $r->project_id,
-    //             'part_description' => $r->part_description,
-    //             'quantity'         => $r->quantity,
-    //             'exp_time'         => $r->exp_time,
-    //             'vmc_hr'           => $machine->hrs ?? 0,
-    //             'material_type'    => $r->material,
-    //             'material_rate'    => $mat->material_rate ?? 0,
-    //             'workorder_id' => $r->id,
-    //             'machine_id'       => $machine->id ?? null,
-    //         ];
-    //     });
-    //     return response()->json($data);
-    // }
-
 
     // public function convertToTax($id)
     // {
@@ -408,59 +385,89 @@ class ProformaInvoiceController extends Controller
     {
         $adminId = Auth::id();
 
-        //  Already used machine IDs (NULL avoid)
-        $usedMachines = \DB::table('proforma_items')
-            ->join('proforma_invoices', 'proforma_items.invoice_id', '=', 'proforma_invoices.id')
-            ->where('proforma_invoices.customer_id', $customer_id)
-            ->where('proforma_invoices.admin_id', $adminId)
-            ->whereNotNull('proforma_items.machine_id') //  FIX
-            ->pluck('proforma_items.machine_id')
-            ->toArray();
-
-        //  WorkOrders FIRST (for filtering machine records properly)
+        // Work Orders
         $workOrders = WorkOrder::where('admin_id', $adminId)
             ->where('customer_id', $customer_id)
             ->get()
             ->keyBy('id');
 
-        //  Only pending + unused + valid workorder machine records
+        // Machine Records
         $machineRecords = MachineRecord::where('admin_id', $adminId)
             ->where('status', 'pending')
-            ->whereIn('work_order_id', $workOrders->keys()) //  IMPORTANT FIX
-            ->whereNotIn('id', $usedMachines)
-            ->get();
+            ->whereIn('work_order_id', $workOrders->keys())
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->project_id . '_' . $item->first_set;
+            });
 
         if ($machineRecords->isEmpty()) {
             return response()->json([]);
         }
 
-        //  Materials
+        // Materials
         $materials = MaterialType::where('admin_id', $adminId)
             ->get()
             ->keyBy('id');
 
-        //  FINAL DATA (Your same logic)
-        $data = $machineRecords->map(function ($first) use ($materials, $workOrders) {
+        // Material Cost
+        $MaterialReq = MaterialReq::selectRaw('work_order_id, SUM(material_cost) as total_cost')
+            ->where('admin_id', $adminId)
+            ->groupBy('work_order_id')
+            ->get()
+            ->keyBy('work_order_id');
 
-            $workOrder = $workOrders[$first->work_order_id] ?? null;
+        // FINAL DATA
+        $data = $machineRecords->map(function ($records) use ($materials, $workOrders, $MaterialReq) {
 
+            $first = $records->first();
+
+            if (!$first) return null;
+
+            $workOrderId = $first->work_order_id;
+            $workOrder   = $workOrders[$workOrderId] ?? null;
+
+            //  TOTAL HRS
+            $totalHrs = (float) $records->sum('hrs');
+
+            //  ALL MACHINE RECORD IDs
+            $machineIds = $records->pluck('id')->values()->toArray();
+
+            //  MATERIAL COST (multiple workorders handle)
+            $materialCost = 0;
+
+            if (isset($MaterialReq[$workOrderId])) {
+                $materialCost = (float) $MaterialReq[$workOrderId]->total_cost;
+            }
+
+            //  MATERIAL RATE
             $materialRate = 0;
             if ($workOrder && isset($materials[$workOrder->material_id])) {
-                $materialRate = $materials[$workOrder->material_id]->material_rate;
+                $materialRate = (float) $materials[$workOrder->material_id]->material_rate;
             }
 
             return [
                 'id'               => $first->id,
-                'project_id'       => $workOrder->project_id ?? null,
-                'part_description' => $first->first_set ?? 'N/A',
+
+                // MACHINE RECORD BASED (FIXED)
+                'project_id'       => $first->project_id,
+
+                'part_description' => $first->first_set,
+
                 'quantity'         => $workOrder->quantity ?? 0,
                 'exp_time'         => $workOrder->exp_time ?? 0,
-                'vmc_hr'           => $first->hrs ?? 0,
+
+                // SUM OF ALL
+                'vmc_hr'           => round($totalHrs, 2),
+
                 'material_rate'    => $materialRate,
-                'workorder_id'     => $first->work_order_id,
-                'machine_ids'      => [$first->id],
+                'material_cost'    => round($materialCost, 2),
+
+                'workorder_id'     => $workOrderId,
+
+                // MULTIPLE IDS
+                'machine_ids'      => $machineIds,
             ];
-        })->values();
+        })->filter()->values();
 
         return response()->json($data);
     }
@@ -537,6 +544,8 @@ class ProformaInvoiceController extends Controller
                 'qty'           => $item->qty,
                 'rate'          => $item->rate,
                 'amount'        => $item->amount,
+                'material_cost'=> $item->material_cost,
+                'total_cost'    => $item->total_cost,
                 'hrs'           => $item->hrs,
                 'vmc'           => $item->vmc,
                 'adj'           => $item->adj,
@@ -742,6 +751,7 @@ class ProformaInvoiceController extends Controller
             'sub_total'   => 'required|numeric|min:0',
             'total_tax'   => 'required|numeric|min:0',
             'grand_total' => 'required|numeric|min:0',
+            'hrs.*' => 'nullable|string|max:50',
         ]);
 
         //  UPDATE INVOICE
@@ -766,6 +776,7 @@ class ProformaInvoiceController extends Controller
 
         //  LOOP ITEMS
         foreach ($request->desc as $i => $desc) {
+
             $hsn = $request->hsn_code[$i] ?? null;
 
             $hsnMaster = Hsncode::where('hsn_code', $hsn)
@@ -781,39 +792,33 @@ class ProformaInvoiceController extends Controller
                 $sgst = 0;
             }
 
-            // Decode machine IDs for this item
             $machineIds = isset($request->machine_ids[$i])
                 ? json_decode($request->machine_ids[$i], true)
                 : [];
 
-            // Fallback for single machine support
             if (empty($machineIds) && !empty($request->machine_id[$i])) {
                 $machineIds = [$request->machine_id[$i]];
             }
 
-            // Loop through machine IDs and create/update ProformaItems
             foreach ($machineIds as $mid) {
 
                 $machine = MachineRecord::find($mid);
-
-                if (!$machine) {
-                    continue;
-                }
+                if (!$machine) continue;
 
                 $itemData = [
                     'part_name'     => $desc,
-
-                    // ✅ safer
-                    'project_id'    => $machine->project_id ?? (!empty($request->project_id[$i]) ? intval($request->project_id[$i]) : null),
-
-                    // ✅ MAIN FIX
+                    'project_id'    => $machine->project_id ?? null,
                     'work_order_id' => $machine->work_order_id ?? null,
-
                     'hsn_code'      => $hsn,
                     'qty'           => $request->qty[$i] ?? 0,
                     'rate'          => $request->rate[$i] ?? 0,
                     'amount'        => $request->amount[$i] ?? 0,
-                    'hrs'           => $request->hrs[$i] ?? ($machine->hrs ?? 0),
+                    'material_cost' => $request->material_cost[$i] ?? 0,
+                    'total_cost'    => $request->total_cost[$i] ?? 0,
+
+                    //  IMPORTANT (hrs string support)
+                    'hrs'           => $request->hrs[$i] ?? '',
+
                     'vmc'           => $request->vmc_hr[$i] ?? 0,
                     'adj'           => $request->adj[$i] ?? 0,
                     'sgst'          => $sgst,
@@ -833,13 +838,13 @@ class ProformaInvoiceController extends Controller
                     $invoice->items()->create($itemData);
                 }
 
-                // ✅ update status
                 $machine->update(['status' => 'complete']);
             }
-
-            return redirect()
-                ->route('proforma.index')
-                ->with('success', 'Proforma Invoice Updated Successfully.');
         }
+
+        //  RETURN OUTSIDE LOOP
+        return redirect()
+            ->route('proforma.index')
+            ->with('success', 'Proforma Invoice Updated Successfully.');
     }
 }

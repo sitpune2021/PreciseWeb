@@ -144,13 +144,13 @@
                                             <i class="ri-pencil-fill"></i>
                                         </a>
 
-                                        @endif
+                                        <!-- @endif
                                         @if(hasPermission('Hsncode', 'delete'))
                                         <a href="{{ route('deleteHsn', base64_encode($h->id)) }}"
                                             onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">
                                             <i class="ri-delete-bin-fill"></i>
                                         </a>
-                                        @endif
+                                        @endif -->
                                     </td>
                                 </tr>
                                 @empty

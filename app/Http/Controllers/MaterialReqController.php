@@ -36,6 +36,7 @@ class MaterialReqController extends Controller
     }
     public function storeMaterialReq(Request $request)
     {
+
         // 1️ Validate input
         $validated = $request->validate([
             'work_order_id' => 'required|exists:work_orders,id',
@@ -115,6 +116,8 @@ class MaterialReqController extends Controller
                 'material_cost'   => $materialCost,
                 'total_cost'      => $totalCost,
             ]);
+
+ 
 
             return redirect()->route('ViewMaterialReq')
                 ->with('success', 'Material Requirement Added Successfully!');

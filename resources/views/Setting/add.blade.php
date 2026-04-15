@@ -81,7 +81,7 @@
                                 <th style="width: 5%;">Sr.No</th>
                                 <th style="width: 60%; text-align: center;">Setting Name</th>
                                 <th style="width: 15%;">Status</th>                        
-                                <th width="12%">Action</th>                           
+                                <th width="10%">Action</th>                           
                             </tr>
                         </thead>
                         <tbody>
@@ -113,14 +113,14 @@
                                     </a>
                                     @endif
 
-                                    @if(hasPermission('Setting', 'delete'))
+                                    <!-- @if(hasPermission('Setting', 'delete'))
                                     <a href="{{route('deleteSetting', base64_encode($s->id))}}"
                                         onclick="return confirm('Are you sure you want to delete this record?')">
                                         <button type="button" class="btn btn-danger btn-sm">
                                             <i class="ri-delete-bin-fill align-bottom"></i>
                                         </button>
                                     </a>
-                                    @endif
+                                    @endif -->
                                 </td>
                             </tr>
                             @empty

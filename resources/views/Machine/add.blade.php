@@ -107,14 +107,14 @@
                                         </a>
                                         @endif
 
-                                        @if(hasPermission('Machine', 'delete'))
+                                        <!-- @if(hasPermission('Machine', 'delete'))
                                         <a href="{{route('deleteMachine', base64_encode($m->id))}}"
                                             onclick="return confirm('Are you sure you want to delete this record?')">
                                             <button type="button" class="btn btn-danger btn-sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </button>
                                         </a>
-                                        @endif
+                                        @endif -->
                                     </td>
                                 </tr>
                                 @empty

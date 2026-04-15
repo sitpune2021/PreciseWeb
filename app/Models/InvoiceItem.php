@@ -26,6 +26,8 @@ class InvoiceItem extends Model
         'cgst',
         'igst',
         'vo_no',
+        'material_cost',   // ✅ MUST
+        'total_cost',
     ];
 
     public function invoice()
@@ -33,7 +35,7 @@ class InvoiceItem extends Model
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
- 
+
 
     public function machineRecord()
     {
@@ -41,18 +43,13 @@ class InvoiceItem extends Model
     }
 
 
-        public function workOrder()
+    public function workOrder()
     {
         return $this->belongsTo(WorkOrder::class, 'work_order_id');
     }
 
     public function machine()
-{
-    return $this->belongsTo(MachineRecord::class, 'machine_id');
-}
-
- 
-
- 
-
+    {
+        return $this->belongsTo(MachineRecord::class, 'machine_id');
+    }
 }

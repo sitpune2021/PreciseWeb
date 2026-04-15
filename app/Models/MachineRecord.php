@@ -14,6 +14,7 @@ class MachineRecord extends Model
     protected $fillable = [
         'admin_id',
         'work_order_id',
+        'project_id',
         'part_no',
         'code',
         'work_order',
@@ -37,6 +38,7 @@ class MachineRecord extends Model
         // 'time_taken',
         // 'actual_hrs',
         'invoice_no',
+         'status',
 
 
     ];
