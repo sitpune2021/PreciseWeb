@@ -385,6 +385,7 @@ class QuotationController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
     public function editquotation($id)
     {
         $id = base64_decode($id);
@@ -399,6 +400,7 @@ class QuotationController extends Controller
 
         return view('Quotation.add', compact('quotation', 'codes', 'materialtype', 'rates'));
     }
+
     public function update(Request $request, $id)
     {
         $id = base64_decode($id);
@@ -466,7 +468,7 @@ class QuotationController extends Controller
 
                 $quotation->items()->create([
                     'description'    => $item['Description'] ?? null,
-                    
+
                     'dia'            => floatval($item['dia'] ?? 0),
                     'length'         => floatval($item['length'] ?? 0),
                     'width'          => floatval($item['width'] ?? 0),
@@ -526,6 +528,7 @@ class QuotationController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
     public function Viewquotation()
     {
         $quotations = Quotation::with(['customer'])
@@ -535,6 +538,7 @@ class QuotationController extends Controller
 
         return view('Quotation.view', compact('quotations'));
     }
+
     public function printquotation($id)
     {
         $id = base64_decode($id);
@@ -567,6 +571,7 @@ class QuotationController extends Controller
             'totalToolCost'
         ));
     }
+
     public function destroy(string $id)
     {
         $id = base64_decode($id);

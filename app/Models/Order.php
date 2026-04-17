@@ -27,11 +27,11 @@ class Order extends Model
 
     public function plan()
     {
-        return $this->belongsTo(PaymentPlan::class, 'plan_id');  // ✔ Correct
+        return $this->belongsTo(PaymentPlan::class, 'plan_id');  // Correct
     }
 
     public function client()
     {
-        return $this->belongsTo(Client::class, 'user_id', 'login_id'); // ✔ So you can access plan_type
+        return $this->belongsTo(Client::class, 'user_id', 'login_id'); // So you can access plan_type
     }
 }

@@ -18,6 +18,7 @@ class FinancialYearController extends Controller
 
         return view('FinancialYear.add', compact('years'));
     }
+
     public function storeFinancialYear(Request $request)
     {
         $adminId = Auth::id();
@@ -42,6 +43,7 @@ class FinancialYearController extends Controller
         return redirect()->route('AddFinancialYear')
             ->with('success', 'Financial Year added successfully');
     }
+
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -53,6 +55,7 @@ class FinancialYearController extends Controller
 
         return view('FinancialYear.add', compact('year', 'years'));
     }
+
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -80,6 +83,7 @@ class FinancialYearController extends Controller
         return redirect()->route('AddFinancialYear')
             ->with('success', 'Financial Year updated successfully.');
     }
+
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -89,6 +93,7 @@ class FinancialYearController extends Controller
         return redirect()->route('AddFinancialYear')
             ->with('success', 'Financial Year deleted successfully.');
     }
+
     public function updateStatus(Request $request)
     {
         $year = FinancialYear::findOrFail($request->id);
@@ -97,6 +102,7 @@ class FinancialYearController extends Controller
 
         return back()->with('success', 'Status updated!');
     }
+
     public function trash()
     {
         $adminId = Auth::id();
@@ -113,6 +119,7 @@ class FinancialYearController extends Controller
 
         return view('FinancialYear.trash', compact('trashedFinancialYears', 'financialYears'));
     }
+    
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

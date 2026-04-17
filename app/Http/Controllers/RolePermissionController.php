@@ -14,6 +14,7 @@ class RolePermissionController extends Controller
         $roles = Role::all();
         return view('useradmin.rolepermission', compact('roles'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -48,6 +49,7 @@ class RolePermissionController extends Controller
 
         return back()->with('success', 'Permissions saved successfully!');
     }
+    
     public function getRolePermissions($role_id)
     {
         $rolePermission = RolePermission::where('role_id', $role_id)

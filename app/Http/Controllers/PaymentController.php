@@ -20,6 +20,7 @@ class PaymentController extends Controller
         $plans = PaymentPlan::where('is_active', 1)->get();
         return view('Payment.renew', compact('plans', 'client'));
     }
+
     public function order(Request $request)
     {
         $request->validate([
@@ -82,6 +83,7 @@ class PaymentController extends Controller
             'plan_id' => $plan->id
         ]);
     }
+
     public function success(Request $request)
     {
         $request->validate([
@@ -146,6 +148,7 @@ class PaymentController extends Controller
             return back()->with('error', 'Something went wrong');
         }
     }
+
     public function failed(Request $request)
     {
         if ($request->order_id) {
@@ -155,6 +158,7 @@ class PaymentController extends Controller
         }
         return view('Payment.failed');
     }
+
     public function PaymentList()
     {
         $adminId = Auth::id();
@@ -166,6 +170,7 @@ class PaymentController extends Controller
 
         return view('Payment.view', compact('payments'));
     }
+
     public function AllPaymentList()
     {
         if (auth()->user()->user_type != 1) {

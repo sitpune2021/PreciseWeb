@@ -21,7 +21,6 @@ class WorkOrderController extends Controller
         $project = null; //  NEW
         $lastCustomer = null;
 
-
         if ($id) {
             $projectId = base64_decode($id);
 
@@ -56,27 +55,26 @@ class WorkOrderController extends Controller
             ->get();
 
         $latestMaterialOrderNo = MaterialOrder::where('admin_id', $adminId)
-    ->whereNull('deleted_at')
-    ->latest('id')
-    ->value('work_order_no');
+            ->whereNull('deleted_at')
+            ->latest('id')
+            ->value('work_order_no');
 
-$highlightProjectId = null;
+        $highlightProjectId = null;
 
-if (!empty($latestMaterialOrderNo)) {
+        if (!empty($latestMaterialOrderNo)) {
 
-    // 🔥 clean string first
-    $cleanOrderNo = trim($latestMaterialOrderNo);
+            // clean string first
+            $cleanOrderNo = trim($latestMaterialOrderNo);
 
-    if (str_contains($cleanOrderNo, '_')) {
-        $parts = explode('_', $cleanOrderNo);
+            if (str_contains($cleanOrderNo, '_')) {
+                $parts = explode('_', $cleanOrderNo);
 
-        // 🔥 remove zero + force int
-        $highlightProjectId = isset($parts[1]) 
-            ? (int) preg_replace('/[^0-9]/', '', $parts[1]) 
-            : null;
-    }
-}
-
+                // remove zero + force int
+                $highlightProjectId = isset($parts[1])
+                    ? (int) preg_replace('/[^0-9]/', '', $parts[1])
+                    : null;
+            }
+        }
         //  project  last customer (old logic)
         if (!$lastCustomer) {
             $lastCustomer = WorkOrder::where('admin_id', $adminId)
@@ -239,7 +237,7 @@ if (!empty($latestMaterialOrderNo)) {
 
         $projects = Project::where('customer_id', $customerId)
             ->select('id', 'project_no', 'project_name', 'quantity')
-            ->orderBy('id', 'desc') // ✅ LATEST FIRST
+            ->orderBy('id', 'desc') //  LATEST FIRST
             ->get();
 
         return response()->json($projects);
@@ -257,6 +255,22 @@ if (!empty($latestMaterialOrderNo)) {
         return response()->json($parts);
     }
 
+    // public function getNextPart($customerId, $projectId)
+    // {
+    //     $adminId = Auth::id();
+
+    //     $lastPart = WorkOrder::where('customer_id', $customerId)
+    //         ->where('project_id', $projectId)
+    //         ->where('admin_id', $adminId)
+    //         ->max('part');
+
+    //     $nextPart = $lastPart ? $lastPart + 1 : 1;
+
+    //     return response()->json([
+    //         'next_part' => $nextPart
+    //     ]);
+    // }
+
     public function getNextPart($customerId, $projectId)
     {
         $adminId = Auth::id();
@@ -264,9 +278,14 @@ if (!empty($latestMaterialOrderNo)) {
         $lastPart = WorkOrder::where('customer_id', $customerId)
             ->where('project_id', $projectId)
             ->where('admin_id', $adminId)
-            ->max('part');
+            ->orderByRaw('CAST(part as UNSIGNED) DESC')
+            ->value('part');
 
-        $nextPart = $lastPart ? $lastPart + 1 : 1;
+        if (!$lastPart) {
+            $nextPart = 1;
+        } else {
+            $nextPart = ((int)$lastPart % 10) + 1;
+        }
 
         return response()->json([
             'next_part' => $nextPart

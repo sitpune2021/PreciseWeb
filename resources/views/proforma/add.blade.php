@@ -427,9 +427,7 @@
 
                     <td><input type="text" name="hrs[]" class="form-control hrs" value="${inv.hrs}" readonly></td>
 
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm removeItem">X</button>
-                    </td>
+               
                 </tr>`;
                 $('#itemsTable tbody').append(row);
                 if ("{{ isset($data) ? 1 : 0 }}" != "1") {

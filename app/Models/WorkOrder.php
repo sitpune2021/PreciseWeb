@@ -52,7 +52,6 @@ class WorkOrder extends Model
         return $this->hasMany(InvoiceItem::class, 'work_order_id', 'id');
     }
 
-
     public function machineRecords()
     {
         return $this->hasMany(MachineRecord::class, 'work_order', 'id');
@@ -62,14 +61,14 @@ class WorkOrder extends Model
     {
         return $this->belongsTo(Hsncode::class, 'material', 'material_type');
     }
-    
+
     public function materialType()
     {
         return $this->belongsTo(MaterialType::class, 'material');
     }
 
     public function materialData()
-{
-    return $this->belongsTo(MaterialType::class, 'material_id');
-}
+    {
+        return $this->belongsTo(MaterialType::class, 'material_id');
+    }
 }

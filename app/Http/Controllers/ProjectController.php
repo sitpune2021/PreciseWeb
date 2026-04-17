@@ -56,6 +56,7 @@ class ProjectController extends Controller
 
         return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId', 'highlightProjectPrefix'));
     }
+
     public function storeProject(Request $request)
     {
         $adminId = Auth::id();
@@ -98,6 +99,7 @@ class ProjectController extends Controller
 
         return redirect()->route('AddProject')->with('success', 'Project added successfully.');
     }
+
     public function ViewProject()
     {
         $adminId = Auth::id();
@@ -106,6 +108,7 @@ class ProjectController extends Controller
 
         return view('Project.view', compact('projects'));
     }
+
     public function edit(string $encryptedId)
     {
         $adminId = Auth::id();
@@ -144,6 +147,7 @@ class ProjectController extends Controller
 
         return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectId', 'highlightProjectPrefix'));
     }
+
     public function update(Request $request, string $encryptedId)
     {
         $adminId = Auth::id();
@@ -185,6 +189,7 @@ class ProjectController extends Controller
 
         return redirect()->route('AddProject')->with('success', 'Project updated successfully.');
     }
+
     public function destroy(string $encryptedId)
     {
         $adminId = Auth::id();

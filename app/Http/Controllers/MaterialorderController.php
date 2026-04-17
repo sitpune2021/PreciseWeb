@@ -36,6 +36,7 @@ class MaterialorderController extends Controller
 
         return view('Materialorder.add', compact('codes', 'customers', 'materialReq', 'orders'));
     }
+
     public function ViewMaterialorder()
     {
         $orders = MaterialOrder::where('admin_id', Auth::id())
@@ -44,6 +45,7 @@ class MaterialorderController extends Controller
 
         return view('Materialorder.view', compact('orders'));
     }
+
     public function storeMaterialorder(Request $request)
     {
         // Validate inputs
@@ -97,6 +99,7 @@ class MaterialorderController extends Controller
         return redirect()->route('AddMaterialorder')
             ->with('success', 'Material Order saved successfully');
     }
+
     public function editMaterialorder($id)
     {
         $decodedId = base64_decode($id);
@@ -120,9 +123,9 @@ class MaterialorderController extends Controller
             ->orderBy('sr_no')
             ->get();
 
-         $orders = MaterialOrder::where('admin_id', Auth::id())
+        $orders = MaterialOrder::where('admin_id', Auth::id())
             ->latest()
-            ->get();    
+            ->get();
 
         return view('Materialorder.add', compact(
             'record',
@@ -133,6 +136,7 @@ class MaterialorderController extends Controller
             'orders'
         ));
     }
+
     public function update(Request $request, $id)
     {
         $decodedId = base64_decode($id);
@@ -161,6 +165,7 @@ class MaterialorderController extends Controller
         return redirect()->route('AddMaterialorder')
             ->with('success', 'Material Order updated successfully');
     }
+
     public function destroy($id)
     {
         $record = MaterialOrder::where('admin_id', Auth::id())
@@ -171,6 +176,7 @@ class MaterialorderController extends Controller
         return redirect()->route('ViewMaterialorder')
             ->with('success', 'Material Order deleted successfully.');
     }
+
     public function trash()
     {
         $trashedOrders = MaterialOrder::onlyTrashed()
@@ -182,6 +188,7 @@ class MaterialorderController extends Controller
 
         return view('Materialorder.trash', compact('trashedOrders', 'activeOrders'));
     }
+
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -203,6 +210,7 @@ class MaterialorderController extends Controller
         return redirect()->route('ViewMaterialorder')
             ->with('success', "Material Order '{$order->work_order_desc}' restored successfully.");
     }
+
     public function getMaterialRequestDetails($id)
     {
         $data = MaterialReq::with('materialType')->find($id);
@@ -224,6 +232,7 @@ class MaterialorderController extends Controller
             ]
         ]);
     }
+
     public function getMaterialRequests($customer_id)
     {
         $requests = MaterialReq::with('materialType')
@@ -248,6 +257,7 @@ class MaterialorderController extends Controller
             })
         ]);
     }
+
     public function getCustomerWo($customerId)
     {
         $wo = MaterialReq::where('customer_id', $customerId)

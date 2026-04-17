@@ -28,8 +28,7 @@ class Project extends Model
     }
 
     public function workOrders()
-{
-    return $this->hasMany(WorkOrder::class);
-}
-
+    {
+        return $this->hasMany(WorkOrder::class);
+    }
 }

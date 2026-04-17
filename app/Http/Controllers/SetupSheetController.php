@@ -151,6 +151,7 @@ class SetupSheetController extends Controller
 
         return redirect()->route('ViewSetupSheet')->with('success', 'SetupSheet created successfully.');
     }
+
     public function ViewSetupSheet()
     {
         $adminId = Auth::id();
@@ -181,7 +182,6 @@ class SetupSheetController extends Controller
 
     public function editSetupSheet(string $encryptedId)
     {
-
         $id = base64_decode($encryptedId);
 
         $record = SetupSheet::where('admin_id', Auth::id())->findOrFail($id);
@@ -228,10 +228,10 @@ class SetupSheetController extends Controller
         $workorder = null;
         $lastCustomer = null;
 
-        // ✅ FIXED LOGIC (same structure, correct data)
+        // FIXED LOGIC (same structure, correct data)
         if ($id) {
 
-            $woId = $setupSheet->work_order_id; // 🔥 FIX
+            $woId = $setupSheet->work_order_id; // FIX
 
             $workorder = WorkOrder::with('project')
                 ->where('admin_id', $adminId)

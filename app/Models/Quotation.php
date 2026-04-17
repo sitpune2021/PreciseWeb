@@ -20,10 +20,8 @@ class Quotation extends Model
         'total_tool_cost',
         'profit_percent',
         'overhead_percent',
-
         'profit',
         'overhead',
-
         'terms_conditions',
         'status',
     ];

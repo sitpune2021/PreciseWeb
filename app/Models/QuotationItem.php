@@ -31,13 +31,11 @@ class QuotationItem extends Model
         'wirecut',
         'machining_cost',
         'material_gravity',
-        
+
     ];
 
     public function quotation()
     {
         return $this->belongsTo(Quotation::class);
     }
-
-    
 }

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
 class MachineRecord extends Model
 {
     use HasFactory, SoftDeletes;
@@ -38,8 +37,7 @@ class MachineRecord extends Model
         // 'time_taken',
         // 'actual_hrs',
         'invoice_no',
-         'status',
-
+        'status',
 
     ];
 
@@ -65,14 +63,14 @@ class MachineRecord extends Model
     }
 
     public function machineData()
-{
-    return $this->belongsTo(Machine::class, 'machine_id');
-}
+    {
+        return $this->belongsTo(Machine::class, 'machine_id');
+    }
 
-public function operatorData()
-{
-    return $this->belongsTo(Operator::class, 'operator_id');
-}
+    public function operatorData()
+    {
+        return $this->belongsTo(Operator::class, 'operator_id');
+    }
 
     public function setting()
     {

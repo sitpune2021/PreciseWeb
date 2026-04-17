@@ -153,9 +153,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
             <!-- Customer View Modal -->
@@ -172,8 +169,6 @@
                                     <th>Name</th>
                                     <td id="cust_name"></td>
                                 </tr>
-
-
                                 <tr>
                                     <th>Code</th>
                                     <td id="cust_code"></td>

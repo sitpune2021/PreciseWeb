@@ -28,7 +28,6 @@ class UserAdmin extends Authenticatable
         return $this->status == 1;
     }
 
-
     public function roles()
     {
         return $this->belongsTo(Role::class, 'role');

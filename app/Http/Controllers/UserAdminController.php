@@ -100,7 +100,7 @@ class UserAdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // ✅ Validation
+        // Validation
         $validated = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'username'  => [
@@ -124,7 +124,7 @@ class UserAdminController extends Controller
             'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        // ✅ Profile Photo Update
+        // Profile Photo Update
         if ($request->hasFile('profile_photo')) {
 
             // delete old photo
@@ -139,10 +139,10 @@ class UserAdminController extends Controller
             $validated['profile_photo'] = $path;
         }
 
-        // ✅ Update User
+        // Update User
         $user->update($validated);
 
-        // ✅ Redirect
+        // Redirect
         return redirect()
             ->route('ListUserAdmin')
             ->with('success', 'User updated successfully.');

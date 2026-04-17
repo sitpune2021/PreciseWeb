@@ -18,6 +18,7 @@ class MaterialTypeController extends Controller
 
         return view('Materialtype.add', compact('materialtypes'));
     }
+
     public function storeMaterialType(Request $request)
     {
         $request->validate([
@@ -54,6 +55,7 @@ class MaterialTypeController extends Controller
 
         return redirect()->route('AddMaterialType')->with('success', 'Material Type added successfully');
     }
+
     public function editMaterialType(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -68,6 +70,7 @@ class MaterialTypeController extends Controller
             ->get();
         return view('Materialtype.add', compact('materialtypes', 'materialtype'));
     }
+
     public function updateMaterialType(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -112,9 +115,9 @@ class MaterialTypeController extends Controller
         return redirect()->route('AddMaterialType')
             ->with('success', 'Material Type updated successfully.');
     }
+
     public function updateMaterialStatus(Request $request)
     {
-
         $MaterialType = MaterialType::where('id', $request->id)
             ->where('admin_id', Auth::id())
             ->firstOrFail();
@@ -122,9 +125,9 @@ class MaterialTypeController extends Controller
         $MaterialType->status = $request->input('status', 0);
         $MaterialType->save();
 
-
         return back()->with('success', 'Status updated!');
     }
+
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -140,9 +143,9 @@ class MaterialTypeController extends Controller
         return redirect()->route('AddMaterialType')
             ->with('success', 'Material Type deleted successfully.');
     }
+
     public function trash()
     {
-
         $trashedmaterialtypes = MaterialType::onlyTrashed()
             ->where('admin_id', Auth::id())
             ->orderBy('id', 'desc')
@@ -155,6 +158,7 @@ class MaterialTypeController extends Controller
 
         return view('Materialtype.trash', compact('trashedmaterialtypes', 'materialtypes'));
     }
+
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -163,7 +167,6 @@ class MaterialTypeController extends Controller
             ->where('id', $id)
             ->where('admin_id', Auth::id())
             ->firstOrFail();
-
 
         $exists = MaterialType::where('material_type', $MaterialType->material_type)
             ->where('admin_id', Auth::id())

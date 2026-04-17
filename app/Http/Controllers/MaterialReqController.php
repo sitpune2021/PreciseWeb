@@ -34,10 +34,10 @@ class MaterialReqController extends Controller
 
         return view('MaterialReq.add', compact('codes', 'materialtype', 'customers', 'parts'));
     }
+
     public function storeMaterialReq(Request $request)
     {
-
-        // 1️ Validate input
+        // 1 Validate input
         $validated = $request->validate([
             'work_order_id' => 'required|exists:work_orders,id',
             'date'          => 'required|date',
@@ -102,7 +102,7 @@ class MaterialReqController extends Controller
             'total_cost'    => $totalCost,
         ];
 
-        // 6️ Create record & log
+        // Create record & log
         try {
             $materialReq = MaterialReq::create($data);
 
@@ -117,8 +117,6 @@ class MaterialReqController extends Controller
                 'total_cost'      => $totalCost,
             ]);
 
- 
-
             return redirect()->route('ViewMaterialReq')
                 ->with('success', 'Material Requirement Added Successfully!');
         } catch (\Exception $e) {
@@ -130,6 +128,7 @@ class MaterialReqController extends Controller
             return redirect()->back()->with('error', 'Failed to add Material Requirement. Please try again.');
         }
     }
+
     public function ViewMaterialReq()
     {
         $adminId = Auth::id();
@@ -139,12 +138,13 @@ class MaterialReqController extends Controller
             ->orderBy('created_at')
             ->get();
 
-       $latestWorkOrderNo = MaterialOrder::where('admin_id', $adminId)
-    ->latest('id')
-    ->value('work_order_no');
+        $latestWorkOrderNo = MaterialOrder::where('admin_id', $adminId)
+            ->latest('id')
+            ->value('work_order_no');
 
         return view('MaterialReq.view', compact('materialReq', 'latestWorkOrderNo'));
     }
+
     public function editMaterialReq(string $encryptedId)
     {
         $adminId = Auth::id();
@@ -231,6 +231,7 @@ class MaterialReqController extends Controller
 
         return redirect()->route('ViewMaterialReq')->with('success', 'Material Requirement deleted successfully.');
     }
+
     public function trash()
     {
         $trashedMaterialReq = MaterialReq::onlyTrashed()
@@ -240,6 +241,7 @@ class MaterialReqController extends Controller
         $materialReq = MaterialReq::all();
         return view('MaterialReq.trash', compact('trashedMaterialReq', 'materialReq'));
     }
+
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -261,6 +263,7 @@ class MaterialReqController extends Controller
         return redirect()->route('ViewMaterialReq')
             ->with('success', "Material Requirement '{$material->code}' restored successfully.");
     }
+
     public function getMaterial($id)
     {
         $material = MaterialType::findOrFail($id);
@@ -270,6 +273,7 @@ class MaterialReqController extends Controller
             'rate'    => $material->material_rate,
         ]);
     }
+
     public function getWorkOrdersByCustomer($Id)
     {
         $adminId = Auth::id();

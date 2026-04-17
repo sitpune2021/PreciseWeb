@@ -16,6 +16,7 @@ class ClientContoller extends Controller
     {
         return view('Client.add');
     }
+
     public function storeClient(Request $request)
     {
         $request->validate([
@@ -99,6 +100,7 @@ class ClientContoller extends Controller
 
         return redirect()->route('ViewClient')->with('success', 'Client created with 7-day trial.');
     }
+    
     public function ViewClient()
     {
         $client = Client::orderBy('id', 'desc')->get();
@@ -115,6 +117,7 @@ class ClientContoller extends Controller
             abort(404);
         }
     }
+
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);

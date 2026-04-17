@@ -89,12 +89,11 @@
                                     <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="add"></td>
                                     <td><input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="view"></td>
                                     <td>
-                                        @if($module != 'Quotation')
                                         <input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="edit">
                                     </td>
-                                    @endif
+
                                     <td>
-                                        @if($module != 'Customer' && $module != 'Projects' && $module != 'Invoice')
+                                        @if($module != 'Customer' && $module != 'Projects' && $module != 'Invoice' && $module != 'Operator' && $module != 'Machine' && $module != 'Setting' && $module != 'Hsncode' && $module != 'MaterialType' && $module != 'VmcRate' && $module != 'FinancialYear')
                                         <input type="checkbox" class="perm large-checkbox" name="permissions[{{ $module }}][]" value="delete">
                                         @endif
                                     </td>

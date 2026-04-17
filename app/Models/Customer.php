@@ -34,6 +34,7 @@ class Customer extends Model
     {
         return $this->hasMany(MaterialOrder::class);
     }
+
     public function materialreq()
     {
         return $this->hasOne(MaterialReq::class);

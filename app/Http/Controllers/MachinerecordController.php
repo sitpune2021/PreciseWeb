@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MachinerecordController extends Controller
 {
+
     // public function AddMachinerecord()
     // {
     //     $codes = Customer::where('status', 1)->where('admin_id', Auth::id())
@@ -57,6 +58,7 @@ class MachinerecordController extends Controller
     //         'projects'
     //     ));
     // }
+
 
     public function AddMachinerecord()
     {
@@ -107,6 +109,7 @@ class MachinerecordController extends Controller
             'projects'
         ));
     }
+
     // public function StoreMachinerecord(Request $request)
     // {
     //     $validated = $request->validate([
@@ -165,10 +168,10 @@ class MachinerecordController extends Controller
 
         $validated['admin_id'] = Auth::id();
 
-        // ✅ correct field
+        //  correct field
         $validated['work_order_id'] = $request->work_order_id;
 
-        // ✅ project_id auto
+        //  project_id auto
         $workOrder = WorkOrder::find($request->work_order_id);
         $validated['project_id'] = $workOrder->project_id ?? null;
 
@@ -177,6 +180,7 @@ class MachinerecordController extends Controller
         return redirect()->route('ViewMachinerecord')
             ->with('success', 'Machine Record Added Successfully');
     }
+
     public function ViewMachinerecord()
     {
         $adminId = Auth::id();
@@ -204,13 +208,11 @@ class MachinerecordController extends Controller
 
         return view('Machinerecord.view', compact('record', 'workorders', 'highlightPartNo'));
     }
+
     public function edit(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-
-
         $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id);
-
 
         $codes = Customer::where(function ($q) use ($record) {
             $q->where('status', 1)
@@ -235,7 +237,6 @@ class MachinerecordController extends Controller
             ->latest()
             ->get();
 
-
         $machines = Machine::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
 
         $operators = Operator::where('admin_id', Auth::id())->orderBy('id', 'desc')->get();
@@ -252,6 +253,7 @@ class MachinerecordController extends Controller
             'codes'
         ));
     }
+
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -291,6 +293,7 @@ class MachinerecordController extends Controller
 
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Updated Successfully');
     }
+
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);
@@ -299,6 +302,7 @@ class MachinerecordController extends Controller
 
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record deleted successfully.');
     }
+
     public function fetchData($part_code)
     {
         $data = SetupSheet::where('part_code', $part_code)
@@ -322,6 +326,7 @@ class MachinerecordController extends Controller
 
         return response()->json([]);
     }
+
     public function trash()
     {
         $trashedMachines = MachineRecord::onlyTrashed()
@@ -332,6 +337,7 @@ class MachinerecordController extends Controller
 
         return view('Machinerecord.trash', compact('trashedMachines', 'machines'));
     }
+
     public function getInvoiceByCustomer($customer_id)
     {
         $invoice =  Invoice::where('customer_id', $customer_id)
@@ -344,6 +350,7 @@ class MachinerecordController extends Controller
             return response()->json(['invoice_no' => null]);
         }
     }
+
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);

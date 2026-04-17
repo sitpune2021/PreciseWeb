@@ -16,6 +16,7 @@ class PaymentPlanController extends Controller
         $plans = PaymentPlan::orderBy('id', 'desc')->get();
         return view('admin.payment.plans.index', compact('plans'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -36,6 +37,7 @@ class PaymentPlanController extends Controller
         return redirect()->route('admin.plans')
             ->with('success', 'Plan Created Successfully');
     }
+
     public function edit($id)
     {
         $plans = PaymentPlan::orderBy('id', 'desc')->get();
@@ -43,6 +45,7 @@ class PaymentPlanController extends Controller
 
         return view('admin.payment.plans.index', compact('plans', 'plan'));
     }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -67,6 +70,7 @@ class PaymentPlanController extends Controller
         return redirect()->route('admin.plans')
             ->with('success', 'Plan Updated Successfully');
     }
+
     public function destroy($id)
     {
         PaymentPlan::findOrFail($id)->delete();
@@ -74,6 +78,7 @@ class PaymentPlanController extends Controller
         return redirect()->route('admin.plans')
             ->with('success', 'Plan Deleted Successfully');
     }
+    
     public function toggleStatus(Request $request)
     {
         $plan = PaymentPlan::findOrFail($request->id);

@@ -26,6 +26,7 @@
                                     @endif
                                     <input type="hidden" name="password" value="123">
                                     <div class="row">
+                                        <!-- Client Name -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Client Name <span class="mandatory">*</span></label>
@@ -42,6 +43,7 @@
                                             </div>
                                         </div>
 
+                                        <!-- Email ID -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="email_id" class="form-label">Email ID<span class="mandatory">*</span></label>
@@ -52,6 +54,7 @@
                                             </div>
                                         </div>
 
+                                        <!-- Phone No -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="phone_no" class="form-label">Phone No <span class="mandatory">*</span></label>
@@ -63,6 +66,7 @@
                                             </div>
                                         </div>
 
+                                        <!-- GST Number  -->
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="gst_no" class="form-label">GST Number <span class="mandatory">*</span></label>
@@ -73,6 +77,7 @@
                                             </div>
                                         </div>
 
+                                        <!-- Client Logo -->
                                         <div class="col-md-6 mb-3">
                                             <label for="logo" class="form-label">Client Logo <span class="mandatory">*</span></label>
                                             <div class="d-flex align-items-center gap-2">
@@ -101,9 +106,9 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         @endif
-                                        
+
+                                        <!-- Address -->
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <label for="address" class="form-label">Address <span class="mandatory">*</span></label>

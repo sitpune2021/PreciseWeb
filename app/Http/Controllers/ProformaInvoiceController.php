@@ -48,6 +48,7 @@ class ProformaInvoiceController extends Controller
             'customerId'
         ));
     }
+
     public function create()
     {
         $adminId = Auth::id();
@@ -111,6 +112,7 @@ class ProformaInvoiceController extends Controller
             'invoiceNo'
         ));
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -237,8 +239,8 @@ class ProformaInvoiceController extends Controller
                 // 'hrs'           => $totalHrs,
                 // 'vmc'           => $request->vmc_hr[$i] ?? 0,
 
-                'hrs'           => $request->hrs[$i] ?? 0,   // ✅ EST time
-                'vmc'           => $totalHrs,                // ✅ machine hrs
+                'hrs'           => $request->hrs[$i] ?? 0,   // EST time
+                'vmc'           => $totalHrs,                // machine hrs
                 'qty'           => $request->qty[$i] ?? 0,
                 'rate'          => $request->rate[$i] ?? 0,
                 'amount'        => $request->amount[$i] ?? 0,
@@ -271,32 +273,34 @@ class ProformaInvoiceController extends Controller
             ->route('proforma.index')
             ->with('success', 'Proforma created successfully! ' . $invoiceNo);
     }
- public function printInvoice($id)
-{
-    $invoice = ProformaInvoice::with([
-        'items.workOrder.project'
-    ])->findOrFail($id);
 
-    $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
-    $c = Client::where('login_id', Auth::id())->first();
+    public function printInvoice($id)
+    {
+        $invoice = ProformaInvoice::with([
+            'items.workOrder.project'
+        ])->findOrFail($id);
 
-    // ✅ Machine records cache (performance)
-    $machineRecords = MachineRecord::pluck('part_no', 'id');
+        $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
+        $c = Client::where('login_id', Auth::id())->first();
 
-    // ✅ GROUPING LOGIC
-    $items = $invoice->items->groupBy(function ($item) use ($machineRecords) {
+        // Machine records cache (performance)
+        $machineRecords = MachineRecord::pluck('part_no', 'id');
 
-    $ids = json_decode($item->machine_id, true);
+        // GROUPING LOGIC
+        $items = $invoice->items->groupBy(function ($item) use ($machineRecords) {
 
-    return collect($ids)
-        ->map(fn($id) => $machineRecords[$id] ?? '')
-        ->unique()   // ✅ IMPORTANT FIX
-        ->implode(',');
-});
+            $ids = json_decode($item->machine_id, true);
 
-    // ✅ PASS grouped items
-    return view('proforma.print', compact('invoice', 'items', 'c', 'adminSetting'));
-}
+            return collect($ids)
+                ->map(fn($id) => $machineRecords[$id] ?? '')
+                ->unique()   // IMPORTANT FIX
+                ->implode(',');
+        });
+
+        // PASS grouped items
+        return view('proforma.print', compact('invoice', 'items', 'c', 'adminSetting'));
+    }
+
     public function getHsnDetails($id)
     {
         $hsn_code = Hsncode::where('id', $id)
@@ -450,20 +454,14 @@ class ProformaInvoiceController extends Controller
 
                 // MACHINE RECORD BASED (FIXED)
                 'project_id'       => $first->project_id,
-
                 'part_description' => $first->first_set,
-
                 'quantity'         => $workOrder->quantity ?? 0,
                 'exp_time'         => $workOrder->exp_time ?? 0,
-
                 // SUM OF ALL
                 'vmc_hr'           => round($totalHrs, 2),
-
                 'material_rate'    => $materialRate,
                 'material_cost'    => round($materialCost, 2),
-
                 'workorder_id'     => $workOrderId,
-
                 // MULTIPLE IDS
                 'machine_ids'      => $machineIds,
             ];
@@ -471,6 +469,7 @@ class ProformaInvoiceController extends Controller
 
         return response()->json($data);
     }
+
     public function convertToTax($id)
     {
         $pro = ProformaInvoice::with('items')->findOrFail($id);
@@ -544,7 +543,7 @@ class ProformaInvoiceController extends Controller
                 'qty'           => $item->qty,
                 'rate'          => $item->rate,
                 'amount'        => $item->amount,
-                'material_cost'=> $item->material_cost,
+                'material_cost' => $item->material_cost,
                 'total_cost'    => $item->total_cost,
                 'hrs'           => $item->hrs,
                 'vmc'           => $item->vmc,
@@ -558,6 +557,7 @@ class ProformaInvoiceController extends Controller
 
         return back()->with('success', 'Converted Successfully!');
     }
+
     public function proformaEdit($id)
     {
         $adminId = Auth::id();
@@ -726,6 +726,8 @@ class ProformaInvoiceController extends Controller
     //         ->with('success', 'Proforma Invoice Updated Successfully.');
     // }
 
+
+
     public function proformaUpdate(Request $request, $id)
     {
         $adminId = Auth::id();
@@ -824,7 +826,7 @@ class ProformaInvoiceController extends Controller
                     'sgst'          => $sgst,
                     'cgst'          => $cgst,
                     'igst'          => $igst,
-                    'machine_id'    => $mid,
+                    'machine_id' => json_encode($machineIds),
                 ];
 
                 if (!empty($request->id[$i])) {

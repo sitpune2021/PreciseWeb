@@ -19,7 +19,6 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         $adminId = Auth::id();
-
         $customers = Customer::where('status', 1)
             ->where('admin_id', $adminId)
             ->orderBy('id', 'desc')
@@ -43,6 +42,7 @@ class InvoiceController extends Controller
 
         return view('invoice.index', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
+
     public function view(Request $request)
     {
         $adminId = Auth::id();
@@ -70,6 +70,7 @@ class InvoiceController extends Controller
 
         return view('invoice.view', compact('customers', 'invoices', 'customerId', 'workOrders'));
     }
+
     public function create()
     {
         $adminId = Auth::id();
@@ -91,6 +92,7 @@ class InvoiceController extends Controller
 
         return view('invoice.add', compact('customers', 'hsncodes', 'workOrders', 'adminSetting'));
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -180,6 +182,7 @@ class InvoiceController extends Controller
 
         return redirect()->route('invoice.index')->with('success', 'Invoice created successfully! ' . $invoiceNo);
     }
+
     // public function printInvoice($id)
     // {
     //     $invoice = Invoice::with('items')->findOrFail($id);
@@ -205,21 +208,21 @@ class InvoiceController extends Controller
         $adminSetting = AdminSetting::where('admin_id', Auth::id())->first();
         $c = Client::where('login_id', Auth::id())->first();
 
-        // ✅ Machine records cache (performance)
+        //  Machine records cache (performance)
         $machineRecords = MachineRecord::pluck('part_no', 'id');
 
-        // ✅ GROUPING LOGIC
+        //  GROUPING LOGIC
         $items = $invoice->items->groupBy(function ($item) use ($machineRecords) {
 
             $ids = json_decode($item->machine_id, true);
 
             return collect($ids)
                 ->map(fn($id) => $machineRecords[$id] ?? '')
-                ->unique()   // ✅ IMPORTANT FIX
+                ->unique()   //  IMPORTANT FIX
                 ->implode(',');
         });
 
-        // ✅ PASS grouped items
+        //  PASS grouped items
         return view('invoice.print', compact('invoice', 'items', 'c', 'adminSetting'));
     }
 
@@ -240,6 +243,7 @@ class InvoiceController extends Controller
 
         return view('invoice.proprint', compact('invoice', 'c', 'adminSetting'));
     }
+
     public function getHsnDetails($id)
     {
         $hsn_code = Hsncode::where('id', $id)
@@ -256,6 +260,7 @@ class InvoiceController extends Controller
         }
         return response()->json(['error' => 'Not Found'], 404);
     }
+
     public function getMachineRecords($customer_id)
     {
         $adminId = Auth::id();
@@ -306,23 +311,13 @@ class InvoiceController extends Controller
                 return [
                     'id'               => $first->id, // optional (or null)
                     'project_id'       => $workOrder->project_id ?? null,
-
-                    //  same description
                     'part_description' => $first->first_set ?? 'N/A',
-
-                    //  WorkOrder
                     'quantity'         => $workOrder->quantity ?? 0,
                     'exp_time'         => $workOrder->exp_time ?? 0,
-
-                    //  TOTAL HOURS SUM
                     'vmc_hr'           => $group->sum('hrs'),
-
                     'material_type'    => $first->material,
                     'material_rate'    => $mat->material_rate ?? 0,
-
                     'workorder_id'     => $first->work_order_id,
-
-                    // IMPORTANT: multiple machine IDs
                     'machine_ids'      => $group->pluck('id')->toArray(),
                 ];
             })

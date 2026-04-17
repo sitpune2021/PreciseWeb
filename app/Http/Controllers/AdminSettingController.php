@@ -29,6 +29,7 @@ class AdminSettingController extends Controller
         }
         return view('admin.setting', compact('data'));
     }
+
     public function UpdateAdminSetting(Request $request)
     {
         $setting = AdminSetting::where('admin_id', Auth::id())->first();

@@ -10,7 +10,7 @@
 
                     <!-- Back Button ONLY on Edit -->
                     <a href="{{ route('ListUserAdmin') }}" class="btn btn-sm btn-outline-success me-2">
-                        ← 
+                        ←
                     </a>
 
                     <h4 class="mb-0 flex-grow-1">
@@ -68,7 +68,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-4">
+                            <!-- <div class="col-md-4">
                                 <label>Role <span class="text-red">*</span></label>
                                 <select name="user_type" class="form-select">
                                     <option value="">Select</option>
@@ -79,6 +79,34 @@
                                     </option>
                                     @endforeach
                                 </select>
+                                @error('user_type')
+                                <div class="text-red small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div> -->
+
+                            <div class="col-md-4">
+                                <label>Role <span class="text-red">*</span></label>
+
+                                @php
+                                // Only allowed roles for normal users
+                                $roles = [
+                                3 => 'Programmer',
+                                4 => 'Supervisor',
+                                5 => 'Finance'
+                                ];
+                                @endphp
+
+                                <select name="user_type" class="form-select">
+                                    <option value="">Select</option>
+
+                                    @foreach($roles as $k => $v)
+                                    <option value="{{ $k }}"
+                                        {{ old('user_type', $user->user_type ?? '') == $k ? 'selected' : '' }}>
+                                        {{ $v }}
+                                    </option>
+                                    @endforeach
+                                </select>
+
                                 @error('user_type')
                                 <div class="text-red small mt-1">{{ $message }}</div>
                                 @enderror

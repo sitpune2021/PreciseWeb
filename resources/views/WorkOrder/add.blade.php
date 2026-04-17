@@ -818,7 +818,7 @@ ${material_name}
 
         }
 
-        // NEXT PART
+        // NEXT PART auto part
         function loadNextPart(customerId, projectId) {
 
             if (!customerId || !projectId) return;

@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::table('invoice_items', function (Blueprint $table) {
 
-            // ✅ machine_id INT → JSON
+            //  machine_id INT → JSON
             $table->json('machine_id')->nullable()->change();
 
-            // ✅ hrs numeric → string
+            //  hrs numeric → string
             $table->string('hrs', 50)->nullable()->change();
         });
     }

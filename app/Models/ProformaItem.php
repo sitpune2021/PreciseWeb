@@ -28,7 +28,7 @@ class ProformaItem extends Model
         'cgst',
         'igst',
         'vo_no',
-        'material_cost',   // ✅ add
+        'material_cost',   //add
         'total_cost',
     ];
 

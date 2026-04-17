@@ -17,8 +17,9 @@ class PaymentPlan extends Model
         'gst',
         'plan_status'
     ];
+    
     public function clients()
-{
-    return $this->hasMany(Client::class, 'plan_type');
-}
+    {
+        return $this->hasMany(Client::class, 'plan_type');
+    }
 }

@@ -18,6 +18,7 @@ class HsncodeController extends Controller
 
         return view('Hsncode.add', compact('hsncodes'));
     }
+
     public function store(Request $request)
     {
         $request->validate(
@@ -56,6 +57,7 @@ class HsncodeController extends Controller
 
         return redirect()->back()->with('success', 'HSN Code added successfully!');
     }
+
     public function edit($id)
     {
         $id  = base64_decode($id);
@@ -71,6 +73,7 @@ class HsncodeController extends Controller
 
         return view('Hsncode.add', compact('hsn', 'hsncodes'));
     }
+
     public function update(Request $request, $id)
     {
         $id  = base64_decode($id);
@@ -124,6 +127,7 @@ class HsncodeController extends Controller
 
         return back();
     }
+
     public function destroy($id)
     {
         $id  = base64_decode($id);
@@ -139,9 +143,9 @@ class HsncodeController extends Controller
 
         return back()->with('success', 'HSN Code deleted successfully!');
     }
+
     public function trash()
     {
-
         $trashedhsn = Hsncode::onlyTrashed()
             ->where('admin_id', Auth::id())
             ->orderBy('deleted_at', 'desc')
@@ -153,6 +157,7 @@ class HsncodeController extends Controller
             ->get();
         return view('Hsncode.trash', compact('trashedhsn', 'hsncodes'));
     }
+
     public function restore($encryptedId)
     {
         $id = base64_decode($encryptedId);
