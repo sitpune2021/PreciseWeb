@@ -311,7 +311,7 @@
                                                     <!-- <th>Wo<br>Order<br>No.</th> -->
                                                     <!-- <th>Customer <br>Code</th> -->
                                                     <!-- <th>Part<br>No.</th> -->
-                                                    <th>Date</th>
+                                                    <th class="w-10 text-nowrap">Date</th>
                                                     <th>Project Name</th>
                                                     <th>Part Code</th>
                                                     <th>Part Description</th>
@@ -321,7 +321,7 @@
                                                     <th>Height</th>
                                                     <th>Exp</br>Time</th>
                                                     <th>Qty</th>
-                                                    <th>material</th>
+                                                    <!-- <th>material</th> -->
                                                     <th width="10%">Action</th>
                                                 </tr>
                                             </thead>
@@ -336,7 +336,7 @@
                                                     <!-- <td>{{ $wo->project?->project_no ?? '' }}</td> -->
                                                     <!-- <td>{{ $wo->customer?->code ?? '' }}</td> -->
                                                     <!-- <td>{{ $wo->part }}</td> -->
-                                                    <td>{{ $wo->date }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($wo->date)->format('d/m/Y') }}</td>
                                                     <td>{{ $wo->project->project_name ?? 'N/A' }}</td>
                                                     <td>
                                                         {{ ($wo->customer?->code ?? '') . '_' . ($wo->project?->project_no ?? '') . '_' . ($wo->part ?? '') . '_' . ($wo->quantity ?? '') }}
@@ -348,7 +348,7 @@
                                                     <td>{{ $wo->height }}</td>
                                                     <td>{{ $wo->exp_time }}</td>
                                                     <td>{{ $wo->quantity }}</td>
-                                                    <td>{{ $wo->materialData->material_type ?? '-' }}</td>
+                                                    <!-- <td>{{ $wo->materialData->material_type ?? '-' }}</td> -->
                                                     <td>
                                                         @if(hasPermission('WorkOrders', 'edit'))
                                                         <a href="{{ route('editWorkOrder', base64_encode($wo->id)) }}">

@@ -41,10 +41,10 @@
                                     <thead>
                                         <tr class="table-light">
                                             <!-- <th style="width:30px;">#</th> -->
-                                            <th style="width:10px;">Sr.No</th>
+                                            <th style="width:5px;">Sr.No</th>
                                             <th style="width:30px;">Work Order</th>
                                             <!-- <th>Code</th> -->
-                                            <th style="width:70px;">Date</th>
+                                            <th style="width:60px;">Date</th>
                                             <th style="width: 100px;">Description</th>
                                             <th style="width: 70px;">Material Type</th>
                                             <th width="12%">Action</th>
@@ -66,7 +66,7 @@
                                                 {{ $req->workOrder?->quantity ?? '' }}
                                             </td>
                                             <!-- <td>{{ $req->code }}</td> -->
-                                            <td>{{ $req->date }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($req->date)->format('d/m/Y') }}</td>
 
                                             <td>{{ $req->description }}</td>
                                             <td>{{ $req->materialType->material_type ?? 'N/A' }}</td>
