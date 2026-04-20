@@ -197,16 +197,12 @@ class MachinerecordController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightPartNo = null;
+        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
+            ->latest('id')
+            ->value('project_id');
 
-        if (!empty($latestWorkOrderNo) && str_contains($latestWorkOrderNo, '_')) {
-            $parts = explode('_', $latestWorkOrderNo);
-
-            // first 3 parts join → ANM_1_1
-            $highlightPartNo = implode('_', array_slice($parts, 0, 3));
-        }
-
-        return view('Machinerecord.view', compact('record', 'workorders', 'highlightPartNo'));
+        return view('Machinerecord.view', compact('record', 'workorders', 'highlightProjectId'));
     }
 
     public function edit(string $encryptedId)

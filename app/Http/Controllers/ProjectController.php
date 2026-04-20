@@ -41,20 +41,16 @@ class ProjectController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = null;
-        $highlightProjectPrefix = null;
-
-        if (!empty($latestMaterialOrderNo) && str_contains($latestMaterialOrderNo, '_')) {
-            $parts = explode('_', $latestMaterialOrderNo);
-            $highlightProjectPrefix = $parts[0] ?? null; // SHM
-            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // 2
-        }
+        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
+            ->latest('id')
+            ->value('project_id');
 
         // Next Project Number (Safe)
         $maxProjectNo = Project::where('admin_id', $adminId)->max('project_no');
         $nextProjectNo = $maxProjectNo ? $maxProjectNo + 1 : 1;
 
-        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId', 'highlightProjectPrefix'));
+        return view('Project.add', compact('customers', 'codes', 'projects', 'nextProjectNo', 'highlightProjectId'));
     }
 
     public function storeProject(Request $request)
@@ -133,19 +129,14 @@ class ProjectController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = null;
-        $highlightProjectPrefix = null;
-
-        if (!empty($latestMaterialOrderNo) && str_contains($latestMaterialOrderNo, '_')) {
-            $parts = explode('_', $latestMaterialOrderNo);
-            $highlightProjectPrefix = $parts[0] ?? null; // SHM
-            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // 2
-        }
-
+        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
+            ->latest('id')
+            ->value('project_id');
 
         $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
 
-        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectId', 'highlightProjectPrefix'));
+        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo','highlightProjectId'));
     }
 
     public function update(Request $request, string $encryptedId)

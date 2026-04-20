@@ -55,8 +55,9 @@
                                     </thead>
                                     <tbody>
                                         @foreach($sheets->reverse() as $sheet)
+                                        
                                         @php
-                                        $highlightClass = ($sheet->work_order_no == $highlightProjectId) ? 'table-warning' : '';
+                                        $highlightClass = ((int)$sheet->project_id === (int)$highlightProjectId) ? 'table-warning' : '';
                                         @endphp
 
                                         <tr class="{{ $highlightClass }}">

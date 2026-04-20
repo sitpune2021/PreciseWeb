@@ -59,7 +59,7 @@
             <div class="col-lg-12">
               <nav class="navbar navbar-expand-lg">
                 <a class="navbar-brand" href="index.html">
-                  <img src="{{ asset('website/assets/img/logo.png') }}" alt="OPSFORGES Logo" />
+                  <img src="{{ asset('website/assets/img/logo/OPSFORGESS.png') }}" alt="OPSFORGES Logo" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                   data-bs-target="#navbarSupportedContent6" aria-controls="navbarSupportedContent6"
@@ -497,7 +497,7 @@
             <div class="footer-widget wow fadeInUp" data-wow-delay=".2s">
               <div class="logo">
                 <a href="#home">
-                  <img src="assets/img/logo/ops1.png" alt="OPSFORGES Logo" style="height:70px;">
+                  <img src="{{ asset('website/assets/img/logo/OPSFORGESS.png') }}" alt="OPSFORGES Logo" style="height:70px;">
                 </a>
               </div>
 

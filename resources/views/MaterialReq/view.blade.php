@@ -53,7 +53,9 @@
                                     <tbody>
                                         @foreach($materialReq->reverse() as $req)
                                         @php
-                                        $highlightClass = ($req->work_order_no == $latestWorkOrderNo) ? 'table-warning' : '';
+                                        $highlightClass = ((int)$req->project_id === (int)$highlightProjectId)
+                                        ? 'table-warning'
+                                        : '';
                                         @endphp
 
                                         <tr class="{{ $highlightClass }}">

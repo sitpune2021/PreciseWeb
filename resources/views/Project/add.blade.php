@@ -156,10 +156,9 @@
                                             <tbody>
                                                 @foreach($projects->reverse() as $project)
                                                 @php
-                                                $highlightClass = (
-                                                ($project->id == $highlightProjectId) ||
-                                                ($project->project_no == $highlightProjectPrefix)
-                                                ) ? 'table-warning' : '';
+                                                $highlightClass = (!empty($highlightProjectId) && (int)$project->id === (int)$highlightProjectId)
+                                                ? 'table-warning'
+                                                : '';
                                                 @endphp
 
                                                 <tr class="{{ $highlightClass }}">

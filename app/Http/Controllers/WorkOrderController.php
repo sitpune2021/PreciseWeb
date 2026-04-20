@@ -59,22 +59,11 @@ class WorkOrderController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = null;
+        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
+            ->latest('id')
+            ->value('project_id');
 
-        if (!empty($latestMaterialOrderNo)) {
-
-            // clean string first
-            $cleanOrderNo = trim($latestMaterialOrderNo);
-
-            if (str_contains($cleanOrderNo, '_')) {
-                $parts = explode('_', $cleanOrderNo);
-
-                // remove zero + force int
-                $highlightProjectId = isset($parts[1])
-                    ? (int) preg_replace('/[^0-9]/', '', $parts[1])
-                    : null;
-            }
-        }
         //  project  last customer (old logic)
         if (!$lastCustomer) {
             $lastCustomer = WorkOrder::where('admin_id', $adminId)
