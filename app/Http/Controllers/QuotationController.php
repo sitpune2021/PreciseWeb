@@ -392,7 +392,10 @@ class QuotationController extends Controller
 
         $quotation = Quotation::with('items')->findOrFail($id);
         $codes = Customer::all();
-        $materialtype = MaterialType::all();
+
+        $materialtype = MaterialType::where('admin_id', $id)
+            ->orderBy('id', 'desc')
+            ->get();
 
         $rates = Rate::where('admin_id', Auth::id())
             ->where('is_active', 1)

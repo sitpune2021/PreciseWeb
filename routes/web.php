@@ -30,10 +30,17 @@ use App\Http\Controllers\RateController;
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Artisan;
 
-Auth::routes();
-Route::middleware(['auth','check.subscription'])->group(function () {
  
-Route::get('/'                         , [HomeController::class, 'index'])->name('home');
+// Public Website
+Route::get('/', function () { return view('website.index');});
+
+// Auth routes
+Auth::routes();
+
+// Dashboard (after login)
+Route::middleware(['auth','check.subscription'])->group(function () {
+Route::get('/dashboard', [HomeController::class, 'index'])->name('home');});
+
 
 // Client Routes
 Route::get( 'client/add'                        , [ClientContoller::class, 'AddClient'])->name('AddClient');
@@ -84,7 +91,6 @@ Route::get( 'workorder/trash'                   , [WorkOrderController::class, '
 Route::get( 'workorder/restore/{id}'            , [WorkOrderController::class, 'restore'])->name('restoreWorkOrder');
 Route::get('/get-next-part/{customerId}/{projectId}', [WorkOrderController::class, 'getNextPart']);
 Route::get('/get-last-customer-code', [WorkOrderController::class,'getLastCustomerCode']);
-
 
 
 // Project Routes
@@ -248,8 +254,7 @@ Route::post('plans/store'                       , [PaymentPlanController::class,
 Route::get('plans/edit/{id}'                    , [PaymentPlanController::class, 'edit'])->name('admin.plans.edit');
 Route::put('plans/update/{id}'                  , [PaymentPlanController::class, 'update'])->name('admin.plans.update');
 Route::delete('plans/delete/{id}'               , [PaymentPlanController::class, 'destroy'])->name('admin.plans.delete');
-Route::post('/admin/plans/toggle'               , [PaymentPlanController::class, 'toggleStatus'])
-    ->name('admin.plans.toggle');
+Route::post('/admin/plans/toggle'               , [PaymentPlanController::class, 'toggleStatus'])->name('admin.plans.toggle');
 
 });
 
@@ -300,7 +305,7 @@ Route::post('rate/updateStatus'                           , [RateController::cla
 Route::get( 'rate/trash'                                  , [RateController::class, 'trash'])->name('trashrate');
 Route::get( 'rate/restore/{id}'                           , [RateController::class, 'restore'])->name('restorerate');
  
-});
+ 
 Route::get('/clear-app-cache', function () {
  
 Artisan::call('config:clear');

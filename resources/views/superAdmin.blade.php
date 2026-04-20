@@ -137,12 +137,8 @@ for ($m = 1; $m <= 12; $m++) {
     ->latest('created_at')
     ->first();
 
-    $highlightProjectId = null;
-
-    if (!empty($latestOrder?->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
-    $parts = explode('_', $latestOrder->work_order_no);
-    $highlightProjectId = isset($parts[1]) ? (int)$parts[1] : null;
-    }
+    // ✅ Direct use
+    $highlightProjectId = $latestOrder->project_id ?? null;
 
     $newWorkOrders = WorkOrder::where('admin_id', Auth::id())
     ->whereMonth('created_at', Carbon::now()->month)
@@ -180,14 +176,7 @@ for ($m = 1; $m <= 12; $m++) {
     ->latest('created_at')
     ->first();
 
-    $highlightPartNo = null;
-
-    if (!empty($latestOrder?->work_order_no) && str_contains($latestOrder->work_order_no, '_')) {
-    $parts = explode('_', $latestOrder->work_order_no);
-
-    // SHM_2_1
-    $highlightPartNo = implode('_', array_slice($parts, 0, 3));
-    }
+    $highlightProjectId = $latestOrder->project_id ?? null;
 
     $latestMachineRecords = MachineRecord::where('admin_id', Auth::id())
     ->latest()
@@ -598,7 +587,7 @@ for ($m = 1; $m <= 12; $m++) {
                                         <tbody>
                                             @forelse($latestMachineRecords as $rec)
                                             @php
-                                            $highlightClass = ($rec->part_no === $highlightPartNo) ? 'table-warning' : '';
+                                            $highlightClass = ((int)$rec->project_id === (int)$highlightProjectId) ? 'table-warning' : '';
                                             @endphp
 
                                             <tr class="{{ $highlightClass }}">

@@ -12,6 +12,7 @@ class MaterialOrder extends Model
 
     protected $fillable = [
         'admin_id',
+         'project_id',
         'customer_id',
         'date',
         'work_order_no',
@@ -46,6 +47,8 @@ class MaterialOrder extends Model
         return $this->belongsTo(MaterialReq::class, 'material_req_id', 'id');
     }
 
-
-
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

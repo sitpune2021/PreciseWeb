@@ -13,7 +13,7 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/';
+    protected $redirectTo = '/dashboard';
 
     public function __construct()
     {
@@ -78,5 +78,10 @@ class LoginController extends Controller
         }
 
         return redirect($this->redirectTo);
+    }
+
+    protected function loggedOut($request)
+    {
+        return redirect('/login');
     }
 }

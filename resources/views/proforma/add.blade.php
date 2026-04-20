@@ -289,7 +289,7 @@
                         data-vmc="${item.vmc_hr}"
                         data-material_rate="${item.material_rate}"
                         data-material_cost="${item.material_cost}">
-                        ${item.part_description}
+                        ${item.part_no} - ${item.part_description}
                     </option>`;
                 });
 

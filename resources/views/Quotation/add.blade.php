@@ -142,7 +142,7 @@
                                                             data-rate="{{ $m->material_rate }}"
                                                             data-gravity="{{ $m->material_gravity }}"
                                                             {{ (isset($item['material_type_id']) && $item['material_type_id'] == $m->id) 
-                    || (isset($item->material_type_id) && $item->material_type_id == $m->id) ? 'selected' : '' }}>
+                                                                || (isset($item->material_type_id) && $item->material_type_id == $m->id) ? 'selected' : '' }}>
                                                             {{ $m->material_type }}
                                                         </option>
                                                         @endforeach

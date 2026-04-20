@@ -115,6 +115,7 @@ class ProformaInvoiceController extends Controller
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'customer_id' => 'required',
             'invoice_date' => 'required',
@@ -253,7 +254,7 @@ class ProformaInvoiceController extends Controller
 
                 'sgst'          => $request->sgst_percent ?? 0,
                 'cgst'          => $request->cgst_percent ?? 0,
-                'igst'          => $request->igst ?? 0,
+                'igst' => $request->total_tax_percent ?? 0,
 
                 'invoice_id'    => $invoice->id,
             ]);
@@ -455,6 +456,7 @@ class ProformaInvoiceController extends Controller
                 // MACHINE RECORD BASED (FIXED)
                 'project_id'       => $first->project_id,
                 'part_description' => $first->first_set,
+                'part_no'          => $first->part_no,
                 'quantity'         => $workOrder->quantity ?? 0,
                 'exp_time'         => $workOrder->exp_time ?? 0,
                 // SUM OF ALL

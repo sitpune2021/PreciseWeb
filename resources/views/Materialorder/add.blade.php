@@ -89,7 +89,7 @@
                                     @foreach($materialRequests as $mr)
                                     <option value="{{ $mr->id }}"
                                         @if(isset($selectedIds) && in_array($mr->id, $selectedIds)) selected @endif>
-                                        SR-{{ $mr->sr_no }}
+                                        {{ $mr->project_id ? 'WO NO-'.$mr->project_id : '-' }}
                                     </option>
                                     @endforeach
                                     @endif
@@ -119,7 +119,7 @@
                                 <thead class="text-center">
                                     <!-- TOP HEADER -->
                                     <tr>
-                                        <th rowspan="2" class="bg-finish" style="width:60px">SR</th>
+                                        <th rowspan="2" class="bg-finish" style="width:60px">Wo.NO</th>
                                         <th rowspan="2" class="bg-finish" style="width:25%">Description</th>
 
                                         <th colspan="4" class="bg-finish">FINISH SIZE</th>
@@ -152,7 +152,7 @@
                                     @foreach($records as $rec)
                                     <tr id="row_{{ $rec->material_req_id }}">
 
-                                        <td>{{ $rec->sr_no }}</td>
+                                        <td>{{ $rec->materialReq->project_id ?? '-' }}</td>
 
                                         <td>
                                             <input type="text" name="work_order_desc[]" class="form-control"
@@ -184,8 +184,6 @@
                                         </td>
 
                                         <td>-</td>
-
-                                        <input type="hidden" name="material_req_ids[]" value="{{ $rec->material_req_id }}">
                                     </tr>
                                     @endforeach
                                     @endif
@@ -255,7 +253,7 @@
                                     <thead>
                                         <tr class="table-light">
                                             <th>#</th>
-                                            <th>Sr.No</th>
+                                            <th>Wo.No</th>
                                             <th>Date</th>
                                             <th style="width: 40px;">Customer Code</th>
                                             <th>Work Order desc</th>
@@ -271,7 +269,7 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">
-                                                {{ $order->sr_no ?? $order->materialReq->sr_no ?? '-' }}
+                                                {{ $order->project_id ?? $order->materialReq->project_id ?? '-' }}
                                             </td>
                                             <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
 
@@ -295,7 +293,7 @@
                                                 <!-- View Button -->
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm viewBtn"
-                                                    data-no="{{ $order->sr_no }}"
+                                                    data-no="{{ $order->project_id ?? '-' }}"
                                                     data-name="{{ $order->customer->code ?? 'N/A' }}"
                                                     data-date="{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}"
                                                     data-desc="{{ $order->work_order_desc }}"
@@ -522,7 +520,7 @@
                     res.data.forEach(item => {
                         allRequests[item.id] = item;
                         $('#material_data_dropdown').append(
-                            `<option value="${item.id}">SR-${item.sr_no}</option>`
+                            `<option value="${item.id}">WO -${item.project_id}</option>`
                         );
                     });
                 }
@@ -545,32 +543,32 @@
                     let d = allRequests[id] || {}; // fallback
 
                     tbody.append(`
-<tr id="row_${id}">
-    <td>SR-${d.sr_no ?? id}</td>
-    <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description ?? ''}"></td>
+                    <tr id="row_${id}">
+                        <td>${d.project_id ? '' + d.project_id : '-'}</td>
+                        <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description ?? ''}"></td>
 
-<td><input type="number" step="0.01" name="f_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
-<td><input type="number" step="0.01" name="f_length[]" class="form-control form-control-sm" value="${d.length ?? ''}"></td>
-<td><input type="number" step="0.01" name="f_width[]" class="form-control form-control-sm" value="${d.width ?? ''}"></td>
-<td><input type="number" step="0.01" name="f_height[]" class="form-control form-control-sm" value="${d.height ?? ''}"></td>
+                    <td><input type="number" step="0.01" name="f_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
+                    <td><input type="number" step="0.01" name="f_length[]" class="form-control form-control-sm" value="${d.length ?? ''}"></td>
+                    <td><input type="number" step="0.01" name="f_width[]" class="form-control form-control-sm" value="${d.width ?? ''}"></td>
+                    <td><input type="number" step="0.01" name="f_height[]" class="form-control form-control-sm" value="${d.height ?? ''}"></td>
 
-<td><input type="number" step="0.01" name="r_diameter[]" class="form-control form-control-sm"></td>
-<td><input type="number" step="0.01" name="r_length[]" class="form-control form-control-sm"></td>
-<td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm"></td>
-<td><input type="number" step="0.01" name="r_height[]" class="form-control form-control-sm"></td>
+                    <td><input type="number" step="0.01" name="r_diameter[]" class="form-control form-control-sm"></td>
+                    <td><input type="number" step="0.01" name="r_length[]" class="form-control form-control-sm"></td>
+                    <td><input type="number" step="0.01" name="r_width[]" class="form-control form-control-sm"></td>
+                    <td><input type="number" step="0.01" name="r_height[]" class="form-control form-control-sm"></td>
 
-<td><input type="text" name="material[]" class="form-control form-control-sm" value="${d.material_name ?? ''}"></td>
-<td><input type="number" name="quantity[]" class="form-control form-control-sm" value="${d.qty ?? ''}"></td>
+                    <td><input type="text" name="material[]" class="form-control form-control-sm" value="${d.material_name ?? ''}"></td>
+                    <td><input type="number" name="quantity[]" class="form-control form-control-sm" value="${d.qty ?? ''}"></td>
 
-<td>
-    <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">
-        <i class="fa fa-trash"></i>
-    </button>
-</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger removeRow" data-id="${id}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
 
-<input type="hidden" name="material_req_ids[]" value="${id}">
-</tr>
-            `);
+                    <input type="hidden" name="material_req_ids[]" value="${id}">
+                    </tr>
+                    `);
                 }
             });
 
