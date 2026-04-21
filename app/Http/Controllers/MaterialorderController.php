@@ -47,6 +47,8 @@ class MaterialorderController extends Controller
     }
     public function storeMaterialorder(Request $request)
     {
+        Log::info('Material Order Request Start', $request->all());
+
         $request->validate([
             'customer_id'      => 'required|exists:customers,id',
             'work_order_no'    => 'required|string|max:255',
@@ -54,32 +56,42 @@ class MaterialorderController extends Controller
             'material_req_ids' => 'required|array|min:1',
             'work_order_desc'  => 'required|array',
             'material'         => 'required|array',
-            'material.*'       => 'required|string|max:255',
             'quantity'         => 'required|array',
-            'quantity.*'       => 'required|integer|min:1',
         ]);
 
-        $processed = []; //  prevent duplicate insert
+        $processed = [];
 
         foreach ($request->material_req_ids as $index => $reqId) {
 
-            //  skip duplicate ids
+            Log::info('Processing Req ID:', ['reqId' => $reqId, 'index' => $index]);
+
             if (in_array($reqId, $processed)) {
+                Log::warning('Duplicate Req ID Skipped', ['reqId' => $reqId]);
                 continue;
             }
+
             $processed[] = $reqId;
 
             $materialReq = MaterialReq::find($reqId);
-            if (!$materialReq) continue;
 
-            MaterialOrder::create([
+            if (!$materialReq) {
+                Log::error('MaterialReq NOT FOUND', ['reqId' => $reqId]);
+                continue;
+            }
+
+            Log::info('MaterialReq Data', [
+                'id' => $materialReq->id,
+                'project_id' => $materialReq->project_id,
+                'sr_no' => $materialReq->sr_no
+            ]);
+
+            $data = [
                 'admin_id'        => Auth::id(),
                 'project_id'      => $materialReq->project_id,
-
-                'sr_no'           => $materialReq->sr_no,
+                'sr_no'           => $materialReq->sr_no, //  ADD THIS
                 'material_req_id' => $materialReq->id,
                 'customer_id'     => $request->customer_id,
-                'work_order_no'   => $request->work_order_no,
+                'work_order_no'   => $materialReq->work_order_no,
                 'date'            => $request->date,
 
                 'work_order_desc' => $request->work_order_desc[$index] ?? $materialReq->description,
@@ -96,8 +108,14 @@ class MaterialorderController extends Controller
 
                 'material'   => $request->material[$index] ?? 'N/A',
                 'quantity'   => $request->quantity[$index] ?? 0,
-            ]);
+            ];
+
+            Log::info('Insert Data', $data);
+
+            MaterialOrder::create($data);
         }
+
+        Log::info('Material Order Insert Completed');
 
         return redirect()->route('AddMaterialorder')
             ->with('success', 'Material Order saved successfully');
@@ -310,6 +328,7 @@ class MaterialorderController extends Controller
                 return [
                     'id'            => $r->id,
                     'project_id'    => $r->project_id, // ✅ ADD THIS
+                    'work_order_no' => $r->work_order_no,
                     'description'   => $r->description,
                     'material_name' => $r->materialType->material_type ?? '',
                     'dia'           => $r->dia,
