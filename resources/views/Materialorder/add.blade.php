@@ -89,7 +89,8 @@
                                     @foreach($materialRequests as $mr)
                                     <option value="{{ $mr->id }}"
                                         @if(isset($selectedIds) && in_array($mr->id, $selectedIds)) selected @endif>
-                                        {{ $mr->project_id ? 'WO NO-'.$mr->project_id : '-' }}
+
+                                        {{ $mr->work_order_no ?? 'N/A' }} - {{ $mr->description }}
                                     </option>
                                     @endforeach
                                     @endif
@@ -269,7 +270,7 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">
-                                                {{ $order->project_id ?? $order->materialReq->project_id ?? '-' }}
+                                                {{ $order->work_order_no ?? $order->materialReq->work_order_no ?? '-' }}
                                             </td>
                                             <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
 
@@ -520,7 +521,9 @@
                     res.data.forEach(item => {
                         allRequests[item.id] = item;
                         $('#material_data_dropdown').append(
-                            `<option value="${item.id}">WO -${item.project_id}</option>`
+                            `<option value="${item.id}">
+                    ${item.work_order_no}
+                </option>`
                         );
                     });
                 }
@@ -544,7 +547,7 @@
 
                     tbody.append(`
                     <tr id="row_${id}">
-                        <td>${d.project_id ? '' + d.project_id : '-'}</td>
+                       <td>${d.work_order_no ?? '-'}</td>
                         <td><input type="text" name="work_order_desc[]" class="form-control form-control-sm" value="${d.description ?? ''}"></td>
 
                     <td><input type="number" step="0.01" name="f_diameter[]" class="form-control form-control-sm" value="${d.dia ?? ''}"></td>
