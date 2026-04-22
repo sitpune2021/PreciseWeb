@@ -140,7 +140,7 @@ class MaterialorderController extends Controller
             ->get();
 
         $materialRequests = MaterialReq::where('customer_id', $record->customer_id)
-            ->orderBy('project_id')
+            ->orderBy('work_order_no')
             ->get();
 
         $orders = MaterialOrder::where('admin_id', Auth::id())

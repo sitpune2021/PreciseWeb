@@ -22,14 +22,39 @@ class LoginController extends Controller
     }
 
     //  Check Status before login
+    // protected function attemptLogin($request)
+    // {
+    //     $user = User::where('email', $request->email)->first();
+
+    //     if (!$user) {
+    //         return false;
+    //     }
+
+    //     if ($user->user_type == 2) {
+    //         $client = Client::where('login_id', $user->id)->first();
+
+    //         if ($client && $client->status == 0) {
+    //             return false;
+    //         }
+    //     }
+
+    //     return Auth::attempt($this->credentials($request), $request->filled('remember'));
+    // }
+
     protected function attemptLogin($request)
     {
-        $user = User::where('email', $request->email)->first();
+        $login = $request->input('login');
+
+        // check email or mobile
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile';
+
+        $user = User::where($field, $login)->first();
 
         if (!$user) {
             return false;
         }
 
+        // status check same 
         if ($user->user_type == 2) {
             $client = Client::where('login_id', $user->id)->first();
 
@@ -38,7 +63,10 @@ class LoginController extends Controller
             }
         }
 
-        return Auth::attempt($this->credentials($request), $request->filled('remember'));
+        return Auth::attempt([
+            $field => $login,
+            'password' => $request->password
+        ], $request->filled('remember'));
     }
 
     //  Show proper erroryt
@@ -57,7 +85,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Invalid login credentials.',
+            'login' => 'Invalid login credentials.'
         ]);
     }
 
@@ -83,5 +111,10 @@ class LoginController extends Controller
     protected function loggedOut($request)
     {
         return redirect('/login');
+    }
+
+    public function username()
+    {
+        return 'login';
     }
 }

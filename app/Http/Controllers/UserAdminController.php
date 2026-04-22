@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Str;
 class UserAdminController extends Controller
 {
     public function index()
@@ -71,7 +71,7 @@ class UserAdminController extends Controller
             $photoName = $request->file('profile_photo')
                 ->store('users/profile', 'public'); // SAME as update
         }
-
+        $password = Str::random(8);
         User::create([
             'admin_id' => Auth::id(),
             'name'      => $request->name,
@@ -81,8 +81,8 @@ class UserAdminController extends Controller
             'user_type' => $request->user_type,
             'status'    => $request->status,
             'profile_photo' => $photoName,
-            'password'  => Hash::make('123'),
-            'org_pass'  => '123',
+            'password'  => Hash::make($password),
+            // 'org_pass'  => '123',
         ]);
 
         return redirect()->route('ListUserAdmin')

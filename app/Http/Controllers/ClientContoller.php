@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class ClientContoller extends Controller
 {
@@ -69,16 +71,21 @@ class ClientContoller extends Controller
             $logoPath = 'client_logo/' . $filename;
         }
 
+        $password = Str::random(8);
+
         $users = User::create([
             'admin_id'  => Auth::id(),
             'name'      => $request->input('name'),
             'mobile'    => $request->input('phone_no'),
             'email'     => $request->input('email_id'),
             'username'  => $request->input('phone_no'),
-            'password'  => Hash::make($request->input('password')),
-            'org_pass'  => $request->input('password'),
+            'password'  => Hash::make($password),
             'user_type' => 2,
         ]);
+
+        Mail::raw("Your temporary password: $password", function ($msg) use ($users) {
+            $msg->to($users->email)->subject('Login Credentials');
+        });
 
         $today = Carbon::today();
         $expiry = $today->copy()->addDays(7);
@@ -100,7 +107,7 @@ class ClientContoller extends Controller
 
         return redirect()->route('ViewClient')->with('success', 'Client created with 7-day trial.');
     }
-    
+
     public function ViewClient()
     {
         $client = Client::orderBy('id', 'desc')->get();
@@ -118,21 +125,74 @@ class ClientContoller extends Controller
         }
     }
 
+    // public function update(Request $request, string $encryptedId)
+    // {
+    //     $id = base64_decode($encryptedId);
+
+    //     $request->validate([
+    //         'name'        => 'required|string|max:255',
+    //         'phone_no'    => 'required|string|max:20',
+    //         'email_id'    => 'required|email|max:255',
+    //         'gst_no'       => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
+    //         'logo'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+    //         'address'     => 'required|string',
+    //     ]);
+
+    //     $client = Client::findOrFail($id);
+
+    //     if ($request->hasFile('logo')) {
+    //         $file = $request->file('logo');
+    //         $filename = time() . '_' . $file->getClientOriginalName();
+    //         $destinationPath = public_path('client_logo');
+
+    //         if (!file_exists($destinationPath)) {
+    //             mkdir($destinationPath, 0777, true);
+    //         }
+
+    //         $file->move($destinationPath, $filename);
+    //         $logoPath = 'client_logo/' . $filename;
+
+    //         if ($client->logo && file_exists(public_path($client->logo))) {
+    //             unlink(public_path($client->logo));
+    //         }
+
+    //         $client->logo = $logoPath;
+    //     }
+    //     $client->name        = $request->input('name');
+    //     $client->email_id    = $request->input('email_id');
+    //     $client->phone_no    = $request->input('phone_no');
+    //     $client->gst_no      = $request->input('gst_no');
+    //     $client->address     = $request->input('address');
+
+    //     $client->save();
+
+    //     return redirect()->route('ViewClient')->with('success', 'Client updated successfully.');
+    // }
+
+    // public function destroy(string $encryptedId)
+    // {
+    //     $id = base64_decode($encryptedId);
+    //     $client = Client::findOrFail($id);
+    //     $client->delete();
+    //     return redirect()->route('ViewClient')->with('success', 'Branch deleted successfully.');
+    // }
+
+
     public function update(Request $request, string $encryptedId)
     {
         $id = base64_decode($encryptedId);
-
         $request->validate([
             'name'        => 'required|string|max:255',
             'phone_no'    => 'required|string|max:20',
             'email_id'    => 'required|email|max:255',
-            'gst_no'       => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/',],
+            'gst_no'      => ['required', 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/'],
             'logo'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'address'     => 'required|string',
         ]);
 
         $client = Client::findOrFail($id);
 
+        // LOGO UPDATE
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -148,28 +208,29 @@ class ClientContoller extends Controller
             if ($client->logo && file_exists(public_path($client->logo))) {
                 unlink(public_path($client->logo));
             }
-
             $client->logo = $logoPath;
         }
+        // CLIENT UPDATE
         $client->name        = $request->input('name');
         $client->email_id    = $request->input('email_id');
         $client->phone_no    = $request->input('phone_no');
         $client->gst_no      = $request->input('gst_no');
         $client->address     = $request->input('address');
-
         $client->save();
 
-        return redirect()->route('ViewClient')->with('success', 'Client updated successfully.');
+        // USER UPDATE (IMPORTANT)
+        $user = User::find($client->login_id);
+
+        if ($user) {
+            $user->name     = $request->input('name');
+            $user->email    = $request->input('email_id');
+            $user->mobile   = $request->input('phone_no');
+            $user->username = $request->input('phone_no'); // if using mobile as username
+            $user->save();
+        }
+
+        return redirect()->route('ViewClient')->with('success', 'Client & User updated successfully.');
     }
-
-    // public function destroy(string $encryptedId)
-    // {
-    //     $id = base64_decode($encryptedId);
-    //     $client = Client::findOrFail($id);
-    //     $client->delete();
-    //     return redirect()->route('ViewClient')->with('success', 'Branch deleted successfully.');
-    // }
-
     public function destroy(string $encryptedId)
     {
         $id = base64_decode($encryptedId);

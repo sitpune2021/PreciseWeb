@@ -20,6 +20,7 @@ use App\Http\Controllers\HsncodeController;
 use App\Http\Controllers\MaterialTypeController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\AdminSettingController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentPlanController;
 use App\Http\Controllers\PermissionController;
@@ -32,15 +33,24 @@ use Illuminate\Support\Facades\Artisan;
 
  
 // Public Website
-Route::get('/', function () { return view('website.index');});
+Route::get('/', function () { return view('website.index');
+});
 
-// Auth routes
 Auth::routes();
+
+// ✅ Forgot Password (OUTSIDE auth middleware)
+Route::get('forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendLink'])->name('password.email');
+
+// Reset password
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'resetForm'])->name('password.reset');
+Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 // Dashboard (after login)
 Route::middleware(['auth','check.subscription'])->group(function () {
-Route::get('/dashboard', [HomeController::class, 'index'])->name('home');});
+// Auth routes
 
+Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
 
 // Client Routes
 Route::get( 'client/add'                        , [ClientContoller::class, 'AddClient'])->name('AddClient');
@@ -305,7 +315,7 @@ Route::post('rate/updateStatus'                           , [RateController::cla
 Route::get( 'rate/trash'                                  , [RateController::class, 'trash'])->name('trashrate');
 Route::get( 'rate/restore/{id}'                           , [RateController::class, 'restore'])->name('restorerate');
  
- 
+ });
 Route::get('/clear-app-cache', function () {
  
 Artisan::call('config:clear');

@@ -153,7 +153,7 @@
                                     @foreach($records as $rec)
                                     <tr id="row_{{ $rec->material_req_id }}">
 
-                                        <td>{{ $rec->materialReq->project_id ?? '-' }}</td>
+                                        <td>{{ $rec->materialReq->work_order_no ?? '-' }}</td>
 
                                         <td>
                                             <input type="text" name="work_order_desc[]" class="form-control"
