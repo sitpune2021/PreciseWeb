@@ -1,107 +1,31 @@
-.hero-section {
-    background-size: cover;
-    background-position: center;
-    padding: 120px 0;
-    position: relative;
+.carousel-item {
+  position: relative;
 }
 
-/* Overlay for light/dark effect */
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    /* Adjust this for light/dark */
-    background: rgba(6, 6, 6, 0.5);
-    /* Dark overlay */
-    /* For light overlay use: rgba(255,255,255,0.6); */
-
-    z-index: 1;
-}
-
-/* Content above overlay */
-.hero-content-wrapper {
-    position: relative;
-    z-index: 2;
-}
-
-.hero-content-wrapper h2 {
-    font-size: 42px;
-    font-weight: 700;
-}
-
-.hero-content-wrapper h2 {
-    color: #ffffff;
-}
-
-.hero-content-wrapper p {
-    font-size: 18px;
-    line-height: 1.7;
-}
-
-.btn-primary {
-    background: #ff6b00;
-    border: none;
-}
-
-.btn-primary:hover {
-    background: #e65c00;
-}
-
-
-.section-title h3::after {
-    content: "";
-    width: 120px;
-    height: 4px;
-    margin: 10px auto 0;
-    display: block;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #0051ff, #080808);
-}
-
-.error-text {
-  color: red;
-  font-size: 13px;
-  margin-top: 5px;
-  display: block;
-}
-
-.input-error {
-  border: 1px solid red !important;
-}
-
-.hero-section {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-}
-
-.hero-overlay {
+.carousel-item::before {
+  content: "";
   position: absolute;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(38, 36, 36, 0.393);
+  /* light white overlay */
+  z-index: 1;
 }
 
-.carousel-item {
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
+.carousel-item img {
   position: relative;
+  z-index: 0;
+  height: 650px;
+  object-fit: cover;
 }
 
-.carousel-item .container {
-  position: relative;
-  z-index: 2;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: rgba(0,0,0,0.5);
-  padding: 20px;
-  border-radius: 50%;
+.carousel-caption h3 {
+  display: inline-block;
+  background: linear-gradient(90deg, #e3e2e7, #0066ffee);
+  color: #000;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: bold;
 }

@@ -84,6 +84,10 @@
                                     <button class="btn btn-success w-100" type="submit">Sign In</button>
                                 </div>
 
+                                <div class="text-center mt-3">
+                                    <a href="{{ url('/') }}">Back to Home Page</a>
+                                </div>
+
                             </form>
                         </div>
                     </div>

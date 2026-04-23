@@ -10,7 +10,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- CSS -->
   <link rel="stylesheet" href="{{ asset('website/assets/css/bootstrap-5.0.0-beta1.min.css') }}">
   <link rel="stylesheet" href="{{ asset('website/assets/css/LineIcons.2.0.css') }}">
@@ -29,7 +29,7 @@
       </p>
     <![endif]-->
 
-  <!-- ========================= preloader start ========================= -->
+  <!--  preloader start  -->
   <div class="preloader">
     <div class="loader">
       <div class="spinner">
@@ -46,12 +46,12 @@
       </div>
     </div>
   </div>
-  <!-- ========================= preloader end ========================= -->
+  <!--  preloader end  -->
 
-  <!-- ========================= hero-section-wrapper-5 start ========================= -->
+  <!--  hero-section-wrapper-5 start  -->
   <section id="home" class="hero-section-wrapper-5">
 
-    <!-- ========================= header-6 start ========================= -->
+    <!--  header-6 start  -->
     <header class="header header-6 bg-light">
       <div class="navbar-area">
         <div class="container">
@@ -103,10 +103,10 @@
       </div>
       <!-- navbar area -->
     </header>
-    <!-- ========================= header-6 end ========================= -->
+    <!--  header-6 end  -->
 
-    <!-- ========================= hero-5 start ========================= -->
-    <div class="hero-section hero-style-5 img-bg position-relative"
+    <!--  hero-5 start  -->
+    <!-- <div class="hero-section hero-style-5 img-bg position-relative"
       style="background-image: url('{{ asset('website/assets/img/hero/hero-5/cnc1.jpg') }}');">
 
       <div class="hero-overlay"></div>
@@ -137,13 +137,69 @@
 
         </div>
       </div>
+    </div> -->
+    <!--  hero-5 end  -->
+
+    <div id="demoSlider" class="carousel slide" data-bs-ride="carousel">
+
+      <!-- Indicators -->
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#demoSlider" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#demoSlider" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#demoSlider" data-bs-slide-to="2"></button>
+      </div>
+
+      <!-- Slides -->
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+          <img src="{{ asset('website/assets/img/hero/hero-5/cnc1.jpg') }}" class="d-block w-100" alt="Slide 1">
+          <div class="carousel-caption">
+            <h3> VMC Machine Software India for Smart Manufacturing</h3>
+            <p> OPSFORGES is a powerful manufacturing ERP for small industry,
+              designed for tool room management, job work tracking,
+              die maker operations and workshop billing with GST.</p>
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <img src="{{ asset('website/assets/img/hero/hero-5/hero1.jpg') }}" class="d-block w-100" alt="Slide 2">
+          <div class="carousel-caption">
+            <h3>VMC Machine Software India for Smart Manufacturing</h3>
+            <p> OPSFORGES is a powerful manufacturing ERP for small industry,
+              designed for tool room management, job work tracking,
+              die maker operations and workshop billing with GST.</p>
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <img src="{{ asset('website/assets/img/hero/hero-5/hero2.webp') }}" class="d-block w-100" alt="Slide 3">
+          <div class="carousel-caption">
+            <h3>VMC Machine Software India for Smart Manufacturing</h3>
+            <p> OPSFORGES is a powerful manufacturing ERP for small industry,
+              designed for tool room management, job work tracking,
+              die maker operations and workshop billing with GST.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#demoSlider" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+
+      <button class="carousel-control-next" type="button" data-bs-target="#demoSlider" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+
     </div>
-    <!-- ========================= hero-5 end ========================= -->
+
 
   </section>
-  <!-- ========================= hero-section-wrapper-6 end ========================= -->
+  <!--  hero-section-wrapper-6 end  -->
 
-  <!-- ========================= feature style-5 start ========================= -->
+  <!--  feature style-5 start  -->
   <section id="feature" class="feature-section feature-style-5">
     <div class="container">
       <div class="row justify-content-center">
@@ -216,9 +272,9 @@
 
     </div>
   </section>
-  <!-- ========================= feature style-5 end ========================= -->
+  <!--  feature style-5 end  -->
 
-  <!-- ========================= about style-4 start ========================= -->
+  <!--  about style-4 start  -->
   <section id="about" class="about-section about-style-4">
     <div class="container">
       <div class="row justify-content-center">
@@ -276,9 +332,9 @@
       </div>
     </div>
   </section>
-  <!-- ========================= about style-4 end ========================= -->
+  <!--  about style-4 end  -->
 
-  <!-- ========================= pricing style-4 start ========================= -->
+  <!--  pricing style-4 start  -->
   <section id="pricing" class="pricing-section pricing-style-4 bg-light">
     <div class="container">
       <div class="row justify-content-center">
@@ -351,9 +407,9 @@
       </div>
     </div>
   </section>
-  <!-- ========================= pricing style-4 end ========================= -->
+  <!--  pricing style-4 end  -->
 
-  <!-- ========================= contact-style-3 start ========================= -->
+  <!--  contact-style-3 start  -->
   <section id="contact" class="contact-section contact-style-3">
     <div class="container">
       <div class="row justify-content-center">
@@ -470,9 +526,9 @@
       </div>
     </div>
   </section>
-  <!-- ========================= contact-style-3 end ========================= -->
+  <!--  contact-style-3 end  -->
 
-  <!-- ========================= clients-logo start ========================= -->
+  <!--  clients-logo start  -->
   <!-- <section class="clients-logo-section pt-100 pb-100">
     <div class="container">
       <div class="row">
@@ -484,9 +540,9 @@
       </div>
     </div>
   </section> -->
-  <!-- ========================= clients-logo end ========================= -->
+  <!--  clients-logo end  -->
 
-  <!-- ========================= footer style-4 start ========================= -->
+  <!--  footer style-4 start  -->
   <footer class="footer footer-style-4">
     <div class="container">
       <div class="widget-wrapper">
@@ -570,15 +626,15 @@
       </div>
     </div>
   </footer>
-  <!-- ========================= footer style-4 end ========================= -->
+  <!--  footer style-4 end  -->
 
-  <!-- ========================= scroll-top start ========================= -->
+  <!--  scroll-top start  -->
   <a href="#" class="scroll-top"> <i class="lni lni-chevron-up"></i> </a>
-  <!-- ========================= scroll-top end ========================= -->
+  <!--  scroll-top end  -->
 
 
-  <!-- ========================= JS here ========================= -->
-
+  <!--  JS here  -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('website/assets/js/bootstrap-5.0.0-beta1.min.js') }}"></script>
   <script src="{{ asset('website/assets/js/tiny-slider.js') }}"></script>
   <script src="{{ asset('website/assets/js/wow.min.js') }}"></script>
