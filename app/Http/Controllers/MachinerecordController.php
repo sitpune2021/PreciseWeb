@@ -168,12 +168,17 @@ class MachinerecordController extends Controller
 
         $validated['admin_id'] = Auth::id();
 
-        //  correct field
+        // correct work_order_id
         $validated['work_order_id'] = $request->work_order_id;
 
-        //  project_id auto
-        $workOrder = WorkOrder::find($request->work_order_id);
+        // get WorkOrder
+        $validated['work_order_id'] = $request->work_order;
+
+        // project_id
         $validated['project_id'] = $workOrder->project_id ?? null;
+
+        //  ADD THIS (MOST IMPORTANT)
+        $validated['customer_id'] = $workOrder->customer_id ?? null;
 
         MachineRecord::create($validated);
 
@@ -266,7 +271,7 @@ class MachinerecordController extends Controller
             // 'operator'    => 'required|string|max:100',
             // 'setting_no'  => 'required|string|max:100',
             // 'material'    => 'required|string|max:200',
-
+            'customer_id' => 'nullable|integer',
             'machine_id'  => 'required|integer',
             'operator_id' => 'required|integer',
             'setting_id'  => 'required|integer',
@@ -286,7 +291,7 @@ class MachinerecordController extends Controller
 
         $validated['admin_id'] = Auth::id(); // Ensure admin_id stays current admin
         $record->update($validated);
-
+        $validated['customer_id'] = $request->customer_id;
         return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Updated Successfully');
     }
 

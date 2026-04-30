@@ -399,10 +399,10 @@ class ProformaInvoiceController extends Controller
         // Machine Records
         $machineRecords = MachineRecord::where('admin_id', $adminId)
             ->where('status', 'pending')
-            ->whereIn('work_order_id', $workOrders->keys())
+            ->where('customer_id', $customer_id) //  MAIN FIX
             ->get()
             ->groupBy(function ($item) {
-                return $item->project_id . '_' . $item->first_set;
+                return $item->work_order_id . '_' . $item->first_set;
             });
 
         if ($machineRecords->isEmpty()) {

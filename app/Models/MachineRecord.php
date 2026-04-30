@@ -19,6 +19,7 @@ class MachineRecord extends Model
         'work_order',
         'first_set',
         'qty',
+        'customer_id',
         // 'machine',
         // 'operator',
         // 'setting_no',
@@ -81,4 +82,5 @@ class MachineRecord extends Model
     {
         return $this->belongsTo(MaterialType::class, 'material_id');
     }
+    
 }

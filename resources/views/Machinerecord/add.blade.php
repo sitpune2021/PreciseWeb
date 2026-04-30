@@ -30,6 +30,13 @@
                                 @endif
                                 <div class="row g-3">
                                     <input type="hidden" name="work_order_id" id="work_order_id">
+
+                                    <div class="col-md-1">
+                                        <label for="customer_id" class="form-label">Cus Code</label>
+                                        <input type="text" class="form-control" id="customer_id" name="customer_id"
+                                            value="{{ old('customer_id', $record->customer_id ?? '') }}">
+                                    </div>
+
                                     <div class="col-md-2">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
 
@@ -222,7 +229,7 @@
                                         <label class="form-label">IDL Time<span class="text-red"></span></label>
                                         <input type="text" step="0.01" name="idl_time" id="idl_time" class="form-control"
                                             value="{{ old('idl_time', $record->idl_time ?? '') }}">
-                                             <small class="text-red">Ex: 1:00 hrs</small>
+                                        <small class="text-red">Ex: 1:00 hrs</small>
                                         @error('idl_time') <span class="text-red small">{{ $message }}</span> @enderror
                                     </div>
 
@@ -315,6 +322,8 @@
             $('#qty').val(selected.data('qty') || '');
             $('#e_time').val(selected.data('e_time') || '');
 
+             $('#customer_id').val(selected.data('customer') || '');
+
         });
 
         // Edit mode auto-fill
@@ -323,6 +332,14 @@
         }
 
     });
+
+    $(document).ready(function () {
+
+    let selected = $('#part_no').find(':selected');
+
+    $('#customer_id').val(selected.data('customer') || '');
+
+});
 
 
     //  CALCULATE HOURS 
