@@ -31,11 +31,8 @@
                                 <div class="row g-3">
                                     <input type="hidden" name="work_order_id" id="work_order_id">
 
-                                    <div class="col-md-1">
-                                        <label for="customer_id" class="form-label">Cus Code</label>
-                                        <input type="text" class="form-control" id="customer_id" name="customer_id"
-                                            value="{{ old('customer_id', $record->customer_id ?? '') }}">
-                                    </div>
+                                    <input type="hidden" id="customer_id" name="customer_id"
+                                        value="{{ old('customer_id', $record->customer_id ?? '') }}">
 
                                     <div class="col-md-2">
                                         <label class="form-label">Part No <span class="text-red">*</span></label>
@@ -322,7 +319,7 @@
             $('#qty').val(selected.data('qty') || '');
             $('#e_time').val(selected.data('e_time') || '');
 
-             $('#customer_id').val(selected.data('customer') || '');
+            $('#customer_id').val(selected.data('customer') || '');
 
         });
 
@@ -333,13 +330,13 @@
 
     });
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-    let selected = $('#part_no').find(':selected');
+        let selected = $('#part_no').find(':selected');
 
-    $('#customer_id').val(selected.data('customer') || '');
+        $('#customer_id').val(selected.data('customer') || '');
 
-});
+    });
 
 
     //  CALCULATE HOURS 

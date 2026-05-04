@@ -146,7 +146,6 @@ class MachinerecordController extends Controller
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
             'code'        => 'nullable|string|max:100',
-
             'work_order'  => 'required|integer',
             'first_set'   => 'nullable|string|max:100',
             'qty'         => 'required|integer|min:1',
@@ -168,17 +167,13 @@ class MachinerecordController extends Controller
 
         $validated['admin_id'] = Auth::id();
 
-        // correct work_order_id
+        //  Get WorkOrder properly
+        $workOrder = WorkOrder::find($request->work_order_id);
+
+        // Correct mapping
         $validated['work_order_id'] = $request->work_order_id;
-
-        // get WorkOrder
-        $validated['work_order_id'] = $request->work_order;
-
-        // project_id
-        $validated['project_id'] = $workOrder->project_id ?? null;
-
-        //  ADD THIS (MOST IMPORTANT)
-        $validated['customer_id'] = $workOrder->customer_id ?? null;
+        $validated['project_id']    = $workOrder->project_id ?? null;
+        $validated['customer_id']   = $workOrder->customer_id ?? null;
 
         MachineRecord::create($validated);
 
@@ -259,7 +254,7 @@ class MachinerecordController extends Controller
     {
         $id = base64_decode($encryptedId);
 
-        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id); // Only current admin
+        $record = MachineRecord::where('admin_id', Auth::id())->findOrFail($id);
 
         $validated = $request->validate([
             'part_no'     => 'required|string|max:100',
@@ -267,11 +262,8 @@ class MachinerecordController extends Controller
             'work_order'  => 'required|string|max:100',
             'first_set'   => 'nullable|string|max:100',
             'qty'         => 'required|integer|min:1',
-            // 'machine'     => 'required|string|max:100',
-            // 'operator'    => 'required|string|max:100',
-            // 'setting_no'  => 'required|string|max:100',
-            // 'material'    => 'required|string|max:200',
-            'customer_id' => 'nullable|integer',
+            'customer_id' => 'required|integer',
+
             'machine_id'  => 'required|integer',
             'operator_id' => 'required|integer',
             'setting_id'  => 'required|integer',
@@ -280,19 +272,19 @@ class MachinerecordController extends Controller
             'est_time'    => 'required|string|max:100',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date|after_or_equal:start_time',
+
             'adjustment'  => 'nullable|string|max:100',
-            // 'minute'      => 'required|numeric|min:0',
             'hrs'         => 'required|numeric|min:0',
             'idl_time'    => 'nullable|string|max:100',
-            // 'time_taken'  => 'required|numeric|min:0',
-            // 'actual_hrs'  => 'required|numeric|min:0',
             'invoice_no'  => 'nullable|string|max:100',
         ]);
 
-        $validated['admin_id'] = Auth::id(); // Ensure admin_id stays current admin
+        $validated['admin_id'] = Auth::id();
+
         $record->update($validated);
-        $validated['customer_id'] = $request->customer_id;
-        return redirect()->route('ViewMachinerecord')->with('success', 'Machine Record Updated Successfully');
+
+        return redirect()->route('ViewMachinerecord')
+            ->with('success', 'Machine Record Updated Successfully');
     }
 
     public function destroy(string $encryptedId)
