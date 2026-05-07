@@ -55,7 +55,7 @@ class MaterialReqController extends Controller
             'length' => 'nullable|numeric|min:0',
             'width'  => 'nullable|numeric|min:0',
             'height' => 'required|numeric|min:0',
-
+            'material_rate' => 'nullable|numeric|min:0',
             'material' => 'required|exists:material_types,id',
             'qty'      => 'required|numeric|min:1',
 
@@ -91,7 +91,9 @@ class MaterialReqController extends Controller
         $weightPerPiece = round(($volume * $material->material_gravity) / 1000000, 3);
 
         // Material Cost
-        $materialCost = round($weightPerPiece * $material->material_rate, 2);
+        $materialRate = $request->material_rate ?? $material->material_rate;
+
+        $materialCost = round($weightPerPiece * $materialRate, 2);
 
         // Machining
         $len = $request->length ?? 0;
@@ -147,7 +149,7 @@ class MaterialReqController extends Controller
 
             // MATERIAL
             'material'         => $request->material,
-            'material_rate'    => $material->material_rate,
+            'material_rate' => $materialRate,
             'material_gravity' => $material->material_gravity,
 
             'qty'    => $request->qty,
@@ -194,8 +196,8 @@ class MaterialReqController extends Controller
         $adminId = Auth::id();
 
         $materialReq = MaterialReq::with(['workOrder.customer', 'workOrder.project', 'materialType'])
-            ->where('admin_id', Auth::id())
-            ->orderBy('created_at')
+            ->where('admin_id', $adminId)
+            ->latest() // latest created_at first
             ->get();
 
         $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
