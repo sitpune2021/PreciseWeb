@@ -259,7 +259,7 @@
                                         </div>
 
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <label for="material_cost" class="form-label">M Cost</label>
                                             <input type="text"
                                                 name="material_cost"
@@ -269,7 +269,7 @@
 
                                         </div>
                                         <!-- Machine Processes -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="lathe" class="form-label">Lathe (hrs) </label>
                                                 <input type="number" step="0.01" name="lathe" id="lathe" placeholder="Turning" class="form-control mt-1" value="{{ old('lathe', $materialReq->lathe ?? '') }}">
@@ -277,7 +277,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="mg4" class="form-label">MG4 (hrs) </label>
                                                 <input type="number" step="0.01" name="mg4" id="mg4" placeholder="Milling" class="form-control" value="{{ old('mg4', $materialReq->mg4 ?? '') }}">
@@ -285,7 +285,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="mg2" class="form-label">MG2 (hrs) </label>
                                                 <input type="number" step="0.01" name="mg2" id="mg2" placeholder="Milling" class="form-control" value="{{ old('mg2', $materialReq->mg2 ?? '') }}">
@@ -293,7 +293,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="rg2" class="form-label">RG2 (hrs) </label>
                                                 <input type="number" step="0.01" name="rg2" id="rg2" placeholder="Rotary Granding" class="form-control" value="{{ old('rg2', $materialReq->rg2 ?? '') }}">
@@ -301,7 +301,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="sg4" class="form-label">SG4 (hrs) </label>
                                                 <input type="number" step="0.01" name="sg4" id="sg4" class="form-control" value="{{ old('sg4', $materialReq->sg4 ?? '') }}">
@@ -309,7 +309,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="sg2" class="form-label">SG2 (hrs) </label>
                                                 <input type="number" step="0.01" name="sg2" id="sg2" class="form-control" value="{{ old('sg2', $materialReq->sg2 ?? '') }}">
@@ -322,7 +322,7 @@
                                         @endphp
                                         <input type="hidden" id="vmc_rate" value="{{ $vmcRate }}">
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="vmc_hrs" class="form-label">VMC Hours</label>
                                                 <input type="number" step="0.01" name="vmc_hrs" id="vmc_hrs" class="form-control" value="{{ old('vmc_hrs', $materialReq->vmc_hrs ?? '') }}">
@@ -330,7 +330,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="vmc_cost" class="form-label">VMC Cost </label>
                                                 <input type="number" step="0.01" name="vmc_cost" id="vmc_cost" class="form-control" value="{{ old('vmc_cost', $materialReq->vmc_cost ?? '') }}" readonly>
@@ -339,7 +339,7 @@
                                         </div>
 
                                         <!-- EDM -->
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="edm_qty" class="form-label">EDM Qty </label>
                                                 <input type="number" name="edm_qty" id="edm_qty" class="form-control" value="{{ old('edm_qty', $materialReq->edm_qty ?? '') }}">
@@ -347,21 +347,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="edm_rate" class="form-label">EDM Rate </label>
                                                 <input type="text" name="edm_rate" id="edm_rate" class="form-control" value="{{ old('edm_rate', $materialReq->edm_rate ?? '') }}" readonly>
                                                 @error('edm_rate') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="hrc" class="form-label">HRC </label>
                                                 <input type="number" step="0.01" name="hrc" id="hrc" placeholder="Hardening" class="form-control" value="{{ old('hrc', $materialReq->hrc ?? '') }}">
                                                 @error('hrc') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="cl" class="form-label">CL </label>
                                                 <input type="text" name="cl" id="cl" class="form-control" placeholder="Wirecutting Length" value="{{ old('cl', $materialReq->cl ?? '') }}">
@@ -369,25 +369,25 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
-                                                <label>Wirecut Rate</label>
+                                                <label>W Rate</label>
                                                 <input type="text" name="wirecut_rate" id="wirecut_rate"
-                                                    class="form-control mt-1"
+                                                    class="form-control"
                                                     value="{{ old('wirecut_rate', $materialReq->wirecut_rate ?? '') }}" readonly>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label>Column 1</label>
                                                 <input type="number" step="0.01" name="column1" id="column1"
-                                                    class="form-control mt-1"
+                                                    class="form-control"
                                                     value="{{ old('column1', $materialReq->column1 ?? '') }}">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label>Column 2</label>
                                                 <input type="number" step="0.01" name="column2" id="column2"
