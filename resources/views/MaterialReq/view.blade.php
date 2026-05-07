@@ -40,13 +40,17 @@
                                 <table id="buttons-datatables-decs" class="display table table-bordered" style="width:100%">
                                     <thead>
                                         <tr class="table-light">
-                                            <!-- <th style="width:30px;">#</th> -->
-                                            <th style="width:5px;">Sr.No</th>
-                                            <th style="width:30px;">Work Order</th>
+                                            <th style="width:20px;">Sr No</th>
+                                            <th style="width:70px;">Work Order</th>
                                             <!-- <th>Code</th> -->
                                             <th style="width:60px;">Date</th>
                                             <th style="width: 100px;">Description</th>
                                             <th style="width: 70px;">Material Type</th>
+                                            <th style="width:20px;">Qty</th>
+                                            <th style="width:40px;">Weight</th>
+                                            <th style="width:40px;">M Cost</th>
+                                            <!-- TOTAL -->
+                                            <th style="width:40px;">Total Cost</th>
                                             <th width="12%">Action</th>
                                         </tr>
                                     </thead>
@@ -59,8 +63,7 @@
                                         @endphp
 
                                         <tr class="{{ $highlightClass }}">
-                                            <!-- <td>{{ $loop->iteration }}</td> -->
-                                            <td>{{ $req->sr_no }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>
                                                 {{ $req->workOrder?->customer?->code ?? '' }}_
                                                 {{ $req->workOrder?->project?->project_no ?? '' }}_
@@ -72,6 +75,20 @@
 
                                             <td>{{ $req->description }}</td>
                                             <td>{{ $req->materialType->material_type ?? 'N/A' }}</td>
+                                            <td>{{ $req->qty }}</td>
+                                            <td>
+                                                {{ number_format($req->weight, 3) }}
+                                            </td>
+
+                                            <td>
+                                                {{ number_format($req->material_cost, 2) }}
+                                            </td>
+
+                                            <td>
+                                                <strong>
+                                                    {{ number_format($req->total_cost, 2) }}
+                                                </strong>
+                                            </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2 align-items-center">
 
@@ -82,25 +99,56 @@
                                                     </a>
                                                     @endif
 
-                                                    <button type="button" class="btn btn-primary btn-sm viewMaterialReqBtn"
+                                                    <!-- VIEW BUTTON -->
+                                                    <button type="button"
+                                                        class="btn btn-primary btn-sm viewMaterialReqBtn"
+
                                                         data-customer="{{ $req->customer->code ?? 'N/A' }}"
-                                                        data-code="{{ $req->code }}"
                                                         data-date="{{ $req->date }}"
+
                                                         data-workorder="{{ 
-                                                            ($req->workOrder->customer->code ?? '') . '_' .
-                                                            ($req->workOrder->project->project_no ?? '') . '_' .
-                                                            ($req->workOrder->part ?? '') . '_' .
-                                                            ($req->workOrder->quantity ?? '') 
-                                                        }}"
+                                                                ($req->workOrder->customer->code ?? '') . '_' .
+                                                                ($req->workOrder->project->project_no ?? '') . '_' .
+                                                                ($req->workOrder->part ?? '') . '_' .
+                                                                ($req->workOrder->quantity ?? '') 
+                                                            }}"
+
                                                         data-description="{{ $req->description }}"
+
                                                         data-dia="{{ $req->dia }}"
                                                         data-length="{{ $req->length }}"
                                                         data-width="{{ $req->width }}"
                                                         data-height="{{ $req->height }}"
+
                                                         data-material="{{ $req->materialType->material_type ?? 'N/A' }}"
+
                                                         data-qty="{{ $req->qty }}"
                                                         data-weight="{{ $req->weight }}"
-                                                        data-cost="{{ $req->material_cost ?? 'N/A' }}">
+                                                        data-cost="{{ $req->material_cost }}"
+
+                                                        data-lathe="{{ $req->lathe }}"
+                                                        data-mg4="{{ $req->mg4 }}"
+                                                        data-mg2="{{ $req->mg2 }}"
+                                                        data-rg2="{{ $req->rg2 }}"
+                                                        data-sg4="{{ $req->sg4 }}"
+                                                        data-sg2="{{ $req->sg2 }}"
+
+                                                        data-vmc_hrs="{{ $req->vmc_hrs }}"
+                                                        data-vmc_cost="{{ $req->vmc_cost }}"
+
+                                                        data-hrc="{{ $req->hrc }}"
+
+                                                        data-edm_qty="{{ $req->edm_qty }}"
+                                                        data-edm_rate="{{ $req->edm_rate }}"
+
+                                                        data-cl="{{ $req->cl }}"
+                                                        data-wirecut_rate="{{ $req->wirecut_rate }}"
+
+                                                        data-column1="{{ $req->column1 }}"
+                                                        data-column2="{{ $req->column2 }}"
+
+                                                        data-total_cost="{{ $req->total_cost }}">
+
                                                         <i class="ri-eye-fill"></i>
                                                     </button>
 
@@ -192,58 +240,87 @@
                                     <th> Material cost</th>
                                     <td id="mr_cost"></td>
                                 </tr>
-                                <!-- <tr>
+                                <!-- ADD THESE ROWS INSIDE TABLE -->
+
+                                <tr>
                                     <th>Lathe</th>
                                     <td id="mr_lathe"></td>
                                 </tr>
+
                                 <tr>
                                     <th>MG4</th>
                                     <td id="mr_mg4"></td>
                                 </tr>
+
                                 <tr>
                                     <th>MG2</th>
                                     <td id="mr_mg2"></td>
                                 </tr>
+
                                 <tr>
                                     <th>RG2</th>
                                     <td id="mr_rg2"></td>
                                 </tr>
+
                                 <tr>
                                     <th>SG4</th>
                                     <td id="mr_sg4"></td>
                                 </tr>
+
                                 <tr>
                                     <th>SG2</th>
                                     <td id="mr_sg2"></td>
                                 </tr>
+
                                 <tr>
-                                    <th>VMC Hrs</th>
+                                    <th>VMC Hours</th>
                                     <td id="mr_vmc_hrs"></td>
                                 </tr>
+
                                 <tr>
                                     <th>VMC Cost</th>
                                     <td id="mr_vmc_cost"></td>
                                 </tr>
+
                                 <tr>
                                     <th>HRC</th>
                                     <td id="mr_hrc"></td>
                                 </tr>
+
                                 <tr>
                                     <th>EDM Qty</th>
                                     <td id="mr_edm_qty"></td>
                                 </tr>
+
                                 <tr>
                                     <th>EDM Rate</th>
                                     <td id="mr_edm_rate"></td>
                                 </tr>
+
                                 <tr>
                                     <th>CL</th>
                                     <td id="mr_cl"></td>
-                                </tr> -->
-                                <!-- <tr>
+                                </tr>
+
+                                <tr>
+                                    <th>Wirecut Rate</th>
+                                    <td id="mr_wirecut_rate"></td>
+                                </tr>
+
+                                <tr>
+                                    <th>Column 1</th>
+                                    <td id="mr_column1"></td>
+                                </tr>
+
+                                <tr>
+                                    <th>Column 2</th>
+                                    <td id="mr_column2"></td>
+                                </tr>
+
+                                <tr>
                                     <th>Total Cost</th>
                                     <td id="mr_total_cost"></td>
-                                </tr> -->
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -252,31 +329,70 @@
 
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
+
                     document.querySelectorAll(".viewMaterialReqBtn").forEach(btn => {
+
                         btn.addEventListener("click", function() {
 
                             document.getElementById("mr_customer").textContent = this.dataset.customer;
                             document.getElementById("mr_date").textContent = this.dataset.date;
-
-                            // ✅ NEW FORMAT
                             document.getElementById("mr_workorder").textContent = this.dataset.workorder;
 
                             document.getElementById("mr_description").textContent = this.dataset.description;
+
                             document.getElementById("mr_dia").textContent = this.dataset.dia;
                             document.getElementById("mr_length").textContent = this.dataset.length;
                             document.getElementById("mr_width").textContent = this.dataset.width;
                             document.getElementById("mr_height").textContent = this.dataset.height;
+
                             document.getElementById("mr_material").textContent = this.dataset.material;
 
                             document.getElementById("mr_qty").textContent = this.dataset.qty;
                             document.getElementById("mr_weight").textContent = this.dataset.weight;
                             document.getElementById("mr_cost").textContent = this.dataset.cost;
 
+                            // MACHINING
+                            document.getElementById("mr_lathe").textContent = this.dataset.lathe;
 
-                            let modal = new bootstrap.Modal(document.getElementById("viewMaterialReqModal"));
+                            document.getElementById("mr_mg4").textContent = this.dataset.mg4;
+                            document.getElementById("mr_mg2").textContent = this.dataset.mg2;
+                            document.getElementById("mr_rg2").textContent = this.dataset.rg2;
+
+                            document.getElementById("mr_sg4").textContent = this.dataset.sg4;
+                            document.getElementById("mr_sg2").textContent = this.dataset.sg2;
+
+                            // VMC
+                            document.getElementById("mr_vmc_hrs").textContent = this.dataset.vmc_hrs;
+                            document.getElementById("mr_vmc_cost").textContent = this.dataset.vmc_cost;
+
+                            // HRC
+                            document.getElementById("mr_hrc").textContent = this.dataset.hrc;
+
+                            // EDM
+                            document.getElementById("mr_edm_qty").textContent = this.dataset.edm_qty;
+                            document.getElementById("mr_edm_rate").textContent = this.dataset.edm_rate;
+
+                            // WIRECUT
+                            document.getElementById("mr_cl").textContent = this.dataset.cl;
+                            document.getElementById("mr_wirecut_rate").textContent = this.dataset.wirecut_rate;
+
+                            // EXTRA
+                            document.getElementById("mr_column1").textContent = this.dataset.column1;
+                            document.getElementById("mr_column2").textContent = this.dataset.column2;
+
+                            // TOTAL
+                            document.getElementById("mr_total_cost").textContent = this.dataset.total_cost;
+
+                            // SHOW MODAL
+                            let modal = new bootstrap.Modal(
+                                document.getElementById("viewMaterialReqModal")
+                            );
+
                             modal.show();
                         });
+
                     });
+
                 });
             </script>
 

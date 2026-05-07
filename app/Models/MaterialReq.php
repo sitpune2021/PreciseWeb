@@ -47,7 +47,10 @@ class MaterialReq extends Model
         'cl',
         'material_cost',
         'total_cost',
-        'sr_no'
+        'sr_no',
+        'wirecut_rate',
+        'column1',
+        'column2',
 
     ];
 
