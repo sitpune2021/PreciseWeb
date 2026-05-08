@@ -88,7 +88,7 @@ class MaterialReqController extends Controller
             : $request->length * $request->width * $request->height;
 
         // Weight
-        $weightPerPiece = round(($volume * $material->material_gravity) / 1000000, 3);
+        $weightPerPiece = ($volume * $material->material_gravity) / 1000000;
 
         // Material Cost
         $materialRate = $request->material_rate ?? $material->material_rate;
@@ -117,13 +117,24 @@ class MaterialReqController extends Controller
         $column2 = $request->column2 ?? 0;
 
         // Total
-        $totalPerPiece =
+        $totalPerPiece = round(
             ($request->lathe ?? 0) +
-            $mg4 + $mg2 + $rg2 + $sg4 + $sg2 +
-            $vmc + $edm + $wirecut + $hrc +
-            $materialCost + $column1 + $column2;
+                $mg4 +
+                $mg2 +
+                $rg2 +
+                $sg4 +
+                $sg2 +
+                $vmc +
+                $edm +
+                $wirecut +
+                $hrc +
+                $materialCost +
+                $column1 +
+                $column2,
+            2
+        );
 
-        $totalCost = round($totalPerPiece * $request->qty, 2);
+        $totalCost = round($totalPerPiece * (float)$request->qty, 2);
 
         // STORE
         MaterialReq::create([
@@ -240,6 +251,8 @@ class MaterialReqController extends Controller
         $materialReq = MaterialReq::where('admin_id', Auth::id())
             ->findOrFail($id);
 
+
+
         // VALIDATION
         $validated = $request->validate([
 
@@ -288,6 +301,7 @@ class MaterialReqController extends Controller
             'hrc' => $request->hrc ?: 0,
         ]);
 
+
         $workOrder = WorkOrder::with(['project', 'customer'])
             ->findOrFail($request->work_order_id);
 
@@ -316,7 +330,7 @@ class MaterialReqController extends Controller
 
         // MATERIAL COST
         $materialCost =
-            $weightPerPiece * $request->material_rate;
+            round($weightPerPiece * $request->material_rate, 2);
 
         // AUTO MACHINING
         $mg4 = $request->mg4 != ''
@@ -352,35 +366,40 @@ class MaterialReqController extends Controller
 
         // HRC
         $hrc = $request->hrc != ''
-            ? $request->hrc
-            : round(($weightPerPiece * 70), 2);
+            ? (float)$request->hrc
+            : round(($weightPerPiece * 70), 1);
 
         // EXTRA
         $column1 = (float) $request->column1;
         $column2 = (float) $request->column2;
 
         // TOTAL
-        $totalPerPiece =
+        $totalPerPiece = round(
 
             (float)$request->lathe +
 
-            (float)$mg4 +
-            (float)$mg2 +
-            (float)$rg2 +
-            (float)$sg4 +
-            (float)$sg2 +
+                (float)$mg4 +
+                (float)$mg2 +
+                (float)$rg2 +
+                (float)$sg4 +
+                (float)$sg2 +
 
-            (float)$vmc +
-            (float)$edm +
-            (float)$wirecut +
-            (float)$hrc +
+                (float)$vmc +
+                (float)$edm +
+                (float)$wirecut +
+                (float)$hrc +
 
-            (float)$materialCost +
-            (float)$column1 +
-            (float)$column2;
+                (float)$materialCost +
+                (float)$column1 +
+                (float)$column2,
 
-        $totalCost =
-            $totalPerPiece * (float)$request->qty;
+            2
+        );
+
+        $totalCost = round(
+            $totalPerPiece * (float)$request->qty,
+            2
+        );
 
         // UPDATE
         $materialReq->update([

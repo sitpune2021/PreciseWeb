@@ -495,52 +495,56 @@
                 }
 
                 // MATERIAL COST
-                let mt_cost = material_wt * rate;
+                let mt_cost = parseFloat((material_wt * rate).toFixed(2));
 
                 // AUTO FORMULA
                 if (auto && !$("#mg4").data("manual"))
-                    mg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100);
+                    mg4 = parseFloat(((((len * heigh) + (withs * heigh)) * 2 * 0.5 / 100)).toFixed(2));
 
                 if (auto && !$("#mg2").data("manual"))
-                    mg2 = ((len * withs) * 2 * 0.5 / 100);
+                    mg2 = parseFloat((((len * withs) * 2 * 0.5) / 100).toFixed(2));
 
                 if (auto && !$("#rg2").data("manual"))
-                    rg2 = ((len * withs) * 2 * 0.3 / 100);
+                    rg2 = parseFloat((((len * withs) * 2 * 0.3) / 100).toFixed(2));
 
                 if (auto && !$("#sg4").data("manual"))
-                    sg4 = (((len * heigh) + (withs * heigh)) * 2 * 0.6 / 100);
+                    sg4 = parseFloat((((((len * heigh) + (withs * heigh)) * 2 * 0.6) / 100)).toFixed(2));
 
                 if (auto && !$("#sg2").data("manual"))
-                    sg2 = ((len * withs) * 2 * 0.6 / 100);
+                    sg2 = parseFloat((((len * withs) * 2 * 0.6) / 100).toFixed(2));
 
                 // AUTO HRC
                 if (auto && !$("#hrc").data("manual"))
                     hrcVal = Math.round((material_wt * 70) * 10) / 10;
 
-                // EDM
-                let edm = edmqty * heigh * 6;
 
-                // WIRECUT
-                let wirecut = cl * 0.2 * heigh;
+                let edm = parseFloat((edmqty * heigh * 6).toFixed(2));
+
+                let wirecut = parseFloat((cl * 0.2 * heigh).toFixed(2));
 
                 // TOTAL PER PIECE
-                let total_per_piece =
-                    lathe +
-                    mg4 +
-                    mg2 +
-                    rg2 +
-                    sg4 +
-                    sg2 +
-                    vmc +
-                    edm +
-                    wirecut +
-                    hrcVal +
-                    mt_cost +
-                    col1 +
-                    col2;
+                let total_per_piece = parseFloat(
+                    (
+                        Number(lathe) +
+                        Number(mg4) +
+                        Number(mg2) +
+                        Number(rg2) +
+                        Number(sg4) +
+                        Number(sg2) +
+                        Number(vmc) +
+                        Number(edm) +
+                        Number(wirecut) +
+                        Number(hrcVal) +
+                        Number(mt_cost) +
+                        Number(col1) +
+                        Number(col2)
+                    ).toFixed(2)
+                );
 
                 // FINAL TOTAL
-                let total_cost = total_per_piece * qty;
+                let total_cost = parseFloat(
+                    (total_per_piece * Number(qty)).toFixed(2)
+                );
 
                 // UI UPDATE
                 $("#weight").val(parseFloat(material_wt.toFixed(3)));
@@ -622,7 +626,7 @@
                 }
             });
             // INITIAL LOA
-            calculate(true);
+            calculate(false);
 
         });
     </script>
