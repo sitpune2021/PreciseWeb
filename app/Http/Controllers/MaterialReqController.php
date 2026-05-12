@@ -100,11 +100,25 @@ class MaterialReqController extends Controller
         $wid = $request->width ?? 0;
         $hei = $request->height ?? 0;
 
-        $mg4 = ((($len * $hei) + ($wid * $hei)) * 2 * 0.5 / 100);
-        $mg2 = (($len * $wid) * 2 * 0.5 / 100);
-        $rg2 = (($len * $wid) * 2 * 0.3 / 100);
-        $sg4 = ((($len * $hei) + ($wid * $hei)) * 2 * 0.6 / 100);
-        $sg2 = (($len * $wid) * 2 * 0.6 / 100);
+        $mg4 = $request->filled('mg4')
+            ? (float)$request->mg4
+            : 0;
+
+        $mg2 = $request->filled('mg2')
+            ? (float)$request->mg2
+            : 0;
+
+        $rg2 = $request->filled('rg2')
+            ? (float)$request->rg2
+            : 0;
+
+        $sg4 = $request->filled('sg4')
+            ? (float)$request->sg4
+            : 0;
+
+        $sg2 = $request->filled('sg2')
+            ? (float)$request->sg2
+            : 0;
 
         // Other Calculations
         $vmc = $request->vmc_cost ?? 0;
@@ -143,7 +157,10 @@ class MaterialReqController extends Controller
             // AUTO DATA
             'customer_id'   => $workOrder->customer_id,
             'code'          => $workOrder->customer->code ?? null,
-            'work_order_no' => $workOrder->work_order_no ?? $workOrder->id,
+            'work_order_no' => ($workOrder->customer?->code ?? '') . '_' .
+                ($workOrder->project?->project_no ?? '') . '_' .
+                ($workOrder->part ?? '') . '_' .
+                ($workOrder->quantity ?? ''),
             'part_no'       => $workOrder->part ?? null,
             'project_id'    => $workOrder->project_id ?? null,
             'description'   => $request->description,
@@ -332,26 +349,25 @@ class MaterialReqController extends Controller
         $materialCost =
             round($weightPerPiece * $request->material_rate, 2);
 
-        // AUTO MACHINING
-        $mg4 = $request->mg4 != ''
-            ? $request->mg4
-            : (((($len * $hei) + ($wid * $hei)) * 2 * 0.5) / 100);
+        $mg4 = $request->filled('mg4')
+            ? (float)$request->mg4
+            : 0;
 
-        $mg2 = $request->mg2 != ''
-            ? $request->mg2
-            : ((($len * $wid) * 2 * 0.5) / 100);
+        $mg2 = $request->filled('mg2')
+            ? (float)$request->mg2
+            : 0;
 
-        $rg2 = $request->rg2 != ''
-            ? $request->rg2
-            : ((($len * $wid) * 2 * 0.3) / 100);
+        $rg2 = $request->filled('rg2')
+            ? (float)$request->rg2
+            : 0;
 
-        $sg4 = $request->sg4 != ''
-            ? $request->sg4
-            : (((($len * $hei) + ($wid * $hei)) * 2 * 0.6) / 100);
+        $sg4 = $request->filled('sg4')
+            ? (float)$request->sg4
+            : 0;
 
-        $sg2 = $request->sg2 != ''
-            ? $request->sg2
-            : ((($len * $wid) * 2 * 0.6) / 100);
+        $sg2 = $request->filled('sg2')
+            ? (float)$request->sg2
+            : 0;
 
         // VMC
         $vmc = (float) $request->vmc_cost;
@@ -365,9 +381,9 @@ class MaterialReqController extends Controller
             ((float)$request->cl * 0.2 * $hei);
 
         // HRC
-        $hrc = $request->hrc != ''
+        $hrc = $request->filled('hrc')
             ? (float)$request->hrc
-            : round(($weightPerPiece * 70), 1);
+            : 0;
 
         // EXTRA
         $column1 = (float) $request->column1;

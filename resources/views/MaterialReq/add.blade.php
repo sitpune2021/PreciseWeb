@@ -296,7 +296,7 @@
                                         <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="rg2" class="form-label">RG2 (hrs) </label>
-                                                <input type="number" step="0.01" name="rg2" id="rg2" placeholder="Rotary Granding" class="form-control" value="{{ old('rg2', $materialReq->rg2 ?? '') }}">
+                                                <input type="number" step="0.01" name="rg2" id="rg2" placeholder="Rotary Gra" class="form-control" value="{{ old('rg2', $materialReq->rg2 ?? '') }}">
                                                 @error('rg2') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
@@ -357,10 +357,11 @@
                                         <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="hrc" class="form-label">HRC </label>
-                                                <input type="number" step="0.01" name="hrc" id="hrc" placeholder="Hardening" class="form-control" value="{{ old('hrc', $materialReq->hrc ?? '') }}">
+                                                <input type="number" step="0.01" name="hrc" id="hrc" placeholder="HRC" class="form-control" value="{{ old('hrc', $materialReq->hrc ?? '') }}">
                                                 @error('hrc') <span class="text-red small">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
+                                        
                                         <div class="col-md-1">
                                             <div class="mb-3">
                                                 <label for="cl" class="form-label">CL </label>
@@ -598,14 +599,8 @@
             $("#dia, #length, #width, #height, #material_gravity, #material_rate, #qty, #lathe, #vmc_cost, #edm_qty, #cl, #column1, #column2")
                 .on("input change", function() {
 
-                    $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").each(function() {
-
-                        if ($(this).val().trim() === "") {
-                            $(this).data("manual", false);
-                        }
-                    });
-
                     calculate(true);
+
                 });
             // MANUAL INPUT
             $("#mg4, #mg2, #rg2, #sg4, #sg2, #hrc").on("input", function() {

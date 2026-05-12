@@ -59,7 +59,7 @@
             <div class="col-lg-12">
               <nav class="navbar navbar-expand-lg">
                 <a class="navbar-brand" href="/">
-                  <img src="{{ asset('website/assets/img/logo/OPSFORGESS.png') }}" alt="OPSFORGES Logo" />
+                  <img src="{{ asset('website/assets/img/logo/OPSFORGESS.jpeg') }}" alt="OPSFORGES Logo" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                   data-bs-target="#navbarSupportedContent6" aria-controls="navbarSupportedContent6"

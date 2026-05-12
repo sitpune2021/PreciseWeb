@@ -57,7 +57,7 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">
-                                                {{ $order->sr_no ?? $order->materialReq->sr_no ?? '-' }}
+                                                {{ $order->work_order_no ?? $order->materialReq->work_order_no ?? '-' }}
                                             </td>
                                             <td class="text-center">{{ \Carbon\Carbon::parse($order->date)->format('d-m-Y') }}</td>
 
