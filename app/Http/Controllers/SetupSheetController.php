@@ -18,7 +18,9 @@ class SetupSheetController extends Controller
         $adminId = Auth::id();
         $workorder = null;
         $lastCustomer = null;
-        $selectedPartCode = ''; // ← add this
+        $selectedPartCode = '';
+        $previousSetup = null; // ← add this
+
         if ($id) {
 
             $woId = base64_decode($id);
@@ -37,6 +39,12 @@ class SetupSheetController extends Controller
                     ($workorder->project?->project_no ?? '') . '_' .
                     ($workorder->part ?? '') . '_' .
                     ($workorder->quantity ?? '');
+
+                // Previous setup fetch
+                $previousSetup = SetupSheet::where('admin_id', $adminId)
+                    ->where('part_code', $selectedPartCode)
+                    ->latest()
+                    ->first();
             }
         }
         // Customers fetch
@@ -96,7 +104,8 @@ class SetupSheetController extends Controller
             'workorder',
             'lastCustomer',
             'parts',
-            'selectedPartCode' // ← pass to blade
+            'selectedPartCode',
+             'previousSetup' // ← pass to blade
         ));
     }
 

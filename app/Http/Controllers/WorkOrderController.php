@@ -273,7 +273,7 @@ class WorkOrderController extends Controller
         if (!$lastPart) {
             $nextPart = 1;
         } else {
-            $nextPart = ((int)$lastPart % 10) + 1;
+            $nextPart = (int)$lastPart + 1;
         }
 
         return response()->json([

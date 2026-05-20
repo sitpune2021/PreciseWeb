@@ -33,7 +33,11 @@
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span></label>
+                                                <label for="customer_id" class="form-label">Customer Code <span class="mandatory">*</span>
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span>
+                                                </label>
                                                 <select class="form-select js-example-basic-single"
                                                     id="customer_id"
                                                     name="customer_id"
@@ -61,7 +65,10 @@
                                         <!-- Part Code -->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span></label>
+                                                <label for="part_code" class="form-label">Part Code <span class="mandatory">*</span>
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <select id="part_code"
                                                     name="part_code"
                                                     class="form-control form-select js-example-basic-single">
@@ -102,7 +109,10 @@
                                         <!-- Work Order No -->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span></label>
+                                                <label for="work_order_no" class="form-label">Work Order No <span class="mandatory">*</span>
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <input type="text" class="form-control" id="work_order_no"
                                                     name="work_order_no" readonly
                                                     value="{{ old('work_order_no', $setupSheet->work_order_no ?? $workorder->project?->project_no ?? '') }}">
@@ -115,7 +125,10 @@
                                         <!-- Date -->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="date" class="form-label">Date <span class="mandatory">*</span></label>
+                                                <label for="date" class="form-label">Date <span class="mandatory">*</span>
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <input type="date" class="form-control" id="date" name="date" value="{{ old('date', $setupSheet->date ?? $workorder->date ?? '') }}">
                                                 @error('date')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -126,7 +139,9 @@
                                         <!-- Sizes In X-->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_x" class="form-label">Size In X </label>
+                                                <label for="size_in_x" class="form-label">Size In X <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <input type="text" class="form-control mt-1" id="size_in_x" name="size_in_x" value="{{ old('size_in_x', $setupSheet->size_in_x ?? $workorder->length ?? '') }}">
                                                 @error('size_in_x')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -137,7 +152,11 @@
                                         <!-- Sizes In X-->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_y" class="form-label">Size In Y </label>
+                                                <label for="size_in_y" class="form-label">Size In Y
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span>
+                                                </label>
                                                 <input type="text" class="form-control  mt-1" id="size_in_y" name="size_in_y" value="{{ old('size_in_y', $setupSheet->size_in_y ?? $workorder->width ?? '') }}">
                                                 @error('size_in_y')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -147,7 +166,10 @@
                                         <!-- Sizes In z-->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="size_in_z" class="form-label">Size In Z </span></label>
+                                                <label for="size_in_z" class="form-label">Size In Z </span>
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <input type="text" class="form-control  mt-1" id="size_in_z" name="size_in_z" value="{{ old('size_in_z', $setupSheet->size_in_z ?? $workorder->height ?? '') }}">
                                                 @error('size_in_z')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -155,8 +177,11 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label">Setting <span class="text-red">*</span></label>
+                                        <!-- <div class="col-md-2">
+                                            <label class="form-label">Setting <span class="text-red">*</span>
+                                                <span class="badge bg-info">
+                                                    Previous
+                                                </span></label>
                                             <select name="setting_id" class="form-control form-select mt-1">
                                                 <option value="">Select Setting</option>
                                                 @foreach($settings as $setting)
@@ -167,12 +192,63 @@
                                                 @endforeach
                                             </select>
                                             @error('setting') <span class="text-red small small">{{ $message }}</span> @enderror
+                                        </div> -->
+
+                                        <div class="col-md-2">
+
+                                            <label class="form-label">
+                                                Setting
+                                                <span class="text-danger">*</span>
+
+                                                <span class="badge bg-info">
+                                                    Previous
+                                                </span>
+                                            </label>
+
+                                            <select name="setting_id"
+                                                class="form-control form-select mt-1 border-info text-info">
+
+                                                <option value="">
+                                                    Select Setting
+                                                </option>
+
+                                                @foreach($settings as $setting)
+
+                                                <option value="{{ $setting->id }}"
+
+                                                    {{
+                                                        old(
+                                                            'setting_id',
+                                                            $setupSheet->setting_id
+                                                                ?? $previousSetup->setting_id
+                                                                ?? $record->setting_id
+                                                                ?? ''
+                                                        ) == $setting->id ? 'selected' : ''
+                                                    }}>
+
+                                                    {{ $setting->setting_name }}
+
+                                                </option>
+
+                                                @endforeach
+
+                                            </select>
+
+                                            @error('setting_id')
+                                            <span class="text-danger small">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+
                                         </div>
 
                                         <!-- E Time -->
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="e_time" class="form-label">Expected Time<span class="mandatory">*</span></label>
+                                                <label for="e_time" class="form-label">Expected Time<span class="mandatory">*</span>
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <input type="text" class="form-control" id="e_time" name="e_time" value="{{ old('e_time',$setupSheet->e_time ?? $workorder->exp_time ?? '') }}">
                                                 @error('e_time')
                                                 <span class="text-red small">{{ $message }}</span>
@@ -182,9 +258,12 @@
 
 
                                         <!-- X Refer -->
-                                        <div class="col-md-2" style="position: relative;">
+                                        <!-- <div class="col-md-2" style="position: relative;">
                                             <div class="mb-3">
-                                                <label for="x_refer" class="form-label">X Axis Reference <span class="mandatory">*</span></label>
+                                                <label for="x_refer" class="form-label">X Axis Reference <span class="mandatory">*</span>
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span></label>
                                                 <input type="text" id="x_refer" name="x_refer" class=" form-select"
                                                     placeholder="Select or type" autocomplete="off"
                                                     value="{{ old('x_refer', $setupSheet->x_refer ?? '') }}">
@@ -201,12 +280,75 @@
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
+                                        </div> -->
+
+                                        <div class="col-md-2" style="position: relative;">
+
+                                            <div class="mb-3">
+
+                                                <label for="x_refer" class="form-label">
+                                                    X Axis Reference
+                                                    <span class="mandatory">*</span>
+
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span>
+                                                </label>
+
+                                                <input type="text"
+                                                    id="x_refer"
+                                                    name="x_refer"
+                                                    class="form-control form-select border-info text-info"
+                                                    placeholder="Select or type"
+                                                    autocomplete="off"
+
+                                                    value="{{ old('x_refer', $previousSetup->x_refer ?? $setupSheet->x_refer ?? '') }}">
+
+                                                <ul id="xOptions" class="dropdown-list">
+
+                                                    <li data-value="">
+                                                        Select X refer
+                                                    </li>
+
+                                                    @foreach($xOptions as $opt)
+
+                                                    <li data-value="{{ $opt }}">
+                                                        {{ $opt }}
+                                                    </li>
+
+                                                    @endforeach
+
+                                                    <li data-value="Centre">
+                                                        Centre
+                                                    </li>
+
+                                                    <li data-value="Face Shown">
+                                                        Face Shown
+                                                    </li>
+
+                                                    <li data-value="Hole Centre">
+                                                        Hole Centre
+                                                    </li>
+
+                                                </ul>
+
+                                                @error('x_refer')
+                                                <span class="text-danger small">
+                                                    {{ $message }}
+                                                </span>
+                                                @enderror
+
+                                            </div>
+
                                         </div>
 
                                         <!-- Y Refer -->
-                                        <div class="col-md-2" style="position: relative;">
+                                        <!-- <div class="col-md-2" style="position: relative;">
                                             <div class="mb-3">
-                                                <label for="y_refer" class="form-label">Y Axis Reference <span class="mandatory">*</span></label>
+                                                <label for="y_refer" class="form-label">Y Axis Reference <span class="mandatory">*</span>
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span></label>
                                                 <input type="text" id="y_refer" name="y_refer" class="form-control form-select"
                                                     placeholder="Select or type" autocomplete="off"
                                                     value="{{ old('y_refer', $setupSheet->y_refer ?? '') }}">
@@ -223,12 +365,75 @@
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
+                                        </div> -->
+
+                                        <div class="col-md-2" style="position: relative;">
+
+                                            <div class="mb-3">
+
+                                                <label for="y_refer" class="form-label">
+                                                    Y Axis Reference
+                                                    <span class="mandatory">*</span>
+
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span>
+                                                </label>
+
+                                                <input type="text"
+                                                    id="y_refer"
+                                                    name="y_refer"
+                                                    class="form-control border-info text-info"
+                                                    placeholder="Select or type"
+                                                    autocomplete="off"
+
+                                                    value="{{ old('y_refer', $previousSetup->y_refer ?? $setupSheet->y_refer ?? '') }}">
+
+                                                <ul id="yOptions" class="dropdown-list">
+
+                                                    <li data-value="">
+                                                        Select Y refer
+                                                    </li>
+
+                                                    @foreach($yOptions as $opt)
+
+                                                    <li data-value="{{ $opt }}">
+                                                        {{ $opt }}
+                                                    </li>
+
+                                                    @endforeach
+
+                                                    <li data-value="Centre">
+                                                        Centre
+                                                    </li>
+
+                                                    <li data-value="Face Shown">
+                                                        Face Shown
+                                                    </li>
+
+                                                    <li data-value="Hole Centre">
+                                                        Hole Centre
+                                                    </li>
+
+                                                </ul>
+
+                                                @error('y_refer')
+                                                <span class="text-danger small">
+                                                    {{ $message }}
+                                                </span>
+                                                @enderror
+
+                                            </div>
+
                                         </div>
 
                                         <!-- Z Refer -->
-                                        <div class="col-md-2" style="position: relative;">
+                                        <!-- <div class="col-md-2" style="position: relative;">
                                             <div class="mb-3">
-                                                <label for="z_refer" class="form-label">Z Axis Reference<span class="mandatory">*</span></label>
+                                                <label for="z_refer" class="form-label">Z Axis Reference<span class="mandatory">*</span>
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span></label>
                                                 <input type="text" id="z_refer" name="z_refer" class="form-control form-select"
                                                     placeholder="Select or type" autocomplete="off"
                                                     value="{{ old('z_refer', $setupSheet->z_refer ?? '') }}">
@@ -246,11 +451,78 @@
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-md-2" style="position: relative;">
+
                                             <div class="mb-3">
-                                                <label for="clamping" class="form-label">Clamping <span class="mandatory">*</span></label>
+
+                                                <label for="z_refer" class="form-label">
+                                                    Z Axis Reference
+                                                    <span class="mandatory">*</span>
+
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span>
+                                                </label>
+
+                                                <input type="text"
+                                                    id="z_refer"
+                                                    name="z_refer"
+                                                    class="form-control border-info text-info"
+                                                    placeholder="Select or type"
+                                                    autocomplete="off"
+
+                                                    value="{{ old('z_refer', $previousSetup->z_refer ?? $setupSheet->z_refer ?? '') }}">
+
+                                                <ul id="zOptions" class="dropdown-list">
+
+                                                    <li data-value="">
+                                                        Select Z refer
+                                                    </li>
+
+                                                    @foreach($zOptions as $opt)
+
+                                                    <li data-value="{{ $opt }}">
+                                                        {{ $opt }}
+                                                    </li>
+
+                                                    @endforeach
+
+                                                    <li data-value="Top">
+                                                        Top
+                                                    </li>
+
+                                                    <li data-value="Centre">
+                                                        Centre
+                                                    </li>
+
+                                                    <li data-value="Face Shown">
+                                                        Face Shown
+                                                    </li>
+
+                                                    <li data-value="Hole Centre">
+                                                        Hole Centre
+                                                    </li>
+
+                                                </ul>
+
+                                                @error('z_refer')
+                                                <span class="text-danger small">
+                                                    {{ $message }}
+                                                </span>
+                                                @enderror
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- <div class="col-md-2" style="position: relative;">
+                                            <div class="mb-3">
+                                                <label for="clamping" class="form-label">Clamping <span class="mandatory">*</span>
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span></label>
                                                 <input type="text" id="clamping" name="clamping" class="form-control form-select"
                                                     placeholder="Select or type" autocomplete="off"
                                                     value="{{ old('clamping', $setupSheet->clamping ?? '') }}">
@@ -267,11 +539,74 @@
                                                 <span class="text-red small">{{ $message }}</span>
                                                 @enderror
                                             </div>
+                                        </div> -->
+
+                                        <div class="col-md-2" style="position: relative;">
+
+                                            <div class="mb-3">
+
+                                                <label for="clamping" class="form-label">
+                                                    Clamping
+                                                    <span class="mandatory">*</span>
+
+                                                    <span class="badge bg-info">
+                                                        Previous
+                                                    </span>
+                                                </label>
+
+                                                <input type="text"
+                                                    id="clamping"
+                                                    name="clamping"
+                                                    class="form-control border-info text-info"
+                                                    placeholder="Select or type"
+                                                    autocomplete="off"
+
+                                                    value="{{ old('clamping', $previousSetup->clamping ?? $setupSheet->clamping ?? '') }}">
+
+                                                <ul id="clampingOptions" class="dropdown-list">
+
+                                                    <li data-value="">
+                                                        Select Clamping
+                                                    </li>
+
+                                                    @foreach($clampingOptions as $opt)
+
+                                                    <li data-value="{{ $opt }}">
+                                                        {{ $opt }}
+                                                    </li>
+
+                                                    @endforeach
+
+                                                    <li data-value="Vice">
+                                                        Vice
+                                                    </li>
+
+                                                    <li data-value="Fixture">
+                                                        Fixture
+                                                    </li>
+
+                                                    <li data-value="Magnet">
+                                                        Magnet
+                                                    </li>
+
+                                                </ul>
+
+                                                @error('clamping')
+                                                <span class="text-danger small">
+                                                    {{ $message }}
+                                                </span>
+                                                @enderror
+
+                                            </div>
+
                                         </div>
 
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <label for="qty" class="form-label">Quantity <span class="mandatory">*</span></label>
+                                                <label for="qty" class="form-label">Quantity <span class="mandatory">*</span>
+                                                    <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <input type="number" step="1" min="1" class="form-control" id="qty" name="qty"
                                                     value="{{ old('qty', $setupSheet->qty ?? $workorder->quantity ?? '') }}"
                                                     oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,5)">
@@ -282,7 +617,9 @@
                                         </div>
                                         <div class="col-md-5">
                                             <div class="mb-3">
-                                                <label for="part_description" class="form-label mt-1">Part Description</label>
+                                                <label for="part_description" class="form-label mt-1">Part Description <span class="badge bg-danger">
+                                                        Current
+                                                    </span> </label>
                                                 <input type="text" class="form-control" id="part_description"
                                                     value="{{ old('description', $setupSheet->description ?? $workorder->part_description ?? '') }}" name="description">
                                             </div>
@@ -369,7 +706,7 @@
                                     <!-- Submit -->
                                     <div class="col-lg-12">
                                         <div class="text-end">
-                                            <button type="submit" class="btn btn-primary">{{ isset($setupSheet) ? 'Update' : 'Submit' }}</button>
+                                            <button type="submit" class="btn btn-info">{{ isset($setupSheet) ? 'Update' : 'Submit' }}</button>
                                             &nbsp;
                                             @if(isset($setupSheet))
                                             <a href="{{ route('ViewSetupSheet') }}" class="btn btn-info">Cancel</a>
