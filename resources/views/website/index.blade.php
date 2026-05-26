@@ -19,7 +19,11 @@
   <link rel="stylesheet" href="{{ asset('website/assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('website/assets/css/lindy-uikit.css') }}">
 </head>
-
+<style>
+  .navbar .btn i {
+    font-size: 18px;
+}
+</style>
 <body>
   <!--[if lte IE 9]>
       <p class="browserupgrade">
@@ -52,14 +56,14 @@
   <section id="home" class="hero-section-wrapper-5">
 
     <!--  header-6 start  -->
-    <header class="header header-6 bg-light">
+    <header class="header header-6 "style="background-color: #509afb;">
       <div class="navbar-area">
         <div class="container">
           <div class="row align-items-center">
             <div class="col-lg-12">
               <nav class="navbar navbar-expand-lg">
                 <a class="navbar-brand" href="/">
-                  <img src="{{ asset('website/assets/img/logo/OPSFORGESS.jpeg') }}" alt="OPSFORGES Logo" />
+                  <img src="{{ asset('website/assets/img/logo/opsforges-logo.png') }}" alt="OPSFORGES Logo" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                   data-bs-target="#navbarSupportedContent6" aria-controls="navbarSupportedContent6"
@@ -89,6 +93,14 @@
                     </li>
                     <li class="nav-item">
                       <a class="page-scroll" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                      <a href="https://wa.me/917030531445?text=Hello%20OpsForges,%20I%20want%20to%20enquire%20about%20your%20services."
+                        target="_blank"
+                        class="btn btn-success btn-sm text-white">
+
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                      </a>
                     </li>
                   </ul>
                 </div>

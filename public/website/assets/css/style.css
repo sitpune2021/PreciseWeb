@@ -29,3 +29,9 @@
   border-radius: 5px;
   font-weight: bold;
 }
+
+#nav6 .nav-link,
+#nav6 .page-scroll {
+    color: #fff !important;
+}
+
