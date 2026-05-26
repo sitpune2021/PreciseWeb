@@ -605,13 +605,20 @@
               <h6>Contact Us</h6>
 
               <ul class="links">
-                <li><i class="lni lni-phone mb-3"></i> +91 7030531445</li>
+                <!-- <li><i class="lni lni-phone mb-3"></i> +91 7030531445</li> -->
                 <li><i class="lni lni-envelope mb-3"></i> info@opsforges.com</li>
                 <li><i class="lni lni-map-marker mb-3"></i> India</li>
               </ul>
 
               <a href="tel:7030531445" class="btn btn-primary btn-sm mt-2">
-                Call Now
+                <i class="fa fa-phone"></i> Call Now
+              </a>
+
+              <a href="https://wa.me/917030531445?text=Hello%20OpsForges,%20I%20want%20to%20enquire%20about%20your%20services."
+                target="_blank"
+                class="btn btn-success btn-sm mt-2">
+
+                <i class="fab fa-whatsapp"></i> WhatsApp
               </a>
 
             </div>
