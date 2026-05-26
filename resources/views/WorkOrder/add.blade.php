@@ -271,6 +271,95 @@
                     </div>
                     @endif
                 </div>
+                <style>
+                    #buttons-datatables-decs {
+                        width: 100% !important;
+                    }
+
+                    #buttons-datatables-decs th,
+                    #buttons-datatables-decs td {
+                        white-space: nowrap;
+                        vertical-align: middle;
+                        font-size: 13px;
+                        text-align: center;
+                    }
+
+                    /* Sr No */
+                    #buttons-datatables-decs th:nth-child(1),
+                    #buttons-datatables-decs td:nth-child(1) {
+                        min-width: 70px;
+                    }
+
+                    /* Part No */
+                    #buttons-datatables-decs th:nth-child(2),
+                    #buttons-datatables-decs td:nth-child(2) {
+                        min-width: 120px;
+                    }
+
+                    /* First Set */
+                    #buttons-datatables-decs th:nth-child(3),
+                    #buttons-datatables-decs td:nth-child(3) {
+                        min-width: 280px;
+                        white-space: normal;
+                        text-align: left;
+                    }
+
+                    /* Qty */
+                    #buttons-datatables-decs th:nth-child(4),
+                    #buttons-datatables-decs td:nth-child(4) {
+                        min-width: 60px;
+                    }
+
+                    /* M/C */
+                    #buttons-datatables-decs th:nth-child(5),
+                    #buttons-datatables-decs td:nth-child(5) {
+                        min-width: 80px;
+                    }
+
+                    /* Op */
+                    #buttons-datatables-decs th:nth-child(6),
+                    #buttons-datatables-decs td:nth-child(6) {
+                        min-width: 30px;
+                    }
+
+                    /* Set */
+                    #buttons-datatables-decs th:nth-child(7),
+                    #buttons-datatables-decs td:nth-child(7) {
+                        min-width: 30px;
+                    }
+
+                    /* Est Time */
+                    #buttons-datatables-decs th:nth-child(8),
+                    #buttons-datatables-decs td:nth-child(8) {
+                        min-width: 30px;
+                    }
+
+                    /* Start & End Time */
+                    #buttons-datatables-decs th:nth-child(9),
+                    #buttons-datatables-decs td:nth-child(9),
+                    #buttons-datatables-decs th:nth-child(10),
+                    #buttons-datatables-decs td:nth-child(10) {
+                        min-width: 40px;
+                    }
+
+                    /* Total Hrs & IDL Time */
+                    #buttons-datatables-decs th:nth-child(11),
+                    #buttons-datatables-decs td:nth-child(11),
+                    #buttons-datatables-decs th:nth-child(12),
+                    #buttons-datatables-decs td:nth-child(12) {
+                        min-width: 30px;
+                    }
+
+                    /* Action */
+                    #buttons-datatables-decs th:nth-child(13),
+                    #buttons-datatables-decs td:nth-child(13) {
+                        min-width: 120px;
+                    }
+
+                    .table-responsive {
+                        overflow-x: auto;
+                    }
+                </style>
                 <div class="container-fluid">
 
                     <div class="row">

@@ -33,7 +33,8 @@ class ProjectController extends Controller
         // Projects (Latest First - by project_no )
         $projects = Project::with('customer')
             ->where('admin_id', $adminId)
-            ->orderBy('project_no', 'desc') //  important change
+            ->orderBy('is_locked', 'desc')   // locked first
+            ->orderBy('project_no', 'desc')  // then latest project no
             ->get();
 
         $latestMaterialOrderNo = MaterialOrder::where('admin_id', $adminId)
@@ -136,7 +137,7 @@ class ProjectController extends Controller
 
         $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
 
-        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo','highlightProjectId'));
+        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectId'));
     }
 
     public function update(Request $request, string $encryptedId)
@@ -190,5 +191,15 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect()->route('AddProject')->with('success', 'Project deleted successfully.');
+    }
+
+    public function toggleLock($id)
+    {
+        $project = Project::findOrFail(base64_decode($id));
+
+        $project->is_locked = !$project->is_locked;
+        $project->save();
+
+        return redirect()->back()->with('success', 'Project lock status updated.');
     }
 }

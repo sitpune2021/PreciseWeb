@@ -192,4 +192,54 @@ input::placeholder {
 }
 
 
+    /* =========================
+       ALL TABLE COMMON DESIGN
+    ========================== */
+
+   table th,
+table td {
+    vertical-align: middle !important;
+    text-align: center;
+    font-size: 12px !important;
+    white-space: nowrap;
+    padding: 4px 6px !important;
+}
+
+/* Small Row Height */
+table tbody tr {
+    height: 40px !important;
+}
+
+/* Responsive */
+.table-responsive {
+    overflow-x: auto !important;
+}
+
+/* Small Buttons */
+table .btn {
+    min-width: 26px !important;
+    height: 26px !important;
+    padding: 2px 4px !important;
+    font-size: 11px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 1px;
+    border-radius: 4px;
+}
+
+/* Icon Size */
+table .btn i {
+    font-size: 11px !important;
+}
+
+/* Action Column */
+table td:last-child {
+    white-space: nowrap !important;
+}
+
+
+
 

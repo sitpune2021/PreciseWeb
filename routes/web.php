@@ -33,24 +33,23 @@ use Illuminate\Support\Facades\Artisan;
 
  
 // Public Website
-Route::get('/', function () { return view('website.index');
-});
+Route::get('/', function () { return view('website.index'); });
 
 Auth::routes();
 
-// ✅ Forgot Password (OUTSIDE auth middleware)
-Route::get('forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
-Route::post('forgot-password', [ForgotPasswordController::class, 'sendLink'])->name('password.email');
+// Forgot Password (OUTSIDE auth middleware)
+Route::get('forgot-password'                 , [ForgotPasswordController::class, 'showForm'])->name('password.request');
+Route::post('forgot-password'                , [ForgotPasswordController::class, 'sendLink'])->name('password.email');
 
 // Reset password
-Route::get('reset-password/{token}', [ForgotPasswordController::class, 'resetForm'])->name('password.reset');
-Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
+Route::get('reset-password/{token}'          , [ForgotPasswordController::class, 'resetForm'])->name('password.reset');
+Route::post('reset-password'                 , [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 // Dashboard (after login)
 Route::middleware(['auth','check.subscription'])->group(function () {
 // Auth routes
 
-Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+Route::get('/dashboard'                         , [HomeController::class, 'index'])->name('home');
 
 // Client Routes
 Route::get( 'client/add'                        , [ClientContoller::class, 'AddClient'])->name('AddClient');
@@ -100,8 +99,7 @@ Route::get( 'workorder/export-sample'           , [WorkorderController::class, '
 Route::get( 'workorder/trash'                   , [WorkOrderController::class, 'trash'])->name('trashWorkOrder');
 Route::get( 'workorder/restore/{id}'            , [WorkOrderController::class, 'restore'])->name('restoreWorkOrder');
 Route::get('/get-next-part/{customerId}/{projectId}', [WorkOrderController::class, 'getNextPart']);
-Route::get('/get-last-customer-code', [WorkOrderController::class,'getLastCustomerCode']);
-
+Route::get('/get-last-customer-code'            , [WorkOrderController::class,'getLastCustomerCode']);
 
 // Project Routes
 Route::get( 'project/add'                       , [ProjectController::class, 'AddProject'])->name('AddProject');
@@ -113,6 +111,7 @@ Route::get( 'project/delete/{id}'               , [ProjectController::class, 'de
 Route::get( 'get-project-quantity/{id}'         , [ProjectController::class, 'getProjectQuantity']);
 Route::post('project/import'                    , [ProjectController::class, 'importProjects'])->name('importProjects');
 Route::get( 'projects/export-sample'            , [ProjectController::class, 'exportSample'])->name('exportProjects');
+Route::get('/project-lock/{id}'                 , [ProjectController::class, 'toggleLock'])->name('toggleProjectLock');
 
 // Operator Routes
 Route::get( 'operator/add'                      , [OperatorController::class, 'AddOperator'])->name('AddOperator');
@@ -208,9 +207,7 @@ Route::put( 'materialReq/update/{id}'           , [MaterialReqController::class,
 Route::get( 'materialReq/trash'                 , [MaterialReqController::class, 'trash'])->name('trashMaterialReq');
 Route::get( 'materialReq/restore/{id}'          , [MaterialReqController::class, 'restore'])->name('restoreMaterialReq');
 Route::get( '/get-material/{id}'                , [MaterialReqController::class, 'getMaterial']);
-
 Route::get('/get-workorders-by-customer/{Id}'   , [MaterialReqController::class, 'getWorkOrdersByCustomer']);
-
 
 // Materialorder Routes
 Route::get( 'materialorder/add'                 , [MaterialorderController::class, 'AddMaterialorder'])->name('AddMaterialorder');
@@ -271,8 +268,8 @@ Route::post('/admin/plans/toggle'               , [PaymentPlanController::class,
 //Subcreation Plan
 Route::get( 'payment'                           , [PaymentController::class, 'Payment'])->name('Payment');
 Route::post('razorpay/order'                    , [PaymentController::class, 'order'])->name('razorpay.order');
-// Route::post('payment/success'                   , [PaymentController::class, 'success'])->name('razorpay.success');
-Route::post('/razorpay/success'                   , [PaymentController::class, 'success'])->name('razorpay.success');
+// Route::post('payment/success'                , [PaymentController::class, 'success'])->name('razorpay.success');
+Route::post('/razorpay/success'                 , [PaymentController::class, 'success'])->name('razorpay.success');
 
 Route::get('/payment/failed'                    , [PaymentController::class, 'failed'])->name('Payment.failed');
 Route::get( 'Payment/view'                      , [PaymentController::class, 'PaymentList'])->name('PaymentList');
@@ -301,7 +298,7 @@ Route::get( 'quotation/view'                              , [QuotationController
 Route::post('quotation/store'                             , [QuotationController::class, 'storequotation'])->name('storequotation');
 Route::get( 'quotation/edit/{id}'                         , [QuotationController::class, 'editquotation'])->name('editquotation');
 Route::get( 'quotation/delete/{id}'                       , [QuotationController::class, 'destroy'])->name('deletequotation');
-// Route::put( 'quotation/update/{id}'                       , [QuotationController::class, 'update'])->name('updatequotation');
+// Route::put( 'quotation/update/{id}'                    , [QuotationController::class, 'update'])->name('updatequotation');
 Route::put('quotation/update/{id}'                        , [QuotationController::class, 'update'])->name('updatequotation');
 Route::get('printquotation/{id}'                          , [QuotationController::class, 'printquotation'])->name('printquotation');
 

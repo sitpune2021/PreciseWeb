@@ -20,7 +20,8 @@ class Project extends Model
         'quantity',
         'date',
         'user_id',
-        'project_no'
+        'project_no',
+        'is_locked'
     ];
     public function customer()
     {

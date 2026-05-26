@@ -149,7 +149,7 @@
                                                     <th style="width:50px;">Qty</th>
                                                     @if(
                                                     hasPermission('Projects', 'edit') || hasPermission('Projects', 'view'))
-                                                    <th width="10%">Action</th>
+                                                    <th width="15%">Action</th>
                                                     @endif
                                                 </tr>
                                             </thead>
@@ -177,18 +177,6 @@
                                                             </button>
                                                         </a>
                                                         @endif
-                                                        <!-- @if(hasPermission('Projects', 'view'))
-                                                        <button type="button"
-                                                            class="btn btn-primary btn-icon waves-effect waves-light viewBtn"
-                                                            data-id="{{ $project->id }}"
-                                                            data-workorder="{{ $project->project_no }}"
-                                                            data-name="{{ $project->project_name }}"
-                                                            data-code="{{ $project->customer_code }}"
-                                                            data-qty="{{ $project->quantity }}"
-                                                            data-date="{{ \Carbon\Carbon::parse($project->date)->format('d-m-Y') }}">
-                                                            <i class="ri-eye-fill align-bottom"></i>
-                                                        </button>
-                                                        @endif -->
 
                                                         <!-- @if(hasPermission('Projects', 'delete'))
                                                         <a href="{{ route('deleteProject', base64_encode($project->id)) }}"
@@ -205,6 +193,19 @@
                                                             </button>
                                                         </a>
                                                         @endif
+
+                                                        <a href="{{ route('toggleProjectLock', base64_encode($project->id)) }}">
+                                                            <button type="button"
+                                                                class="btn {{ $project->is_locked ? 'btn-warning' : 'btn-dark' }} btn-icon waves-effect waves-light">
+
+                                                                @if($project->is_locked)
+                                                                <i class="ri-lock-unlock-line"></i>
+                                                                @else
+                                                                <i class="ri-lock-line"></i>
+                                                                @endif
+
+                                                            </button>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                                 @endforeach

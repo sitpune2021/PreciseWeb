@@ -56,7 +56,7 @@
                                             <!-- <th>Time Taken</th> -->
                                             <!-- <th>Adjustment</th> -->
                                             <!-- <th>Invoice No</th> -->
-                                            <th width="9%">Action</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -251,5 +251,80 @@
         </div>
     </div>
 </div>
+
+<style>
+    #buttons-datatables-decs {
+        width: 100% !important;
+    }
+
+    #buttons-datatables-decs th,
+    #buttons-datatables-decs td {
+        white-space: nowrap;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    /* Column Widths */
+    #buttons-datatables-decs th:nth-child(1),
+    #buttons-datatables-decs td:nth-child(1) {
+        min-width: 80px;
+    }
+
+    #buttons-datatables-decs th:nth-child(2),
+    #buttons-datatables-decs td:nth-child(2) {
+        min-width: 120px;
+    }
+
+    #buttons-datatables-decs th:nth-child(3),
+    #buttons-datatables-decs td:nth-child(3) {
+        min-width: 300px;
+    }
+
+    #buttons-datatables-decs th:nth-child(4),
+    #buttons-datatables-decs td:nth-child(4) {
+        min-width: 50px;
+        text-align: center;
+    }
+
+    #buttons-datatables-decs th:nth-child(5),
+    #buttons-datatables-decs td:nth-child(5),
+    #buttons-datatables-decs th:nth-child(6),
+    #buttons-datatables-decs td:nth-child(6),
+    #buttons-datatables-decs th:nth-child(7),
+    #buttons-datatables-decs td:nth-child(7) {
+        min-width: 70px;
+        text-align: center;
+    }
+
+    #buttons-datatables-decs th:nth-child(8),
+    #buttons-datatables-decs td:nth-child(8) {
+        min-width: 60px;
+    }
+
+    #buttons-datatables-decs th:nth-child(9),
+    #buttons-datatables-decs td:nth-child(9),
+    #buttons-datatables-decs th:nth-child(10),
+    #buttons-datatables-decs td:nth-child(10) {
+        min-width: 180px;
+    }
+
+    #buttons-datatables-decs th:nth-child(11),
+    #buttons-datatables-decs td:nth-child(11),
+    #buttons-datatables-decs th:nth-child(12),
+    #buttons-datatables-decs td:nth-child(12) {
+        min-width: 100px;
+    }
+
+    #buttons-datatables-decs th:nth-child(13),
+    #buttons-datatables-decs td:nth-child(13) {
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+</style>
+
 
 @endsection
