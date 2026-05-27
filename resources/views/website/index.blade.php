@@ -22,8 +22,9 @@
 <style>
   .navbar .btn i {
     font-size: 18px;
-}
+  }
 </style>
+
 <body>
   <!--[if lte IE 9]>
       <p class="browserupgrade">
@@ -56,7 +57,7 @@
   <section id="home" class="hero-section-wrapper-5">
 
     <!--  header-6 start  -->
-    <header class="header header-6 "style="background-color: #509afb;">
+    <header class="header header-6 " style="background-color: #509afb;">
       <div class="navbar-area">
         <div class="container">
           <div class="row align-items-center">
@@ -434,14 +435,16 @@
       <div class="row">
         <div class="col-lg-8">
           <div class="contact-form-wrapper">
-            <form action="" method="">
+            <div class="alert alert-success success-message" style="display:none;"></div>
+            <form action="{{ route('inquiry.submit') }}" id="inquiryForm" method="POST">
+              @csrf
               <div class="row">
 
                 <div class="col-md-6">
                   <div class="single-input">
                     <input type="text" id="name" name="name" class="form-input" placeholder="Name">
                     <i class="lni lni-user"></i>
-                    <small id="nameError" class="error-text"></small>
+                    <small class="text-danger error-name"></small>
                   </div>
                 </div>
 
@@ -449,15 +452,26 @@
                   <div class="single-input">
                     <input type="email" id="email" name="email" class="form-input" placeholder="Email">
                     <i class="lni lni-envelope"></i>
-                    <small id="emailError" class="error-text"></small>
+                    <small class="text-danger error-email"></small>
                   </div>
                 </div>
 
                 <div class="col-md-6">
                   <div class="single-input">
-                    <input type="text" id="number" name="number" class="form-input" placeholder="Number">
+
+                    <input type="tel"
+                      id="number"
+                      name="number"
+                      class="form-input"
+                      placeholder="Number"
+                      maxlength="10"
+                      pattern="[0-9]{10}"
+                      oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+
                     <i class="lni lni-phone"></i>
-                    <small id="numberError" class="error-text"></small>
+
+                    <small class="text-danger error-number"></small>
+
                   </div>
                 </div>
 
@@ -466,7 +480,7 @@
                   <div class="single-input">
                     <input type="text" id="subject" name="subject" class="form-input" placeholder="Subject">
                     <i class="lni lni-text-format"></i>
-                    <small id="subjectError" class="error-text"></small>
+                    <small class="text-danger error-subject"></small>
                   </div>
                 </div>
 
@@ -475,13 +489,13 @@
                   <div class="single-input">
                     <textarea name="message" id="message" class="form-input" placeholder="Message" rows="6"></textarea>
                     <i class="lni lni-comments-alt"></i>
-                    <small id="messageError" class="error-text"></small>
+                    <small class="text-danger error-message"></small>
                   </div>
                 </div>
 
                 <!--  REPLACE YOUR_SITE_KEY -->
-                <div class="g-recaptcha mb-2" data-sitekey="6LfRKLwsAAAAAP3CKeuh5YP5YFLAlqLQ34STXhpz"></div>
-                <small id="captchaError" class="error-text"></small>
+                <div class="g-recaptcha mb-2" data-sitekey="6LdP_P4sAAAAALcRhKM2ADgez9u1ITlZT2tEqiA1"></div>
+                <small class="text-danger error-captcha"></small>
 
                 <div class="col-md-12">
                   <div class="form-button">
@@ -555,7 +569,7 @@
   <!--  clients-logo end  -->
 
   <!--  footer style-4 start  -->
-  <footer class="footer footer-style-4">
+  <footer class="footer footer-style-4 " style="background-color: #b6d4fba8;">
     <div class="container">
       <div class="widget-wrapper">
         <div class="row">
@@ -565,7 +579,7 @@
             <div class="footer-widget wow fadeInUp" data-wow-delay=".2s">
               <div class="logo">
                 <a href="/">
-                  <img src="{{ asset('website/assets/img/logo/OPSFORGESS.png') }}" alt="OPSFORGES Logo" style="height:70px;">
+                  <img src="{{ asset('website/assets/img/logo/opsforges-logo.png') }}" alt="OPSFORGES Logo" style="height:70px;">
                 </a>
               </div>
 
@@ -660,98 +674,113 @@
   <script src="{{ asset('website/assets/js/main.js') }}"></script>
 </body>
 <script>
-  function sendWhatsApp() {
+  async function sendWhatsApp() {
 
-    var name = document.getElementById("name");
-    var email = document.getElementById("email");
-    var number = document.getElementById("number");
-    var subject = document.getElementById("subject");
-    var message = document.getElementById("message");
-
-    var nameError = document.getElementById("nameError");
-    var emailError = document.getElementById("emailError");
-    var numberError = document.getElementById("numberError");
-    var subjectError = document.getElementById("subjectError");
-    var messageError = document.getElementById("messageError");
-    var captchaError = document.getElementById("captchaError");
-
-    // Reset
-    [nameError, emailError, numberError, subjectError, messageError, captchaError].forEach(e => {
-      if (e) e.innerHTML = "";
+    // CLEAR ERRORS
+    document.querySelectorAll('.text-danger').forEach(el => {
+      el.innerHTML = '';
     });
 
-    [name, email, number, subject, message].forEach(i => {
-      if (i) i.classList.remove("input-error");
-    });
+    let formData = new FormData();
 
-    let isValid = true;
+    formData.append('name', document.getElementById("name").value);
+    formData.append('email', document.getElementById("email").value);
+    formData.append('number', document.getElementById("number").value);
+    formData.append('subject', document.getElementById("subject").value);
+    formData.append('message', document.getElementById("message").value);
+    formData.append('g-recaptcha-response', grecaptcha.getResponse());
 
-    // Name
-    if (name.value.trim() === "") {
-      nameError.innerHTML = "Please enter your name";
-      name.classList.add("input-error");
-      isValid = false;
+    try {
+
+      let response = await fetch("{{ route('inquiry.submit') }}", {
+
+        method: "POST",
+
+        headers: {
+          "X-CSRF-TOKEN": "{{ csrf_token() }}",
+          "Accept": "application/json"
+        },
+
+        body: formData
+
+      });
+
+      let data = await response.json();
+
+      // VALIDATION ERRORS
+      if (!response.ok) {
+
+        if (data.errors) {
+
+          if (data.errors.name) {
+            document.querySelector('.error-name').innerHTML =
+              data.errors.name[0];
+          }
+
+          if (data.errors.email) {
+            document.querySelector('.error-email').innerHTML =
+              data.errors.email[0];
+          }
+
+          if (data.errors.number) {
+            document.querySelector('.error-number').innerHTML =
+              data.errors.number[0];
+          }
+
+          if (data.errors.subject) {
+            document.querySelector('.error-subject').innerHTML =
+              data.errors.subject[0];
+          }
+
+          if (data.errors.message) {
+            document.querySelector('.error-message').innerHTML =
+              data.errors.message[0];
+          }
+
+          if (data.errors['g-recaptcha-response']) {
+            document.querySelector('.error-captcha').innerHTML =
+              data.errors['g-recaptcha-response'][0];
+          }
+        }
+
+        return;
+      }
+
+      // WHATSAPP
+      // let url = "https://wa.me/9607014721?text=" +
+      //   "Name: " + encodeURIComponent(document.getElementById("name").value) + "%0a" +
+      //   "Email: " + encodeURIComponent(document.getElementById("email").value) + "%0a" +
+      //   "Phone: " + encodeURIComponent(document.getElementById("number").value) + "%0a" +
+      //   "Subject: " + encodeURIComponent(document.getElementById("subject").value) + "%0a" +
+      //   "Message: " + encodeURIComponent(document.getElementById("message").value);
+
+      // window.open(url, "_blank");
+      document.querySelector('.success-message').style.display = 'block';
+
+      document.querySelector('.success-message').innerHTML = data.message;
+
+      setTimeout(() => {
+
+        document.querySelector('.success-message').style.display = 'none';
+
+      }, 5000);
+
+      document.getElementById("inquiryForm").reset();
+
+      grecaptcha.reset();
+
+    } catch (error) {
+
+      console.log(error);
+
     }
-
-    // Email
-    if (email.value.trim() === "") {
-      emailError.innerHTML = "Please enter email";
-      email.classList.add("input-error");
-      isValid = false;
-    } else if (!email.value.includes("@")) {
-      emailError.innerHTML = "Invalid email";
-      email.classList.add("input-error");
-      isValid = false;
-    }
-
-    // Number
-    if (number.value.trim() === "") {
-      numberError.innerHTML = "Please enter number";
-      number.classList.add("input-error");
-      isValid = false;
-    } else if (number.value.length < 10) {
-      numberError.innerHTML = "Enter valid 10 digit number";
-      number.classList.add("input-error");
-      isValid = false;
-    }
-
-    // Subject
-    if (subject.value.trim() === "") {
-      subjectError.innerHTML = "Please enter subject";
-      subject.classList.add("input-error");
-      isValid = false;
-    }
-
-    // Message
-    if (message.value.trim() === "") {
-      messageError.innerHTML = "Please enter message";
-      message.classList.add("input-error");
-      isValid = false;
-    }
-
-    // CAPTCHA
-    var captcha = (typeof grecaptcha !== "undefined") ? grecaptcha.getResponse() : "";
-
-    if (captcha.length === 0) {
-      captchaError.innerHTML = "Please verify captcha";
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    // WhatsApp URL
-    var url = "https://wa.me/917030531445?text=" +
-      "Name: " + encodeURIComponent(name.value) + "%0a" +
-      "Email: " + encodeURIComponent(email.value) + "%0a" +
-      "Phone: " + encodeURIComponent(number.value) + "%0a" +
-      "Subject: " + encodeURIComponent(subject.value) + "%0a" +
-      "Message: " + encodeURIComponent(message.value);
-
-    window.open(url, '_blank');
-
-    document.querySelector("form").reset();
-    grecaptcha.reset();
   }
 </script>
+
+<style>
+  .success-message {
+    transition: 0.5s;
+  }
+</style>
 
 </html>

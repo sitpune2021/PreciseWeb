@@ -424,6 +424,30 @@
                         </div>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('inquery') ? '' : 'collapsed' }}"
+                            href="#inquirieslist"
+                            data-bs-toggle="collapse">
+
+                            <i class="ri-user-star-line"></i>
+                            <span>Inquiry List</span>
+                        </a>
+                        <div class="collapse menu-dropdown {{ request()->routeIs('inquery') ? 'show' : '' }}"
+                            id="inquirieslist">
+
+                            <ul class="nav nav-sm flex-column">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('inquery') }}" class="nav-link">
+                                        <i class="ri-eye-line"></i>
+                                        Inquiry List
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </li>
+
                     @endif
 
                     {{-- Masters Menu (Only if ANY master permission exists) --}}
@@ -470,7 +494,7 @@
                                 <li><a href="{{ route('AddMaterialType') }}" class="nav-link {{ request()->routeIs('AddMaterialType') ? 'active':'' }}"><i class="ri-add-circle-line me-1"></i>Add Material Type</a></li>
                                 @endif
 
-                               @if(hasPermission('VmcRate','add') || hasPermission('VmcRate','view'))  
+                                @if(hasPermission('VmcRate','add') || hasPermission('VmcRate','view'))
                                 <li>
                                     <a href="{{ route('Addrate') }}" class="nav-link {{ request()->routeIs('Addrate') ? 'active' : '' }}">
                                         <i class="ri-add-circle-line me-1"></i> VMC Rate

@@ -21,6 +21,7 @@ use App\Http\Controllers\MaterialTypeController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentPlanController;
 use App\Http\Controllers\PermissionController;
@@ -44,6 +45,8 @@ Route::post('forgot-password'                , [ForgotPasswordController::class,
 // Reset password
 Route::get('reset-password/{token}'          , [ForgotPasswordController::class, 'resetForm'])->name('password.reset');
 Route::post('reset-password'                 , [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
+
+Route::post('/inquiry-submit'                , [InquiryController::class, 'store'])->name('inquiry.submit');
 
 // Dashboard (after login)
 Route::middleware(['auth','check.subscription'])->group(function () {
@@ -312,6 +315,8 @@ Route::post('rate/updateStatus'                           , [RateController::cla
 Route::get( 'rate/trash'                                  , [RateController::class, 'trash'])->name('trashrate');
 Route::get( 'rate/restore/{id}'                           , [RateController::class, 'restore'])->name('restorerate');
  
+Route::get('/inquery-list'                                , [InquiryController::class, 'index'])
+    ->name('inquery');
  });
 Route::get('/clear-app-cache', function () {
  
