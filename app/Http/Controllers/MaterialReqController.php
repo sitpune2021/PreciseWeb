@@ -228,11 +228,12 @@ class MaterialReqController extends Controller
             ->latest() // latest created_at first
             ->get();
 
-        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
-            ->latest('id')
-            ->value('project_id');
+        $highlightProjectIds = MaterialOrder::where('admin_id', $adminId)
+            ->pluck('project_id')
+            ->unique()
+            ->toArray();
 
-        return view('MaterialReq.view', compact('materialReq', 'highlightProjectId'));
+        return view('MaterialReq.view', compact('materialReq', 'highlightProjectIds'));
     }
 
     public function editMaterialReq(string $encryptedId)

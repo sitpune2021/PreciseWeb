@@ -59,10 +59,11 @@ class WorkOrderController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
+        $highlightProjectIds = MaterialOrder::where('admin_id', $adminId)
             ->whereNull('deleted_at')
-            ->latest('id')
-            ->value('project_id');
+            ->pluck('project_id')
+            ->unique()
+            ->toArray();
 
         //  project  last customer (old logic)
         if (!$lastCustomer) {
@@ -78,7 +79,7 @@ class WorkOrderController extends Controller
             'materialtype',
             'lastCustomer',
             'project',
-            'highlightProjectId',
+            'highlightProjectIds',
             'latestMaterialOrderNo'
         ));
     }

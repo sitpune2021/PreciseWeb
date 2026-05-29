@@ -57,7 +57,7 @@
                                     <tbody>
                                         @foreach($materialReq->reverse() as $req)
                                         @php
-                                        $highlightClass = ((int)$req->project_id === (int)$highlightProjectId)
+                                        $highlightClass = in_array((int)$req->project_id, $highlightProjectIds)
                                         ? 'table-warning'
                                         : '';
                                         @endphp

@@ -63,7 +63,7 @@
                                         @foreach($record->reverse() as $rec)
 
                                         @php
-                                        $highlightClass = (!empty($highlightProjectId) && (int)$rec->project_id === (int)$highlightProjectId)
+                                        $highlightClass = in_array((int)$rec->project_id, $highlightProjectIds)
                                         ? 'table-warning'
                                         : '';
                                         @endphp

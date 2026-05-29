@@ -156,7 +156,7 @@
                                             <tbody>
                                                 @foreach($projects->reverse() as $project)
                                                 @php
-                                                $highlightClass = (!empty($highlightProjectId) && (int)$project->id === (int)$highlightProjectId)
+                                                $highlightClass = in_array((int)$project->id, $highlightProjectIds)
                                                 ? 'table-warning'
                                                 : '';
                                                 @endphp

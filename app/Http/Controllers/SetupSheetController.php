@@ -105,7 +105,7 @@ class SetupSheetController extends Controller
             'lastCustomer',
             'parts',
             'selectedPartCode',
-             'previousSetup' // ← pass to blade
+            'previousSetup' // ← pass to blade
         ));
     }
 
@@ -179,14 +179,17 @@ class SetupSheetController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = null;
+        $highlightProjectIds = [];
 
-        if ($latestProjectId) {
-            $parts = explode('_', $latestProjectId);
-            $highlightProjectId = $parts[1] ?? null; // project_id
-        }
+        $projectIds = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
+            ->pluck('project_id')
+            ->unique()
+            ->toArray();
 
-        return view('SetupSheet.view', compact('sheets', 'highlightProjectId'));
+        $highlightProjectIds = array_map('intval', $projectIds);
+
+        return view('SetupSheet.view', compact('sheets', 'highlightProjectIds'));
     }
 
     public function editSetupSheet(string $encryptedId)

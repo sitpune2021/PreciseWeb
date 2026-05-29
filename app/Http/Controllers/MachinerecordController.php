@@ -197,12 +197,13 @@ class MachinerecordController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
+        $highlightProjectIds = MaterialOrder::where('admin_id', $adminId)
             ->whereNull('deleted_at')
-            ->latest('id')
-            ->value('project_id');
+            ->pluck('project_id')
+            ->unique()
+            ->toArray();
 
-        return view('Machinerecord.view', compact('record', 'workorders', 'highlightProjectId'));
+        return view('Machinerecord.view', compact('record', 'workorders', 'highlightProjectIds'));
     }
 
     public function edit(string $encryptedId)
