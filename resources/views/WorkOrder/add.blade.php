@@ -287,13 +287,13 @@
                     /* Sr No */
                     #buttons-datatables-decs th:nth-child(1),
                     #buttons-datatables-decs td:nth-child(1) {
-                        min-width: 70px;
+                        min-width: 50px;
                     }
 
                     /* Part No */
                     #buttons-datatables-decs th:nth-child(2),
                     #buttons-datatables-decs td:nth-child(2) {
-                        min-width: 120px;
+                        min-width: 80px;
                     }
 
                     /* First Set */

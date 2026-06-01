@@ -267,12 +267,12 @@
     /* Column Widths */
     #buttons-datatables-decs th:nth-child(1),
     #buttons-datatables-decs td:nth-child(1) {
-        min-width: 80px;
+        min-width: 50px;
     }
 
     #buttons-datatables-decs th:nth-child(2),
     #buttons-datatables-decs td:nth-child(2) {
-        min-width: 120px;
+        min-width: 80px;
     }
 
     #buttons-datatables-decs th:nth-child(3),
@@ -305,19 +305,19 @@
     #buttons-datatables-decs td:nth-child(9),
     #buttons-datatables-decs th:nth-child(10),
     #buttons-datatables-decs td:nth-child(10) {
-        min-width: 180px;
+        min-width: 150px;
     }
 
     #buttons-datatables-decs th:nth-child(11),
     #buttons-datatables-decs td:nth-child(11),
     #buttons-datatables-decs th:nth-child(12),
     #buttons-datatables-decs td:nth-child(12) {
-        min-width: 100px;
+        min-width: 90px;
     }
 
     #buttons-datatables-decs th:nth-child(13),
     #buttons-datatables-decs td:nth-child(13) {
-        min-width: 120px;
+        min-width: 100px;
         text-align: center;
     }
 
