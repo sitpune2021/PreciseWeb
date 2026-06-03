@@ -131,14 +131,15 @@ class ProjectController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = MaterialOrder::where('admin_id', $adminId)
+        $highlightProjectIds = MaterialOrder::where('admin_id', $adminId)
             ->whereNull('deleted_at')
-            ->latest('id')
-            ->value('project_id');
+            ->pluck('project_id')
+            ->unique()
+            ->toArray();
 
         $nextProjectNo = Project::where('admin_id', $adminId)->max('project_no') + 1;
 
-        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectId'));
+        return view('Project.add', compact('project', 'customers', 'projects', 'nextProjectNo', 'highlightProjectIds'));
     }
 
     public function update(Request $request, string $encryptedId)

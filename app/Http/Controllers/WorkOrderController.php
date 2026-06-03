@@ -175,14 +175,13 @@ class WorkOrderController extends Controller
             ->latest('id')
             ->value('work_order_no');
 
-        $highlightProjectId = null;
+        $highlightProjectIds = MaterialOrder::where('admin_id', $adminId)
+            ->whereNull('deleted_at')
+            ->pluck('project_id')
+            ->unique()
+            ->toArray();
 
-        if (!empty($latestProjectId) && str_contains($latestProjectId, '_')) {
-            $parts = explode('_', $latestProjectId);
-            $highlightProjectId = isset($parts[1]) ? (int) $parts[1] : null; // cast to int
-        }
-
-        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer', 'workorders', 'highlightProjectId'));
+        return view('WorkOrder.add', compact('workorder', 'codes', 'projects', 'materialtype', 'lastCustomer', 'workorders', 'highlightProjectIds'));
     }
 
     public function update(Request $request, string $encryptedId)
