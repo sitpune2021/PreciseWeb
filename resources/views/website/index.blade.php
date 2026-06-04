@@ -57,7 +57,7 @@
   <section id="home" class="hero-section-wrapper-5">
 
     <!--  header-6 start  -->
-    <header class="header header-6 " style="background-color: #509afb;">
+    <header class="header header-6 " style="background-color: #f3751b;">
       <div class="navbar-area">
         <div class="container">
           <div class="row align-items-center">
@@ -375,28 +375,37 @@
                 <div class="single-pricing">
                   <h5>Basic ERP</h5>
                   <br>
-                  <h6>₹ 1,999 /month</h6>
+                  <h6>₹ 999 + GST /month</h6>
                   <ul>
                     <li>Job Work Management</li>
                     <li>Basic Production Tracking</li>
                     <li>Operator & Machine Entry</li>
                     <li>Email Support</li>
                   </ul>
-                  <a href="tel:7030531445" class="button radius-30">Get Demo</a>
+                  <a href="https://wa.me/917030531445?text=Hello%20OPSFORGES,%20I%20am%20interested%20in%20the%20Basic%20ERP%20Plan.%0A%0APlan:%20Basic%20ERP%0APrice:%20₹999%20+%20GST/month"
+                    target="_blank"
+                    class="button radius-30">
+                    Get Demo
+                  </a>
                 </div>
               </div>
               <div class="single-pricing-wrapper">
                 <div class="single-pricing">
                   <h5>Advanced ERP</h5>
                   <br>
-                  <h6>₹ 4,999 /month</h6>
+                  <h6>₹ 8000 + GST / 1yr </h6>
                   <ul>
                     <li>Production Planning System</li>
                     <li>Tool Room Management</li>
                     <li>Machine & Workflow Tracking</li>
                     <li>Priority Support</li>
                   </ul>
-                  <a href="tel:7030531445" class="button radius-30">Get Demo</a>
+                  <a href="https://wa.me/917030531445?text=Hello%20OPSFORGES,%20I%20am%20interested%20in%20the%20Standard%20ERP%20Plan.%0A%0APlan:%20Standard%20ERP%0APrice:%20₹8000%20+%20GST/month"
+
+                    target="_blank"
+                    class="button radius-30">
+                    Get Demo
+                  </a>
                 </div>
               </div>
               <div class="single-pricing-wrapper">
@@ -410,7 +419,11 @@
                     <li>Custom Modules & Reports</li>
                     <li>Dedicated Support</li>
                   </ul>
-                  <a href="tel:7030531445" class="button radius-30">Get Demo</a>
+                  <a href="https://wa.me/917030531445?text=Hello%20OPSFORGES,%20I%20am%20interested%20in%20the%20Standard%20ERP%20Plan.%0A%0APlan:%20Standard%20ERP%0APrice:%20₹Standard%20+%20GST/month"
+                    target="_blank"
+                    class="button radius-30">
+                    Get Demo
+                  </a>
                 </div>
               </div>
 
