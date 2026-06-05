@@ -14,7 +14,7 @@ public function index()
 {
     $inquiries = Inquiry::latest()->get();
 
-    return view('admin.inquery.index', compact('inquiries'));
+    return view('admin.inquiry.index', compact('inquiries'));
 }
 public function store(Request $request)
 {
